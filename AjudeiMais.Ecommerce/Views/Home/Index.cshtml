@@ -2,36 +2,30 @@
     ViewData["Title"] = "Home Page";
 }
 
-@{
-    ViewData["Title"] = "Home Page";
-}
-
-<div class="container mt-4">
+<div class="mx-auto mt-8 px-4">
     <!-- Banner -->
-    <div class="row">
-        <div class="col">
-            <img src="https://via.placeholder.com/1200x300" class="img-fluid rounded" alt="Banner">
-        </div>
+    <div class="mb-8">
+        <img src="https://placehold.co/1200x300?text=Banner" class="w-full rounded-lg shadow" alt="Banner">
     </div>
 
     <!-- Cards de Produtos -->
-    <div class="row mt-4">
-        @for (int i = 0; i < 3; i++) // Loop para exibir múltiplos cards
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        @for (int i = 0; i < 8; i++) // Exemplo com 8 cards
         {
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Imagem do Produto">
-                    <div class="card-body">
-                        <h5 class="card-title">Nome do Produto</h5>
-                        <p class="card-text"><strong>Categoria:</strong> Categoria Exemplo</p>
-                        <p class="card-text">
-                            <strong>Doador:</strong>
-                            <a href="#" class="text-primary text-decoration-none">Nome do Doador</a>
-                        </p>
-                        <p class="card-text"><strong>Quantidade:</strong> 5 unidades</p>
-                        <p class="card-text"><strong>Localização:</strong> São Paulo, SP</p>
-                        <a href="#" class="btn btn-primary w-100">Ver Detalhes</a>
-                    </div>
+            <div class="flex flex-col rounded-lg bg-white shadow transition duration-300 hover:shadow-lg">
+                <img src="https://placehold.co/300x300?text=Produto" class="h-48 w-full rounded-t-lg object-cover" alt="Imagem do Produto" />
+                <div class="flex flex-grow flex-col p-4">
+                    <h5 class="mb-1 text-lg font-semibold">Nome do Produto</h5>
+                    <p class="text-sm text-gray-600"><strong>Categoria:</strong> Categoria Exemplo</p>
+                    <p class="text-sm text-gray-600">
+                        <strong>Doador:</strong>
+                        <a href="#" class="text-blue-600 hover:underline">Nome do Doador</a>
+                    </p>
+                    <p class="text-sm text-gray-600"><strong>Quantidade:</strong> 5 unidades</p>
+                    <p class="mb-4 text-sm text-gray-600"><strong>Localização:</strong> São Paulo, SP</p>
+                    <a href="#" class="mt-auto rounded bg-blue-600 px-4 py-2 text-center text-sm text-white transition duration-200 hover:bg-blue-700">
+                        Ver Detalhes
+                    </a>
                 </div>
             </div>
         }
