@@ -68,28 +68,39 @@
         @for (int i = 0; i < 8; i++)
         {
             <div class="flex flex-col overflow-hidden rounded-lg bg-white shadow transition duration-300 hover:shadow-lg">
+                <!-- Imagem do Produto com Badge -->
                 <div class="relative">
                     <img src="https://placehold.co/400x400?text=Camisa+Masculina" class="h-52 w-full object-cover" alt="Imagem do Produto" />
-                    <!-- Badge de estado -->
                     <span class="absolute left-2 top-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 shadow">
                         Bom
                     </span>
                 </div>
+
+                <!-- Conteúdo do Card -->
                 <div class="flex flex-grow flex-col p-4">
-                    <h5 class="text-text-primary mb-1 text-lg font-semibold">Camisa Masculina M</h5>
+                    <!-- Categoria -->
+                    <span class="mb-1 inline-block text-xs font-medium uppercase tracking-wide text-primary">
+                        Roupas
+                    </span>
+
+                    <!-- Nome do Produto -->
+                    <h5 class="text-text-primary mb-2 text-lg font-semibold">
+                        Camisa Masculina M
+                    </h5>
+
+                    <!-- Informações -->
                     <p class="text-sm text-gray-600">
-                        <strong class="text-primary">Categoria:</strong> Roupas
-                    </p>
-                    <p class="text-sm text-gray-600">
-                        <strong class="text-primary">Doador:</strong>
+                        <strong>Doador:</strong>
                         <a href="#" class="text-sm text-gray-600 hover:underline">João Silva</a>
                     </p>
                     <p class="text-sm text-gray-600">
-                        <strong class="text-primary">Quantidade:</strong> 3 unidades
+                        <strong>Quantidade:</strong> 3 unidades
                     </p>
                     <p class="mb-4 text-sm text-gray-600">
-                        <strong class="text-primary">Localização:</strong> Belo Horizonte, MG
+                        <strong>Localização:</strong> Belo Horizonte, MG
                     </p>
+
+                    <!-- Botão -->
                     <a href="#" class="mt-auto rounded bg-secondary px-4 py-2 text-center text-sm text-white transition duration-200 hover:bg-orange-700">
                         Ver Detalhes
                     </a>
@@ -97,7 +108,7 @@
             </div>
         }
     </div>
-</div>
+
 <!-- Seção: Faça o Bem -->
 <section class="relative my-20 h-[28rem] rounded-2xl bg-gradient-to-br from-orange-100 to-white p-6 shadow-xl">
     <!-- Imagem de fundo -->

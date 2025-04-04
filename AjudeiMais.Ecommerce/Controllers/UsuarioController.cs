@@ -12,6 +12,16 @@ namespace AjudeiMais.Ecommerce.Controllers
         public IActionResult Perfil()
         {
             return View();
+        } 
+        
+        public IActionResult Anuncios()
+        {
+            return View();
+        }
+
+        public IActionResult AlterarDados()
+        {
+            return View();
         }
     }
 }
