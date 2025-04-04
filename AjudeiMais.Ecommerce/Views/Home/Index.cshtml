@@ -2,7 +2,38 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-4">
+    <!-- Banner -->
+    <div class="row">
+        <div class="col">
+            <img src="https://via.placeholder.com/1200x300" class="img-fluid rounded" alt="Banner">
+        </div>
+    </div>
+
+    <!-- Cards de Produtos -->
+    <div class="row mt-4">
+        @for (int i = 0; i < 3; i++) // Loop para exibir múltiplos cards
+        {
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Imagem do Produto">
+                    <div class="card-body">
+                        <h5 class="card-title">Nome do Produto</h5>
+                        <p class="card-text"><strong>Categoria:</strong> Categoria Exemplo</p>
+                        <p class="card-text">
+                            <strong>Doador:</strong>
+                            <a href="#" class="text-primary text-decoration-none">Nome do Doador</a>
+                        </p>
+                        <p class="card-text"><strong>Quantidade:</strong> 5 unidades</p>
+                        <p class="card-text"><strong>Localização:</strong> São Paulo, SP</p>
+                        <a href="#" class="btn btn-primary w-100">Ver Detalhes</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
 </div>
