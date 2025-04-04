@@ -3,11 +3,13 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AjudeiMais.Ecommerce</title>
+    <title>Ajudei+ | @ViewData["Title"]</title>
+    <meta name="description" content="@ViewData["MetaDescription"]" />
 
     <!-- Head -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@splidejs")/splide@4.1.3/dist/css/splide.min.css">
     <!-- Estilos -->
+    <link rel="icon" href="~/favicon.ico" />
     <link rel="stylesheet" href="~/css/output.css" />
     <link rel="stylesheet" href="~/AjudeiMais.Ecommerce.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
@@ -67,7 +69,7 @@
                         <!-- Usuário -->
                         <div class="group relative">
                             <button class="flex items-center gap-2 rounded-full bg-primary px-5 py-2 font-semibold text-white shadow-md transition hover:bg-orange-700">
-                                <i class="fa fa-user"></i> Luiz
+                                <i class="fa fa-user"></i> Entrar
                             </button>
                             <div class="-translate-y-2 absolute right-0 z-50 mt-2 w-48 transform rounded-lg bg-white text-secondary opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
                                 <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-background">Meu Perfil</a>
@@ -90,11 +92,22 @@
 
     <!-- Footer sempre no fim -->
     <footer class="mt-auto bg-secondary py-4 text-white shadow-inner">
-        <div class="container mx-auto text-center text-sm">
-            &copy; 2025 - AjudeiMais.Ecommerce -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white underline hover:text-primary">Privacy</a>
+        <div class="container mx-auto space-y-2 text-center text-sm">
+            <div>
+                &copy; 2025 - AjudeiMais.Ecommerce -
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white underline hover:text-primary">Privacy</a>
+            </div>
+            <div>
+                Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do curso de Análise e Desenvolvimento de Sistemas da <strong>Unicesumar - Londrina</strong>.
+            </div>
+            <div>
+                Alunos responsáveis:
+                <a href="https://www.linkedin.com/in/danilo-derio" class="underline hover:text-primary" target="_blank">Danilo Derio</a> e
+                <a href="https://www.linkedin.com/in/luiz-matheus-da-silva" class="underline hover:text-primary" target="_blank">Luiz Matheus da Silva</a>
+            </div>
         </div>
     </footer>
+
 
     <!-- Scripts -->
     <!-- Final do body -->
