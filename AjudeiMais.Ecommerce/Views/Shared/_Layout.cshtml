@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AjudeiMais.Ecommerce</title>
 
+    <!-- Head -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@splidejs")/splide@4.1.3/dist/css/splide.min.css">
     <!-- Estilos -->
     <link rel="stylesheet" href="~/css/output.css" />
     <link rel="stylesheet" href="~/AjudeiMais.Ecommerce.styles.css" asp-append-version="true" />
@@ -95,6 +97,18 @@
     </footer>
 
     <!-- Scripts -->
+    <!-- Final do body -->
+    <script src="https://cdn.jsdelivr.net/npm/@("@splidejs")/splide@4.1.3/dist/js/splide.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            new Splide('.splide', {
+                type   : 'loop',
+                perPage: 1,
+                autoplay: true,
+            }).mount();
+        });
+    </script>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
