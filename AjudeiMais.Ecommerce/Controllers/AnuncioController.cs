@@ -4,6 +4,11 @@ namespace AjudeiMais.Ecommerce.Controllers
 {
     public class AnuncioController : Controller
     {
+        public IActionResult Index()
+        {
+            return View();
+        }
+        
         public IActionResult Detalhe()
         {
             return View();

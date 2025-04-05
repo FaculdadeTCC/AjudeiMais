@@ -2,18 +2,14 @@
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
-    public class InstituicaoController : Controller
+    public class PedidoController : Controller
     {
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Perfil()
-        {
-            return View();
-        }
 
-        public IActionResult AlterarDados()
+        public IActionResult Detalhe()
         {
             return View();
         }
