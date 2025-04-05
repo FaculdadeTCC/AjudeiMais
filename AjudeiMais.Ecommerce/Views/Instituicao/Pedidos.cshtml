@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Pedidos";
+}
+
+<section class="mx-auto mt-10 max-w-5xl rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
+    <h2 class="mb-6 text-2xl font-bold text-gray-800">Pedidos Ativos    </h2>
+
+    <div class="grid grid-cols-1 gap-6">
+        <!-- Card de item no carrinho -->
+        <div class="flex flex-col gap-4 rounded-lg bg-white p-4 shadow-md sm:flex-row sm:items-center">
+            <!-- Imagem do produto -->
+            <div class="h-32 w-full max-w-[130px] overflow-hidden rounded-lg sm:h-32">
+                <img src="https://placehold.co/300x300?text=Roupas+Infantis" alt="Imagem do Produto"
+                     class="h-full w-full object-cover" />
+            </div>
+
+            <!-- Info do produto -->
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800">Roupas Infantis</h3>
+                <p class="text-sm text-gray-600">Categoria: Vestuário</p>
+                <p class="text-sm text-gray-600">Localização: Campinas, SP</p>
+            </div>
+
+            <!-- Info do usuário doador -->
+            <div class="flex flex-col items-start sm:items-end">
+                <p class="text-sm font-medium text-gray-800">
+                    Postado por:
+                    <span class="text-primary">João Silva</span>
+                </p>
+                <p class="text-sm text-gray-600">E-mail: joaodoe@gmail.com</p>
+                <p class="text-sm text-gray-600">Telefone: (19) 99999-8888</p>
+
+                <!-- Botão de chat -->
+                <button onclick="abrirChat()"
+                        class="mt-3 inline-block rounded-full bg-secondary px-5 py-2 text-sm font-semibold text-white shadow hover:bg-orange-700">
+                    Abrir Chat
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Modal estilo popup -->
+<!-- Modal estilo popup -->
+<div id="chatModal" class="fixed bottom-1 right-4 z-50 hidden transition-all duration-300 pointer-events-none">
+    <div id="chatBox"
+         class="translate-y-96 transform rounded-2xl bg-white p-6 shadow-lg transition-all duration-300 ease-out w-[350px] sm:w-[400px] pointer-events-auto">
+        <!-- Cabeçalho do modal -->
+        <div class="mb-4 flex items-center justify-between border-b pb-2">
+            <h3 class="text-lg font-semibold text-gray-800">Chat com João Silva</h3>
+            <button onclick="fecharChat()" class="text-gray-500 hover:text-gray-700">✖</button>
+        </div>
+
+        <!-- Corpo do chat -->
+        <div class="mb-4 h-60 space-y-2 overflow-y-auto pr-2">
+            <div class="flex flex-col items-start">
+                <div class="max-w-[80%] rounded-xl bg-gray-100 p-2 text-sm text-gray-800">
+                    Olá! Vi que vocês têm interesse nas roupas infantis.
+                </div>
+                <span class="mt-1 text-xs text-gray-400">João - 14:30</span>
+            </div>
+
+            <div class="flex flex-col items-end">
+                <div class="max-w-[80%] rounded-xl bg-secondary p-2 text-sm text-white">
+                    Sim! Elas ainda estão disponíveis?
+                </div>
+                <span class="mt-1 text-xs text-gray-400">Você - 14:32</span>
+            </div>
+
+            <div class="flex flex-col items-start">
+                <div class="max-w-[80%] rounded-xl bg-gray-100 p-2 text-sm text-gray-800">
+                    Sim, posso combinar a entrega com vocês.
+                </div>
+                <span class="mt-1 text-xs text-gray-400">João - 14:33</span>
+            </div>
+        </div>
+
+        <!-- Campo de enviar mensagem -->
+        <div class="mt-auto flex items-center gap-2">
+            <input type="text" placeholder="Digite sua mensagem..."
+                   class="w-full rounded-full border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-secondary" />
+            <button class="rounded-full bg-secondary px-4 py-2 text-white hover:bg-orange-700">
+                Enviar
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function abrirChat() {
+        const modal = document.getElementById('chatModal');
+        const chatBox = document.getElementById('chatBox');
+        modal.classList.remove('hidden');
+
+        // força o layout antes da animação
+        void chatBox.offsetHeight;
+        chatBox.classList.remove('translate-y-96');
+    }
+
+    function fecharChat() {
+        const modal = document.getElementById('chatModal');
+        const chatBox = document.getElementById('chatBox');
+
+        chatBox.classList.add('translate-y-96');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    // Fecha ao clicar fora do chat
+    window.addEventListener('click', function (e) {
+        const modal = document.getElementById('chatModal');
+        const chatBox = document.getElementById('chatBox');
+
+        if (!chatBox.contains(e.target) && !e.target.closest('button[onclick="abrirChat()"]')) {
+            fecharChat();
+        }
+    });
+</script>
