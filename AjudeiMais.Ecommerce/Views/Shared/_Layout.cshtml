@@ -33,7 +33,7 @@
                 </div>
 
                 <!-- Botão do menu mobile -->
-                <button data-collapse-toggle="navbar-default" type="button" class="ml-3 inline-flex items-center rounded-lg p-2 text-sm text-white hover:bg-primary focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden" aria-controls="navbar-default" aria-expanded="false">
+                <button data-collapse-toggle="navbar-default" type="button" class="ml-3 inline-flex items-center rounded-lg p-2 text-sm text-white hover:bg-hover focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden" aria-controls="navbar-default" aria-expanded="false">
                     <span class="sr-only">Open main menu</span>
                     <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -51,30 +51,26 @@
 
                         <!-- Categorias -->
                         <div class="group relative">
-                            <button class="flex items-center gap-1 font-medium text-white transition hover:text-primary">
+                            <button class="flex items-center gap-1 font-medium text-white transition hover:text-hover">
                                 Categorias <i class="fa fa-chevron-down text-sm"></i>
                             </button>
                             <div class="-translate-y-2 absolute left-0 z-50 mt-2 w-56 transform rounded-lg bg-white text-secondary opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-background">Roupas</a>
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-background">Alimentos</a>
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-background">Brinquedos</a>
-                                <a href="#" class="block px-5 py-3 hover:bg-background">Outros</a>
+                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Roupas</a>
+                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Alimentos</a>
+                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Brinquedos</a>
+                                <a href="#" class="block px-5 py-3 hover:bg-hover">Outros</a>
                             </div>
                         </div>
 
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-primary">Produtos</a>
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-primary">Sobre</a>
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-primary">Doar Agora</a>
+                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Produtos</a>
+                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Sobre</a>
+                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Doar Agora</a>
 
                         <!-- Usuário -->
                         <div class="group relative">
-                            <button class="flex items-center gap-2 rounded-full bg-primary px-5 py-2 font-semibold text-white shadow-md transition hover:bg-orange-700">
+                            <button class="flex items-center gap-2 rounded-full bg-primary px-5 py-2 font-semibold text-white shadow-md transition hover:bg-hover">
                                 <i class="fa fa-user"></i> Entrar
                             </button>
-                            <div class="-translate-y-2 absolute right-0 z-50 mt-2 w-48 transform rounded-lg bg-white text-secondary opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-background">Meu Perfil</a>
-                                <a href="#" class="block px-5 py-3 hover:bg-background">Sair</a>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -90,24 +86,15 @@
         @RenderBody()
     </main>
 
-    <!-- Footer sempre no fim -->
+    <!-- Footer -->
     <footer class="mt-auto bg-secondary py-4 text-white shadow-inner">
         <div class="container mx-auto space-y-2 text-center text-sm">
             <div>
                 &copy; 2025 - AjudeiMais.Ecommerce -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white underline hover:text-primary">Privacy</a>
-            </div>
-            <div>
-                Projeto desenvolvido como Trabalho de Conclusão de Curso (TCC) do curso de Análise e Desenvolvimento de Sistemas da <strong>Unicesumar - Londrina</strong>.
-            </div>
-            <div>
-                Alunos responsáveis:
-                <a href="https://www.linkedin.com/in/danilo-derio" class="underline hover:text-primary" target="_blank">Danilo Derio</a> e
-                <a href="https://www.linkedin.com/in/luiz-matheus-da-silva" class="underline hover:text-primary" target="_blank">Luiz Matheus da Silva</a>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white underline hover:text-hover">Privacy</a>
             </div>
         </div>
     </footer>
-
 
     <!-- Scripts -->
     <!-- Final do body -->
