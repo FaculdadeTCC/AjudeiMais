@@ -1,49 +1,94 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - AjudeiMais.Ecommerce</title>
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/AjudeiMais.Ecommerce.styles.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/output.css"/>
+    <!-- Esta ordem é melhor -->
+    <link rel="stylesheet" href="~/css/output.css" />
+    <link rel="stylesheet" href="~/AjudeiMais.Ecommerce.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+          crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
 </head>
-<body>
-<header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-        <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">AjudeiMais.Ecommerce</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-</header>
-<div class="container">
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-</div>
+<body class="bg-background font-sans">
+    <header>
+        <nav class="bg-secondary text-white py-4 shadow-md fixed top-0 left-0 w-full z-50">
+            <div class="container mx-auto flex flex-wrap items-center justify-between px-6">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 text-2xl font-bold">
+                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
+                        <i class="fa fa-hand-holding-heart text-white text-xl"></i>
+                    </div>
+                    <span class="text-white">Ajudei+</span>
+                </div>
 
-<footer class="border-top footer text-muted">
-    <div class="container">
-        &copy; 2025 - AjudeiMais.Ecommerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                <!-- Mobile menu button -->
+                <button data-collapse-toggle="navbar-default" type="button" class="inline-flex items-center p-2 ml-3 text-sm text-white rounded-lg md:hidden hover:bg-primary focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-default" aria-expanded="false">
+                    <span class="sr-only">Open main menu</span>
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+
+                <!-- Menu -->
+                <div class="hidden w-full md:flex md:items-center md:w-auto" id="navbar-default">
+                    <div class="flex flex-col md:flex-row md:items-center gap-6 text-lg mt-4 md:mt-0">
+                        <!-- Barra de Pesquisa -->
+                        <div class="relative w-full md:w-64">
+                            <input type="text" placeholder="Buscar itens..." class="w-full px-5 py-2 rounded-full text-gray-700 focus:outline-none shadow-md border border-gray-300">
+                            <i class="fa fa-search absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                        </div>
+
+                        <!-- Dropdown de Categorias -->
+                        <div class="relative group">
+                            <button class="text-white hover:text-primary transition font-medium flex items-center gap-1">
+                                Categorias <i class="fa fa-chevron-down text-sm"></i>
+                            </button>
+                            <div class="absolute left-0 mt-2 w-56 bg-white text-secondary rounded-lg shadow-lg opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 transform -translate-y-2 z-50">
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary border-b border-gray-100">Roupas</a>
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary border-b border-gray-100">Alimentos</a>
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary border-b border-gray-100">Brinquedos</a>
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary">Outros</a>
+                            </div>
+                        </div>
+
+                        <a href="#" class="text-white visited:text-white no-underline font-medium hover:text-primary">Produtos</a>
+                        <a href="#" class="text-white visited:text-white transition font-medium no-underline hover:text-primary">Sobre</a>
+                        <a href="#" class="text-white visited:text-white transition font-medium no-underline hover:text-primary">Doar Agora</a>
+
+                        <!-- Usuário Logado -->
+                        <div class="relative group">
+                            <button class="bg-primary text-white px-5 py-2 rounded-full shadow-md hover:bg-orange-700 transition font-semibold flex items-center gap-2">
+                                <i class="fa fa-user"></i> Luiz
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white text-secondary rounded-lg shadow-lg opacity-0 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 transform -translate-y-2 z-50">
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary border-b border-gray-100">Meu Perfil</a>
+                                <a href="#" class="block px-5 py-3 hover:bg-background text-secondary">Sair</a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="pt-24 container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
-</footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - AjudeiMais.Ecommerce - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
