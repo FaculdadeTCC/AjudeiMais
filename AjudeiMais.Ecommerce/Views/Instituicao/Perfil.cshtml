@@ -1,0 +1,83 @@
+﻿@{
+    ViewData["Title"] = "Nome - Instituição";
+}
+
+<section class="mx-auto mt-10 max-w-5xl rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
+    <!-- Topo do Perfil -->
+    <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+        <!-- Foto da instituição -->
+        <div class="relative">
+            <img src="https://placehold.co/150x150" alt="Foto da Instituição"
+                 class="h-36 w-36 rounded-full object-cover ring-2 ring-primary" />
+            <!-- Selo de verificado -->
+            <span class="absolute -bottom-2 -right-2 inline-flex items-center justify-center rounded-full bg-green-500 p-1 shadow-md ring-2 ring-white">
+                <i class="fas fa-check text-xs text-white"></i>
+            </span>
+        </div>
+
+        <!-- Informações principais -->
+        <div class="flex-1">
+            <h2 class="text-2xl font-bold text-gray-800">Instituto Esperança Viva</h2>
+            <p class="text-sm text-gray-600">São Paulo, SP</p>
+            <p class="mt-1 text-sm text-gray-600"><strong>E-mail:</strong> contato@iev.org.br</p>
+            <p class="text-sm text-gray-600"><strong>Telefone:</strong> (11) 98765-4321</p>
+
+            <!-- Avaliação -->
+            <div class="mt-2 flex items-center gap-1 text-yellow-500">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+                <span class="ml-2 text-sm text-gray-600">(4.8 de 5)</span>
+            </div>
+
+            <!-- Botão de mensagem -->
+            <a href="#"
+               class="mt-4 inline-block rounded-full bg-secondary px-6 py-2 text-sm font-semibold text-white shadow hover:bg-orange-700">
+                Enviar Mensagem
+            </a>
+        </div>
+    </div>
+
+    <!-- Descrição -->
+    <div class="mt-8">
+        <h3 class="mb-2 text-lg font-semibold text-gray-800">Sobre a Instituição</h3>
+        <p class="text-sm text-gray-700 leading-relaxed">
+            O Instituto Esperança Viva atua há mais de 10 anos oferecendo apoio a famílias em situação de vulnerabilidade.
+            Promovemos campanhas de arrecadação e distribuímos alimentos, roupas e outros itens essenciais com o apoio da comunidade.
+        </p>
+    </div>
+
+    <!-- Itens desejados -->
+    <div class="mt-10">
+        <h3 class="mb-4 text-lg font-semibold text-gray-800">Itens que desejam receber</h3>
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <!-- Exemplo de item -->
+            <div class="flex flex-col overflow-hidden rounded-lg bg-white shadow transition duration-300 hover:shadow-lg">
+                <div class="relative">
+                    <img src="https://placehold.co/400x400?text=Cesta+Básica"
+                         class="h-52 w-full object-cover" alt="Imagem do Produto" />
+                    <span class="absolute left-2 top-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 shadow">
+                        Necessário
+                    </span>
+                </div>
+                <div class="flex flex-grow flex-col p-4">
+                    <p class="mb-1 text-sm font-semibold uppercase text-primary">Alimentos</p>
+                    <h5 class="mb-1 text-lg font-semibold text-text-primary">Cesta Básica</h5>
+                    <p class="text-sm text-gray-600"><strong>Categoria:</strong> Alimentos</p>
+                    <p class="mb-4 text-sm text-gray-600"><strong>Localização:</strong> São Paulo, SP</p>
+
+                    <div class="mt-auto">
+                        <a href="#"
+                           class="rounded bg-secondary px-4 py-2 text-center text-sm text-white transition hover:bg-orange-700">
+                            Doar
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Repita os cards acima para mais itens -->  
+        </div>
+    </div>
+</section>
