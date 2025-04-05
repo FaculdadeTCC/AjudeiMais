@@ -13,4 +13,8 @@
       <None Remove="wwwroot\lib\bootstrap\**" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Remove="Views\Home\Privacy.cshtml" />
+    </ItemGroup>
+
 </Project>

@@ -1,39 +1,207 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Doe com Amor e Encontre Solidariedade";
+    ViewData["MetaDescription"] = "Conecte-se com pessoas que precisam. No AjudeiMais, você doa ou recebe roupas, calçados, móveis e muito mais. Faça o bem e transforme vidas com um clique.";
 }
 
-@{
-    ViewData["Title"] = "Home Page";
-}
+<div class="mx-auto mt-8 px-4">
 
-<div class="container mt-4">
-    <!-- Banner -->
-    <div class="row">
-        <div class="col">
-            <img src="https://via.placeholder.com/1200x300" class="img-fluid rounded" alt="Banner">
+    <!-- Carousel com Splide -->
+    <div class="splide mb-8 rounded-lg shadow" aria-label="Banner Carousel">
+        <div class="splide__track rounded-lg">
+            <ul class="splide__list">
+                <li class="splide__slide">
+                    <img src="https://placehold.co/1200x300/FF6B00/fff?text=Banner+1" alt="Banner 1" class="w-full rounded-lg object-cover">
+                </li>
+                <li class="splide__slide">
+                    <img src="https://placehold.co/1200x300/2E2E2E/fff?text=Banner+2" alt="Banner 2" class="w-full rounded-lg object-cover">
+                </li>
+                <li class="splide__slide">
+                    <img src="https://placehold.co/1200x300/F8F9FA/333?text=Banner+3" alt="Banner 3" class="w-full rounded-lg object-cover">
+                </li>
+            </ul>
         </div>
     </div>
 
+    <!-- Título e Filtros -->
+    <div class="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+            <h2 class="text-2xl font-bold text-secondary">O que você deseja encontrar hoje?</h2>
+            <p class="text-gray-600">Encontre roupas, calçados, utensílios e muito mais para doar ou receber com carinho.</p>
+        </div>
+        <a href="#" class="mt-2 inline-block rounded bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-orange-700 sm:mt-0">
+            Veja mais
+        </a>
+    </div>
+
+    <!-- Filtros -->
+    <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <select class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+            <option selected disabled>Filtrar por categoria</option>
+            <option>Roupas</option>
+            <option>Calçados</option>
+            <option>Brinquedos</option>
+            <option>Móveis</option>
+        </select>
+
+        <select class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+            <option selected disabled>Filtrar por estado de conservação</option>
+            <option>Excelente</option>
+            <option>Bom</option>
+            <option>Usado</option>
+        </select>
+
+        <select class="w-full rounded border border-gray-300 px-3 py-2 text-sm text-gray-700 shadow-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary">
+            <option selected disabled>Filtrar por cidade</option>
+            <option>São Paulo</option>
+            <option>Rio de Janeiro</option>
+            <option>Belo Horizonte</option>
+            <option>Curitiba</option>
+        </select>
+
+        <button class="w-full rounded bg-secondary px-4 py-2 text-sm text-white transition hover:bg-orange-700">
+            Aplicar Filtros
+        </button>
+    </div>
+
     <!-- Cards de Produtos -->
-    <div class="row mt-4">
-        @for (int i = 0; i < 3; i++) // Loop para exibir múltiplos cards
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        @for (int i = 0; i < 8; i++)
         {
-            <div class="col-md-4">
-                <div class="card shadow-sm">
-                    <img src="https://via.placeholder.com/300x200" class="card-img-top" alt="Imagem do Produto">
-                    <div class="card-body">
-                        <h5 class="card-title">Nome do Produto</h5>
-                        <p class="card-text"><strong>Categoria:</strong> Categoria Exemplo</p>
-                        <p class="card-text">
-                            <strong>Doador:</strong>
-                            <a href="#" class="text-primary text-decoration-none">Nome do Doador</a>
-                        </p>
-                        <p class="card-text"><strong>Quantidade:</strong> 5 unidades</p>
-                        <p class="card-text"><strong>Localização:</strong> São Paulo, SP</p>
-                        <a href="#" class="btn btn-primary w-100">Ver Detalhes</a>
-                    </div>
+            <div class="flex flex-col overflow-hidden rounded-lg bg-white shadow transition duration-300 hover:shadow-lg">
+                <!-- Imagem do Produto com Badge -->
+                <div class="relative">
+                    <img src="https://placehold.co/400x400?text=Camisa+Masculina" class="h-52 w-full object-cover" alt="Imagem do Produto" />
+                    <span class="absolute left-2 top-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 shadow">
+                        Bom
+                    </span>
+                </div>
+
+                <!-- Conteúdo do Card -->
+                <div class="flex flex-grow flex-col p-4">
+                    <!-- Categoria -->
+                    <span class="mb-1 inline-block text-xs font-medium uppercase tracking-wide text-primary">
+                        Roupas
+                    </span>
+
+                    <!-- Nome do Produto -->
+                    <h5 class="text-text-primary mb-2 text-lg font-semibold">
+                        Camisa Masculina M
+                    </h5>
+
+                    <!-- Informações -->
+                    <p class="text-sm text-gray-600">
+                        <strong>Doador:</strong>
+                        <a href="#" class="text-sm text-gray-600 hover:underline">João Silva</a>
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        <strong>Quantidade:</strong> 3 unidades
+                    </p>
+                    <p class="mb-4 text-sm text-gray-600">
+                        <strong>Localização:</strong> Belo Horizonte, MG
+                    </p>
+
+                    <!-- Botão -->
+                    <a href="#" class="mt-auto rounded bg-secondary px-4 py-2 text-center text-sm text-white transition duration-200 hover:bg-orange-700">
+                        Ver Detalhes
+                    </a>
                 </div>
             </div>
         }
     </div>
-</div>
+
+<!-- Seção: Faça o Bem -->
+<section class="relative my-20 h-[28rem] rounded-2xl bg-gradient-to-br from-orange-100 to-white p-6 shadow-xl">
+    <!-- Imagem de fundo -->
+    <div class="absolute right-0 top-0 h-full w-3/4 overflow-hidden rounded-r-2xl">
+        <img src="https://images.unsplash.com/photo-1584824486539-53bb4646bdbc?auto=format&fit=crop&w=1200&q=80"
+             alt="Imagem de ajuda e doação"
+             class="h-full w-full object-cover brightness-95" />
+    </div>
+
+    <!-- Card de Texto sobreposto -->
+    <div class="relative z-10 mx-auto mt-10 w-full max-w-xl rounded-2xl bg-white p-8 shadow-2xl ring-1 ring-orange-200 lg:ml-16">
+        <h3 class="mb-4 text-3xl font-extrabold text-secondary">Faça o Bem 💛</h3>
+        <p class="mb-6 text-base leading-relaxed text-gray-700">
+            Pequenos gestos geram grandes mudanças. Quando você doa, você inspira, transforma e semeia esperança.
+            Compartilhe o que você tem de sobra — amor, tempo ou objetos — e ajude a escrever uma nova história.
+        </p>
+        <a href="#"
+           class="inline-block rounded-full bg-primary px-6 py-2 text-sm font-semibold text-white shadow-md transition hover:scale-105 hover:bg-orange-700">
+            Quero fazer a diferença
+        </a>
+    </div>
+</section>
+
+<!-- Seção: Categorias -->
+<section class="my-20">
+    <div class="mb-10 text-center">
+        <h2 class="text-3xl font-bold text-secondary">Explore Categorias</h2>
+        <p class="text-gray-600">Descubra os tipos de itens que você pode doar ou receber.</p>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- Categoria: Roupas -->
+        <a href="#" class="group relative overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg">
+            <img src="https://placehold.co/600x400/FFEDD5/333?text=Roupas"
+                 alt="Roupas"
+                 class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-3 text-white">
+                <h3 class="text-lg font-semibold">Roupas</h3>
+            </div>
+        </a>
+
+        <!-- Categoria: Calçados -->
+        <a href="#" class="group relative overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg">
+            <img src="https://placehold.co/600x400/FEE2E2/333?text=Calçados"
+                 alt="Calçados"
+                 class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-3 text-white">
+                <h3 class="text-lg font-semibold">Calçados</h3>
+            </div>
+        </a>
+
+        <!-- Categoria: Brinquedos -->
+        <a href="#" class="group relative overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg">
+            <img src="https://placehold.co/600x400/E0F2FE/333?text=Brinquedos"
+                 alt="Brinquedos"
+                 class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-3 text-white">
+                <h3 class="text-lg font-semibold">Brinquedos</h3>
+            </div>
+        </a>
+
+        <!-- Categoria: Móveis -->
+        <a href="#" class="group relative overflow-hidden rounded-2xl bg-white shadow transition hover:shadow-lg">
+            <img src="https://placehold.co/600x400/EDE9FE/333?text=Móveis"
+                 alt="Móveis"
+                 class="h-48 w-full object-cover transition duration-300 group-hover:scale-105" />
+            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/60 to-transparent px-4 py-3 text-white">
+                <h3 class="text-lg font-semibold">Móveis</h3>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Seção: CTA para Contato -->
+<section class="relative w-full overflow-hidden bg-primary bg-gradient-to-r to-orange-500 py-8 text-white">
+    <!-- Sticker decorativo na lateral esquerda (parecendo cortado) -->
+    <div class="absolute -left-10 bottom-0 top-0 flex items-center">
+        <img src="https://cdn-icons-png.flaticon.com/512/2275/2275981.png"
+             alt="Sticker megafone"
+             class="pointer-events-none w-32 select-none opacity-90 drop-shadow-xl sm:w-40" />
+    </div>
+
+    <!-- Conteúdo -->
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 text-center sm:flex-row sm:text-left">
+        <div>
+            <h2 class="text-2xl font-extrabold">Fale com a gente 💬</h2>
+            <p class="text-sm sm:text-base">Tem dúvidas ou quer ajudar de outra forma? Estamos prontos para te ouvir.</p>
+        </div>
+        <a href="/contato"
+           class="rounded-full bg-white px-6 py-2 text-sm font-semibold text-primary transition hover:scale-105 hover:bg-gray-100">
+            Entrar em Contato
+        </a>
+    </div>
+</section>
+
+
