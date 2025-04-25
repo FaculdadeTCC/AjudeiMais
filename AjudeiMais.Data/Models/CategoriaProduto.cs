@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace AjudeiMais.Data.Models
 {
-    public class ProdutoImagem
+    public class CategoriaProduto
     {
         [Key]
-        public int ProdutoImagem_ID { get; set; }
-        public string Imagem { get; set; }
+        public int CategoriaProduto_ID { get; set; }
+        public string Nome { get; set; }
+        public string Icone { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
 

@@ -16,7 +16,7 @@ namespace AjudeiMais.Data.Models
         public string Documento { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public string Guide { get; set; }
+        public string GUID { get; set; }
         public string CEP { get; set; }
         public string Rua { get; set; }
         public int Numero { get; set; }
@@ -24,6 +24,8 @@ namespace AjudeiMais.Data.Models
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+        public string Telefone { get; set; }
+        public string Senha { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
     }
