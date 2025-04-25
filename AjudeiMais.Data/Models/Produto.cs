@@ -11,6 +11,13 @@ namespace AjudeiMais.Data.Models
     {
         [Key]
         public int Produto_ID { get; set; }
+        public string Nome { get; set; }
+        public string Descricao { get; set; }
+        public string Condicao { get; set; }
+        public string Validade { get; set; }
+        public int Quantidade { get; set; }
+        public decimal Peso { get; set; }
+        public bool Disponivel { get; set; }
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; }
 
@@ -18,6 +25,6 @@ namespace AjudeiMais.Data.Models
         public Usuario Usuario { get; set; }
 
         public int Categoria_ID { get; set; }
-        public Categoria Categoria { get; set; }
+        public CategoriaProduto CategoriaProduto { get; set; }
     }
 }

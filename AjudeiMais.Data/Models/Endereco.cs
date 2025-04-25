@@ -18,6 +18,8 @@ namespace AjudeiMais.Data.Models
         public string Complemento { get; set; }
         public string Bairro { get; set; }
         public string Cidade { get; set; }
+        public bool Habilitado { get; set; }
+        public bool Excluido { get; set; }
 
         // Para relação 1:N com Instituicao (opcional)
         [ForeignKey("Instituicao")]

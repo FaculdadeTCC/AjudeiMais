@@ -13,6 +13,9 @@ namespace AjudeiMais.Data.Models
         [Key]
         public int PedidoProduto_ID { get; set; }
 
+        public bool Habilitado { get; set; }
+        public bool Excluido { get; set; }
+
         [ForeignKey("Produto")]
         public int Produto_ID { get; set; }
         public Produto Produto { get; set; }
