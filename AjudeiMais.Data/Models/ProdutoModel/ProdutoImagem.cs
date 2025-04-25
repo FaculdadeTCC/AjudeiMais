@@ -6,14 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AjudeiMais.Data.Models
+namespace AjudeiMais.Data.Models.ProdutoModel
 {
-    public class CategoriaProduto
+    public class ProdutoImagem
     {
         [Key]
-        public int CategoriaProduto_ID { get; set; }
-        public string Nome { get; set; }
-        public string Icone { get; set; }
+        public int ProdutoImagem_ID { get; set; }
+        public string Imagem { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
 

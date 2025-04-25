@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AjudeiMais.Data.Models
+namespace AjudeiMais.Data.Models.ChatModel
 {
     public class MensagemChat
     {

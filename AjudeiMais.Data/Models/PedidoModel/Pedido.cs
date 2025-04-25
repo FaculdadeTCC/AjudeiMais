@@ -5,8 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AjudeiMais.Data.Models.InstituicaoModel;
 
-namespace AjudeiMais.Data.Models
+namespace AjudeiMais.Data.Models.PedidoModel
 {
     public class Pedido
     {
@@ -18,8 +19,8 @@ namespace AjudeiMais.Data.Models
         public string Status {  get; set; }
 
         [ForeignKey("Instituicao")]
-        public int instituicao_ID {  get; set; }
-        public Instituicao instituicao { get; set; }
+        public int Instituicao_ID {  get; set; }
+        public Instituicao Instituicao { get; set; }
 
     }
 }

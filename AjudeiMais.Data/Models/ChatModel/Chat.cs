@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+﻿using AjudeiMais.Data.Models.InstituicaoModel;
+using AjudeiMais.Data.Models.UsuarioModel;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -7,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AjudeiMais.Data.Models
+namespace AjudeiMais.Data.Models.ChatModel
 {
     public class Chat
     {

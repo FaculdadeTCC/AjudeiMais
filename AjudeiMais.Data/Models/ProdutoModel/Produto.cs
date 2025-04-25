@@ -5,8 +5,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AjudeiMais.Data.Models.UsuarioModel;
 
-namespace AjudeiMais.Data.Models
+namespace AjudeiMais.Data.Models.ProdutoModel
 {
     public class Produto
     {
