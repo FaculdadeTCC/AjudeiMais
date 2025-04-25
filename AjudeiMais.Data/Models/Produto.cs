@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +22,12 @@ namespace AjudeiMais.Data.Models
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; }
 
+        [ForeignKey("Usuario")]
         public int Usuario_ID { get; set; }
         public Usuario Usuario { get; set; }
 
-        public int Categoria_ID { get; set; }
+        [ForeignKey("CategoriaProduto")]
+        public int CategoriaProduto_ID { get; set; }
         public CategoriaProduto CategoriaProduto { get; set; }
     }
 }

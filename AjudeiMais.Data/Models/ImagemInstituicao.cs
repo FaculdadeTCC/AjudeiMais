@@ -15,11 +15,9 @@ namespace AjudeiMais.Data.Models
         public string Imagem { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
+
         [ForeignKey("Instituicao")]
         public int Instituicao_ID { get; set; }
         public bool Instituicao { get; set; }
-
-
-
     }
 }

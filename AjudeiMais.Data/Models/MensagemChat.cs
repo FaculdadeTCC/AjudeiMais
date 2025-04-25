@@ -16,7 +16,7 @@ namespace AjudeiMais.Data.Models
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public string GUID { get; set; }
-        public string TipoRemente { get; set; }
+        public string TipoRemetente { get; set; }
         public int Remetente_ID { get; set; }
 
         [ForeignKey("Chat")]
