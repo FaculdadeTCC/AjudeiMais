@@ -7,12 +7,15 @@ using System.Threading.Tasks;
 
 namespace AjudeiMais.Data.Models
 {
-    public class Instituicao
+    public class Categoria
     {
         [Key]
-        public int Instituicao_ID { get; set; }
+        public int Categoria_ID { get; set; }
+        public string Nome { get; set; }
+        public bool Habilitado { get; set; }
+        public bool Exluido { get; set; }
+        public string Icone { get; set; }
 
-        public ICollection<Endereco> Enderecos { get; set;}
         public ICollection<InstituicaoCategoria> InstituicaoCategorias { get; set; }
     }
 }

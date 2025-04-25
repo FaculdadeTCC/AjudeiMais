@@ -14,6 +14,11 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         } 
         
+        public IActionResult Cadastro()
+        {
+            return View();
+        }
+
         public IActionResult Anuncios()
         {
             return View();

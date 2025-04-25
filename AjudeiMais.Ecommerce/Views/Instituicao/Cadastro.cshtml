@@ -1,4 +1,4 @@
-﻿@{
+﻿﻿@{
     ViewData["Title"] = "Alterar Dados da empresa";
 }
 
@@ -15,7 +15,7 @@
                 <label class="mb-1 block text-sm font-medium text-gray-700">
                     Nome da Instituição <span class="text-red-500">*</span>
                 </label>
-                <input type="text" name="Nome" placeholder="Ex: Instituto Esperança Solidária" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+                <input type="text" name="Nome" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
             <!-- E-mail -->
@@ -23,7 +23,7 @@
                 <label class="mb-1 block text-sm font-medium text-gray-700">
                     E-mail <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Email" placeholder="contato@institutoesperanca.org.br" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+                <input type="email" name="Email" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
             <!-- Telefone -->
@@ -31,7 +31,7 @@
                 <label class="mb-1 block text-sm font-medium text-gray-700">
                     Telefone <span class="text-red-500">*</span>
                 </label>
-                <input type="tel" name="Telefone" placeholder="(11) 91234-5678" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+                <input type="tel" name="Telefone" placeholder="(xx) xxxxx-xxxx" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
             <!-- Foto(s) -->
@@ -50,7 +50,7 @@
                 </label>
                 <textarea name="Descricao" rows="4"
                           class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300"
-                          placeholder="Atuamos na arrecadação e distribuição de alimentos, roupas e itens de higiene para famílias em situação de vulnerabilidade social. Nossa missão é promover dignidade e inclusão."></textarea>
+                          placeholder="Descreva brevemente os serviços ou missão da instituição..."></textarea>
             </div>
         </div>
 
@@ -61,13 +61,13 @@
             <!-- Senha -->
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">Senha</label>
-                <input type="password" name="Senha" placeholder="Digite uma senha segura" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+                <input type="password" name="Senha" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
             <!-- Confirmar Senha -->
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">Confirmar Senha</label>
-                <input type="password" name="ConfirmarSenha" placeholder="Confirme a senha digitada" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+                <input type="password" name="ConfirmarSenha" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
         </div>
 
@@ -75,12 +75,12 @@
         <div class="mt-4 flex flex-col-reverse gap-4 sm:flex-row sm:justify-between">
             <button type="submit"
                     class="w-full rounded-lg bg-secondary px-6 py-2 text-white transition hover:bg-orange-700 sm:w-auto">
-                Salvar Alterações
+                Cadastrar Instituição
             </button>
 
-            <button type="button"
-                    class="w-full rounded-lg border border-red-500 px-6 py-2 text-red-500 transition hover:bg-red-50 sm:w-auto">
-                Excluir Conta
+            <button type="reset"
+                    class="w-full rounded-lg border border-gray-400 px-6 py-2 text-gray-600 transition hover:bg-gray-100 sm:w-auto">
+                Cancelar
             </button>
         </div>
     </form>
