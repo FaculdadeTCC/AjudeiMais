@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Detalhes do Pedido";
+}
+
+<section class="mx-auto mt-10 max-w-5xl rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
+    <h2 class="mb-6 text-2xl font-bold text-gray-800">Detalhes do Pedido</h2>
+
+    <div class="grid grid-cols-1 gap-6">
+        <div class="rounded-lg bg-white p-4 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800">Número do Pedido: #12345</h3>
+            <p class="text-sm text-gray-600">Status: <span class="font-semibold text-green-500">Concluído</span></p>
+        </div>
+
+        <!-- Detalhes do Produto -->
+        <div class="flex flex-col gap-4 rounded-lg bg-white p-4 shadow-md sm:flex-row sm:items-center">
+            <div class="h-32 w-full max-w-[130px] overflow-hidden rounded-lg sm:h-32">
+                <img src="https://placehold.co/300x300?text=Roupas+Infantis" alt="Imagem do Produto" class="h-full w-full object-cover" />
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-semibold text-gray-800">Roupas Infantis</h3>
+                <p class="text-sm text-gray-600">Categoria: Vestuário</p>
+                <p class="text-sm text-gray-600">Quantidade: 5 unidades</p>
+            </div>
+        </div>
+
+        <!-- Dados do Usuário -->
+        <div class="rounded-lg bg-white p-4 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800">Dados do Usuário</h3>
+            <p class="text-sm text-gray-600">Nome: João Silva</p>
+            <p class="text-sm text-gray-600">E-mail: joaodoe@gmail.com</p>
+            <p class="text-sm text-gray-600">Telefone: (19) 99999-8888</p>
+        </div>
+
+        <!-- Dados da Instituição -->
+        <div class="rounded-lg bg-white p-4 shadow-md">
+            <h3 class="text-lg font-semibold text-gray-800">Dados da Instituição</h3>
+            <p class="text-sm text-gray-600">Nome: Instituição Esperança</p>
+            <p class="text-sm text-gray-600">Localização: Campinas, SP</p>
+            <p class="text-sm text-gray-600">Contato: contato@esperanca.org</p>
+        </div>
+
+        <!-- Ações -->
+        <div class="flex justify-end">
+            <button class="rounded-lg bg-primary px-6 py-2 text-white transition hover:bg-blue-700">
+                Finalizar Pedido
+            </button>
+        </div>
+    </div>
+</section>

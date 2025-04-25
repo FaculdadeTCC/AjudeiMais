@@ -3,15 +3,19 @@ module.exports = {
     content: [
         './Pages/**/*.cshtml',
         './Views/**/*.cshtml',
-        './**/*.cshtml', // <- adiciona isso se estiver usando Layout em outras pastas também
+        './**/*.cshtml',
         './wwwroot/js/**/*.js'
     ],
     theme: {
         extend: {
             colors: {
-                primary: '#F97316',
-                secondary: '#2E2E2E',
-                background: '#F8F9FA',
+                primary: '#6A994E', // Verde suave e acolhedor
+                secondary: '#3D405B', // Azul acinzentado para equilíbrio
+                background: '#F2E9E4', // Bege claro aconchegante
+                highlight: '#A7C957', // Verde claro para chamar atenção
+                accent: '#DDBEA9', // Tom pastel quente para suavidade
+                text: '#2E2E2E', // Cinza escuro para legibilidade
+                hover: '#5A853E', // Cor de hover mais escura
             },
             fontFamily: {
                 sans: ['Poppins', 'sans-serif'],
@@ -19,5 +23,4 @@ module.exports = {
         },
     },
     plugins: [],
-}
-
+};

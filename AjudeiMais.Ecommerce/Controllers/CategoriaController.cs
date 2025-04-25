@@ -2,18 +2,9 @@
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
-    public class InstituicaoController : Controller
+    public class CategoriaController : Controller
     {
         public IActionResult Index()
-        {
-            return View();
-        }
-        public IActionResult Perfil()
-        {
-            return View();
-        }
-
-        public IActionResult Cadastro()
         {
             return View();
         }
@@ -22,5 +13,11 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             return View();
         }
+
+        public IActionResult Adicionar()
+        {
+            return View();
+        }
+
     }
 }
