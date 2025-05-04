@@ -20,6 +20,10 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public int Quantidade { get; set; }
         public decimal Peso { get; set; }
         public bool Disponivel { get; set; }
+        public bool Habilitado { get; set; }
+        public bool Excluido { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime DataUpdate { get; set; }
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; }
 

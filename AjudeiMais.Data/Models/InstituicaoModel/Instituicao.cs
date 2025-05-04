@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AjudeiMais.Data.Models.InstituicaoModel
 {
@@ -19,7 +15,12 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public string Senha { get; set; }
         public string Guid { get; set; }
         public string Avaliacao { get; set; }
-        public ICollection<Endereco> Enderecos { get; set;}
+        public bool Habilitado { get; set; }
+        public bool Excluido { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime DataUpdate { get; set; }
+
+        public ICollection<Endereco> Enderecos { get; set; }
         public ICollection<InstituicaoCategoria> InstituicaoCategorias { get; set; }
     }
 }

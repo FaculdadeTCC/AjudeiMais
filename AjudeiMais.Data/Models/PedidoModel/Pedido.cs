@@ -17,6 +17,8 @@ namespace AjudeiMais.Data.Models.PedidoModel
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public string Status {  get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime DataUpdate { get; set; }
 
         [ForeignKey("Instituicao")]
         public int Instituicao_ID {  get; set; }

@@ -16,9 +16,5 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public string Icone { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
-
-        [ForeignKey("Produto")]
-        public int Produto_ID { get; set; }
-        public Produto Produto { get; set; }
     }
 }

@@ -27,5 +27,7 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Telefone { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
+        public DateTime DataCriacao { get; set; }
+        public DateTime DataUpdate { get; set; }
     }
 }
