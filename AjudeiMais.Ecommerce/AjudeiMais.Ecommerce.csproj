@@ -23,4 +23,9 @@
       <None Include="Views\Categoria\AlterarDados.cshtml" />
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\AjudeiMais.API\AjudeiMais.API.csproj" />
+      <ProjectReference Include="..\AjudeiMais.Data\AjudeiMais.Data.csproj" />
+    </ItemGroup>
+
 </Project>

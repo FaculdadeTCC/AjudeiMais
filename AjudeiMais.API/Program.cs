@@ -7,11 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Registra o ApplicationDbContext com a string de conexão
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionDev-Danilo")));
 
 // Registra os outros serviços
 builder.Services.AddScoped<UsuarioService>();  // Serviço de usuários
 builder.Services.AddScoped<UsuarioRepository>();  // Repositório de usuários
+builder.Services.AddScoped<InstituicaoService>();
+builder.Services.AddScoped<InstituicaoRepository>();
 
 // Adiciona os serviços ao container.
 builder.Services.AddControllers();
