@@ -15,10 +15,10 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public int Produto_ID { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public string Condicao { get; set; }
-        public string Validade { get; set; }
+        public string? Condicao { get; set; }
+        public string? Validade { get; set; }
         public int Quantidade { get; set; }
-        public decimal Peso { get; set; }
+        public decimal? Peso { get; set; }
         public bool Disponivel { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }

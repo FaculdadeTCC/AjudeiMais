@@ -10,8 +10,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Registra os outros serviços
-builder.Services.AddScoped<UsuarioService>();  // Serviço de usuários
-builder.Services.AddScoped<UsuarioRepository>();  // Repositório de usuários
+builder.Services.AddScoped<UsuarioService>(); 
+builder.Services.AddScoped<UsuarioRepository>(); 
+builder.Services.AddScoped<ProdutoService>(); 
+builder.Services.AddScoped<ProdutoRepository>(); 
+builder.Services.AddScoped<ProdutoImagemService>(); 
+builder.Services.AddScoped<ProdutoImagemRepository>();
 
 // Adiciona os serviços ao container.
 builder.Services.AddControllers();
