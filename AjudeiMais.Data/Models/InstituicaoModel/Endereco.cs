@@ -23,7 +23,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
 
         // Para relação 1:N com Instituicao (opcional)
         [ForeignKey("Instituicao")]
-        public int? Instituicao_ID { get; set; }
-        public Instituicao Instituicao { get; set; }
+        public int Instituicao_ID { get; set; }
+        public Instituicao? Instituicao { get; set; }
     }
 }

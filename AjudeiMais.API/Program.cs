@@ -16,6 +16,8 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<ProdutoRepository>(); 
 builder.Services.AddScoped<ProdutoImagemService>(); 
 builder.Services.AddScoped<ProdutoImagemRepository>();
+builder.Services.AddScoped<CategoriaProdutoService>(); 
+builder.Services.AddScoped<CategoriaProdutoRepository>();
 
 // Adiciona os serviços ao container.
 builder.Services.AddControllers();

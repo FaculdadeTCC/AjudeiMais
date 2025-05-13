@@ -8,10 +8,12 @@ namespace AjudeiMais.API.Repositories
     public class ProdutoRepository : IGenericRepository<Produto>
     {
         private readonly ApplicationDbContext _context;
+        private readonly ProdutoImagemRepository _produtoImagemRepository;
 
-        public ProdutoRepository(ApplicationDbContext context)
+        public ProdutoRepository(ApplicationDbContext context, ProdutoImagemRepository produtoImagemRepository)
         {
             _context = context;
+            _produtoImagemRepository = produtoImagemRepository;
         }
 
         public async Task<Produto> GetById(int id)
@@ -48,31 +50,17 @@ namespace AjudeiMais.API.Repositories
                 model.Habilitado = true;
                 model.Excluido = false;
 
-                // Desanexa as imagens do produto para evitar salvar antes
-                var imagens = model.ProdutoImagens?.ToList();
-                model.ProdutoImagens = null; // Desvincula as imagens temporariamente
-
-                // Adiciona o produto ao banco
-                _context.Produto.Add(model);
-                await _context.SaveChangesAsync(); // O ID do produto será gerado aqui após o SaveChangesAsync()
-
-                // Agora que o produto tem um ID, associa as imagens ao produto
-                if (imagens != null && imagens.Any())
+                foreach (var item in model.ProdutoImagens)
                 {
-                    foreach (var img in imagens)
-                    {
-                        img.Produto_ID = model.Produto_ID; // Agora o ID do produto é conhecido
-                        img.Habilitado = true;
-                        img.Excluido = false;
-                    }
-
-                    // Salva as imagens associadas ao produto
-                    _context.ProdutoImagem.AddRange(imagens);
-                    await _context.SaveChangesAsync(); // Salva as imagens no banco
+                    item.Habilitado = true;
+                    item.Excluido = false;
                 }
+
+                _context.Produto.Add(model);
+
+                await _context.SaveChangesAsync(); 
             }
         }
-
 
 
         public async Task Delete(int id)

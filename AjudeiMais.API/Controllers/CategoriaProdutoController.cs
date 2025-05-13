@@ -6,22 +6,22 @@ namespace AjudeiMais.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProdutoController : ControllerBase
+    public class CategoriaProdutoController : ControllerBase
     {
-        private readonly ProdutoService _service;
+        private readonly CategoriaProdutoService _service;
 
-        public ProdutoController(ProdutoService produtoService)
+        public CategoriaProdutoController(CategoriaProdutoService categoriaProdutoService)
         {
-            _service = produtoService;
+            _service = categoriaProdutoService;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetProdutos()
+        public async Task<IActionResult> GetCategorias()
         {
             try
             {
-                var produtos = await _service.GetAll();
-                return Ok(produtos);
+                var categoriaProdutos = await _service.GetAll();
+                return Ok(categoriaProdutos);
             }
             catch (Exception ex)
             {
@@ -30,12 +30,12 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpGet("ativos")]
-        public async Task<IActionResult> GetProdutosAtivos()
+        public async Task<IActionResult> GetCategoriasAtivos()
         {
             try
             {
-                var produtosAtivos = await _service.GetItens();
-                return Ok(produtosAtivos);
+                var categoriaProdutosAtivas = await _service.GetItens();
+                return Ok(categoriaProdutosAtivas);
             }
             catch (Exception ex)
             {
@@ -44,7 +44,7 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromBody] Produto model)
+        public async Task<IActionResult> SaveOrUpdate([FromBody] CategoriaProduto model)
         {
             if (!ModelState.IsValid)
             {
@@ -54,7 +54,7 @@ namespace AjudeiMais.API.Controllers
             try
             {
                 await _service.SaveOrUpdate(model);
-                return CreatedAtAction(nameof(GetProdutos), new { id = model.Produto_ID }, model);
+                return CreatedAtAction(nameof(GetCategorias), new { id = model.CategoriaProduto_ID }, model);
             }
             catch (Exception ex)
             {

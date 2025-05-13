@@ -69,7 +69,7 @@ namespace AjudeiMais.API.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao salvar ou atualizar o produto");
+                _logger.LogError(ex, "Erro ao salvar ou atualizar produto");
                 throw new Exception("Erro ao salvar ou atualizar o produto.");
             }
         }
