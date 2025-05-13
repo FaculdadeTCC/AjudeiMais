@@ -1,3 +1,4 @@
+using AjudeiMais.API.Controllers;
 using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Services;
 using AjudeiMais.Data.Context;
@@ -18,6 +19,15 @@ builder.Services.AddScoped<ProdutoImagemService>();
 builder.Services.AddScoped<ProdutoImagemRepository>();
 builder.Services.AddScoped<CategoriaProdutoService>(); 
 builder.Services.AddScoped<CategoriaProdutoRepository>();
+builder.Services.AddScoped<InstituicaoService>(); 
+builder.Services.AddScoped<InstituicaoRepository>();
+builder.Services.AddScoped<InstituicaoCategoriaService>();
+builder.Services.AddScoped<InstituicaoCategoriaRepository>();
+builder.Services.AddScoped<InstituicaoImagemService>();
+builder.Services.AddScoped<InstituicaoImagemRepository>();
+builder.Services.AddScoped<CategoriaService>();
+builder.Services.AddScoped<CategoriaRepository>();
+
 
 // Adiciona os serviços ao container.
 builder.Services.AddControllers();

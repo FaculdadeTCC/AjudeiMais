@@ -8,9 +8,9 @@ namespace AjudeiMais.API.Controllers
     [ApiController]
     public class InstituicaoCategoriaController : ControllerBase
     {
-        private readonly InstituicaoCattegoriaService _instituicaoCategoriaService;
+        private readonly InstituicaoCategoriaService _instituicaoCategoriaService;
 
-        public InstituicaoCategoriaController(InstituicaoCattegoriaService instituicaoCategoriaService)
+        public InstituicaoCategoriaController(InstituicaoCategoriaService instituicaoCategoriaService)
         {
             _instituicaoCategoriaService = instituicaoCategoriaService;
         }

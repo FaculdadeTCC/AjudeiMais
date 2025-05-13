@@ -1,6 +1,7 @@
 ﻿using AjudeiMais.API.Interfaces;
 using AjudeiMais.Data.Context;
 using AjudeiMais.Data.Models.InstituicaoModel;
+using AjudeiMais.Data.Models.ProdutoModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace AjudeiMais.API.Repositories
@@ -30,7 +31,7 @@ namespace AjudeiMais.API.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -57,7 +58,7 @@ namespace AjudeiMais.API.Repositories
 
                 return instituicao;
             }
-            catch (Exception ex)
+            catch(Exception ex) 
             {
                 throw new Exception(ex.Message);
             }
@@ -80,17 +81,26 @@ namespace AjudeiMais.API.Repositories
         {
             if (model.Instituicao_ID > 0)
             {
+                // Atualiza o produto
                 _context.Instituicao.Update(model);
             }
             else
             {
+                // Criação do novo produto
                 model.DataCriacao = DateTime.Now;
                 model.Habilitado = true;
+                model.Excluido = false;
+
+                foreach (var item in model.instituicaoImagems)
+                {
+                    item.Habilitado = true;
+                    item.Excluido = false;
+                }
 
                 _context.Instituicao.Add(model);
-            }
 
-            await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

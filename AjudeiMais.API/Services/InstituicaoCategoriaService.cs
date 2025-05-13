@@ -3,12 +3,12 @@ using AjudeiMais.Data.Models.InstituicaoModel;
 
 namespace AjudeiMais.API.Services
 {
-    public class InstituicaoCattegoriaService
+    public class InstituicaoCategoriaService
     {
         private readonly InstituicaoCategoriaRepository _repository;
-        private readonly ILogger<InstituicaoCattegoriaService> _logger;
+        private readonly ILogger<InstituicaoCategoriaService> _logger;
 
-        public InstituicaoCattegoriaService(InstituicaoCategoriaRepository repository, ILogger<InstituicaoCattegoriaService> logger)
+        public InstituicaoCategoriaService(InstituicaoCategoriaRepository repository, ILogger<InstituicaoCategoriaService> logger)
         {
             _repository = repository;
             _logger = logger;
