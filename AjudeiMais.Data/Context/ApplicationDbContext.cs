@@ -33,6 +33,7 @@ namespace AjudeiMais.Data.Context
         public DbSet<InstituicaoCategoria> InstituicaoCategoria { get; set; }
         public DbSet<InstituicaoImagem> InstituicaoImagem { get; set; }
         public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<Endereco> Endereco { get; set; }
         //Chat
         public DbSet<MensagemChat> MensagemChat { get; set; }
         public DbSet<Chat> Chat { get; set; }
