@@ -1,8 +1,14 @@
+using AjudeiMais.Ecommerce.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ApiAjudeiMais", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5168/");
+});
+
 
 var app = builder.Build();
 
