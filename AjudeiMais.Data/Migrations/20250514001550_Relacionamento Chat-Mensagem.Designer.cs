@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250514001550_Relacionamento Chat-Mensagem")]
+    partial class RelacionamentoChatMensagem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -561,7 +564,7 @@ namespace AjudeiMais.Data.Migrations
             modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.MensagemChat", b =>
                 {
                     b.HasOne("AjudeiMais.Data.Models.ChatModel.Chat", "Chat")
-                        .WithMany("MensagemChats")
+                        .WithMany()
                         .HasForeignKey("Chat_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -672,11 +675,6 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Produto");
-                });
-
-            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
-                {
-                    b.Navigation("MensagemChats");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Categoria", b =>
