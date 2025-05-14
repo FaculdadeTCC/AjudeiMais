@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Cadastro de Categoria";
+}
+
+<section class="mx-auto mt-10 max-w-4xl rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
+    <h1 class="mb-6 text-2xl font-bold text-gray-800">Cadastro de Categoria</h1>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-8">
+        <!-- Grupo: Dados da Categoria -->
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <h2 class="border-b pb-2 text-lg font-semibold text-gray-700 md:col-span-2">Dados da Categoria</h2>
+
+            <!-- Nome -->
+            <div>
+                <label class="mb-1 block text-sm font-medium text-gray-700">
+                    Nome da Categoria <span class="text-red-500">*</span>
+                </label>
+                <input type="text" name="Nome" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+            </div>
+
+            <!-- Ícone -->
+            <div>
+                <label class="mb-1 block text-sm font-medium text-gray-700">
+                    Ícone da Categoria <span class="text-red-500">*</span>
+                </label>
+                <input type="file" name="Icone" accept="image/*"
+                       class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-orange-700" />
+            </div>
+        </div>
+
+        <!-- Status -->
+        <div>
+            <label class="mb-1 block text-sm font-medium text-gray-700">
+                Status <span class="text-red-500">*</span>
+            </label>
+            <select name="Status" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300">
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+            </select>
+        </div>
+
+        <!-- Botões -->
+        <div class="mt-4 flex flex-col-reverse gap-4 sm:flex-row sm:justify-between">
+            <button type="submit"
+                    class="w-full rounded-lg bg-secondary px-6 py-2 text-white transition hover:bg-orange-700 sm:w-auto">
+                Cadastrar Categoria
+            </button>
+
+            <button type="reset"
+                    class="w-full rounded-lg border border-gray-400 px-6 py-2 text-gray-600 transition hover:bg-gray-100 sm:w-auto">
+                Cancelar
+            </button>
+        </div>
+    </form>
+</section>
