@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250517122754_Campos de Longitude e Latitude na tabela de Usuario")]
+    partial class CamposdeLongitudeeLatitudenatabeladeUsuario
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -514,11 +517,13 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
-                    b.Property<double?>("Latitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double?>("Longitude")
-                        .HasColumnType("float");
+                    b.Property<string>("Longitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
@@ -658,7 +663,7 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
-                        .WithMany("Produtos")
+                        .WithMany()
                         .HasForeignKey("Usuario_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -701,11 +706,6 @@ namespace AjudeiMais.Data.Migrations
             modelBuilder.Entity("AjudeiMais.Data.Models.ProdutoModel.Produto", b =>
                 {
                     b.Navigation("ProdutoImagens");
-                });
-
-            modelBuilder.Entity("AjudeiMais.Data.Models.UsuarioModel.Usuario", b =>
-                {
-                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

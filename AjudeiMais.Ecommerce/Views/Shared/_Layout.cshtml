@@ -1,111 +1,109 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Ajudei+ | @ViewData["Title"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Ajudei+ | @ViewBag.Title</title>
     <meta name="description" content="@ViewData["MetaDescription"]" />
 
-    <!-- Head -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@("@splidejs")/splide@4.1.3/dist/css/splide.min.css">
-    <!-- Estilos -->
-    <link rel="icon" href="~/favicon.ico" />
-    <link rel="stylesheet" href="~/css/output.css" />
-    <link rel="stylesheet" href="~/AjudeiMais.Ecommerce.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-          crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/flowbite@1.6.5/dist/flowbite.min.js"></script>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/global/global.css" asp-append-version="true" /> 
+    <link rel="stylesheet" href="~/css/layout/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/alertas/alertas.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false);
+    <!-- Splide CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/css/splide.min.css" />
+
+    <!-- FontAwesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+    <!-- Google Fonts - Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+
+    <!-- Custom CSS -->
 </head>
-<body class="flex min-h-screen flex-col bg-background font-sans">
+<body>
 
-    <!-- Header fixo -->
-    <header>
-        <nav class="fixed left-0 top-0 z-50 w-full bg-secondary py-4 text-white shadow-md">
-            <div class="container mx-auto flex flex-wrap items-center justify-between px-6">
-                <!-- Logo -->
-                <div class="flex items-center gap-3 text-2xl font-bold">
-                    <div class="flex h-12 w-12 items-center justify-center rounded-full shadow-lg">
-                        <img src="~/img/brand/logo_icon.png" />
-                    </div>
-                    <span class="text-white">Ajudei+</span>
-                </div>
+    <!-- Navbar fixa -->
+    <nav class="navbar navbar-expand-md fixed-top shadow">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" class="rounded-circle shadow-sm" />
+                <span>Ajudei+</span>
+            </a>
 
-                <!-- Botão do menu mobile -->
-                <button data-collapse-toggle="navbar-default" type="button" class="ml-3 inline-flex items-center rounded-lg p-2 text-sm text-white hover:bg-hover focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden" aria-controls="navbar-default" aria-expanded="false">
-                    <span class="sr-only">Open main menu</span>
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-                    </svg>
-                </button>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+                    aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <!-- Menu -->
-                <div class="hidden w-full md:flex md:items-center md:w-auto" id="navbar-default">
-                    <div class="mt-4 flex flex-col gap-6 text-lg md:flex-row md:items-center md:mt-0">
-                        <!-- Barra de pesquisa -->
-                        <div class="relative w-full md:w-64">
-                            <input type="text" placeholder="Buscar itens..." class="w-full rounded-full border border-gray-300 px-5 py-2 text-gray-700 shadow-md focus:outline-none">
-                            <i class="fa fa-search -translate-y-1/2 absolute right-4 top-1/2 transform text-gray-500"></i>
-                        </div>
+            <div class="navbar-collapse collapse" id="navbarMain">
+                <ul class="navbar-nav align-items-center ms-auto gap-3">
+                    <li class="nav-item position-relative" style="min-width: 220px;">
+                        <form class="position-relative w-100" role="search">
+                            <input class="form-control" type="search" placeholder="Buscar itens..." aria-label="Buscar itens" />
+                            <span class="input-group-text"><i class="fa fa-search"></i></span>
+                        </form>
+                    </li>
 
-                        <!-- Categorias -->
-                        <div class="group relative">
-                            <button class="flex items-center gap-1 font-medium text-white transition hover:text-hover">
-                                Categorias <i class="fa fa-chevron-down text-sm"></i>
-                            </button>
-                            <div class="-translate-y-2 absolute left-0 z-50 mt-2 w-56 transform rounded-lg bg-white text-secondary opacity-0 shadow-lg transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Roupas</a>
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Alimentos</a>
-                                <a href="#" class="block border-b border-gray-100 px-5 py-3 hover:bg-hover">Brinquedos</a>
-                                <a href="#" class="block px-5 py-3 hover:bg-hover">Outros</a>
-                            </div>
-                        </div>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="dropdownCategorias" role="button" data-bs-toggle="dropdown"
+                           aria-expanded="false">Categorias</a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
+                            <li><a class="dropdown-item" href="#">Roupas</a></li>
+                            <li><a class="dropdown-item" href="#">Alimentos</a></li>
+                            <li><a class="dropdown-item" href="#">Brinquedos</a></li>
+                            <li><a class="dropdown-item" href="#">Outros</a></li>
+                        </ul>
+                    </li>
 
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Produtos</a>
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Sobre</a>
-                        <a href="#" class="font-medium text-white visited:text-white hover:text-hover">Doar Agora</a>
-
-                        <!-- Usuário -->
-                        <div class="group relative">
-                            <button class="flex items-center gap-2 rounded-full bg-primary px-5 py-2 font-semibold text-white shadow-md transition hover:bg-hover">
-                                <i class="fa fa-user"></i> Entrar
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Produtos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Sobre</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-primary rounded-pill px-4" href="#">
+                            <i class="fa fa-user me-2"></i> Entrar
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-outline-light rounded-pill ms-md-2 px-4" href="#">
+                            Doar Agora
+                        </a>
+                    </li>
+                </ul>
             </div>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-    <!-- Compensação para o header fixo -->
-    <div class="h-20"></div>
-
-    <!-- Conteúdo principal -->
-    <main role="main" class="w-full flex-grow px-6 pb-8 md:px-24">
+    <!-- Main -->
+    <main class="container py-2">
         @RenderBody()
     </main>
 
     <!-- Footer -->
-    <footer class="mt-auto bg-secondary py-4 text-white shadow-inner">
-        <div class="container mx-auto space-y-2 text-center text-sm">
-            <div>
-                &copy; 2025 - AjudeiMais.Ecommerce -
-                <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-white underline hover:text-hover">Privacy</a>
-            </div>
-        </div>
+    <footer>
+        &copy; 2025 - AjudeiMais.Ecommerce -
+        <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-underline text-white">Privacy</a>
     </footer>
 
     <!-- Scripts -->
-    <!-- Final do body -->
-    <script src="https://cdn.jsdelivr.net/npm/@("@splidejs")/splide@4.1.3/dist/js/splide.min.js"></script>
+    <!-- Bootstrap 5 Bundle (Popper + JS) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Splide JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/js/splide.min.js"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            new Splide('.splide', {
-                type   : 'loop',
-                perPage: 1,
-                autoplay: true,
-            }).mount();
+          new Splide('.splide', {
+            type: 'loop',
+            perPage: 1,
+            autoplay: true,
+          }).mount();
         });
     </script>
 

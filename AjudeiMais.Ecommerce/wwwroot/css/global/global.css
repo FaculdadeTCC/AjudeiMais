@@ -1,0 +1,12 @@
+﻿/* Paleta de cores agradáveis e suaves para doação */
+:root {
+    --color-primary: #4a90e2; /* azul claro, confiável */
+    --color-secondary: #2d3748; /* cinza escuro para textos */
+    --color-accent: #f6a623; /* amarelo suave para destaques */
+    --color-bg: #f9fafb; /* fundo bem claro */
+    --color-hover: #e1e8f7; /* hover azul claro */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+}
