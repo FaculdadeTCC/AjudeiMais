@@ -25,8 +25,8 @@ namespace AjudeiMais.Ecommerce.Controllers
         public IActionResult Perfil()
         {
             return View();
-        } 
-        
+        }
+
         public IActionResult Cadastro()
         {
             return View();
@@ -35,23 +35,44 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Cadastro(UsuarioModel model)
         {
-            var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
-
-            var jsonContent = JsonConvert.SerializeObject(model);
-            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-            var response = await httpClient.PostAsync("http://localhost:5168/api/Usuario", content);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                return RedirectToAction("Sucesso");
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+                var jsonContent = JsonConvert.SerializeObject(model);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync("http://localhost:5168/api/Usuario", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar." });
+                }
+                else
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(responseContent);
+                    var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+
+                    if (problemDetails?.Title != null && problemDetails?.Detail != null)
+                    {
+                        return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
+                    }
+                    else if (!string.IsNullOrEmpty(responseContent))
+                    {
+                        return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = $"Erro ao cadastrar: {responseContent}" });
+                    }
+                    else
+                    {
+                        return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar." });
+                    }
+                }
             }
-            else
+            catch (HttpRequestException ex)
             {
-                var responseContent = await response.Content.ReadAsStringAsync();
-                Console.WriteLine(responseContent);  // Imprime o conteúdo para verificar detalhes do erro
-                var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);  // Deserializa a resposta
-                return View(model);  // Retorna a view com o modelo, ou pode exibir a mensagem de erro
+                return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = "Ocorreu um erro inesperado durante o cadastro." });
             }
         }
 

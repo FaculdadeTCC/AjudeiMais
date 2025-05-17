@@ -145,7 +145,7 @@ namespace AjudeiMais.API.Controllers
         /// <param name="lng">Longitude do ponto de referência.</param>
         /// <returns>Lista de produtos próximos.</returns>
         [HttpGet("proximos")]
-        public async Task<IActionResult> GetAnunciosProximos(double lat, double lng)
+        public async Task<IActionResult> GetProdutosProximos(double lat, double lng)
         {
             try
             {

@@ -1,0 +1,59 @@
+﻿@if (Context.Request.Query.ContainsKey("alertType") && Context.Request.Query.ContainsKey("alertMessage"))
+{
+    var alertType = Context.Request.Query["alertType"].ToString();
+    var alertMessage = Context.Request.Query["alertMessage"].ToString();
+    var alertClass = "alert-custom";
+    var alertIcon = "";
+
+    if (alertType == "error")
+    {
+        alertClass += " alert-custom-error";
+        alertIcon = "<i class=\"fas fa-exclamation-circle me-2\"></i>";
+    }
+    else if (alertType == "success")
+    {
+        alertClass += " alert-custom-success";
+        alertIcon = "<i class=\"fas fa-check-circle me-2\"></i>";
+    }
+
+    <div class="@alertClass" role="alert">
+        @Html.Raw(alertIcon) @alertMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alertElement = document.querySelector('.alert-custom');
+
+        if (alertElement) {
+            setTimeout(function() {
+                alertElement.classList.add('show');
+            }, 100);
+
+            setTimeout(function() {
+                alertElement.classList.remove('show');
+                alertElement.classList.add('hide');
+                setTimeout(function() {
+                    if (alertElement.parentNode) {
+                        alertElement.parentNode.removeChild(alertElement);
+                    }
+                }, 500);
+            }, 3000);
+
+            // Adiciona funcionalidade para fechar o alerta manualmente
+            const closeButton = alertElement.querySelector('.btn-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    alertElement.classList.remove('show');
+                    alertElement.classList.add('hide');
+                    setTimeout(function() {
+                        if (alertElement.parentNode) {
+                            alertElement.parentNode.removeChild(alertElement);
+                        }
+                    }, 500);
+                });
+            }
+        }
+    });
+</script>

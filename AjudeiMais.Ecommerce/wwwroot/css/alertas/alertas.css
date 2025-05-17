@@ -1,0 +1,75 @@
+﻿/* Classe base para todos os alertas */
+.alert-custom {
+    padding: 1rem 1.5rem;
+    border-radius: 4px;
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%) scale(0.8);
+    width: 40%;
+    max-width: 600px;
+    min-width: 300px;
+    z-index: 10000000;
+    text-align: center;
+    box-shadow: 3px 3px 6px rgba(50, 48, 49, 0.29);
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out, transform 0.3s ease-out;
+    display: flex; /* Para alinhar ícone e mensagem */
+    align-items: center;
+    justify-content: center;
+    gap: 1rem; /* Espaçamento entre ícone e mensagem */
+}
+
+    .alert-custom.show {
+        opacity: 1;
+        transform: translateX(-50%) scale(1);
+    }
+
+    .alert-custom.hide {
+        opacity: 0;
+        transform: translateX(-50%) scale(0.8);
+        transition: opacity 0.5s ease-in-out, transform 0.3s ease-in;
+    }
+
+/* Estilo específico para erro */
+.alert-custom-error {
+    background-color: #ffebee; /* Vermelho bem claro */
+    border: 1px solid #ef9a9a; /* Borda vermelha clara */
+    color: #d32f2f; /* Texto vermelho */
+}
+
+/* Estilo específico para sucesso */
+.alert-custom-success {
+    background-color: #e8f5e9; /* Verde bem claro */
+    border: 1px solid #a5d6a7; /* Borda verde clara */
+    color: #388e3c; /* Texto verde */
+}
+
+/* Estilos para o botão de fechar (comum a ambos) */
+.alert-custom .btn-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1rem;
+    color: inherit; /* Herda a cor do texto do alerta */
+    opacity: 0.7;
+    transition: opacity 0.2s ease-in-out;
+}
+
+    .alert-custom .btn-close:hover {
+        opacity: 1;
+    }
+
+/* Media query para responsividade */
+@media (max-width: 768px) {
+    .alert-custom {
+        width: 90%;
+        min-width: unset;
+        max-width: unset;
+        padding: 1rem;
+    }
+}
