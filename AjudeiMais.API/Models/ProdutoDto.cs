@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AjudeiMais.Data.Models.ProdutoModel
+namespace AjudeiMais.API.Models
 {
-    public class Produto
+    public class ProdutoDto
     {
-        [Key]
         public int Produto_ID { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
@@ -23,16 +17,9 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime DataUpdate { get; set; }
-
-        public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
-
-        [ForeignKey("Usuario")]
+        public DateTime? DataUpdate { get; set; }
+        public List<IFormFile> Imagens { get; set; } = new List<IFormFile>();
         public int Usuario_ID { get; set; }
-        public Usuario? Usuario { get; set; }
-
-        [ForeignKey("CategoriaProduto")]
         public int CategoriaProduto_ID { get; set; }
-        public CategoriaProduto? CategoriaProduto { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using AjudeiMais.API.Interfaces;
+using AjudeiMais.API.Models;
+using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Context;
 using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
@@ -58,16 +60,9 @@ namespace AjudeiMais.API.Repositories
         public async Task SaveOrUpdate(ProdutoImagem model)
         {
             if (model.ProdutoImagem_ID > 0)
-            {
                 _context.ProdutoImagem.Update(model);
-            }
             else
-            {
-                model.Habilitado = true;
-                model.Excluido = false;
-
                 await _context.ProdutoImagem.AddAsync(model);
-            }
 
             await _context.SaveChangesAsync();
         }

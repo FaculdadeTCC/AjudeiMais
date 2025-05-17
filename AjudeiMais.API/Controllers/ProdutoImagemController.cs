@@ -1,4 +1,5 @@
-﻿using AjudeiMais.API.Services;
+﻿using AjudeiMais.API.Models;
+using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.ProdutoModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -44,7 +45,7 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(ProdutoImagem model)
+        public async Task<IActionResult> SaveOrUpdate(ProdutoImagemUploadDto model)
         {
             try
             {
@@ -91,6 +92,13 @@ namespace AjudeiMais.API.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        [HttpPost("upload-imagem")]
+        public async Task<IActionResult> UploadImagem([FromForm] ProdutoImagemUploadDto dto)
+        {
+            await _service.SaveOrUpdate(dto);
+            return Ok();
         }
     }
 }

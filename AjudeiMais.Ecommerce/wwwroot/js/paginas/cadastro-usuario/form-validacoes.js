@@ -1,6 +1,4 @@
-﻿// form-validacoes.js
-
-function validarEmail(email) {
+﻿function validarEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
 }
@@ -33,4 +31,15 @@ function validarTelefone(telefone) {
     return regexTelefone.test(telefone);
 }
 
-export { validarEmail, validarCPF, validarNome, validarTelefone };
+function validarSenha(senha) {
+    // Requisitos:
+    // - Mínimo 8 caracteres
+    // - Pelo menos uma letra
+    // - Pelo menos um número
+    // - Pelo menos um caractere especial
+
+    const regexSenha = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regexSenha.test(senha);
+}
+
+export { validarEmail, validarCPF, validarNome, validarTelefone, validarSenha };
