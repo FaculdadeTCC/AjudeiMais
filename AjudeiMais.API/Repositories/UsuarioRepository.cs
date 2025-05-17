@@ -21,6 +21,12 @@ namespace AjudeiMais.API.Repositories
             return usuario;
         }
 
+        public async Task<Usuario> GetByEmail(string email)
+        {
+            var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+            return usuario; 
+        }
+
         public async Task<IEnumerable<Usuario>> GetAll()
         {
             return await _context.Usuario.ToListAsync();

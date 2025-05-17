@@ -27,6 +27,9 @@ builder.Services.AddScoped<InstituicaoImagemService>();
 builder.Services.AddScoped<InstituicaoImagemRepository>();
 builder.Services.AddScoped<CategoriaService>();
 builder.Services.AddScoped<CategoriaRepository>();
+builder.Services.AddScoped<EnderecoService>();
+builder.Services.AddScoped<EnderecoRepository>();
+
 
 
 // Adiciona os serviços ao container.
