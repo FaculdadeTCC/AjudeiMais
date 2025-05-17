@@ -60,6 +60,8 @@ if (app.Environment.IsDevelopment())
 // Habilita o CORS antes do middleware de roteamento
 app.UseCors("AllowAll");
 
+app.UseStaticFiles();
+
 // Redirecionamento de HTTPS
 app.UseHttpsRedirection();
 
