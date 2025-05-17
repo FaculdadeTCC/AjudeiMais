@@ -19,7 +19,7 @@ namespace AjudeiMais.API.Services
             try
             {
                 return await _instituicaoRepository.GetById(id);
-                
+
             }
             catch (Exception ex)
             {
@@ -33,7 +33,7 @@ namespace AjudeiMais.API.Services
             try
             {
                 return await _instituicaoRepository.GetAll();
-                
+
             }
             catch (Exception ex)
             {
@@ -62,7 +62,7 @@ namespace AjudeiMais.API.Services
             {
                 model.DataUpdate = DateTime.Now;
                 await _instituicaoRepository.SaveOrUpdate(model);
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao salvar ou atuzalizar institiuição");

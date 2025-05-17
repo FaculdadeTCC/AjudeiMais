@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AjudeiMais.Data.Models.ProdutoModel;
 
 namespace AjudeiMais.Data.Models.UsuarioModel
 {
@@ -16,7 +17,7 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Documento { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public string GUID { get; set; }
+        public string? GUID { get; set; }
         public string CEP { get; set; }
         public string Rua { get; set; }
         public int Numero { get; set; }
@@ -25,9 +26,12 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public string Telefone { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
+        public ICollection<Produto> Produtos { get; set; }
     }
 }

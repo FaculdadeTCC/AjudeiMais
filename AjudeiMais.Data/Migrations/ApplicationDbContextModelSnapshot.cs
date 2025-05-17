@@ -154,7 +154,7 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Instituicao_ID")
+                    b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");
 
                     b.Property<int>("Numero")
@@ -207,10 +207,6 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Imagem")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -239,7 +235,7 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<int>("Categoria_ID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Categoria_ID1")
+                    b.Property<int?>("Categoria_ID1")
                         .HasColumnType("int");
 
                     b.Property<int>("Instituicao_ID")
@@ -277,13 +273,12 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("Instituicao")
-                        .HasColumnType("bit");
-
                     b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");
 
                     b.HasKey("InsituicaoImagem_ID");
+
+                    b.HasIndex("Instituicao_ID");
 
                     b.ToTable("InstituicaoImagem");
                 });
@@ -394,7 +389,6 @@ namespace AjudeiMais.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Condicao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataCriacao")
@@ -420,7 +414,7 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal>("Peso")
+                    b.Property<decimal?>("Peso")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("Quantidade")
@@ -430,7 +424,6 @@ namespace AjudeiMais.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Validade")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Produto_ID");
@@ -516,11 +509,16 @@ namespace AjudeiMais.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("GUID")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
+
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("NomeCompleto")
                         .IsRequired()
@@ -568,7 +566,7 @@ namespace AjudeiMais.Data.Migrations
             modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.MensagemChat", b =>
                 {
                     b.HasOne("AjudeiMais.Data.Models.ChatModel.Chat", "Chat")
-                        .WithMany()
+                        .WithMany("MensagemChats")
                         .HasForeignKey("Chat_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -580,7 +578,9 @@ namespace AjudeiMais.Data.Migrations
                 {
                     b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
                         .WithMany("Enderecos")
-                        .HasForeignKey("Instituicao_ID");
+                        .HasForeignKey("Instituicao_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Instituicao");
                 });
@@ -589,9 +589,7 @@ namespace AjudeiMais.Data.Migrations
                 {
                     b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Categoria", "Categoria")
                         .WithMany("InstituicaoCategorias")
-                        .HasForeignKey("Categoria_ID1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("Categoria_ID1");
 
                     b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
                         .WithMany()
@@ -604,6 +602,17 @@ namespace AjudeiMais.Data.Migrations
                         .HasForeignKey("Instituicao_ID1");
 
                     b.Navigation("Categoria");
+
+                    b.Navigation("Instituicao");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.InstituicaoImagem", b =>
+                {
+                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
+                        .WithMany("instituicaoImagems")
+                        .HasForeignKey("Instituicao_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Instituicao");
                 });
@@ -647,7 +656,7 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
-                        .WithMany()
+                        .WithMany("Produtos")
                         .HasForeignKey("Usuario_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -668,6 +677,11 @@ namespace AjudeiMais.Data.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
+                {
+                    b.Navigation("MensagemChats");
+                });
+
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Categoria", b =>
                 {
                     b.Navigation("InstituicaoCategorias");
@@ -678,11 +692,18 @@ namespace AjudeiMais.Data.Migrations
                     b.Navigation("Enderecos");
 
                     b.Navigation("InstituicaoCategorias");
+
+                    b.Navigation("instituicaoImagems");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.ProdutoModel.Produto", b =>
                 {
                     b.Navigation("ProdutoImagens");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.UsuarioModel.Usuario", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

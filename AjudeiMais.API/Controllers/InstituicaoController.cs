@@ -40,7 +40,7 @@ namespace AjudeiMais.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, ex.Message);
             }
         }
 
@@ -51,14 +51,14 @@ namespace AjudeiMais.API.Controllers
             {
                 await _instituicaoService.SaveOrUpdate(model);
 
-                if (model.Instituicao_ID== 0)
+                if (model.Instituicao_ID == 0)
                 {
                     // Retorna 201 para criação
-                    return CreatedAtAction(nameof(GetInstituicoes), new { id = model.Instituicao_ID }, model);  
+                    return CreatedAtAction(nameof(GetInstituicoes), new { id = model.Instituicao_ID }, model);
                 }
                 else
                 {
-                    return Ok(model); 
+                    return Ok(model);
                 }
             }
             catch (Exception ex)

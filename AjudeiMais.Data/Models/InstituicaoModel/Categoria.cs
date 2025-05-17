@@ -11,6 +11,6 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public bool Excluido { get; set; } 
         public string Icone { get; set; }
 
-        public ICollection<InstituicaoCategoria> InstituicaoCategorias { get; set; }
+        public ICollection<InstituicaoCategoria>? InstituicaoCategorias { get; set; }
     }
 }

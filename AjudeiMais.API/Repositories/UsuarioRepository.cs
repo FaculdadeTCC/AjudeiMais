@@ -21,6 +21,12 @@ namespace AjudeiMais.API.Repositories
             return usuario;
         }
 
+        public async Task<Usuario> GetByEmail(string email)
+        {
+            var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.Email == email);
+            return usuario; 
+        }
+
         public async Task<IEnumerable<Usuario>> GetAll()
         {
             return await _context.Usuario.ToListAsync();
@@ -43,11 +49,12 @@ namespace AjudeiMais.API.Repositories
             {
                 model.DataCriacao = DateTime.Now;
                 model.Habilitado = true;
+                model.GUID = Guid.NewGuid().ToString();
 
                 _context.Usuario.Add(model);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)

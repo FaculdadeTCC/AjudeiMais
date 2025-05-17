@@ -28,6 +28,6 @@ namespace AjudeiMais.Data.Models.ChatModel
         public int Instituicao_ID { get; set; }
         public Instituicao Instituicao { get; set; }
 
-
+        public ICollection<MensagemChat>? MensagemChats { get; set; }
     }
 }

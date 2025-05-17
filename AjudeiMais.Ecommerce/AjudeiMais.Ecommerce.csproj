@@ -24,8 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\AjudeiMais.API\AjudeiMais.API.csproj" />
-      <ProjectReference Include="..\AjudeiMais.Data\AjudeiMais.Data.csproj" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
 </Project>

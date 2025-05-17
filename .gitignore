@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/AjudeiMais.API/Repositories/CategoriaRepository.cs
+/.gitignore
+/AjudeiMais.Ecommerce/wwwroot/css/output.css
+/AjudeiMais.Ecommerce/wwwroot/css/input.output.css

@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace AjudeiMais.Data.Models.InstituicaoModel
 {
@@ -18,6 +19,10 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
 
         [ForeignKey("Instituicao")]
         public int Instituicao_ID { get; set; }
-        public bool Instituicao { get; set; }
+        
+        [JsonIgnore]
+        public Instituicao? Instituicao { get; set; }
+
+
     }
 }

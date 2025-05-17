@@ -9,7 +9,6 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public int Instituicao_ID { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
-        public string Imagem { get; set; }
         public string Telefone { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
@@ -19,8 +18,11 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
+        
+        public ICollection<InstituicaoImagem> instituicaoImagems { get; set; } = new List<InstituicaoImagem>();
 
-        public ICollection<Endereco> Enderecos { get; set; }
-        public ICollection<InstituicaoCategoria> InstituicaoCategorias { get; set; }
+        public ICollection<Endereco>? Enderecos { get; set; }
+        public ICollection<InstituicaoCategoria>? InstituicaoCategorias { get; set; }
+
     }
 }

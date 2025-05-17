@@ -11,9 +11,9 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
 
         // Atributo de chave estrangeira, não precisa de ForeignKey explicitamente se seguir a convenção
         public int Instituicao_ID { get; set; }
-        public Instituicao Instituicao { get; set; }
+        public Instituicao? Instituicao { get; set; }
 
         public int Categoria_ID { get; set; }
-        public Categoria Categoria { get; set; }
+        public Categoria? Categoria { get; set; }
     }
 }
