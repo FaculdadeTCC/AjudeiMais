@@ -49,11 +49,12 @@ namespace AjudeiMais.API.Repositories
             {
                 model.DataCriacao = DateTime.Now;
                 model.Habilitado = true;
+                model.GUID = Guid.NewGuid().ToString();
 
                 _context.Usuario.Add(model);
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int id)

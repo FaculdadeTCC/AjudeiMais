@@ -46,20 +46,18 @@ namespace AjudeiMais.API.Repositories
             else
             {
                 // Criação do novo produto
-                model.DataCriacao = DateTime.Now;
-                model.Habilitado = true;
-                model.Excluido = false;
-
-                foreach (var item in model.ProdutoImagens)
-                {
-                    item.Habilitado = true;
-                    item.Excluido = false;
-                }
-
                 _context.Produto.Add(model);
 
                 await _context.SaveChangesAsync(); 
             }
+        }
+
+        public async Task<IEnumerable<Produto>> GetByUsuarioId(int id)
+        {
+            var produtos = _context.Produto.Where(p => p.Usuario_ID ==  id)
+                .AsQueryable();
+
+            return produtos;
         }
 
 

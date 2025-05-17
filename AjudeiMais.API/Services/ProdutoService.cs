@@ -11,8 +11,8 @@ namespace AjudeiMais.API.Services
         private readonly ILogger<ProdutoService> _logger;
 
         public ProdutoService(
-            ProdutoRepository produtoRepository, 
-            ProdutoImagemRepository produtoImagemRepository, 
+            ProdutoRepository produtoRepository,
+            ProdutoImagemRepository produtoImagemRepository,
             ILogger<ProdutoService> logger)
         {
             _produtoRepository = produtoRepository;
@@ -47,7 +47,7 @@ namespace AjudeiMais.API.Services
                 throw new Exception("Erro ao buscar produtos.");
             }
         }
-        
+
         public async Task<IEnumerable<Produto>> GetItens()
         {
             try
@@ -65,6 +65,23 @@ namespace AjudeiMais.API.Services
         {
             try
             {
+                if (model.Produto_ID == 0)
+                {
+                    model.DataCriacao = DateTime.Now;
+                    model.Habilitado = true;
+                    model.Excluido = false;
+
+                    foreach (var item in model.ProdutoImagens)
+                    {
+                        item.Habilitado = true;
+                        item.Excluido = false;
+                    }
+                }
+                else
+                {
+                    model.DataUpdate = DateTime.Now;
+                }
+
                 await _produtoRepository.SaveOrUpdate(model);
             }
             catch (Exception ex)
@@ -74,7 +91,18 @@ namespace AjudeiMais.API.Services
             }
         }
 
-
+        public async Task<IEnumerable<Produto>> GetByUsuarioId(int id)
+        {
+            try
+            {
+                return await _produtoRepository.GetByUsuarioId(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao excluir o produto com ID {ProdutoId}", id);
+                throw new Exception("Erro ao excluir o produto.");
+            }
+        }
 
         public async Task Delete(int id)
         {

@@ -1,8 +1,14 @@
+using AjudeiMais.Ecommerce.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("ApiAjudeiMais", client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5168/");
+});
+
 
 var app = builder.Build();
 
@@ -24,5 +30,20 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "usuario-cadastrar",
+    pattern: "usuario/cadastrar",
+    defaults: new { controller = "Usuario", action = "Cadastro" });
+
+app.MapControllerRoute(
+    name: "usuario-entrar",
+    pattern: "usuario/entrar",
+    defaults: new { controller = "Usuario", action = "Entrar" });
+
+app.MapControllerRoute(
+    name: "usuario-perfil",
+    pattern: "usuario/perfil/{id}",
+    defaults: new { controller = "Usuario", action = "Entrar" });
 
 app.Run();
