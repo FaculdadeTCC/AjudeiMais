@@ -69,10 +69,12 @@
                     //Se for novo ou se a senha foi alterada
                     if (model.Usuario_ID == 0 || !string.IsNullOrWhiteSpace(model.Senha))
                     {
+                        model.GUID = Guid.NewGuid().ToString();
+                        model.DataCriacao = DateTime.Now;
                         model.Senha = _passwordHasher.HashPassword(model, model.Senha);
                     }
 
-                await _usuarioRepository.SaveOrUpdate(model);
+                    await _usuarioRepository.SaveOrUpdate(model);
                 }
                 catch (Exception ex)
                 {
@@ -99,7 +101,7 @@
                 try 
                 {
                     var usuario = await _usuarioRepository.GetByEmail(email);
-                    if (usuario == null)
+                    if (usuario == null || !usuario.Habilitado || usuario.Excluido  )
                     {
                         return null;
                     }
@@ -117,7 +119,7 @@
                 {
                     _logger.LogError(ex, "Erro ao fazer login do usuario", ex.Message);
                     throw new Exception("Erro ao fazer login do usuario");
-            }   
+                 }   
             }
 
         }

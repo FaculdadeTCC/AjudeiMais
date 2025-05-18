@@ -9,7 +9,7 @@ builder.Services.AddHttpClient("ApiAjudeiMais", client =>
     client.BaseAddress = new Uri("http://localhost:5168/");
 });
 
-
+builder.Services.AddSession();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -20,6 +20,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseSession();
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -45,5 +46,11 @@ app.MapControllerRoute(
     name: "usuario-perfil",
     pattern: "usuario/perfil/{id}",
     defaults: new { controller = "Usuario", action = "Entrar" });
+
+app.MapControllerRoute(
+    name: "usuario-login",
+    pattern: "usuario/login",
+    defaults: new { controller = "Usuario", action = "Entrar" });
+
 
 app.Run();

@@ -1,4 +1,5 @@
-﻿@{
+﻿@model LoginViewModel
+@{
     ViewData["Title"] = "Login";
 }
 
@@ -9,13 +10,21 @@
             <p class="mt-2 text-sm text-gray-600">Acesse sua conta para continuar</p>
         </div>
 
-        <form method="post" class="space-y-6">
+        @if (TempData["AlertMessage"] != null)
+{
+        var alertClass = TempData["AlertType"]?.ToString() == "error" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700";
+        <div class="mb-4 rounded p-3 @alertClass">
+            @TempData["AlertMessage"]
+        </div>
+}
+
+        <form method="post" asp-controller="Home" asp-action="login" class="space-y-6">
             <!-- E-mail -->
             <div>
                 <label class="mb-1 block text-sm font-medium text-gray-700">
                     E-mail <span class="text-red-500">*</span>
                 </label>
-                <input type="email" name="Email" required
+                <input asp-for="Email" type="email" name="Email" required
                     class="w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
@@ -24,7 +33,7 @@
                 <label class="mb-1 block text-sm font-medium text-gray-700">
                     Senha <span class="text-red-500">*</span>
                 </label>
-                <input type="password" name="Senha" required
+                <input asp-for="Senha" type="password" name="Senha" required
                     class="w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
             </div>
 
@@ -40,7 +49,6 @@
                 </label>
             </div>
     
-
             <!-- Botão de Login -->
             <button type="submit"
                 class="w-full rounded-lg bg-secondary px-6 py-2 text-white transition hover:bg-orange-700">
@@ -53,5 +61,6 @@
                 <a href="/Cadastro" class="font-semibold text-orange-600 hover:underline">Cadastre-se</a>
             </p>
         </form>
-    </section>
+    </section
+
 </div>

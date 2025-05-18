@@ -13,6 +13,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public string Email { get; set; }
         public string Senha { get; set; }
         public string Guid { get; set; }
+        public string Role { get; set; }
         public string Avaliacao { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }

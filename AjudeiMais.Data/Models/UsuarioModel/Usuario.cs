@@ -18,6 +18,7 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Email { get; set; }
         public string Senha { get; set; }
         public string? GUID { get; set; }
+        public string Role { get; set; }
         public string CEP { get; set; }
         public string Rua { get; set; }
         public int Numero { get; set; }
@@ -32,6 +33,6 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
-        public ICollection<Produto> Produtos { get; set; }
+        public ICollection<Produto>? Produtos { get; set; }
     }
 }

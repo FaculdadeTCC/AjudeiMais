@@ -2,6 +2,7 @@
 using AjudeiMais.Data.Models.ProdutoModel;
 using Microsoft.AspNetCore.Mvc;
 using AjudeiMais.API.Tools;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AjudeiMais.API.Controllers
 {
@@ -59,6 +60,9 @@ namespace AjudeiMais.API.Controllers
         /// </summary>
         /// <param name="model">Dados do produto.</param>
         /// <returns>Produto criado ou atualizado.</returns>
+        /// 
+
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdate([FromBody] Produto model)
         {

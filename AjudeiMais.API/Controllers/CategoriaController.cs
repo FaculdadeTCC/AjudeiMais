@@ -1,5 +1,6 @@
 ﻿using AjudeiMais.API.Services;  
 using AjudeiMais.Data.Models.InstituicaoModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AjudeiMais.API.Controllers
@@ -42,6 +43,7 @@ namespace AjudeiMais.API.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdate(Categoria model)
