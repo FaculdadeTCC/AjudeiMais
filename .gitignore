@@ -365,3 +365,5 @@ FodyWeavers.xsd
 /.gitignore
 /AjudeiMais.Ecommerce/wwwroot/css/output.css
 /AjudeiMais.Ecommerce/wwwroot/css/input.output.css
+/AjudeiMais.API/Services/UsuarioService.cs
+/AjudeiMais.sln

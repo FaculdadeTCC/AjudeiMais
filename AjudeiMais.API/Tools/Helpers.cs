@@ -1,10 +1,15 @@
-﻿namespace AjudeiMais.API.Tools
+﻿using Microsoft.AspNetCore.WebUtilities;
+using SixLabors.ImageSharp.Formats.Webp;
+using static System.Net.Mime.MediaTypeNames;
+
+namespace AjudeiMais.API.Tools
 {
     /// <summary>
     /// Classe utilitária com métodos auxiliares diversos.
     /// </summary>
     public static class Helpers
     {
+        #region Calcular Distancia
         /// <summary>
         /// Calcula a distância entre dois pontos geográficos em quilômetros utilizando a fórmula de Haversine.
         /// </summary>
@@ -33,5 +38,45 @@
         /// <param name="angle">Ângulo em graus.</param>
         /// <returns>Ângulo convertido em radianos.</returns>
         private static double ToRadians(double angle) => angle * Math.PI / 180;
+        #endregion
+
+        #region Imagens
+        public static async Task<string> SalvarImagemComoWebpAsync(
+            IFormFile imagem,
+            string[] pastas,        // Exemplo: new[] { "images", "profile", "usuario", usuarioGuid.ToString() }
+            int qualidade = 100      // Qualidade da imagem WebP entre 0 e 100
+        )
+        {
+            if (imagem == null || imagem.Length == 0)
+                return null;
+
+            // Caminho relativo (salvo no banco) e caminho físico
+            string pastaRelativa = Path.Combine(pastas);
+            string caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pastaRelativa);
+
+            // Garante que a pasta exista
+            Directory.CreateDirectory(caminhoPasta);
+
+            // Nome do arquivo gerado
+            string nomeArquivo = Guid.NewGuid().ToString() + ".webp";
+            string caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
+
+            // Conversão para WebP usando ImageSharp
+            using (var streamEntrada = imagem.OpenReadStream())
+            using (var imagemSharp = await SixLabors.ImageSharp.Image.LoadAsync(streamEntrada))
+            {
+                await imagemSharp.SaveAsync(caminhoCompleto, new WebpEncoder
+                {
+                    Quality = qualidade,
+                });
+            }
+
+            // Retorna o caminho relativo com separadores de URL
+            string caminhoRelativo = Path.Combine(pastaRelativa, nomeArquivo).Replace("\\", "/");
+            return caminhoRelativo;
+        }
+
+        #endregion
+
     }
 }

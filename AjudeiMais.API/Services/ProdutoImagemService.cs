@@ -1,4 +1,6 @@
-﻿using AjudeiMais.API.Repositories;
+﻿using AjudeiMais.API.Models;
+using AjudeiMais.API.Repositories;
+using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.ProdutoModel;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -57,19 +59,6 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task SaveOrUpdate(ProdutoImagem model)
-        {
-            try
-            {
-                await _produtoImagemRepository.SaveOrUpdate(model);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Erro ao salvar ou atualizar o produto");
-                throw new Exception("Erro ao salvar ou atualizar o produto.");
-            }
-        }
-
         public async Task Delete(int id)
         {
             try
@@ -87,5 +76,40 @@ namespace AjudeiMais.API.Services
         {
             return await _produtoImagemRepository.GetImagensPorProduto(produtoId);
         }
+
+
+        public async Task SaveOrUpdate(ProdutoImagemUploadDto dto)
+        {
+            ProdutoImagem entidade;
+
+            if (dto.ProdutoImagem_ID > 0)
+            {
+                entidade = await _produtoImagemRepository.GetById(dto.ProdutoImagem_ID);
+                if (entidade == null)
+                    throw new Exception("ProdutoImagem não encontrada");
+            }
+            else
+            {
+                entidade = new ProdutoImagem
+                {
+                    Habilitado = true,
+                    Excluido = false,
+                    Produto_ID = dto.ProdutoId
+                };
+            }
+
+            if (dto.Imagem != null && dto.Imagem.Length > 0)
+            {
+                var caminho = await Helpers.SalvarImagemComoWebpAsync(
+                    dto.Imagem,
+                    new[] { "images", "products", dto.ProdutoId.ToString() }
+                );
+
+                entidade.Imagem = caminho;
+            }
+
+            await _produtoImagemRepository.SaveOrUpdate(entidade);
+        }
     }
 }
+

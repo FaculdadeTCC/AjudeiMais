@@ -1,18 +1,16 @@
-﻿// form-tabs.js
+﻿import { validarEmail, validarCPF, validarNome, validarTelefone, validarSenha } from './form-validacoes.js';
 
-import { validarEmail, validarCPF, validarNome, validarTelefone } from './form-validacoes.js'; // Importando as funções de validação
-
-// --- Seleção de Elementos do DOM ---
-const cpfInput = document.querySelector('#documento'); // Use o ID correto do seu input de CPF
-const telefoneInput = document.querySelector('#telefone'); // Use o ID correto do seu input de telefone
+const cpfInput = document.querySelector('#documento');
+const telefoneInput = document.querySelector('#telefone');
 const steps = Array.from(document.querySelectorAll(".form-step"));
 const indicators = Array.from(document.querySelectorAll(".step"));
 const progressBar = document.querySelector(".progress-bar");
 const btnProximo = document.getElementById("btnProximo");
 const btnVoltar = document.getElementById("btnVoltar");
 const btnFinalizar = document.getElementById("btnFinalizar");
+const senhaInput = document.getElementById("senha");
+const formularioCadastro = document.getElementById("formularioCadastro");
 
-// --- Funções de Controle dos Tabs (Steps) ---
 let currentStep = 0;
 
 function updateFormSteps() {
@@ -52,7 +50,6 @@ function validarCamposEtapaAtual() {
             break;
         }
 
-        // Validação específica para a primeira etapa (Dados Pessoais)
         if (currentStep === 0) {
             if (campo.id === "nomeCompleto") {
                 if (!validarNome(valor)) {
@@ -85,10 +82,8 @@ function validarCamposEtapaAtual() {
                     break;
                 }
             }
-        }
-        // Validação específica para a segunda etapa (Endereço)
-        else if (currentStep === 1) {
-            if (campo.id === "cep" && valor.length < 8) { // Adicionando uma validação mínima para o CEP (8 dígitos)
+        } else if (currentStep === 1) {
+            if (campo.id === "cep" && valor.length < 8) {
                 exibirMensagemErro(campo, "CEP inválido. Formato esperado: 00000-000");
                 valido = false;
                 break;
@@ -113,8 +108,13 @@ function validarCamposEtapaAtual() {
                 valido = false;
                 break;
             }
+        } else if (currentStep === 2) {
+            if (campo.id === "senha" && !validarSenha(valor)) {
+                exibirMensagemErro(campo, "A senha deve ter pelo menos 8 caracteres, uma letra, um número e um caractere especial.");
+                valido = false;
+                return;
+            }
         }
-        // Adicione mais condições 'else if (currentStep === ...)' para outras etapas se necessário
     }
 
     return valido;
@@ -136,11 +136,24 @@ function voltarEtapa() {
     }
 }
 
-// --- Event Listeners ---
 btnProximo.addEventListener("click", avancarEtapa);
 btnVoltar.addEventListener("click", voltarEtapa);
 
-// --- Inicialização ---
+btnFinalizar.addEventListener("click", (event) => {
+    event.preventDefault();
+
+    const senhaValor = senhaInput.value.trim();
+
+    if (!validarSenha(senhaValor)) {
+        exibirMensagemErro(senhaInput, "A senha deve ter pelo menos 8 caracteres, uma letra, um número e um caractere especial.");
+        return;
+    }
+
+    if (validarCamposEtapaAtual()) {
+        formularioCadastro.submit();
+    }
+});
+
 document.addEventListener("DOMContentLoaded", () => {
     updateFormSteps();
 });

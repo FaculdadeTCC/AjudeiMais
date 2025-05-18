@@ -2,7 +2,7 @@
 using AjudeiMais.Data.Models.ProdutoModel;
 using Microsoft.AspNetCore.Mvc;
 using AjudeiMais.API.Tools;
-using Microsoft.AspNetCore.Authorization;
+using AjudeiMais.API.Models;
 
 namespace AjudeiMais.API.Controllers
 {
@@ -60,11 +60,8 @@ namespace AjudeiMais.API.Controllers
         /// </summary>
         /// <param name="model">Dados do produto.</param>
         /// <returns>Produto criado ou atualizado.</returns>
-        /// 
-
-        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromBody] Produto model)
+        public async Task<IActionResult> SaveOrUpdate([FromForm] ProdutoDto model)
         {
             if (!ModelState.IsValid)
             {
@@ -73,12 +70,13 @@ namespace AjudeiMais.API.Controllers
 
             try
             {
-                await _service.SaveOrUpdate(model);
+                await _service.SaveOrUpdate(model, model.Imagens);
+
                 return CreatedAtAction(nameof(GetById), new { id = model.Produto_ID }, model);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, ex.InnerException?.Message ?? ex.Message);
             }
         }
 
@@ -153,36 +151,7 @@ namespace AjudeiMais.API.Controllers
         {
             try
             {
-                var todosUsuarios = await _usuarioService.GetItens();
-                // Filtra usuários com latitude, longitude e que tenham produtos não excluídos
-                var usuariosComProdutos = todosUsuarios
-                    .Where(u => u.Latitude != null && u.Longitude != null)
-                    .Where(u => u.Produtos != null && u.Produtos.Any(p => !p.Excluido))
-                    .ToList();
-
-                var raioBuscaKm = 30;
-
-                // Filtra os usuários que estão dentro do raio de busca definido (em km) a partir da localização fornecida (lat, lng).
-                // Para cada usuário, calcula a distância entre o ponto de referência e a localização do usuário,
-                // incluindo-o na lista se a distância for menor ou igual ao raioBuscaKm.
-                var usuariosProximos = usuariosComProdutos
-                    .Where(u =>
-                        // Calcula a distância em km entre a localização fornecida (lat, lng) 
-                        // e a localização do usuário (u.Latitude, u.Longitude).
-                        Helpers.CalcularDistancia(lat, lng, (double)u.Latitude, (double)u.Longitude) <= raioBuscaKm
-                    )
-                    .ToList();
-
-
-                var produtosProximos = new List<Produto>();
-
-                // Seleciona os produtos dos usuários próximos
-                foreach (var usuario in usuariosProximos)
-                {
-                    var produtosDoUsuario = await _service.GetByUsuarioId(usuario.Usuario_ID);
-                    produtosProximos.AddRange(produtosDoUsuario);
-                }
-
+                var produtosProximos = await _service.GetProdutosProximos(lat, lng);
                 return Ok(produtosProximos);
             }
             catch (Exception ex)

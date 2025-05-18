@@ -35,6 +35,9 @@ builder.Services.AddScoped<ChatRepository>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MensagemChatRepository>();
 builder.Services.AddScoped<MensagemChatService>();
+builder.Services.AddScoped<NominatimService>();
+
+builder.Services.AddHttpClient();
 
 // Adiciona autenticação JWT
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -138,6 +141,8 @@ app.UseAuthorization();
 
 // Habilita o CORS antes do middleware de roteamento
 app.UseCors("AllowAll");
+
+app.UseStaticFiles();
 
 // Redirecionamento de HTTPS
 app.UseHttpsRedirection();
