@@ -26,12 +26,12 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public string Telefone { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
-        public ICollection<Produto> Produtos { get; set; }
+        public ICollection<Produto>? Produtos { get; set; }
     }
 }

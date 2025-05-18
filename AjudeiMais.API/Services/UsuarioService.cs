@@ -7,11 +7,15 @@ namespace AjudeiMais.API.Services
     public class UsuarioService
     {
         private readonly UsuarioRepository _usuarioRepository;
+        private readonly NominatimService _nominatimService;
         private readonly ILogger<UsuarioService> _logger;
 
-        public UsuarioService(UsuarioRepository usuarioRepository, ILogger<UsuarioService> logger)
+        public UsuarioService(UsuarioRepository usuarioRepository,
+            NominatimService nominatimService,
+            ILogger<UsuarioService> logger)
         {
             _usuarioRepository = usuarioRepository;
+            _nominatimService = nominatimService;
             _logger = logger;
         }
 
@@ -60,7 +64,12 @@ namespace AjudeiMais.API.Services
         {
             try
             {
+                var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(model.CEP, model.Cidade);
+
+                model.Latitude = coordenadas.Latitude;
+                model.Longitude = coordenadas.Longitude;
                 model.DataUpdate = DateTime.Now;
+
                 await _usuarioRepository.SaveOrUpdate(model);
             }
             catch (Exception ex)

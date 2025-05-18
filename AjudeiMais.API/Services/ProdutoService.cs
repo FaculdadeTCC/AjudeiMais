@@ -1,4 +1,5 @@
-﻿using AjudeiMais.API.Models;
+﻿using System.Globalization;
+using AjudeiMais.API.Models;
 using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.ProdutoModel;
@@ -172,8 +173,8 @@ namespace AjudeiMais.API.Services
             var produtosProximos = new List<Produto>();
 
             var usuariosProximos = todosUsuarios
-                .Where(u => u.Latitude.HasValue && u.Longitude.HasValue && u.Produtos != null && u.Produtos.Any(p => !p.Excluido))
-                .Where(u => Helpers.CalcularDistancia(lat, lng, u.Latitude.Value, u.Longitude.Value) <= raioBuscaKm)
+                .Where(u => !string.IsNullOrEmpty(u.Latitude) && !string.IsNullOrEmpty(u.Longitude) && u.Produtos != null && u.Produtos.Any(p => !p.Excluido))
+                .Where(u => Helpers.CalcularDistancia(lat, lng, double.Parse(u.Latitude, CultureInfo.InvariantCulture), double.Parse(u.Longitude, CultureInfo.InvariantCulture)) <= raioBuscaKm)
                 .ToList();
 
             foreach (var usuario in usuariosProximos)

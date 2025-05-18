@@ -31,6 +31,9 @@ builder.Services.AddScoped<ChatRepository>();
 builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MensagemChatRepository>();
 builder.Services.AddScoped<MensagemChatService>();
+builder.Services.AddScoped<NominatimService>();
+
+builder.Services.AddHttpClient();
 
 // Configuração de CORS
 builder.Services.AddCors(options =>

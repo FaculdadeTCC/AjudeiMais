@@ -1,0 +1,73 @@
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
+
+#nullable disable
+
+namespace AjudeiMais.Data.Migrations
+{
+    /// <inheritdoc />
+    public partial class CamposTabeladeUsuario : Migration
+    {
+        /// <inheritdoc />
+        protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<string>(
+                name: "Longitude",
+                table: "Usuario",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(double),
+                oldType: "float",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Latitude",
+                table: "Usuario",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(double),
+                oldType: "float",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<DateTime>(
+                name: "Validade",
+                table: "Produto",
+                type: "datetime2",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+        }
+
+        /// <inheritdoc />
+        protected override void Down(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.AlterColumn<double>(
+                name: "Longitude",
+                table: "Usuario",
+                type: "float",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<double>(
+                name: "Latitude",
+                table: "Usuario",
+                type: "float",
+                nullable: true,
+                oldClrType: typeof(string),
+                oldType: "nvarchar(max)",
+                oldNullable: true);
+
+            migrationBuilder.AlterColumn<string>(
+                name: "Validade",
+                table: "Produto",
+                type: "nvarchar(max)",
+                nullable: true,
+                oldClrType: typeof(DateTime),
+                oldType: "datetime2",
+                oldNullable: true);
+        }
+    }
+}
