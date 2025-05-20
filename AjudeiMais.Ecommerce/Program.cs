@@ -50,7 +50,7 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "usuario-login",
     pattern: "usuario/login",
-    defaults: new { controller = "Usuario", action = "Entrar" });
+    defaults: new { controller = "Home", action = "Login" });
 
 
 app.Run();

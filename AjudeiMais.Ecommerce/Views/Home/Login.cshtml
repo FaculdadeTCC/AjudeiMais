@@ -1,66 +1,50 @@
 ﻿@model LoginViewModel
 @{
     ViewData["Title"] = "Login";
+    Layout = "_Layout";
 }
 
-<div class="flex items-center justify-center min-h-screen w-full bg-gray-100">
-    <section class="mx-auto max-w-md rounded-xl bg-white p-8 shadow-lg ring-1 ring-gray-200">
-        <div class="mb-6 text-center">
-            <h1 class="text-2xl font-bold text-gray-800">Entrar na Plataforma</h1>
-            <p class="mt-2 text-sm text-gray-600">Acesse sua conta para continuar</p>
+<div class="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
+        <div class="mb-4 text-center">
+            <h1 class="h4 fw-bold text-dark">Entrar na Plataforma</h1>
+            <p class="text-muted small">Acesse sua conta para continuar</p>
         </div>
 
         @if (TempData["AlertMessage"] != null)
-{
-        var alertClass = TempData["AlertType"]?.ToString() == "error" ? "bg-red-100 text-red-700" : "bg-green-100 text-green-700";
-        <div class="mb-4 rounded p-3 @alertClass">
-            @TempData["AlertMessage"]
-        </div>
-}
+        {
+            var alertClass = TempData["AlertType"]?.ToString() == "error" ? "alert-danger" : "alert-success";
+            <div class="alert @alertClass">
+                @TempData["AlertMessage"]
+            </div>
+        }
 
-        <form method="post" asp-controller="Home" asp-action="login" class="space-y-6">
-            <!-- E-mail -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    E-mail <span class="text-red-500">*</span>
-                </label>
-                <input asp-for="Email" type="email" name="Email" required
-                    class="w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+        <form method="post" asp-controller="Home" asp-action="Login">
+            <div class="mb-3">
+                <label class="form-label">E-mail <span class="text-danger">*</span></label>
+                <input asp-for="Email" type="email" name="Email" class="form-control" required />
             </div>
 
-            <!-- Senha -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Senha <span class="text-red-500">*</span>
-                </label>
-                <input asp-for="Senha" type="password" name="Senha" required
-                    class="w-full rounded-md border border-gray-300 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
+            <div class="mb-3">
+                <label class="form-label">Senha <span class="text-danger">*</span></label>
+                <input asp-for="Senha" type="password" name="Senha" class="form-control" required />
             </div>
 
-            <!-- Lembrar de mim e Esqueci minha senha -->
-            <div class="flex flex-col items-start gap-2 text-sm text-gray-600">
-                <label class="flex items-center gap-2">
-                    <input type="checkbox" name="Lembrar"
-                           class="h-4 w-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500" />
-                    <span>Lembrar de mim</span>
-                </label>
-                <label class="flex items-center gap-2">
-                    <a href="#" class="text-orange-600 hover:underline">Esqueci minha senha</a>
-                </label>
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="Lembrar" class="form-check-input" id="lembrarCheck" />
+                <label class="form-check-label" for="lembrarCheck">Lembrar de mim</label>
             </div>
-    
-            <!-- Botão de Login -->
-            <button type="submit"
-                class="w-full rounded-lg bg-secondary px-6 py-2 text-white transition hover:bg-orange-700">
-                Entrar
-            </button>
 
-            <!-- Link para Cadastro -->
-            <p class="mt-4 text-center text-sm text-gray-600">
+            <div class="mb-3">
+                <a href="#" class="text-decoration-none text-primary">Esqueci minha senha</a>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+
+            <p class="mt-3 text-center small text-muted">
                 Ainda não tem uma conta?
-                <a href="/Cadastro" class="font-semibold text-orange-600 hover:underline">Cadastre-se</a>
+                <a href="/Cadastro" class="text-decoration-none fw-semibold text-primary">Cadastre-se</a>
             </p>
         </form>
-    </section
-
+    </div>
 </div>

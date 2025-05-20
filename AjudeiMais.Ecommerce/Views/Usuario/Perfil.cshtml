@@ -1,95 +1,66 @@
 ﻿@{
     ViewData["Title"] = "Luiz - Perfil";
 }
-
-<section class="mx-auto mt-10 max-w-5xl rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
+<section class="container my-5">
     <!-- Topo do Perfil -->
-    <div class="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+    <div class="row align-items-start mb-5">
         <!-- Foto do usuário -->
-        <div class="relative">
-            <img src="https://placehold.co/150x150" alt="Foto do usuário"
-                 class="h-36 w-36 rounded-full object-cover ring-2 ring-primary" />
+        <div class="col-auto position-relative text-center">
+            <img src="https://placehold.co/150x150" class="rounded-circle border border-primary border-2" alt="Foto do usuário" width="150" height="150">
             <!-- Selo de verificado -->
-            <span class="absolute -bottom-2 -right-2 inline-flex items-center justify-center rounded-full bg-green-500 p-1 shadow-md ring-2 ring-white">
-                <i class="fas fa-check text-xs text-white"></i>
+            <span class="position-absolute translate-middle p-2 bg-success rounded-circle border border-light bottom-0 end-0">
+                <i class="fas fa-check text-white small"></i>
             </span>
         </div>
 
         <!-- Informações principais -->
-        <div class="flex-1">
-            <h2 class="flex items-center gap-2 text-2xl font-bold text-gray-800">
-                João Silva
-            </h2>
-            <p class="text-sm text-gray-600">Belo Horizonte, MG</p>
+        <div class="col">
+            <h2 class="d-flex align-items-center gap-2 fw-bold text-dark">João Silva</h2>
+            <p class="text-muted mb-2">Belo Horizonte, MG</p>
 
             <!-- Avaliação -->
-            <div class="mt-2 flex items-center gap-1 text-yellow-500">
+            <div class="d-flex align-items-center text-warning mb-3">
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star"></i>
                 <i class="fas fa-star-half-alt"></i>
-                <span class="ml-2 text-sm text-gray-600">(4.5 de 5)</span>
+                <span class="ms-2 text-muted small">(4.5 de 5)</span>
             </div>
 
-            <!-- Botão de mensagem -->
-            <a href="#"
-               class="mt-4 inline-block rounded-full bg-secondary px-6 py-2 text-sm font-semibold text-white shadow hover:bg-hover">
-                Enviar Mensagem
-            </a>
+            <a href="#" class="btn btn-success rounded-pill">Enviar Mensagem</a>
         </div>
     </div>
 
-    <!-- Produtos anunciados -->
-    <div class="mt-10">
-        <h3 class="mb-4 text-lg font-semibold text-gray-800">Produtos Anunciados</h3>
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+    <!-- Produtos Anunciados -->
+    <div>
+        <h3 class="mb-4 h5 fw-semibold">Produtos Anunciados</h3>
+        <div class="row g-4">
             @for (int i = 0; i < 6; i++)
             {
                 bool doado = i % 3 == 0;
-                string categoria = "Roupas"; // Exemplo fixo
+                string categoria = "Roupas";
 
-                <div class="flex flex-col overflow-hidden rounded-lg bg-white shadow transition duration-300 hover:shadow-lg">
-                    <div class="relative">
-                        <img src="https://placehold.co/400x400?text=Camisa+Masculina"
-                             class="@(doado ? "opacity-50" : "opacity-100") h-52 w-full object-cover"
-                             alt="Imagem do Produto" />
-
-                        @if (doado)
-                        {
-                            <span class="absolute left-2 top-2 inline-block rounded-full bg-gray-300 px-3 py-1 text-xs font-semibold text-gray-800 shadow">
-                                Doado
-                            </span>
-                        }
-                        else
-                        {
-                            <span class="absolute left-2 top-2 inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-800 shadow">
-                                Bom
-                            </span>
-                        }
-                    </div>
-                    <div class="flex flex-grow flex-col p-4">
-                        <!-- Categoria como título acima do nome -->
-                        <p class="mb-1 text-sm font-semibold uppercase text-primary">@categoria</p>
-
-                        <h5 class="text-text-primary mb-1 text-lg font-semibold">Camisa Masculina M</h5>
-
-                        <p class="text-sm text-gray-600">
-                            <strong>Doador:</strong>
-                            <a href="#" class="hover:underline">João Silva</a>
-                        </p>
-                        <p class="text-sm text-gray-600">
-                            <strong>Quantidade:</strong> 3 unidades
-                        </p>
-                        <p class="mb-4 text-sm text-gray-600">
-                            <strong>Localização:</strong> Belo Horizonte, MG
-                        </p>
-
-                        <div class="mt-auto flex flex-col gap-2">
-                            <a href="#"
-                               class="rounded bg-secondary px-4 py-2 text-center text-sm text-white transition duration-200 hover:bg-green-700 @(doado ? "opacity-50 pointer-events-none" : "")">
-                                Ver Detalhes
-                            </a>
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 shadow-sm">
+                        <div class="position-relative">
+                            <img src="https://placehold.co/400x400?text=Camisa+Masculina" class="card-img-top @(doado ? "opacity-50" : "")" alt="Imagem do Produto">
+                            @if (doado)
+                            {
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-secondary text-dark">Doado</span>
+                            }
+                            else
+                            {
+                                <span class="position-absolute top-0 start-0 m-2 badge bg-success text-light">Bom</span>
+                            }
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <p class="text-uppercase small fw-bold text-primary mb-1">@categoria</p>
+                            <h5 class="card-title mb-1">Camisa Masculina M</h5>
+                            <p class="card-text small mb-1"><strong>Doador:</strong> <a href="#" class="text-decoration-underline">João Silva</a></p>
+                            <p class="card-text small mb-1"><strong>Quantidade:</strong> 3 unidades</p>
+                            <p class="card-text small mb-3"><strong>Localização:</strong> Belo Horizonte, MG</p>
+                            <a href="#" class="btn btn-success mt-auto @(doado ? "disabled opacity-50" : "")">Ver Detalhes</a>
                         </div>
                     </div>
                 </div>
@@ -97,20 +68,16 @@
         </div>
 
         <!-- Paginação visual -->
-        <div class="mt-8 flex justify-center gap-2">
-            <button class="rounded px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200">
-                &laquo; Anterior
-            </button>
-
-            <button class="rounded bg-primary px-3 py-1 text-sm font-medium text-white">1</button>
-            <button class="rounded px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200">2</button>
-            <button class="rounded px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200">3</button>
-            <span class="px-2 py-1 text-sm text-gray-500">...</span>
-            <button class="rounded px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200">10</button>
-
-            <button class="rounded px-3 py-1 text-sm font-medium text-gray-600 hover:bg-gray-200">
-                Próxima &raquo;
-            </button>
-        </div>
+        <nav class="mt-5 d-flex justify-content-center">
+            <ul class="pagination">
+                <li class="page-item"><a class="page-link" href="#">&laquo; Anterior</a></li>
+                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item disabled"><span class="page-link">...</span></li>
+                <li class="page-item"><a class="page-link" href="#">10</a></li>
+                <li class="page-item"><a class="page-link" href="#">Próxima &raquo;</a></li>
+            </ul>
+        </nav>
     </div>
 </section>

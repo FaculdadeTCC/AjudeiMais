@@ -1,87 +1,74 @@
-﻿﻿@{
-    ViewData["Title"] = "Alterar Dados da empresa";
+﻿@{
+    ViewData["Title"] = "Alterar Dados da Empresa";
 }
 
-<section class="mx-auto mt-10 max-w-4xl rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
-    <h1 class="mb-6 text-2xl font-bold text-gray-800">Cadastro de Instituição</h1>
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-body">
+            <h1 class="h4 fw-bold mb-4">Cadastro de Instituição</h1>
 
-    <form method="post" enctype="multipart/form-data" class="space-y-8">
-        <!-- Grupo: Dados da Instituição -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <h2 class="border-b pb-2 text-lg font-semibold text-gray-700 md:col-span-2">Dados da Instituição</h2>
+            <form method="post" enctype="multipart/form-data">
+                <!-- Grupo: Dados da Instituição -->
+                <h5 class="border-bottom pb-2 mb-3">Dados da Instituição</h5>
+                <div class="row g-4">
+                    <!-- Nome -->
+                    <div class="col-md-6">
+                        <label class="form-label">Nome da Instituição <span class="text-danger">*</span></label>
+                        <input type="text" name="Nome" class="form-control" />
+                    </div>
 
-            <!-- Nome -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Nome da Instituição <span class="text-red-500">*</span>
-                </label>
-                <input type="text" name="Nome" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
-            </div>
+                    <!-- E-mail -->
+                    <div class="col-md-6">
+                        <label class="form-label">E-mail <span class="text-danger">*</span></label>
+                        <input type="email" name="Email" class="form-control" />
+                    </div>
 
-            <!-- E-mail -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    E-mail <span class="text-red-500">*</span>
-                </label>
-                <input type="email" name="Email" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
-            </div>
+                    <!-- Telefone -->
+                    <div class="col-md-6">
+                        <label class="form-label">Telefone <span class="text-danger">*</span></label>
+                        <input type="tel" name="Telefone" placeholder="(xx) xxxxx-xxxx" class="form-control" />
+                    </div>
 
-            <!-- Telefone -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Telefone <span class="text-red-500">*</span>
-                </label>
-                <input type="tel" name="Telefone" placeholder="(xx) xxxxx-xxxx" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
-            </div>
+                    <!-- Foto(s) -->
+                    <div class="col-md-6">
+                        <label class="form-label">Foto(s) da Instituição <span class="text-danger">*</span></label>
+                        <input type="file" name="Fotos" multiple accept="image/*" class="form-control" />
+                    </div>
 
-            <!-- Foto(s) -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Foto(s) da Instituição <span class="text-red-500">*</span>
-                </label>
-                <input type="file" name="Fotos" multiple accept="image/*"
-                       class="block w-full text-sm text-gray-600 file:mr-4 file:rounded-md file:border-0 file:bg-secondary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-orange-700" />
-            </div>
+                    <!-- Descrição -->
+                    <div class="col-12">
+                        <label class="form-label">Descrição <span class="text-danger">*</span></label>
+                        <textarea name="Descricao" rows="4" class="form-control"
+                                  placeholder="Descreva brevemente os serviços ou missão da instituição..."></textarea>
+                    </div>
+                </div>
 
-            <!-- Descrição -->
-            <div class="md:col-span-2">
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Descrição <span class="text-red-500">*</span>
-                </label>
-                <textarea name="Descricao" rows="4"
-                          class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300"
-                          placeholder="Descreva brevemente os serviços ou missão da instituição..."></textarea>
-            </div>
+                <!-- Grupo: Criar Senha -->
+                <h5 class="border-bottom pb-2 mt-5 mb-3">Criar Senha</h5>
+                <div class="row g-4">
+                    <!-- Senha -->
+                    <div class="col-md-6">
+                        <label class="form-label">Senha</label>
+                        <input type="password" name="Senha" class="form-control" />
+                    </div>
+
+                    <!-- Confirmar Senha -->
+                    <div class="col-md-6">
+                        <label class="form-label">Confirmar Senha</label>
+                        <input type="password" name="ConfirmarSenha" class="form-control" />
+                    </div>
+                </div>
+
+                <!-- Botões -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
+                    <button type="submit" class="btn btn-primary w-100 w-sm-auto">
+                        Cadastrar Instituição
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary w-100 w-sm-auto">
+                        Cancelar
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <!-- Grupo: Criar Senha -->
-        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <h2 class="border-b pb-2 text-lg font-semibold text-gray-700 md:col-span-2">Criar Senha</h2>
-
-            <!-- Senha -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Senha</label>
-                <input type="password" name="Senha" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
-            </div>
-
-            <!-- Confirmar Senha -->
-            <div>
-                <label class="mb-1 block text-sm font-medium text-gray-700">Confirmar Senha</label>
-                <input type="password" name="ConfirmarSenha" class="w-full rounded-md border border-gray-400 bg-gray-50 px-4 py-2 text-base shadow-sm transition focus:border-orange-500 focus:bg-white focus:ring-2 focus:ring-orange-300" />
-            </div>
-        </div>
-
-        <!-- Botões -->
-        <div class="mt-4 flex flex-col-reverse gap-4 sm:flex-row sm:justify-between">
-            <button type="submit"
-                    class="w-full rounded-lg bg-secondary px-6 py-2 text-white transition hover:bg-orange-700 sm:w-auto">
-                Cadastrar Instituição
-            </button>
-
-            <button type="reset"
-                    class="w-full rounded-lg border border-gray-400 px-6 py-2 text-gray-600 transition hover:bg-gray-100 sm:w-auto">
-                Cancelar
-            </button>
-        </div>
-    </form>
-</section>
+    </div>
+</div>
