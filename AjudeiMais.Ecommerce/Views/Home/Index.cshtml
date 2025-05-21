@@ -3,167 +3,233 @@
     ViewData["MetaDescription"] = "Conecte-se com pessoas que precisam. No AjudeiMais, você doa ou recebe roupas, calçados, móveis e muito mais. Faça o bem e transforme vidas com um clique.";
 }
 
-<div class="container my-5 px-3">
+@section Styles {
+    <link rel="stylesheet" href="~/css/home/banner.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/home/explore.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/home/donate.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/home/categories.css" asp-append-version="true"/>
+}
 
-    <!-- Banner Carousel -->
-    <div class="splide rounded-4 mb-5 shadow" aria-label="Banner Carousel" style="max-height: 420px; overflow: hidden;">
-        <div class="splide__track rounded-4">
-            <ul class="splide__list list-unstyled m-0 p-0">
-                <li class="splide__slide">
-                    <img src="https://placehold.co/1200x400/FF6B00/fff?text=Doe+com+Amor" alt="Doe com Amor" class="img-fluid w-100" style="object-fit: cover; height: 420px;">
-                </li>
-                <li class="splide__slide">
-                    <img src="https://placehold.co/1200x400/2E2E2E/fff?text=Transforme+Vidas" alt="Transforme Vidas" class="img-fluid w-100" style="object-fit: cover; height: 420px;">
-                </li>
-                <li class="splide__slide">
-                    <img src="https://placehold.co/1200x400/F8F9FA/333?text=Solidariedade+para+Todos" alt="Solidariedade para Todos" class="img-fluid w-100" style="object-fit: cover; height: 420px;">
-                </li>
-            </ul>
-        </div>
-    </div>
 
-    <!-- Título e CTA -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-5 gap-4">
-        <div class="text-md-start text-center">
-            <h1 class="display-5 fw-bold text-secondary">O que você deseja encontrar hoje?</h1>
-            <p class="text-muted fs-5 mb-0 mt-2">Encontre roupas, calçados, utensílios e muito mais para doar ou receber com carinho.</p>
-        </div>
-        <a href="#" class="btn btn-primary btn-lg px-5 shadow-sm" role="button" aria-label="Veja mais itens para doação">
-            Veja mais
-        </a>
-    </div>
-
-    <!-- Filtros de Busca -->
-    <form class="row g-3 mb-5" role="search" aria-label="Filtros para encontrar itens">
-        <div class="col-12 col-sm-6 col-lg-3">
-            <label for="categoria" class="form-label fw-semibold">Categoria</label>
-            <select id="categoria" class="form-select" aria-describedby="categoriaHelp" aria-required="true" required>
-                <option value="" disabled selected>Selecione uma categoria</option>
-                <option value="roupas">Roupas</option>
-                <option value="calcados">Calçados</option>
-                <option value="brinquedos">Brinquedos</option>
-                <option value="moveis">Móveis</option>
-            </select>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <label for="estado" class="form-label fw-semibold">Estado de Conservação</label>
-            <select id="estado" class="form-select" aria-required="true" required>
-                <option value="" disabled selected>Selecione o estado</option>
-                <option value="excelente">Excelente</option>
-                <option value="bom">Bom</option>
-                <option value="usado">Usado</option>
-            </select>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3">
-            <label for="cidade" class="form-label fw-semibold">Cidade</label>
-            <select id="cidade" class="form-select" aria-required="true" required>
-                <option value="" disabled selected>Selecione a cidade</option>
-                <option value="sp">São Paulo</option>
-                <option value="rj">Rio de Janeiro</option>
-                <option value="bh">Belo Horizonte</option>
-                <option value="curitiba">Curitiba</option>
-            </select>
-        </div>
-        <div class="col-12 col-sm-6 col-lg-3 d-grid">
-            <button type="submit" class="btn btn-outline-primary btn-lg fw-semibold shadow-sm" aria-label="Aplicar filtros para busca">
-                Aplicar Filtros
-            </button>
-        </div>
-    </form>
-
-    <!-- Cards de Produtos -->
-    <div class="row g-4" aria-live="polite" aria-label="Lista de itens disponíveis para doação">
-        @for (int i = 0; i < 8; i++)
-        {
-            <article class="col-12 col-sm-6 col-md-4 col-lg-3" role="listitem">
-                <div class="card h-100 rounded-4 border-0 shadow-sm">
-                    <div class="position-relative rounded-top-4 overflow-hidden" style="height: 210px;">
-                        <img src="https://placehold.co/400x400?text=Camisa+Masculina" class="card-img-top object-fit-cover" alt="Camisa masculina tamanho M" style="height: 100%; width: 100%; object-fit: cover;">
-                        <span class="badge bg-success rounded-pill position-absolute start-0 top-0 m-3 px-3 py-1 shadow-sm" style="font-size: 0.85rem;">
-                            Bom
-                        </span>
-                    </div>
-                    <div class="card-body d-flex flex-column">
-                        <p class="text-uppercase fw-semibold small mb-1 text-primary">Roupas</p>
-                        <h3 class="card-title h5 mb-2 text-secondary">Camisa Masculina M</h3>
-                        <p class="text-muted small mb-1"><strong>Doador:</strong> <a href="#" class="link-primary text-decoration-underline">João Silva</a></p>
-                        <p class="text-muted small mb-1"><strong>Quantidade:</strong> 3 unidades</p>
-                        <p class="text-muted small mb-3"><strong>Localização:</strong> Belo Horizonte, MG</p>
-                        <a href="#" class="btn btn-outline-primary fw-semibold mt-auto shadow-sm" role="button" aria-label="Ver detalhes da camisa masculina">
-                            Ver Detalhes
-                        </a>
-                    </div>
-                </div>
-            </article>
-        }
-    </div>
-
-    <!-- Seção Faça o Bem -->
-    <section class="position-relative rounded-4 my-5 overflow-hidden shadow-lg" style="height: 28rem;">
-        <div class="position-absolute h-100 w-75 rounded-start end-0 top-0 overflow-hidden">
-            <img src="https://images.unsplash.com/photo-1584824486539-53bb4646bdbc?auto=format&fit=crop&w=1200&q=80" alt="Pessoa ajudando outra" class="h-100 w-100 object-fit-cover brightness-90 filter" loading="lazy">
-        </div>
-
-        <div class="position-relative zindex-1 rounded-4 mx-auto my-5 bg-white p-5 shadow-lg" style="max-width: 480px;">
-            <h2 class="text-success fw-bold mb-3">Faça o Bem 💛</h2>
-            <p class="text-muted fs-5 mb-4">
-                Pequenos gestos geram grandes mudanças. Quando você doa, inspira, transforma e semeia esperança.
-                Compartilhe o que tem de sobra — amor, tempo ou objetos — e ajude a escrever uma nova história.
+<div class="container-fluid" style="padding: 0">
+    <!-- Hero Section -->
+    <section class="hero d-flex align-items-center text-center text-white">
+        <div class="container hero-content">
+            <h1 class="hero-title">
+                Conecte-se com causas que importam<br>
+                e transforme vidas com sua doação
+            </h1>
+            <p class="hero-subtitle mx-auto">
+                O Ajudei+ é uma plataforma onde usuários podem doar para instituições de forma simples, segura e
+                transparente.
+                Escolha uma causa, faça a sua doação e ajude a fazer a diferença na comunidade.
             </p>
-            <a href="#" class="btn btn-success btn-lg fw-semibold px-5 shadow-sm" role="button" aria-label="Quero fazer a diferença">
-                Quero fazer a diferença
-            </a>
+            <!-- Hero CTAs -->
+            <div class="hero-ctas mt-4">
+                <a href="#" class="btn btn-accent btn-lg rounded-pill me-3">
+                    <i class="fas fa-hand-holding-heart me-2"></i> Doar agora
+                </a>
+                <a href="#" class="btn btn-outline-light btn-lg rounded-pill">
+                    <i class="fas fa-info-circle me-2"></i> Saiba como ajudar
+                </a>
+            </div>
+
         </div>
     </section>
+
+
+    <section id="explore" class="explore-section container py-5">
+        <!-- Cabeçalho -->
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold text-secondary">Encontre itens para doar ou receber</h2>
+            <p class="text-muted fs-5">Pesquise, filtre por categoria e condição, e descubra o que você precisa.</p>
+        </div>
+
+        <!-- Barra de Busca & Filtros -->
+        <div class="row g-3 align-items-center mb-5 filter-bar">
+            <div class="col-md-6">
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control" placeholder="Pesquisar itens..."
+                           aria-label="Pesquisar itens">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select shadow-sm" aria-label="Filtrar por categoria">
+                    <option selected>Categoria</option>
+                    <option value="roupas">Roupas</option>
+                    <option value="calcados">Calçados</option>
+                    <option value="brinquedos">Brinquedos</option>
+                    <option value="moveis">Móveis</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <select class="form-select shadow-sm" aria-label="Filtrar por condição">
+                    <option selected>Condição</option>
+                    <option value="excelente">Excelente</option>
+                    <option value="bom">Bom</option>
+                    <option value="usado">Usado</option>
+                </select>
+            </div>
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-accent shadow-sm">
+                    <i class="fas fa-filter me-2"></i> Filtrar
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid de Itens -->
+        <div id="items" class="row g-4">
+            @for (int i = 0; i < 8; i++)
+            {
+                <article class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <div class="card h-100 rounded-4 border-0 shadow-sm">
+                        <!-- Imagem + badge de condição -->
+                        <div class="position-relative">
+                            <img src="https://placehold.co/400x400?text=Camisa" class="card-img-top" alt="Camisa">
+                            <span class="badge bg-success position-absolute top-0 start-0 m-3">Bom</span>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <!-- Categoria -->
+                            <span class="badge mb-2" 
+                                  style="background-color: var(--color-secondary); font-size:.75rem;">
+                                Roupas
+                            </span>
+
+                            <!-- Título e descrição -->
+                            <h5 class="card-title text-secondary mb-1">Camisa Masculina M</h5>
+                            <p class="text-muted small mb-3">Camisa de algodão, pouco uso.</p>
+
+                            <!-- Localização, Data e Quantidade -->
+                            <ul class="list-unstyled small text-muted mb-4">
+                                <li><i class="fas fa-map-marker-alt me-1"></i> Belo Horizonte, MG</li>
+                                <li><i class="fas fa-calendar-alt me-1"></i> 5 dias atrás</li>
+                                <li><i class="fas fa-box me-1"></i> 3 unidades</li>
+                            </ul>
+
+                            <!-- CTA -->
+                            <a href="#" class="mt-auto btn btn-outline-accent fw-semibold" aria-label="Ver detalhes">
+                                <i class="fas fa-info-circle me-2"></i> Ver detalhes
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+            }
+        </div>
+    </section>
+
+
+    <!-- Seção “Formas de se envolver” -->
+    <section id="get-involved" class="section-engaje row align-items-center mx-0 my-5">
+        <!-- Coluna de imagem -->
+        <div class="col-12 col-lg-6 p-0 image-panel">
+            <img src="~/img/visao-de-maos-em-forma-de-coracao-para-representar-afeicao.jpg"
+                 alt="Pessoa entregando doação a instituição"
+                 class="w-100 h-100 object-fit-cover">
+        </div>
+
+        <!-- Coluna de texto -->
+        <div class="col-12 col-lg-6 text-panel p-5">
+            <h2 class="h2 fw-bold mb-3">Doe para quem precisa</h2>
+            <p class="tagline mb-2">Pronto para ajudar?</p>
+            <p class="desc mb-4">
+                Selecione uma instituição e faça sua doação de forma simples, segura
+                e transparente. Cada contribuição transforma vidas e fortalece nossa comunidade.
+            </p>
+            <div class="d-flex gap-3">
+                <a href="#institutions" class="btn btn-secondary-fill btn-lg rounded-pill" role="button"
+                   aria-label="Ver instituições disponíveis">
+                    <i class="fas fa-building me-2"></i> Ver Instituições
+                </a>
+                <a href="#donate" class="btn btn-secondary-outline btn-lg rounded-pill" role="button"
+                   aria-label="Realizar doação agora">
+                    <i class="fas fa-donate me-2"></i> Doe Agora
+                </a>
+            </div>
+        </div>
+    </section>
+
 
     <!-- Seção Categorias -->
-    <section class="my-5" aria-label="Categorias de itens para doação">
-        <div class="mb-4 text-center">
-            <h2 class="fw-bold text-secondary">Explore Categorias</h2>
-            <p class="text-muted fs-5">Descubra os tipos de itens que você pode doar ou receber.</p>
-        </div>
+    <section id="categories" class="py-5">
+        <div class="container">
 
-        <div class="row g-4">
-            @* Categoria Roupas *@
-            <a href="#" class="col-12 col-sm-6 col-lg-3 text-decoration-none" role="link" aria-label="Categoria Roupas">
-                <div class="card rounded-4 overflow-hidden border-0 shadow-sm">
-                    <img src="https://placehold.co/600x400/FFEDD5/333?text=Roupas" alt="Imagem da categoria roupas" class="card-img-top object-fit-cover" style="height: 12rem;">
-                    <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(0deg, rgba(0,0,0,0.65), transparent);">
-                        <h3 class="fw-semibold m-0 text-white">Roupas</h3>
+            <!-- Título -->
+            <div class="text-center mb-5">
+                <h2 class="fw-bold text-secondary">Explore Categorias</h2>
+                <p class="text-muted fs-5">Descubra os tipos de itens que você pode doar ou receber.</p>
+            </div>
+
+            <!-- Grid de Categorias -->
+            <div class="row g-4">
+                <div class="col-6 col-md-3 text-center">
+                    <div class="category-card p-4">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <h3 class="h5 fw-semibold mb-1">Roupas</h3>
+                        <p class="small text-muted">Peças de vestuário para todas as idades</p>
                     </div>
                 </div>
-            </a>
-
-            @* Categoria Calçados *@
-            <a href="#" class="col-12 col-sm-6 col-lg-3 text-decoration-none" role="link" aria-label="Categoria Calçados">
-                <div class="card rounded-4 overflow-hidden border-0 shadow-sm">
-                    <img src="https://placehold.co/600x400/FEE2E2/333?text=Calçados" alt="Imagem da categoria calçados" class="card-img-top object-fit-cover" style="height: 12rem;">
-                    <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(0deg, rgba(0,0,0,0.65), transparent);">
-                        <h3 class="fw-semibold m-0 text-white">Calçados</h3>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="category-card p-4">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-shoe-prints"></i>
+                        </div>
+                        <h3 class="h5 fw-semibold mb-1">Calçados</h3>
+                        <p class="small text-muted">Sapatos, tênis e sandálias</p>
                     </div>
                 </div>
-            </a>
-
-            @* Categoria Brinquedos *@
-            <a href="#" class="col-12 col-sm-6 col-lg-3 text-decoration-none" role="link" aria-label="Categoria Brinquedos">
-                <div class="card rounded-4 overflow-hidden border-0 shadow-sm">
-                    <img src="https://placehold.co/600x400/E0F2FE/333?text=Brinquedos" alt="Imagem da categoria brinquedos" class="card-img-top object-fit-cover" style="height: 12rem;">
-                    <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(0deg, rgba(0,0,0,0.65), transparent);">
-                        <h3 class="fw-semibold m-0 text-white">Brinquedos</h3>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="category-card p-4">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h3 class="h5 fw-semibold mb-1">Brinquedos</h3>
+                        <p class="small text-muted">Diversão garantida para a garotada</p>
                     </div>
                 </div>
-            </a>
-
-            @* Categoria Móveis *@
-            <a href="#" class="col-12 col-sm-6 col-lg-3 text-decoration-none" role="link" aria-label="Categoria Móveis">
-                <div class="card rounded-4 overflow-hidden border-0 shadow-sm">
-                    <img src="https://placehold.co/600x400/EDE9FE/333?text=Móveis" alt="Imagem da categoria móveis" class="card-img-top object-fit-cover" style="height: 12rem;">
-                    <div class="card-img-overlay d-flex align-items-end p-3" style="background: linear-gradient(0deg, rgba(0,0,0,0.65), transparent);">
-                        <h3 class="fw-semibold m-0 text-white">Móveis</h3>
+                <div class="col-6 col-md-3 text-center">
+                    <div class="category-card p-4">
+                        <div class="icon-wrapper mb-3">
+                            <i class="fas fa-couch"></i>
+                        </div>
+                        <h3 class="h5 fw-semibold mb-1">Móveis</h3>
+                        <p class="small text-muted">Itens para mobiliar sua casa</p>
                     </div>
                 </div>
-            </a>
+            </div>
         </div>
     </section>
 
+
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const navbar = document.querySelector('.navbar');
+        const banner = document.querySelector('.hero'); // ou #mainBanner, o seletor do seu banner
+
+        if (!navbar || !banner) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    // banner visível → transparente
+                    navbar.classList.remove('scrolled');
+                } else {
+                    // banner saiu da viewport → cor fixa
+                    navbar.classList.add('scrolled');
+                }
+            },
+            {
+                rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
+                threshold: 0
+            }
+        );
+
+        observer.observe(banner);
+    });
+</script>

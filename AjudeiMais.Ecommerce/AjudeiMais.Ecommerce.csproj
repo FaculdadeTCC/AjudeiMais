@@ -11,6 +11,8 @@
       <Content Remove="wwwroot\lib\bootstrap\**" />
       <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
       <None Remove="wwwroot\lib\bootstrap\**" />
+      <None Include="wwwroot\favicon.png" />
+      <None Include="wwwroot\img\brand\logo_icon.png" />
     </ItemGroup>
 
     <ItemGroup>
