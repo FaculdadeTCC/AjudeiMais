@@ -55,7 +55,19 @@ namespace AjudeiMais.Ecommerce.Controllers
                 HttpContext.Session.SetString("UserRole", loginResponse.Role);
                 HttpContext.Session.SetString("UserId", loginResponse.Id);
 
-                return RedirectToAction("Perfil", "Usuario"); // Redireciona para home após login
+
+                // Redireciona para cada tela pela role
+                switch (loginResponse.Role.ToLower())
+                {
+                    case "admin":
+                        return RedirectToAction("Index", "Admin");
+                    case "instituicao":
+                        return RedirectToAction("Perfil", "Instituicao");
+                    case "usuario":
+                        return RedirectToAction("Perfil", "Usuario");
+                    default:
+                        return RedirectToAction("AcessoNegado", "Home");
+                }
             }
             catch (Exception ex)
             {
@@ -67,6 +79,11 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         public IActionResult Login()
+        {
+            return View();
+        }
+
+        public IActionResult AcessoNegado()
         {
             return View();
         }

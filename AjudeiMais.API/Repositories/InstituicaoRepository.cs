@@ -64,6 +64,20 @@ namespace AjudeiMais.API.Repositories
             }
         }
 
+        public async Task<Instituicao> GetByEmail(string email)
+        {
+            try
+            {
+                var instituicao = await _context.Instituicao.FirstOrDefaultAsync(x => x.Email == email);
+
+                return instituicao;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<Instituicao>> GetItens()
         {
             try

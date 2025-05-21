@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Threading.Tasks;
+using AjudeiMais.Ecommerce.Filters;
 using AjudeiMais.Ecommerce.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +19,13 @@ namespace AjudeiMais.Ecommerce.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        [RoleAuthorize("admin")]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
+        [RoleAuthorize("usuario", "admin")]
         public IActionResult Perfil()
         {
             return View();
@@ -35,6 +38,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [HttpPost]
+        [RoleAuthorize("usuario", "admin")]
         public async Task<IActionResult> Cadastro(UsuarioModel model)
         {
             try

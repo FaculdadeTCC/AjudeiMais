@@ -1,5 +1,6 @@
 ﻿using AjudeiMais.API.DTOs;
 using AjudeiMais.API.Services;
+using AjudeiMais.Data.Models.InstituicaoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
@@ -13,33 +14,59 @@ using System.Text;
 public class AuthController : ControllerBase
 {
     private readonly UsuarioService _usuarioService;
+    private readonly InstituicaoService _instituicaoService;
     private readonly IConfiguration _config;
 
-    public AuthController(UsuarioService usuarioService, IConfiguration config)
+    public AuthController(UsuarioService usuarioService, InstituicaoService instituicaoService ,IConfiguration config)
     {
         _usuarioService = usuarioService;
+        _instituicaoService = instituicaoService;
         _config = config;
     }
 
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginDTO model)
     {
+        // Tenta logar como usuário
         var usuario = await _usuarioService.Login(model.Email, model.Senha);
-        if (usuario == null)
+        if (usuario != null)
         {
-            return Unauthorized("Email ou senha inválidos.");
+            var token = GenerateJwtToken(usuario);
+            return Ok(new
+            {
+                token,
+                role = usuario.Role,
+                id = usuario.Usuario_ID.ToString()
+            });
         }
 
-        var token = GenerateJwtToken(usuario);
-        return Ok(new
+        // Tenta logar como instituição
+        var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
+        if (instituicao != null)
         {
-            token,
-            role = usuario.Role,
-            id = usuario.Usuario_ID.ToString()
-        });
+            var token = GenerateJwtToken(instituicao);
+            return Ok(new
+            {
+                token,
+                role = instituicao.Role,
+                id = instituicao.Instituicao_ID.ToString()
+            });
+        }
+
+        return Unauthorized("Email ou senha inválidos.");
     }
 
     private string GenerateJwtToken(Usuario usuario)
+    {
+        return GenerateJwt(usuario.Usuario_ID.ToString(), usuario.NomeCompleto, usuario.Email, usuario.Role, usuario.GUID);
+    }
+
+    private string GenerateJwtToken(Instituicao instituicao)
+    {
+        return GenerateJwt(instituicao.Instituicao_ID.ToString(), instituicao.Nome, instituicao.Email, instituicao.Role, instituicao.Guid);
+    }
+
+    private string GenerateJwt(string id, string nome, string email, string role, string guid)
     {
         var jwtSettings = _config.GetSection("JwtSettings");
         var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
@@ -47,11 +74,11 @@ public class AuthController : ControllerBase
 
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, usuario.Usuario_ID.ToString()),
-            new Claim(ClaimTypes.Name, usuario.NomeCompleto),
-            new Claim(ClaimTypes.Email, usuario.Email),
-            new Claim(ClaimTypes.Role, usuario.Role),
-            new Claim("guid", usuario.GUID ?? "")
+            new Claim(ClaimTypes.NameIdentifier, id),
+            new Claim(ClaimTypes.Name, nome),
+            new Claim(ClaimTypes.Email, email),
+            new Claim(ClaimTypes.Role, role),
+            new Claim("guid", guid ?? "")
         };
 
         var token = new JwtSecurityToken(

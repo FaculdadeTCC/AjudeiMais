@@ -44,7 +44,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "usuario-perfil",
-    pattern: "usuario/perfil/{id}",
+    pattern: "  /{id}",
     defaults: new { controller = "Usuario", action = "Entrar" });
 
 app.MapControllerRoute(

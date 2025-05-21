@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AjudeiMais.Ecommerce.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -8,16 +9,19 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             return View();
         }
+        [RoleAuthorize("admin", "instituicao")]
         public IActionResult Perfil()
         {
             return View();
         }
 
+        [RoleAuthorize("admin", "instituicao")]
         public IActionResult Cadastro()
         {
             return View();
         }
 
+        [RoleAuthorize("admin", "instituicao")]
         public IActionResult AlterarDados()
         {
             return View();
