@@ -4,46 +4,190 @@
     Layout = "_Layout";
 }
 
-<div class="container d-flex align-items-center justify-content-center min-vh-100 bg-light">
-    <div class="card shadow-sm p-4" style="width: 100%; max-width: 400px;">
-        <div class="mb-4 text-center">
-            <h1 class="h4 fw-bold text-dark">Entrar na Plataforma</h1>
-            <p class="text-muted small">Acesse sua conta para continuar</p>
+@section Styles {
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <style>
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: var(--color-bg);
+            padding: var(--spacing-xl);
+        }
+        .login-card {
+            background: var(--color-surface);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            width: 100%;
+            max-width: 400px;
+            padding: var(--spacing-xl);
+            font-family: var(--font-family-base);
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .login-header h1 {
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-xl);
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-primary-dark);
+        }
+        .login-header p {
+            font-size: var(--font-size-sm);
+            color: var(--color-gray-600);
+        }
+        .btn-google {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid var(--color-gray-300);
+            color: var(--color-gray-700);
+            font-family: var(--font-family-accent);
+            padding: var(--spacing-sm) 0;
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            transition: background-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+            margin-bottom: var(--spacing-md);
+        }
+        .btn-google i {
+            color: #DB4437; /* Google red */
+        }
+        .btn-google:hover {
+            background: var(--color-gray-100);
+            box-shadow: var(--shadow-md);
+        }
+        .divider {
+            text-align: center;
+            margin: var(--spacing-md) 0;
+            position: relative;
+        }
+        .divider::before,
+        .divider::after {
+            content: "";
+            height: 1px;
+            background: var(--color-gray-300);
+            position: absolute;
+            top: 50%;
+            width: 40%;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+        .divider span {
+            padding: 0 var(--spacing-sm);
+            color: var(--color-gray-500);
+            font-size: var(--font-size-sm);
+        }
+        .user-type-toggle {
+            display: flex;
+            gap: var(--spacing-sm);
+            justify-content: center;
+            margin-bottom: var(--spacing-md);
+        }
+        .user-type-toggle input {
+            display: none;
+        }
+        .user-type-toggle label {
+            flex: 1;
+            text-align: center;
+            padding: var(--spacing-sm) 0;
+            border: 1px solid var(--color-gray-300);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: background .2s, border-color .2s;
+            font-family: var(--font-family-accent);
+        }
+        .user-type-toggle input:checked + label {
+            background: var(--color-secondary);
+            border-color: var(--color-secondary);
+            color: var(--color-gray-100);
+        }
+        .form-control:focus {
+            border-color: var(--color-accent);
+            box-shadow: 0 0 0 0.2rem rgba(98, 213, 142, 0.25);
+        }
+        .form-check-label a {
+            color: var(--color-secondary);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .form-check-label a:hover {
+            color: var(--color-secondary-dark);
+        }
+        .btn-accent {
+            background: var(--color-accent);
+            border: 1px solid var(--color-accent);
+            color: var(--color-gray-100);
+            font-family: var(--font-family-accent);
+            width: 100%;
+            padding: var(--spacing-sm) 0;
+            border-radius: var(--radius-sm);
+            transition: background-color 0.2s;
+            margin-top: var(--spacing-md);
+        }
+        .btn-accent:hover {
+            background: var(--color-accent-dark);
+        }
+    </style>
+}
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Entrar na Plataforma</h1>
+            <p>Acesse sua conta para continuar</p>
         </div>
 
         @if (TempData["AlertMessage"] != null)
         {
-            var alertClass = TempData["AlertType"]?.ToString() == "error" ? "alert-danger" : "alert-success";
-            <div class="alert @alertClass">
+            var alertClass = TempData["AlertType"]?.ToString() == "error" ? "var(--color-danger)" : "var(--color-success)";
+            <div class="alert" style="background: @alertClass; color:#fff;">
                 @TempData["AlertMessage"]
             </div>
         }
 
+        <!-- Login with Google -->
+        <button type="button" class="btn-google">
+            <i class="fab fa-google me-2"></i> Entrar com Google
+        </button>
+
+        <div class="divider"><span>ou</span></div>
+
+        <!-- Toggle Tipo de Usuário -->
+        <div class="user-type-toggle">
+            <input type="radio" id="tipoDoador"  name="UserType" value="Doador"  checked>
+            <label for="tipoDoador">Sou Doador</label>
+            <input type="radio" id="tipoInstituicao" name="UserType" value="Instituicao">
+            <label for="tipoInstituicao">Sou Instituição</label>
+        </div>
+
         <form method="post" asp-controller="Home" asp-action="Login">
-            <div class="mb-3">
-                <label class="form-label">E-mail <span class="text-danger">*</span></label>
-                <input asp-for="Email" type="email" name="Email" class="form-control" required />
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label">E-mail <span class="text-danger">*</span></label>
+                <input asp-for="Email" type="email" class="form-control" required />
             </div>
 
             <div class="mb-3">
-                <label class="form-label">Senha <span class="text-danger">*</span></label>
-                <input asp-for="Senha" type="password" name="Senha" class="form-control" required />
+                <label asp-for="Senha" class="form-label">Senha <span class="text-danger">*</span></label>
+                <input asp-for="Senha" type="password" class="form-control" required />
             </div>
 
-            <div class="mb-3 form-check">
-                <input type="checkbox" name="Lembrar" class="form-check-input" id="lembrarCheck" />
-                <label class="form-check-label" for="lembrarCheck">Lembrar de mim</label>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="form-check">
+                    <input  class="form-check-input" id="lembrarCheck" />
+                    <label class="form-check-label" for="lembrarCheck">Lembrar de mim</label>
+                </div>
+                <a href="#" class="text-decoration-none">Esqueci minha senha</a>
             </div>
 
-            <div class="mb-3">
-                <a href="#" class="text-decoration-none text-primary">Esqueci minha senha</a>
-            </div>
+            <button type="submit" class="btn-accent">Entrar</button>
 
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
-
-            <p class="mt-3 text-center small text-muted">
+            <p class="text-center mt-4 small text-muted">
                 Ainda não tem uma conta?
-                <a href="/Cadastro" class="text-decoration-none fw-semibold text-primary">Cadastre-se</a>
+                <a href="@Url.RouteUrl("usuario-cadastrar")" class="fw-semibold">Cadastre-se</a>
             </p>
         </form>
     </div>

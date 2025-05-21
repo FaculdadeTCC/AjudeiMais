@@ -1,6 +1,7 @@
 ﻿/* ===== Seção Categories ===== */
 #categories {
     background-color: var(--color-bg);
+    font-family: var(--font-family-base);
 }
 
 /* ===== Category Card ===== */

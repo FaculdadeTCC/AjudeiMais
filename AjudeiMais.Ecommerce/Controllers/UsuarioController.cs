@@ -38,7 +38,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [HttpPost]
-        [RoleAuthorize("usuario", "admin")]
+        // [RoleAuthorize("usuario", "admin")]
         public async Task<IActionResult> Cadastro(UsuarioModel model)
         {
             try

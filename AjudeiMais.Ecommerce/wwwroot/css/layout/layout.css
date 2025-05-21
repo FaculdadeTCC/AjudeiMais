@@ -1,106 +1,105 @@
 ﻿.navbar {
-    font-family: var(--font-family-base) !important;
-    transition: background-color 0.3s ease !important, box-shadow 0.3s ease !important;
-    background-color: transparent !important;
-    backdrop-filter: blur(6px) !important;
+    font-family: var(--font-family-base) ;
+    transition: background-color 0.3s ease , box-shadow 0.3s ease ;
+    backdrop-filter: blur(6px) ;
 }
 
 .navbar.scrolled {
-    background-color: var(--color-surface) !important;
-    box-shadow: var(--shadow-md) !important;
+    background-color: var(--color-primary) ;
+    box-shadow: var(--shadow-md) ;
 }
 
 .navbar .navbar-brand span {
-    font-family: var(--font-family-accent) !important;
-    font-weight: 700 !important;
-    color: #fff !important;
+    font-family: var(--font-family-accent) ;
+    font-weight: 700 ;
+    color: #fff ;
 }
 
 .navbar .nav-link {
-    color: var(--color-gray-100) !important;
-    transition: color 0.2s !important;
+    color: var(--color-gray-100) ;
+    transition: color 0.2s ;
 }
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
-    color: var(--color-primary-light) !important;
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--color-primary-light) ;
+    background-color: rgba(255, 255, 255, 0.1) ;
     border-radius: 4px !important;
 }
 .navbar.scrolled .nav-link {
-    color: var(--color-gray-900) !important;
+    color: #FFF ;
 }
 .navbar.scrolled .nav-link:hover,
 .navbar.scrolled .nav-link:focus {
-    color: var(--color-primary-dark) !important;
-    background-color: rgba(0, 33, 71, 0.05) !important;
-    border-radius: 4px !important;
+    color: var(--color-primary-dark) ;
+    background-color: rgba(0, 33, 71, 0.05) ;
+    border-radius: 4px ;
 }
 
 .navbar .btn-primary {
-    background-color: var(--color-accent) !important;
-    border-color: var(--color-accent) !important;
-    font-family: var(--font-family-accent) !important;
-    transition: background-color 0.2s !important, border-color 0.2s !important;
+    background-color: var(--color-accent) ;
+    border-color: var(--color-accent) ;
+    font-family: var(--font-family-accent) ;
+    transition: background-color 0.2s , border-color 0.2s ;
 }
 .navbar .btn-primary:hover,
 .navbar .btn-primary:focus {
-    background-color: var(--color-accent-dark) !important;
-    border-color: var(--color-accent-dark) !important;
+    background-color: var(--color-accent-dark) ;
+    border-color: var(--color-accent-dark) ;
 }
 .navbar.scrolled .btn-primary {
-    color: #fff !important;
+    color: #fff ;
 }
 
 .navbar .btn-outline-light {
-    border-color: var(--color-gray-100) !important;
-    color: var(--color-gray-100) !important;
-    font-family: var(--font-family-accent) !important;
-    transition: background-color 0.2s !important, color 0.2s !important;
+    border-color: var(--color-gray-100) ;
+    color: var(--color-gray-100) ;
+    font-family: var(--font-family-accent) ;
+    transition: background-color 0.2s , color 0.2s ;
 }
 .navbar .btn-outline-light:hover,
 .navbar .btn-outline-light:focus {
-    background-color: var(--color-gray-100) !important;
-    color: var(--color-gray-900) !important;
+    background-color: var(--color-gray-100) ;
+    color: var(--color-gray-900) ;
 }
 .navbar.scrolled .btn-outline-light {
-    border-color: var(--color-primary) !important;
-    color: var(--color-primary) !important;
+    border-color: var(--color-primary) ;
+    color: var(--color-primary) ;
 }
 .navbar.scrolled .btn-outline-light:hover,
 .navbar.scrolled .btn-outline-light:focus {
-    background-color: var(--color-primary) !important;
-    color: #fff !important;
+    background-color: var(--color-primary) ;
+    color: #fff ;
 }
 
 /* Toggler */
 .navbar-toggler {
-    border-color: var(--color-gray-100) !important;
+    border-color: var(--color-gray-100) ;
 }
 .navbar-toggler:hover,
 .navbar-toggler:focus {
-    background-color: rgba(255, 255, 255, 0.1) !important;
+    background-color: rgba(255, 255, 255, 0.1) ;
 }
 .navbar-toggler-icon {
-    filter: invert(1) !important;
+    filter: invert(1) ;
 }
 .navbar.scrolled .navbar-toggler,
 .navbar.scrolled .navbar-toggler-icon {
-    border-color: var(--color-primary) !important;
-    filter: none !important;
+    border-color: var(--color-primary) ;
+    filter: none ;
 }
 
 /* ===== Footer Styles ===== */
 .footer {
-    background-color: var(--color-primary-dark) !important;
-    font-family: var(--font-family-base) !important;
+    background-color: var(--color-primary-dark) ;
+    font-family: var(--font-family-base) ;
 }
 
 .footer .container {
-    max-width: 1140px !important;
+    max-width: 1140px ;
 }
 
 .footer a {
-    transition: color 0.2s !important;
+    transition: color 0.2s ;
 }
 
 .footer a:hover,
@@ -111,9 +110,9 @@
 /* Ajustes responsivos */
 @media (max-width: 767px) {
     .footer .container {
-        text-align: center !important;
+        text-align: center ;
     }
     .footer .social-links {
-        margin-top: var(--spacing-sm) !important;
+        margin-top: var(--spacing-sm) ;
     }
 }
