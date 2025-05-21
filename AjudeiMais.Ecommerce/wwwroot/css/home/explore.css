@@ -1,0 +1,67 @@
+﻿/* ===== Seção Explore ===== */
+.explore-section {
+    font-family: var(--font-family-base);
+}
+
+/* Filtros */
+.filter-bar .input-group,
+.filter-bar .form-select,
+.filter-bar .btn-accent {
+    border-radius: var(--radius-md);
+    transition: box-shadow .2s, transform .2s;
+}
+.filter-bar .input-group:hover,
+.filter-bar .form-select:hover,
+.filter-bar .btn-accent:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+}
+
+/* Itens */
+.item-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: transform .2s, box-shadow .2s;
+}
+.item-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+}
+
+.item-card .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.item-card .badge {
+    font-size: .75rem;
+    border-radius: var(--radius-lg);
+}
+
+.item-card h5 {
+    font-family: var(--font-family-heading);
+}
+
+.btn-accent {
+    background-color: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    color: var(--color-gray-100);
+    font-family: var(--font-family-accent);
+    transition: background-color .2s, border-color .2s;
+}
+.btn-accent:hover {
+    background-color: var(--color-accent-dark);
+    border-color: var(--color-accent-dark);
+}
+
+.btn-outline-accent {
+    background: transparent;
+    border: 1px solid var(--color-accent);
+    color: var(--color-accent);
+    font-family: var(--font-family-accent);
+    transition: background-color .2s, color .2s;
+}
+.btn-outline-accent:hover {
+    background-color: var(--color-accent);
+    color: var(--color-gray-100);
+}
