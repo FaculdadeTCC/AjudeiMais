@@ -33,14 +33,14 @@
 
 /* Estilo específico para erro */
 .alert-custom-error {
-    background-color: #ffebee; /* Vermelho bem claro */
+    background-color: var(--color-danger); /* Vermelho bem claro */
     border: 1px solid #ef9a9a; /* Borda vermelha clara */
     color: #d32f2f; /* Texto vermelho */
 }
 
 /* Estilo específico para sucesso */
 .alert-custom-success {
-    background-color: #e8f5e9; /* Verde bem claro */
+    background-color: var(--color-success); /* Verde bem claro */
     border: 1px solid #a5d6a7; /* Borda verde clara */
     color: #388e3c; /* Texto verde */
 }

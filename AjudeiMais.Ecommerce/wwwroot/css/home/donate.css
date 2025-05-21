@@ -1,0 +1,61 @@
+﻿/* ===== Seção Engaje ===== */
+#get-involved {
+    background-color: var(--color-secondary);
+}
+
+.section-engaje {
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    margin: var(--spacing-lg) 0;
+}
+.section-engaje .image-panel {
+    min-height: 300px;
+}
+.section-engaje .object-fit-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===== Painel de Texto ===== */
+.section-engaje .text-panel {
+    background-color: var(--color-surface);
+    font-family: var(--font-family-base);
+}
+.section-engaje .text-panel h2 {
+    font-family: var(--font-family-heading);
+    color: var(--color-secondary-dark);
+}
+.section-engaje .text-panel .tagline {
+    font-family: var(--font-family-accent);
+    font-size: 1.125rem;
+    color: var(--color-secondary);
+}
+.section-engaje .text-panel .desc {
+    color: var(--color-gray-700);
+    line-height: 1.6;
+}
+
+/* ===== Botões ===== */
+.btn-secondary-fill {
+    background-color: var(--color-secondary);
+    border: 2px solid var(--color-secondary);
+    color: var(--color-gray-100);
+    font-family: var(--font-family-accent);
+    transition: background-color 0.2s;
+}
+.btn-secondary-fill:hover {
+    background-color: var(--color-secondary-dark);
+}
+
+.btn-secondary-outline {
+    background: transparent;
+    border: 2px solid var(--color-secondary);
+    color: var(--color-secondary);
+    font-family: var(--font-family-accent);
+    transition: background-color 0.2s, color 0.2s;
+}
+.btn-secondary-outline:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-gray-100);
+}
