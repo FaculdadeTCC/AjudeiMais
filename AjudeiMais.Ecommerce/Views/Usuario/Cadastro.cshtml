@@ -2,216 +2,302 @@
 
 @section Styles {
     <link rel="stylesheet" href="~/css/usuario/usuario-cadastro.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-          crossorigin="anonymous" referrerpolicy="no-referrer"/>
 }
 
 @{
     await Html.RenderPartialAsync("_Alertas");
 }
 
-<div class="form-container-wrapper">
-    <!-- Sidebar -->
-    <aside class="wizard-sidebar">
-        <div class="form-header">
-            <h1>Cadastro</h1>
-            <p>Usuário</p>
+<div class="registration-page-container">
+    <div class="left-panel d-none d-md-flex">
+        <div class="logo-area">
+            <img src="~/img/brand/logo_icon.png" alt="AjudeiMais Logo" class="img-fluid mb-4">
+            <h2>Bem-vindo(a) ao AjudeiMais!</h2>
+            <p>Junte-se à nossa comunidade e comece a fazer a diferença.</p>
         </div>
-        <div class="step-indicator">
-            <div class="step active" data-step="1"><div class="step-number">1</div><div class="step-title">Dados Pessoais</div></div>
-            <div class="step" data-step="2"><div class="step-number">2</div><div class="step-title">Endereço</div></div>
-            <div class="step" data-step="3"><div class="step-number">3</div><div class="step-title">Finalizar</div></div>
-        </div>
-    </aside>
+    </div>
+    <div class="right-panel">
+        <div class="form-container">
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
 
-    <!-- Content -->
-    <section class="wizard-content">
-        <div class="form-header-main">
-            <h1>Cadastro de Usuário</h1>
-            <p>Preencha os campos para criar sua conta</p>
-        </div>
+            <div class="form-header">
+                <h1>Cadastro de Usuário</h1>
+                <p class="mb-0">Preencha os campos abaixo para criar sua conta</p>
+            </div>
 
-        <form id="formularioCadastro"
-              method="post"
-              action="/Usuario/Cadastro"
-              enctype="multipart/form-data">
-
-            <!-- Step 1 -->
-            <div class="form-step active" data-step="1">
-                <h2>Dados Pessoais</h2>
-                <div class="row g-4">
-                    <div class="col-12">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="nomeCompleto" name="NomeCompleto"
-                                   placeholder="Nome Completo" autocomplete="name" required>
-                            <label for="nomeCompleto">Nome Completo</label>
-                        </div>
+            <div class="container">
+                <div class="step-indicator">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div class="step-title">Dados Pessoais</div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="documento" name="Documento"
-                                   placeholder="CPF" required>
-                            <label for="documento">CPF</label>
-                        </div>
-                        <div class="form-text">Formato: 000.000.000-00</div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div class="step-title">Endereço</div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="email" class="form-control" id="email" name="Email"
-                                   placeholder="E-mail" autocomplete="email" required>
-                            <label for="email">E-mail</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="tel" class="form-control" id="telefone" name="Telefone"
-                                   placeholder="Telefone" autocomplete="tel" required>
-                            <label for="telefone">Telefone</label>
-                        </div>
-                        <div class="form-text">Formato: (00) 00000-0000</div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-floating">
-                            <input type="tel" class="form-control" id="telefoneFixo" name="TelefoneFixo"
-                                   placeholder="Telefone Fixo (Opcional)">
-                            <label for="telefoneFixo">Telefone Fixo</label>
-                        </div>
-                        <div class="form-text">Formato: (00) 0000-0000</div>
-                    </div>
-                    <div class="col-12">
-                        <label class="form-label">Foto de Perfil</label>
-                        <label for="fotoPerfil" class="file-upload d-block">
-                            <input type="file" id="fotoPerfil" name="FotoPerfil" class="d-none" accept="image/*" required>
-                            <i class="fa fa-cloud-upload"></i>
-                            <p class="mb-0">Clique ou arraste sua foto aqui</p>
-                            <small class="text-muted">(Max 5MB)</small>
-                        </label>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div class="step-title">Finalizar</div>
                     </div>
                 </div>
             </div>
+            <div class="section-padding container pb-4">
+                <form id="formularioCadastro" method="post" action="/Usuario/Cadastro" enctype="multipart/form-data">
+                    <div class="form-step active">
+                        <div class="mb-5">
+                            <h2 class="section-title mb-4">
+                                <i class="bi bi-person-badge"></i>
+                                Dados Pessoais
+                            </h2>
 
-            <!-- Step 2 -->
-            <div class="form-step" data-step="2">
-                <h2>Endereço</h2>
-                <div class="row g-4">
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="cep" name="Cep"
-                                   placeholder="CEP" autocomplete="postal-code" required>
-                            <label for="cep">CEP</label>
-                        </div>
-                        <div class="form-text">
-                            <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank">
-                                Não sei meu CEP
-                            </a>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="rua" name="Rua"
-                                   placeholder="Rua" required>
-                            <label for="rua">Rua</label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="numero" name="Numero"
-                                   placeholder="Número" required>
-                            <label for="numero">Número</label>
-                        </div>
-                    </div>
-                    <div class="col-md-8">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="complemento" name="Complemento"
-                                   placeholder="Complemento">
-                            <label for="complemento">Complemento</label>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="bairro" name="Bairro"
-                                   placeholder="Bairro" required>
-                            <label for="bairro">Bairro</label>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <div class="form-floating">
-                            <input type="text" class="form-control" id="cidade" name="Cidade"
-                                   placeholder="Cidade" required>
-                            <label for="cidade">Cidade</label>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-floating">
-                            <select class="form-select" id="estado" name="Estado" required>
-                                <option value="" disabled selected>Selecione</option>
-                                <option value="AC">AC</option><option value="AL">AL</option>
-                                <option value="AP">AP</option><option value="AM">AM</option>
-                                <option value="BA">BA</option><option value="CE">CE</option>
-                                <option value="DF">DF</option><option value="ES">ES</option>
-                                <option value="GO">GO</option><option value="MA">MA</option>
-                                <option value="MT">MT</option><option value="MS">MS</option>
-                                <option value="MG">MG</option><option value="PA">PA</option>
-                                <option value="PB">PB</option><option value="PR">PR</option>
-                                <option value="PE">PE</option><option value="PI">PI</option>
-                                <option value="RJ">RJ</option><option value="RN">RN</option>
-                                <option value="RS">RS</option><option value="RO">RO</option>
-                                <option value="RR">RR</option><option value="SC">SC</option>
-                                <option value="SP">SP</option><option value="SE">SE</option>
-                                <option value="TO">TO</option>
-                            </select>
-                            <label for="estado">Estado</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="nomeCompleto"
+                                               name="NomeCompleto" placeholder="Nome Completo" required>
+                                        <label for="nomeCompleto" class="required-field">Nome Completo</label>
+                                    </div>
+                                </div>
 
-            <!-- Step 3 -->
-            <div class="form-step" data-step="3">
-                <h2>Finalizar</h2>
-                <div class="row g-4">
-                    <div class="col-md-5">
-                        <div class="form-floating password-container">
-                            <input type="password" class="form-control" id="senha" name="Senha"
-                                   placeholder="Senha" required>
-                            <label for="senha">Senha</label>
-                            <span class="password-toggle" id="togglePassword">
-                <i class="fa fa-eye-slash"></i>
-              </span>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="termos" name="Termos" required>
-                            <label class="form-check-label" for="termos">
-                                Li e aceito os <a href="#" class="text-decoration-none">Termos de Uso</a> e
-                                <a href="#" class="text-decoration-none">Política de Privacidade</a>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="documento"
+                                               name="Documento" placeholder="CPF" required>
+                                        <label for="documento" class="required-field">CPF</label>
+                                    </div>
+                                    <div class="form-text">Formato: 000.000.000-00</div>
+                                </div>
 
-            <!-- Footer -->
-            <div class="wizard-footer">
-                <button type="button" id="btnVoltar" class="btn btn-outline-secondary d-none">
-                    <i class="fa fa-arrow-left me-2"></i>Voltar
-                </button>
-                <button type="button" id="btnProximo" class="btn btn-primary">
-                    Próximo <i class="fa fa-arrow-right ms-2"></i>
-                </button>
-                <button type="submit" id="btnFinalizar" class="btn btn-primary d-none">
-                    Criar Conta <i class="fa fa-check ms-2"></i>
-                </button>
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="email" class="form-control" id="email" name="Email"
+                                               placeholder="E-mail" required>
+                                        <label for="email" class="required-field">E-mail</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="tel" class="form-control" id="telefone" name="Telefone"
+                                               placeholder="Telefone" required>
+                                        <label for="telefone" class="required-field">Telefone</label>
+                                    </div>
+                                    <div class="form-text">Formato: (00) 00000-0000</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="tel" class="form-control" id="telefoneFixo"
+                                               name="TelefoneFixo" placeholder="Telefone Fixo (Opcional)">
+                                        <label for="telefoneFixo">Telefone Fixo</label>
+                                    </div>
+                                    <div class="form-text">Formato: (00) 0000-0000</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label required-field mb-2">Foto de Perfil</label>
+                                    <label for="fotoPerfil" class="file-upload d-block">
+                                        <input type="file" class="d-none" id="fotoPerfil" name="FotoPerfil" accept="image/*" required>
+                                        <div id="fileUploadContent">
+                                            <i class="bi bi-cloud-arrow-up"></i>
+                                            <p class="mb-0">Clique ou arraste sua foto aqui</p>
+                                            <small class="text-muted">(Tamanho máximo: 5MB)</small>
+                                        </div>
+                                        <img id="imagePreview" src="#" alt="Preview da Imagem" class="img-fluid rounded-circle d-none mt-3" style="max-width: 150px; max-height: 150px; object-fit: cover;">
+                                        <button type="button" id="removeImageButton" class="btn btn-sm btn-danger mt-2 d-none">Remover Imagem</button>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-step">
+                        <div class="mb-5">
+                            <h2 class="section-title mb-4">
+                                <i class="bi bi-geo-alt"></i>
+                                Endereço
+                            </h2>
+
+                            <div class="row g-4">
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="cep" name="Cep"
+                                               placeholder="CEP" required>
+                                        <label for="cep" class="required-field">CEP</label>
+                                    </div>
+                                    <div class="form-text">
+                                        <a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank"
+                                           class="text-decoration-none">
+                                            Não sei meu CEP
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="rua" name="Rua"
+                                               placeholder="Rua" required>
+                                        <label for="rua" class="required-field">Rua</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="numero" name="Numero"
+                                               placeholder="Número" required>
+                                        <label for="numero" class="required-field">Número</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-8">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="complemento"
+                                               name="Complemento" placeholder="Complemento">
+                                        <label for="complemento">Complemento</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="bairro" name="Bairro"
+                                               placeholder="Bairro" required>
+                                        <label for="bairro" class="required-field">Bairro</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-5">
+                                    <div class="form-floating">
+                                        <input autocomplete="on" type="text" class="form-control" id="cidade" name="Cidade"
+                                               placeholder="Cidade" required>
+                                        <label for="cidade" class="required-field">Cidade</label>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-floating">
+                                        <select autocomplete="on" class="form-select" id="estado" name="Estado" required>
+                                            <option value="" selected disabled>Selecione</option>
+                                            <option value="AC">AC</option>
+                                            <option value="AL">AL</option>
+                                            <option value="AP">AP</option>
+                                            <option value="AM">AM</option>
+                                            <option value="BA">BA</option>
+                                            <option value="CE">CE</option>
+                                            <option value="DF">DF</option>
+                                            <option value="ES">ES</option>
+                                            <option value="GO">GO</option>
+                                            <option value="MA">MA</option>
+                                            <option value="MT">MT</option>
+                                            <option value="MS">MS</option>
+                                            <option value="MG">MG</option>
+                                            <option value="PA">PA</option>
+                                            <option value="PB">PB</option>
+                                            <option value="PR">PR</option>
+                                            <option value="PE">PE</option>
+                                            <option value="PI">PI</option>
+                                            <option value="RJ">RJ</option>
+                                            <option value="RN">RN</option>
+                                            <option value="RS">RS</option>
+                                            <option value="RO">RO</option>
+                                            <option value="RR">RR</option>
+                                            <option value="SC">SC</option>
+                                            <option value="SP">SP</option>
+                                            <option value="SE">SE</option>
+                                            <option value="TO">TO</option>
+                                        </select>
+                                        <label for="estado" class="required-field">Estado</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-step flex-grow-1 overflow-auto">
+                        <div class="mb-5">
+                            <h2 class="section-title mb-4">
+                                <i class="bi bi-key"></i>
+                                Segurança da Conta
+                            </h2>
+
+                            <div class="row g-4">
+                                <div class="col-12">
+                                    <div class="form-floating position-relative">
+                                        <input autocomplete="new-password" type="password" class="form-control" id="senha"
+                                               name="Senha" placeholder="Senha" required>
+                                        <label for="senha" class="required-field">Senha</label>
+                                        <span class="password-toggle" data-target="senha">
+                                            <i class="fa fa-eye-slash toggle-icon"></i>
+                                        </span>
+                                    </div>
+                                    <div class="form-text">Mínimo 8 caracteres, com letra, número e símbolo.</div>
+                                </div>
+
+                                <div class="col-12">
+                                    <div class="form-floating position-relative">
+                                        <input autocomplete="new-password" type="password" class="form-control" id="confirmarSenha"
+                                               name="ConfirmarSenha" placeholder="Confirmar Senha" required>
+                                        <label for="confirmarSenha" class="required-field">Confirmar Senha</label>
+                                        <span class="password-toggle" data-target="confirmarSenha">
+                                            <i class="fa fa-eye-slash toggle-icon"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="termos" required>
+                                <label class="form-check-label" for="termos">
+                                    Li e aceito os <a href="#" class="text-decoration-none">Termos de Uso</a> e <a href="#"
+                                                                                                                   class="text-decoration-none">Política
+                                        de Privacidade</a>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mt-4">
+                        <div class="col-md-6">
+                            <button type="button" id="btnVoltar" class="btn btn-outline-secondary w-100 d-none py-3">Voltar
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" id="btnProximo" class="btn btn-primary w-100 py-3">
+                                Próximo <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                            <button type="submit" id="btnFinalizar" class="btn btn-primary w-100 d-none py-3">
+                                Criar Conta <i class="bi bi-check2-circle ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 text-center">
+                        <p class="mb-0">
+                            Já possui uma conta? <a href="#" class="text-decoration-none">Entrar</a>
+                        </p>
+                    </div>
+                </form>
             </div>
-        </form>
-    </section>
+        </div>
+    </div>
 </div>
 
-@section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-    <script src="~/js/paginas/cadastro-usuario/form-tabs.js" type="module"></script>
-    <script src="~/js/paginas/cadastro-usuario/buscar-cep.js"></script>
-}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+<script>
+    jQuery(document).ready(function ($) {
+        $('#documento').mask('000.000.000-00');
+        $('#telefone').mask('(00) 00000-0000');
+        $('#telefoneFixo').mask('(00) 0000-0000');
+        $('#cep').mask('00.000-000');
+    });
+</script>
+
+
+<script type="module" src="~/js/paginas/cadastro-usuario/form-validacoes.js?v=@DateTime.Now.Ticks"></script>
+<script type="module" src="~/js/paginas/cadastro-usuario/form-tabs.js?v=@DateTime.Now.Ticks"></script>
+<script src="~/js/paginas/cadastro-usuario/buscar-cep.js?v=@DateTime.Now.Ticks"></script>

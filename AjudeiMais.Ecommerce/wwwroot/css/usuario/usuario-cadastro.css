@@ -1,94 +1,535 @@
-﻿html, body { height: 100%; margin: 0; }
-.form-container-wrapper {
+﻿
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: var(--font-family-base);
+    color: var(--color-gray-800);
+    overflow: hidden; /* Prevent body scroll */
+}
+
+.registration-page-container {
     display: flex;
-    height: 100vh;
-    background: var(--color-bg);
+    height: 100vh; /* Set exact height to fill viewport */
+    background: linear-gradient(to right, var(--color-primary), var(--color-primary-light)); /* Gradient background */
+    overflow: hidden; /* Prevent any container scroll */
 }
-.wizard-sidebar {
-    width: 240px;
-    background: var(--color-primary);
-    color: var(--color-gray-100);
-    display: flex;
-    flex-direction: column;
-    padding: var(--spacing-lg) var(--spacing-md);
-}
-.wizard-sidebar .form-header {
-    margin-bottom: var(--spacing-xl);
-}
-.wizard-sidebar .form-header h1 {
-    font-size: var(--font-size-xl);
-    font-family: var(--font-family-heading);
-    margin-bottom: var(--spacing-xs);
-}
-.wizard-sidebar .step-indicator {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-md);
-    flex: 1;
-}
-.wizard-sidebar .step {
+
+.left-panel {
+    flex: 1; /* Takes half the width */
     display: flex;
     align-items: center;
-    gap: var(--spacing-sm);
-    cursor: pointer;
-}
-.wizard-sidebar .step-number {
-    width: 32px; height: 32px;
-    line-height: 32px;
+    justify-content: center;
+    padding: var(--spacing-xxl);
+    color: var(--color-gray-100); /* White text for contrast */
     text-align: center;
-    border: 2px solid var(--color-gray-300);
-    border-radius: 50%;
-    background: #fff;
-    color: var(--color-gray-600);
-    font-weight: var(--font-weight-bold);
+    overflow: hidden; /* Prevent internal scroll if text is too long */
 }
-.wizard-sidebar .step.active .step-number {
-    background: var(--color-accent);
-    border-color: var(--color-accent);
-    color: #fff;
+
+.logo-area img {
+    max-width: 250px; /* Adjust logo size */
+    height: auto;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2)); /* Subtle shadow for logo */
 }
-.wizard-sidebar .step.active .step-title {
-    color: var(--color-accent);
-    font-weight: var(--font-weight-bold);
-}
-.wizard-sidebar .step-title {
-    font-size: var(--font-size-md);
-}
-.wizard-content {
-    flex: 1;
-    overflow-y: auto;
-    background: var(--color-surface);
-    padding: var(--spacing-xl) var(--spacing-lg);
-}
-.form-header-main {
-    background: var(--color-secondary);
-    color: var(--color-gray-100);
-    padding: var(--spacing-lg);
-    border-radius: var(--radius-md);
-    margin-bottom: var(--spacing-lg);
-}
-.form-header-main h1 {
-    margin: 0;
+
+.logo-area h2 {
     font-family: var(--font-family-heading);
-    font-size: var(--font-size-2xl);
+    font-size: var(--font-size-3xl);
+    color: var(--color-gray-100);
+    margin-bottom: var(--spacing-sm);
 }
+
+.logo-area p {
+    font-size: var(--font-size-lg);
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.right-panel {
+    flex: 1; /* Takes the other half */
+    display: flex;
+    align-items: center; /* Center the form vertically */
+    justify-content: center; /* Center the form horizontally */
+    background-color: var(--color-surface); /* White background for the form side */
+    padding: var(--spacing-xl); /* Padding around the form container */
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1); /* Shadow to separate panels */
+    position: relative;
+    z-index: 1;
+    overflow: hidden; /* Prevent internal scroll of this panel */
+}
+
+.form-container {
+    width: 100%;
+    max-width: 1200px; /* Constrain form width */
+    background-color: var(--color-surface);
+    padding: var(--spacing-xl);
+    border-radius: var(--radius-lg);
+    box-shadow: none;
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack its children vertically */
+    height: 100%; /* Take full height of right-panel (minus padding) */
+    max-height: calc(100vh - (var(--spacing-xl) * 2)); /* Account for right-panel padding */
+    overflow: hidden; /* Prevent form container scroll */
+}
+
+.section-padding.container {
+    flex-grow: 1; /* Allow the content section to grow */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Crucial: prevent scroll on this container */
+}
+
+form#formularioCadastro {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow the form itself to grow */
+    overflow: hidden; /* Prevent form scroll */
+}
+
 .form-step {
     display: none;
+    animation: fadeIn 0.5s ease-in-out;
+    flex-grow: 1; /* Allow each form step to grow */
+    overflow-y: auto; /* IMPORTANT: Enable vertical scroll ONLY within the step content if it overflows */
+    padding-right: 15px; /* Add padding for scrollbar if it appears */
 }
+
 .form-step.active {
-    display: block;
+    display: flex; /* Change to flex to manage inner content */
+    flex-direction: column; /* Stack inner content */
 }
-.password-container { position: relative; }
-.password-toggle {
-    position: absolute; top: 50%; right: 10px;
-    transform: translateY(-50%); cursor: pointer;
+
+
+h1, h2 {
+    font-family: var(--font-family-heading);
+    color: var(--color-primary-dark);
 }
-.password-toggle i { font-size: 18px; color: #888; }
-.wizard-footer {
+
+.form-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.form-header h1 {
+    font-size: var(--font-size-3xl);
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-header p {
+    font-size: var(--font-size-md);
+    color: var(--color-gray-600);
+}
+
+.progress-container {
+    width: 100%;
+    background-color: var(--color-gray-300);
+    border-radius: var(--radius-sm);
+    height: 8px;
+    margin-bottom: var(--spacing-xl);
+    overflow: hidden;
+    flex-shrink: 0; /* Prevent progress bar from shrinking */
+}
+
+.progress-bar {
+    height: 100%;
+    width: 0%; /* Will be controlled by JS */
+    background-color: var(--color-accent);
+    border-radius: var(--radius-sm);
+    transition: width 0.4s ease-in-out;
+}
+
+.step-indicator {
     display: flex;
     justify-content: space-between;
-    margin-top: var(--spacing-lg);
+    margin-bottom: var(--spacing-xl);
+    /* padding: 0 var(--spacing-md);  -- REMOVIDO OU AJUSTADO */
+    flex-shrink: 0; /* Prevent indicator from shrinking */
+    position: relative; /* Adiciona position relative para posicionar as linhas absolutas */
+    padding: 0 5%; /* Ajuste este padding para dar um respiro nas laterais, pode ser percentual */
 }
-.wizard-footer .btn {
-    padding: var(--spacing-sm) var(--spacing-md);
+
+.step {
+    text-align: center;
+    flex-grow: 1;
+    position: relative;
+    padding-bottom: var(--spacing-md);
+    /* Centraliza o conteúdo de cada passo para garantir que o número e o título fiquem alinhados */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 15px; /* Alinha com o centro do step-number */
+    left: calc(50% + 15px); /* Inicia após o centro do step-number + metade do seu tamanho */
+    right: calc(-50% + 15px); /* Termina antes do centro do próximo step-number + metade do seu tamanho */
+    width: auto; /* Remove width fixo, permite que left/right determinem a largura */
+    height: 2px;
+    background-color: var(--color-gray-400);
+    z-index: 0;
+    /* transform: translateX(-50%); -- REMOVIDO */
+}
+
+.step-number {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background-color: var(--color-gray-400);
+    color: var(--color-gray-100);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: var(--font-weight-bold);
+    margin: 0 auto var(--spacing-xs);
+    z-index: 1;
+    position: relative;
+    flex-shrink: 0; /* Impede que o número encolha */
+}
+
+.step-title {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-medium);
+}
+
+.step.active .step-number {
+    background-color: var(--color-primary);
+}
+
+.step.active .step-title {
+    color: var(--color-primary-dark);
+    font-weight: var(--font-weight-bold);
+}
+
+.step.active:not(:last-child)::after {
+    background-color: var(--color-primary);
+}
+
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.section-title {
+    font-size: var(--font-size-xl);
+    color: var(--color-primary-dark);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-bold);
+    flex-shrink: 0; /* Prevent title from shrinking */
+}
+
+.section-title i {
+    color: var(--color-accent);
+}
+
+/* Form Controls */
+.form-floating > .form-control,
+.form-floating > .form-select {
+    height: calc(3.5rem + 2px);
+    padding: var(--spacing-md) var(--spacing-sm);
+    border-color: var(--color-gray-400);
+    border-radius: var(--radius-sm);
+    font-size: var(--font-size-md);
+}
+
+.form-floating > label {
+    padding: var(--spacing-md) var(--spacing-sm);
+    color: var(--color-gray-600);
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--color-secondary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-secondary-light), 0.25);
+}
+
+.form-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-500);
+    margin-top: var(--spacing-xxs);
+}
+
+.required-field::after {
+    content: ' *';
+    color: var(--color-danger);
+}
+
+/* File Upload */
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--color-gray-400);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    background-color: var(--color-gray-200);
+}
+
+.file-upload:hover {
+    border-color: var(--color-primary);
+    background-color: var(--color-gray-300);
+}
+
+.file-upload i {
+    font-size: var(--font-size-xxl);
+    color: var(--color-gray-500);
+    margin-bottom: var(--spacing-xs);
+}
+
+.file-upload p {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-gray-700);
+}
+
+.file-upload small {
+    color: var(--color-gray-600);
+}
+
+/* Buttons */
+.btn {
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: var(--color-gray-100);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+}
+
+.btn-outline-secondary {
+    border-color: var(--color-gray-400);
+    color: var(--color-gray-700);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--color-gray-200);
+    border-color: var(--color-gray-500);
+    color: var(--color-gray-900);
+}
+
+/* Checkbox */
+.form-check-input:checked {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-accent), 0.25);
+}
+
+.form-check-label {
+    color: var(--color-gray-700);
+}
+
+.form-check-label a {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.form-check-label a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline !important;
+}
+
+/* Link for Login */
+.text-center p {
+    color: var(--color-gray-700);
+}
+
+.text-center a {
+    color: var(--color-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.text-center a:hover {
+    color: var(--color-primary-dark);
+    text-decoration: underline !important;
+}
+
+/* Responsiveness for step indicator titles */
+@media (max-width: 576px) {
+    .step-title {
+        font-size: var(--font-size-xs);
+        /* Reduzir o tamanho da fonte pode ajudar a evitar quebras de linha */
+        white-space: nowrap; /* Evita que o texto quebre em várias linhas */
+        overflow: hidden; /* Esconde o texto que excede */
+        text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+    }
+    .step-indicator {
+        padding: 0 2%; /* Ajustar padding em telas menores */
+    }
+    .step:not(:last-child)::after {
+        left: calc(50% + 12px); /* Ajuste menor para telas pequenas */
+        right: calc(-50% + 12px);
+    }
+}
+
+/* Specific adjustments for no-scroll on smaller screens */
+@media (max-width: 991.98px) { /* Medium devices (md) and smaller */
+    .registration-page-container {
+        flex-direction: column;
+        height: 100vh; /* Ensure full height on mobile */
+    }
+
+    .left-panel {
+        height: 150px; /* Reduced height for the logo section on smaller screens */
+        padding: var(--spacing-md);
+        flex: none;
+        width: 100%;
+        text-align: center;
+    }
+
+    .logo-area img {
+        max-width: 120px; /* Smaller logo on mobile */
+        margin-bottom: var(--spacing-xs) !important;
+    }
+
+    .logo-area h2 {
+        font-size: var(--font-size-xl); /* Smaller heading on mobile */
+        margin-bottom: var(--spacing-xxs);
+    }
+    .logo-area p {
+        font-size: var(--font-size-sm); /* Smaller text on mobile */
+        display: -webkit-box;
+        -webkit-line-clamp: 2; /* Limit to 2 lines */
+        -webkit-box-orient: vertical;
+        overflow: hidden; /* Hide overflow text */
+        text-overflow: ellipsis; /* Add ellipsis if text overflows */
+    }
+
+
+    .right-panel {
+        flex: 1; /* Allow form panel to grow and take remaining space */
+        width: 100%;
+        padding: var(--spacing-lg);
+        box-shadow: none;
+        height: calc(100vh - 150px); /* Fill remaining height (100vh - left-panel height) */
+    }
+
+    .form-container {
+        max-height: 100%; /* Take full height of the right-panel without overflow */
+        padding: var(--spacing-md); /* Adjust form padding on small screens */
+    }
+
+    .form-step {
+        overflow-y: auto; /* Enable scroll within step, if content exceeds space */
+        padding-right: 15px; /* Add padding for scrollbar */
+    }
+}
+
+
+.form-control.is-invalid,
+.form-select.is-invalid,
+.form-check-input.is-invalid {
+    border-color: var(--color-danger);
+    padding-right: calc(1.5em + 0.75rem); /* Adjust padding for icon */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+}
+
+.form-floating > .form-control.is-invalid ~ label::after,
+.form-floating > .form-select.is-invalid ~ label::after {
+    display: none; /* Hide required asterisk if Bootstrap's invalid feedback is used */
+}
+
+/* Style for the custom file upload when invalid */
+.file-upload.is-invalid {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-danger), 0.25);
+}
+
+.form-check-input.is-invalid {
+    border-color: var(--color-danger);
+}
+
+/* Optional: Style for valid inputs (green border) */
+.form-control.is-valid,
+.form-select.is-valid,
+.form-check-input.is-valid {
+    border-color: var(--color-success);
+}
+
+.file-upload.is-valid {
+    border-color: var(--color-success);
+    box-shadow: 0 0 0 0.25rem rgba(var(--color-success), 0.25);
+}
+
+/* To ensure labels in form-floating also change color on invalid */
+.form-floating > .form-control.is-invalid:focus ~ label,
+.form-floating > .form-control.is-invalid ~ label,
+.form-floating > .form-select.is-invalid:focus ~ label,
+.form-floating > .form-select.is-invalid ~ label {
+    color: var(--color-danger);
+}
+
+/* Optional: To ensure labels in form-floating also change color on valid */
+.form-floating > .form-control.is-valid:focus ~ label,
+.form-floating > .form-control.is-valid ~ label,
+.form-floating > .form-select.is-valid:focus ~ label,
+.form-floating > .form-select.is-valid ~ label {
+    color: var(--color-success);
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: var(--spacing-md); /* Ajuste conforme seu padding do form-floating */
+    transform: translateY(-50%);
+    cursor: pointer;
+    z-index: 2; /* Garante que o ícone fique acima do input */
+    color: var(--color-gray-600);
+}
+
+.password-toggle:hover {
+    color: var(--color-primary);
+}
+
+.password-toggle .toggle-icon {
+    font-size: var(--font-size-lg); /* Tamanho do ícone */
+}
+
+/* Ajusta o padding-right do input para não sobrepor o ícone */
+.form-floating > .form-control[type="password"] {
+    padding-right: calc(3.5rem + 2px); /* Aumenta o padding para acomodar o ícone */
+}
+
+/* Quando o input está com borda de validação, ajuste o padding-right para não sobrepor o ícone */
+.form-floating > .form-control[type="password"].is-invalid,
+.form-floating > .form-control[type="password"].is-valid {
+    padding-right: calc(3.5rem + 2px + 1.5em + 0.75rem); /* Aumenta mais para o ícone de validação do Bootstrap */
+}
+
+
+/* Certifique-se que o label flutuante não se sobreponha ao ícone */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    padding-right: calc(1.5rem + var(--spacing-md)); /* Ajuste se necessário para o label */
 }
