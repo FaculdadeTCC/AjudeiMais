@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -54,6 +55,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                 HttpContext.Session.SetString("JwtToken", loginResponse.Token);
                 HttpContext.Session.SetString("UserRole", loginResponse.Role);
                 HttpContext.Session.SetString("UserId", loginResponse.Id);
+                HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
 
                 // Redireciona para cada tela pela role
@@ -64,7 +66,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     case "instituicao":
                         return RedirectToAction("Perfil", "Instituicao");
                     case "usuario":
-                        return RedirectToAction("Perfil", "Usuario");
+                        return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
                     default:
                         return RedirectToAction("AcessoNegado", "Home");
                 }

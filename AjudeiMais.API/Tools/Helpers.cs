@@ -5,22 +5,24 @@ using static System.Net.Mime.MediaTypeNames;
 namespace AjudeiMais.API.Tools
 {
     /// <summary>
-    /// Classe utilitária com métodos auxiliares diversos.
+    /// Classe utilitária com métodos auxiliares como cálculo de distância geográfica e manipulação de imagens.
     /// </summary>
     public static class Helpers
     {
-        #region Calcular Distancia
+        #region Calcular Distância
+
         /// <summary>
-        /// Calcula a distância entre dois pontos geográficos em quilômetros utilizando a fórmula de Haversine.
+        /// Calcula a distância entre dois pontos geográficos (latitude/longitude) em quilômetros,
+        /// utilizando a fórmula de Haversine.
         /// </summary>
-        /// <param name="lat1">Latitude do primeiro ponto em graus decimais.</param>
-        /// <param name="lon1">Longitude do primeiro ponto em graus decimais.</param>
-        /// <param name="lat2">Latitude do segundo ponto em graus decimais.</param>
-        /// <param name="lon2">Longitude do segundo ponto em graus decimais.</param>
+        /// <param name="lat1">Latitude do primeiro ponto.</param>
+        /// <param name="lon1">Longitude do primeiro ponto.</param>
+        /// <param name="lat2">Latitude do segundo ponto.</param>
+        /// <param name="lon2">Longitude do segundo ponto.</param>
         /// <returns>Distância entre os dois pontos em quilômetros.</returns>
         public static double CalcularDistancia(double lat1, double lon1, double lat2, double lon2)
         {
-            var R = 6371; // Raio da Terra em KM
+            var R = 6371; // Raio da Terra em km
             var dLat = ToRadians(lat2 - lat1);
             var dLon = ToRadians(lon2 - lon1);
 
@@ -36,32 +38,45 @@ namespace AjudeiMais.API.Tools
         /// Converte um ângulo de graus para radianos.
         /// </summary>
         /// <param name="angle">Ângulo em graus.</param>
-        /// <returns>Ângulo convertido em radianos.</returns>
+        /// <returns>Ângulo em radianos.</returns>
         private static double ToRadians(double angle) => angle * Math.PI / 180;
+
         #endregion
 
         #region Imagens
+
+        /// <summary>
+        /// Salva uma imagem enviada pelo usuário no formato WebP com qualidade configurável.
+        /// O arquivo é salvo em uma pasta específica dentro da aplicação.
+        /// </summary>
+        /// <param name="imagem">Arquivo de imagem enviado pelo formulário (IFormFile).</param>
+        /// <param name="pastas">Caminho em pastas onde a imagem será salva (ex: ["images", "usuarios", "id"]).</param>
+        /// <param name="qualidade">Qualidade da imagem WebP (0 a 100).</param>
+        /// <returns>
+        /// Caminho relativo do arquivo salvo (ex: "images/usuarios/123/abc.webp"),
+        /// ou <c>null</c> se a imagem estiver vazia.
+        /// </returns>
         public static async Task<string> SalvarImagemComoWebpAsync(
             IFormFile imagem,
-            string[] pastas,        // Exemplo: new[] { "images", "profile", "usuario", usuarioGuid.ToString() }
-            int qualidade = 100      // Qualidade da imagem WebP entre 0 e 100
+            string[] pastas,
+            int qualidade = 100
         )
         {
             if (imagem == null || imagem.Length == 0)
                 return null;
 
-            // Caminho relativo (salvo no banco) e caminho físico
+            // Define os caminhos relativos e físicos
             string pastaRelativa = Path.Combine(pastas);
             string caminhoPasta = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", pastaRelativa);
 
-            // Garante que a pasta exista
+            // Cria o diretório se não existir
             Directory.CreateDirectory(caminhoPasta);
 
-            // Nome do arquivo gerado
+            // Gera um nome único para o arquivo
             string nomeArquivo = Guid.NewGuid().ToString() + ".webp";
             string caminhoCompleto = Path.Combine(caminhoPasta, nomeArquivo);
 
-            // Conversão para WebP usando ImageSharp
+            // Carrega a imagem e salva em WebP
             using (var streamEntrada = imagem.OpenReadStream())
             using (var imagemSharp = await SixLabors.ImageSharp.Image.LoadAsync(streamEntrada))
             {
@@ -71,12 +86,11 @@ namespace AjudeiMais.API.Tools
                 });
             }
 
-            // Retorna o caminho relativo com separadores de URL
+            // Retorna o caminho relativo (com barras de URL)
             string caminhoRelativo = Path.Combine(pastaRelativa, nomeArquivo).Replace("\\", "/");
             return caminhoRelativo;
         }
 
         #endregion
-
     }
 }

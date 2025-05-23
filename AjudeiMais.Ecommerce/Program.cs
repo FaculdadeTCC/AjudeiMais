@@ -29,10 +29,6 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.MapControllerRoute(
     name: "usuario-cadastrar",
     pattern: "usuario/cadastrar",
     defaults: new { controller = "Usuario", action = "Cadastro" });
@@ -44,13 +40,18 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "usuario-perfil",
-    pattern: "  /{id}",
-    defaults: new { controller = "Usuario", action = "Entrar" });
+    pattern: "usuario/perfil/{guid}",
+    defaults: new { controller = "Usuario", action = "Perfil" });
 
 app.MapControllerRoute(
-    name: "usuario-login",
-    pattern: "usuario/login",
+    name: "login",
+    pattern: "login",
     defaults: new { controller = "Home", action = "Login" });
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 
 app.Run();

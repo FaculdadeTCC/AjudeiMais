@@ -3,6 +3,7 @@ using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Services;
 using AjudeiMais.Data.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -12,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Registra o ApplicationDbContext com a string de conexão
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionDev-Danilo")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Registra os outros serviços no container de dependências (DI)
 builder.Services.AddScoped<UsuarioService>();
@@ -36,6 +37,11 @@ builder.Services.AddScoped<ChatService>();
 builder.Services.AddScoped<MensagemChatRepository>();
 builder.Services.AddScoped<MensagemChatService>();
 builder.Services.AddScoped<NominatimService>();
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 10485760; // 10 MB
+});
 
 builder.Services.AddHttpClient();
 

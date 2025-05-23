@@ -16,13 +16,14 @@
 
         public async Task<NominatimResultDto> ObterCoordenadasPorCepAsync(string cep, string cidade)
         {
-            var url = $"https://nominatim.openstreetmap.org/search?postalcode={cep}&city={cidade}&country=Brazil&format=json";
+            string cepLimpo = new string(cep.Where(char.IsDigit).ToArray());
+            var url = $"https://nominatim.openstreetmap.org/search?postalcode={cepLimpo}&city={cidade}&country=Brazil&format=json";
 
             var response = await _httpClient.GetStringAsync(url);
 
             var resultados = JsonSerializer.Deserialize<List<NominatimResultDto>>(response);
 
-            if (resultados == null)
+            if (resultados.Count == 0)
             {
                 resultados.FirstOrDefault().Longitude = "";
                 resultados.FirstOrDefault().Latitude = "";
