@@ -124,8 +124,7 @@ h1, h2 {
     width: 100%;
     background-color: var(--color-gray-300);
     border-radius: var(--radius-sm);
-    height: 8px;
-    margin-bottom: var(--spacing-xl);
+    height: 5px;
     overflow: hidden;
     flex-shrink: 0; /* Prevent progress bar from shrinking */
 }

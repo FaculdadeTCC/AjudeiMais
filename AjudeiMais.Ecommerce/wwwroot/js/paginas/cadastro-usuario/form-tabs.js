@@ -102,8 +102,21 @@ function validateCurrentStep(shouldFocus = false) {
             }
         } else if (input.type === 'file' && input.id === 'fotoPerfil') {
             if (input.files.length === 0) {
-                inputIsValid = false;
-                currentFieldErrorMessage = 'Por favor, selecione uma foto de perfil.';
+                setInputInvalid(input.closest('.file-upload') || input, false);
+            } else {
+                const file = input.files[0];
+                const maxSize = 5 * 1024 * 1024; // 5MB
+                const allowedTypes = ['image/jpeg', 'image/png'];
+
+                if (!allowedTypes.includes(file.type)) {
+                    setInputInvalid(input.closest('.file-upload') || input, false);
+                    displayAlert('Apenas arquivos JPG ou PNG são permitidos.', 'danger');
+                } else if (file.size > maxSize) {
+                    setInputInvalid(input.closest('.file-upload') || input, false);
+                    displayAlert('A imagem deve ter no máximo 5MB.', 'danger');
+                } else {
+                    setInputValid(input.closest('.file-upload') || input);
+                }
             }
         } else {
             // Validação de campos vazios (exceto senhas, que têm tratamento específico logo abaixo)

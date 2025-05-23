@@ -1,17 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AjudeiMais.Data.Models.ProdutoModel;
+﻿using AjudeiMais.Data.Models.ProdutoModel;
 
-namespace AjudeiMais.Data.Models.UsuarioModel
+namespace AjudeiMais.API.DTO
 {
-    public class Usuario
+    public class UsuarioDTO
     {
-        [Key]
         public int Usuario_ID { get; set; }
         public string NomeCompleto { get; set; }
         public string Documento { get; set; }
@@ -26,7 +18,7 @@ namespace AjudeiMais.Data.Models.UsuarioModel
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
-        public string FotoDePerfil { get; set; }
+        public IFormFile FotoDePerfil { get; set; }
         public string? TelefoneFixo { get; set; }
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }

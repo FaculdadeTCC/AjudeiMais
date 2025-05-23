@@ -1,22 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Luiz - Perfil";
+﻿@model AjudeiMais.Ecommerce.Models.UsuarioPerfilModel;
+@using AjudeiMais.Ecommerce.Tools;
+
+@{
+    var usuario = Model;
+
+    ViewData["Title"] = $"{usuario.NomeCompleto} - Perfil";
 }
-<section class="container my-5">
+<section class="my-5 container">
     <!-- Topo do Perfil -->
     <div class="row align-items-start mb-5">
         <!-- Foto do usuário -->
-        <div class="col-auto position-relative text-center">
-            <img src="https://placehold.co/150x150" class="rounded-circle border border-primary border-2" alt="Foto do usuário" width="150" height="150">
+        <div class="position-relative col-auto text-center">
+            <img src="@(Assistant.ImageServerURL() + usuario.FotoDePerfil)" class="rounded-circle border-primary border border-2" alt="Foto do usuário" width="150" height="150">
             <!-- Selo de verificado -->
-            <span class="position-absolute translate-middle p-2 bg-success rounded-circle border border-light bottom-0 end-0">
+            <span class="position-absolute translate-middle p-2 bg-success rounded-circle border-light bottom-0 end-0 border">
                 <i class="fas fa-check text-white small"></i>
             </span>
         </div>
 
         <!-- Informações principais -->
         <div class="col">
-            <h2 class="d-flex align-items-center gap-2 fw-bold text-dark">João Silva</h2>
-            <p class="text-muted mb-2">Belo Horizonte, MG</p>
+            <h2 class="d-flex align-items-center gap-2 fw-bold text-dark">@usuario.NomeCompleto</h2>
+            <p class="text-muted mb-2">@usuario.Cidade, @usuario.Estado</p>
 
             <!-- Avaliação -->
             <div class="d-flex align-items-center text-warning mb-3">
