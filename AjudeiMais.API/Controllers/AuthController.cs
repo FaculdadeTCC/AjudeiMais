@@ -36,7 +36,8 @@ public class AuthController : ControllerBase
             {
                 token,
                 role = usuario.Role,
-                id = usuario.Usuario_ID.ToString()
+                id = usuario.Usuario_ID.ToString(),
+                GUID = usuario.GUID
             });
         }
 
@@ -49,7 +50,7 @@ public class AuthController : ControllerBase
             {
                 token,
                 role = instituicao.Role,
-                id = instituicao.Instituicao_ID.ToString()
+                id = instituicao.Instituicao_ID.ToString(),
             });
         }
 

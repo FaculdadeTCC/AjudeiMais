@@ -1,6 +1,9 @@
-﻿    using AjudeiMais.API.Repositories;
+﻿using AjudeiMais.API.DTO;
+using AjudeiMais.API.Repositories;
+using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AjudeiMais.API.Services
@@ -35,6 +38,19 @@ namespace AjudeiMais.API.Services
                 throw new Exception("Erro ao buscar usuário.");
             }
         }
+        
+        public async Task<Usuario> GetByGUID(string GUID)
+        {
+            try
+            {
+                return await _usuarioRepository.GetByGUID(GUID);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar usuário por GUID");
+                throw new Exception("Erro ao buscar usuário.");
+            }
+        }
 
         public async Task<IEnumerable<Usuario>> GetAll()
         {
@@ -62,24 +78,77 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task SaveOrUpdate(Usuario model)
+        public async Task SaveOrUpdate(UsuarioDTO model)
         {
             try
             {
-                model.DataUpdate = DateTime.Now;
+                var currentUsuario = await _usuarioRepository.GetByEmail(model.Email);
 
-                // Geolocalização via Nominatim
-                var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(model.CEP, model.Cidade);
-                model.Latitude = coordenadas.Latitude;
-                model.Longitude = coordenadas.Longitude;
-
-                // Hash da senha (caso seja novo ou senha alterada)
-                if (model.Usuario_ID == 0 || !string.IsNullOrWhiteSpace(model.Senha))
+                if (currentUsuario != null)
                 {
-                    model.Senha = _passwordHasher.HashPassword(model, model.Senha);
+                    throw new Exception("Este e-mail já está sendo utilizado por outro usuário.");
                 }
 
-                await _usuarioRepository.SaveOrUpdate(model);
+                model.GUID = Guid.NewGuid().ToString();
+
+                var pasta = new[] { "images", "profile", "user", model.GUID.ToString() };
+
+                string path = await Helpers.SalvarImagemComoWebpAsync(model.FotoDePerfil, pasta);
+
+                Usuario Usuario = new Usuario
+                {
+                    Usuario_ID = model.Usuario_ID,
+                    NomeCompleto = model.NomeCompleto,
+                    Documento = model.Documento,
+                    Email = model.Email,
+                    Senha = model.Senha,
+                    GUID = model.GUID,
+                    Role = model.Role,
+                    CEP = model.CEP,
+                    Rua = model.Rua,
+                    Numero = model.Numero,
+                    Complemento = model.Complemento ?? "",
+                    Bairro = model.Bairro,
+                    Cidade = model.Cidade,
+                    Estado = model.Estado,
+                    FotoDePerfil = path,
+                    TelefoneFixo = model.TelefoneFixo ?? "",
+                    Latitude = model.Latitude ?? "",
+                    Longitude = model.Longitude ?? "",
+                    Habilitado = model.Habilitado,
+                    Excluido = model.Excluido,
+                    DataCriacao = model.DataCriacao,
+                    DataUpdate = model.DataUpdate,
+                    Produtos = model.Produtos,
+                };
+
+                if (model.Usuario_ID > 0)
+                {
+                    var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
+                    Usuario.Latitude = coordenadas.Latitude;
+                    Usuario.Longitude = coordenadas.Longitude;
+
+                    Usuario.Senha = _passwordHasher.HashPassword(Usuario, Usuario.Senha);
+                    Usuario.DataUpdate = DateTime.Now;
+
+                    await _usuarioRepository.SaveOrUpdate(Usuario);
+                }
+                else
+                {
+                    Usuario.Role = "usuario";
+                    Usuario.DataCriacao = DateTime.Now;
+                    Usuario.Habilitado = true;
+
+                    // Geolocalização via Nominatim
+                    var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
+                    Usuario.Latitude = coordenadas.Latitude;
+                    Usuario.Longitude = coordenadas.Longitude;
+
+                    // Hash da senha (caso seja novo ou senha alterada)
+                    Usuario.Senha = _passwordHasher.HashPassword(Usuario, Usuario.Senha);
+
+                    await _usuarioRepository.SaveOrUpdate(Usuario);
+                }
             }
             catch (Exception ex)
             {

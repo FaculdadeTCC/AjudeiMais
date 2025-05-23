@@ -1,4 +1,7 @@
-﻿function validarEmail(email) {
+﻿// ~/js/paginas/cadastro-usuario/form-validacoes.js (Atualizado)
+
+// Funções de validação existentes
+function validarEmail(email) {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
 }
@@ -34,12 +37,44 @@ function validarTelefone(telefone) {
 function validarSenha(senha) {
     // Requisitos:
     // - Mínimo 8 caracteres
-    // - Pelo menos uma letra
+    // - Pelo menos uma letra (maiúscula ou minúscula)
     // - Pelo menos um número
-    // - Pelo menos um caractere especial
-
+    // - Pelo menos um caractere especial (dos listados: @$!%*?&)
     const regexSenha = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regexSenha.test(senha);
 }
 
-export { validarEmail, validarCPF, validarNome, validarTelefone, validarSenha };
+// Funções para feedback visual
+function setInputInvalid(inputElement, shouldFocus = true) {
+    inputElement.classList.remove('is-valid');
+    inputElement.classList.add('is-invalid');
+    if (shouldFocus) {
+        inputElement.focus();
+    }
+}
+
+function setInputValid(inputElement) {
+    inputElement.classList.remove('is-invalid');
+    inputElement.classList.add('is-valid');
+}
+
+function clearInputValidation(inputElement) {
+    inputElement.classList.remove('is-invalid');
+    inputElement.classList.remove('is-valid');
+}
+
+function displayAlert(message, type = 'danger') {
+    alert(message);
+}
+
+export {
+    validarEmail,
+    validarCPF,
+    validarNome,
+    validarTelefone,
+    validarSenha, // Exporta a função validarSenha
+    setInputInvalid,
+    setInputValid,
+    clearInputValidation,
+    displayAlert
+};

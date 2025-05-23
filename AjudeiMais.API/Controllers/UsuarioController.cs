@@ -1,4 +1,5 @@
-﻿    using AjudeiMais.API.Services;
+﻿using AjudeiMais.API.DTO;
+using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,20 @@ namespace AjudeiMais.API.Controllers
             {
                 return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
             }
+        } 
+        
+        [HttpGet("GetByGUID/{GUID}")]
+        public async Task<IActionResult> GetUsuarioByGuid(string GUID)
+        {
+            try
+            {
+                var usuarios = await _service.GetByGUID(GUID);
+                return Ok(usuarios);  // Retorna todos os usuários
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
+            }
         }
 
         [HttpGet("ativos")]
@@ -44,7 +59,8 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(Usuario model)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SaveOrUpdate([FromForm] UsuarioDTO model)
         {
             try
             {
