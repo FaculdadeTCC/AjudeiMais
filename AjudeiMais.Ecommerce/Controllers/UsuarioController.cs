@@ -41,6 +41,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         [RoleAuthorize("usuario", "admin")]
         public async Task<IActionResult> Cadastro(UsuarioModel model)
         {
+            model.Role = "Usuario";
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");

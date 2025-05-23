@@ -14,12 +14,9 @@
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public string Telefone { get; set; }
-        public double Latitude { get; set; }
-        public double Longitude { get; set; }
-        public bool Habilitado { get; set; }
-        public bool Excluido { get; set; }
-        public DateTime DataCriacao { get; set; }
-        public DateTime DataUpdate { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public string? Role { get; set; }
     }
 
 }
