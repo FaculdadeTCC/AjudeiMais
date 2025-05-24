@@ -14,8 +14,8 @@
         public string Estado { get; set; }
         public string Telefone { get; set; }
         public string? TelefoneFixo { get; set; }
-        public double? Latitude { get; set; }
-        public double? Longitude { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
         public string Role { get; set; }
         public string FotoDePerfil { get; set; }
         public string? GUID { get; set; }

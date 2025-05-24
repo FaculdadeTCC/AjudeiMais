@@ -80,6 +80,11 @@ app.MapControllerRoute(
     defaults: new { controller = "Usuario", action = "Cadastro" });
 
 app.MapControllerRoute(
+    name: "usuario-alterar-dados",
+    pattern: "usuario/alterardados",
+    defaults: new { controller = "Usuario", action = "AlterarDados" });
+
+app.MapControllerRoute(
     name: "usuario-perfil",
     pattern: "usuario/perfil/{guid}",
     defaults: new { controller = "Usuario", action = "Perfil" });
@@ -98,17 +103,20 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "login",
     pattern: "login",
-    defaults: new { controller = "Home", action = "Login" });
+    defaults: new { controller = "Login", action = "Login" });
 
 app.MapControllerRoute(
     name: "logout",
     pattern: "logout",
-    defaults: new { controller = "Home", action = "Logout" });
+    defaults: new { controller = "Login", action = "Logout" });
 
 #endregion
 
 #endregion
-
+app.MapControllerRoute(
+    name: "home",
+    pattern: "home",
+    defaults: new { controller = "Home", action = "Index" });
 /// <summary>
 /// Rota padrão da aplicação. Redireciona para Home/Index caso nenhum caminho específico seja encontrado.
 /// </summary>
