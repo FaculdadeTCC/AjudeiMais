@@ -6,12 +6,16 @@ using System.Net.Http;
 using System.Text;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory; 
+        string BASE_URL = Tools.Assistant.ServerURL();
+        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<HomeController> _logger;
 
         public HomeController(ILogger<HomeController> logger, IHttpClientFactory httpClientFactory)
@@ -25,6 +29,20 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Realiza a autenticação do usuário com base nas credenciais informadas.
+        /// Envia os dados para a API de autenticação e, se bem-sucedido, cria a identidade com cookies e claims.
+        /// </summary>
+        /// <param name="model">Modelo com os dados de login (e-mail e senha).</param>
+        /// <returns>
+        /// Redireciona o usuário para a tela correspondente ao seu perfil (Admin, Instituição, Usuário)
+        /// ou retorna para a tela de login em caso de erro.
+        /// </returns>
+        /// <remarks>
+        /// Esse método utiliza autenticação baseada em cookie e armazena dados relevantes em claims.
+        /// Também utiliza sessão para armazenar o token JWT e outros dados auxiliares.
+        /// </remarks>
+        /// <exception cref="Exception">Captura erros de comunicação com a API ou falhas inesperadas.</exception>
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -37,10 +55,9 @@ namespace AjudeiMais.Ecommerce.Controllers
                 var jsonContent = JsonConvert.SerializeObject(model);
                 var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-                var response = await httpClient.PostAsync("http://localhost:5168/api/Auth/login", content); // ajuste a URL se necessário
+                var response = await httpClient.PostAsync($"{BASE_URL}api/Auth/login", content);
                 if (!response.IsSuccessStatusCode)
                 {
-                    // Redireciona para a mesma action Login (GET), enviando alerta por query string
                     return RedirectToAction("Login", new
                     {
                         alertType = "error",
@@ -57,8 +74,26 @@ namespace AjudeiMais.Ecommerce.Controllers
                 HttpContext.Session.SetString("UserId", loginResponse.Id);
                 HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
+                var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
+                json = await usuario.Content.ReadAsStringAsync();
 
-                // Redireciona para cada tela pela role
+                var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
+
+                // Cria as claims do usuário autenticado
+                var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, usuarioResponse.NomeCompleto),
+            new Claim(ClaimTypes.Role, loginResponse.Role),
+            new Claim("UserId", loginResponse.Id),
+            new Claim("GUID", loginResponse.GUID),
+        };
+
+                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                var principal = new ClaimsPrincipal(identity);
+
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+                // Redireciona com base no perfil (role)
                 switch (loginResponse.Role.ToLower())
                 {
                     case "admin":
@@ -73,11 +108,17 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao tentar fazer login");
-                TempData["ErroLogin"] = "Erro ao tentar fazer login.";
+                return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
 
-                return View(model);
             }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync("CookieAuth");
+            return RedirectToRoute("home");
         }
 
         public IActionResult Login()
@@ -91,7 +132,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         public IActionResult Privacy()
-        {   
+        {
             return View();
         }
 

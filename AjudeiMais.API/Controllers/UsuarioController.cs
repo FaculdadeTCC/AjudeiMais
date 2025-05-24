@@ -43,6 +43,20 @@ namespace AjudeiMais.API.Controllers
                 return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
             }
         }
+        
+        [HttpGet("GetByEmail/{email}")]
+        public async Task<IActionResult> GetUsuarioByEmail(string email)
+        {
+            try
+            {
+                var usuario = await _service.GetByEmail(email);
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
+            }
+        }
 
         [HttpGet("ativos")]
         public async Task<IActionResult> GetUsuariosAtivos()

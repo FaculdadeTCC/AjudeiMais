@@ -39,6 +39,19 @@ namespace AjudeiMais.API.Services
             }
         }
         
+        public async Task<Usuario> GetByEmail(string email)
+        {
+            try
+            {
+                return await _usuarioRepository.GetByEmail(email);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar usuário por e-mail");
+                throw new Exception("Erro ao buscar usuário por e-mail.");
+            }
+        }
+        
         public async Task<Usuario> GetByGUID(string GUID)
         {
             try

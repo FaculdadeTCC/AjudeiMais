@@ -11,7 +11,7 @@ namespace AjudeiMais.Ecommerce.Tools
     public static class Assistant
     {
 
-        public static string ImageServerURL()
+        public static string ServerURL()
         {
             return "http://localhost:5168/";
         }

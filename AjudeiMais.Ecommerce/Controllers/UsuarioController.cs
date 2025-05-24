@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System.Net;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AjudeiMais.Ecommerce.Filters;
 using AjudeiMais.Ecommerce.Models;
@@ -14,6 +16,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         private readonly IHttpClientFactory _httpClientFactory;
 
         UsuarioModel model = new UsuarioModel();
+        string BASE_URL = Tools.Assistant.ServerURL();
 
         public UsuarioController(IHttpClientFactory httpClientFactory)
         {
@@ -34,7 +37,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
-                var response = await httpClient.GetAsync($"http://localhost:5168/api/Usuario/GetByGUID/{guid}");
+                var response = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{guid}");
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -42,7 +45,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     var json = await response.Content.ReadAsStringAsync();
 
                     // 2. Desserializa a string JSON para o seu objeto UsuarioModel
-                    var usuario = JsonConvert.DeserializeObject <UsuarioPerfilModel>(json);
+                    var usuario = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
 
                     return View(usuario);
                 }
@@ -104,7 +107,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     formData.AddFileContent(FotoDePerfil, "FotoDePerfil");
 
                     // Envia a requisição POST para a API com o formulário multipart/form-data
-                    var response = await httpClient.PostAsync("http://localhost:5168/api/Usuario", formData);
+                    var response = await httpClient.PostAsync($"{BASE_URL}api/Usuario", formData);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -144,8 +147,46 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<JsonResult> VerificarEmailExistente([FromQuery] string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return Json(false);
+            }
 
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+                var API_URL = $"{BASE_URL}api/Usuario/GetByEmail/{email}";
 
+                
+                var response = await httpClient.GetAsync(API_URL);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    if (response.Content.Headers.ContentLength > 0)
+                    {
+                        return Json(new { exists = true, message = "Este e-mail já está cadastrado." });
+                    } else
+                    {
+                        return Json(new { exists = false });
+                    }
+                }
+                else if (response.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return Json(new { exists = false });
+                }
+                else
+                {
+                    return Json(new { exists = false });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { exists = false, message = ex.Message });
+            }
+        }
 
         public IActionResult Anuncios()
         {
