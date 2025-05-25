@@ -59,7 +59,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     return RedirectToAction("Login", new
                     {
                         alertType = "error",
-                        alertMessage = "E-mail ou senha inválidos."
+                        alertMessage = response.ReasonPhrase
                     });
                 }
 

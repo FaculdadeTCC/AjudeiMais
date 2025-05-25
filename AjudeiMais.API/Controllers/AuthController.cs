@@ -14,13 +14,13 @@ using System.Text;
 public class AuthController : ControllerBase
 {
     private readonly UsuarioService _usuarioService;
-    private readonly InstituicaoService _instituicaoService;
+    //private readonly InstituicaoService _instituicaoService;
     private readonly IConfiguration _config;
 
-    public AuthController(UsuarioService usuarioService, InstituicaoService instituicaoService ,IConfiguration config)
+    public AuthController(UsuarioService usuarioService, @*InstituicaoService instituicaoService*@ IConfiguration config)
     {
         _usuarioService = usuarioService;
-        _instituicaoService = instituicaoService;
+        //_instituicaoService = instituicaoService;
         _config = config;
     }
 
@@ -41,18 +41,18 @@ public class AuthController : ControllerBase
             });
         }
 
-        // Tenta logar como instituição
-        var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
-        if (instituicao != null)
-        {
-            var token = GenerateJwtToken(instituicao);
-            return Ok(new
-            {
-                token,
-                role = instituicao.Role,
-                id = instituicao.Instituicao_ID.ToString(),
-            });
-        }
+        //// Tenta logar como instituição
+        //var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
+        //if (instituicao != null)
+        //{
+        //    var token = GenerateJwtToken(instituicao);
+        //    return Ok(new
+        //    {
+        //        token,
+        //        role = instituicao.Role,
+        //        id = instituicao.Instituicao_ID.ToString(),
+        //    });
+        //}
 
         return Unauthorized("Email ou senha inválidos.");
     }

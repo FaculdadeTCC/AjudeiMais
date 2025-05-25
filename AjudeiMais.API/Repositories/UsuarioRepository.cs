@@ -62,20 +62,11 @@ namespace AjudeiMais.API.Repositories
 
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Usuario usuario)
         {
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(u => u.Usuario_ID == id);
+            _context.Usuario.Update(usuario);
 
-            if (usuario != null)
-            {
-                usuario.Habilitado = false;
-                usuario.Excluido = true;
-                usuario.DataUpdate = DateTime.Now;
-
-                _context.Usuario.Update(usuario);
-                await _context.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -38,7 +38,7 @@ namespace AjudeiMais.API.Services
                 throw new Exception("Erro ao buscar usuário.");
             }
         }
-        
+
         public async Task<Usuario> GetByEmail(string email)
         {
             try
@@ -51,7 +51,7 @@ namespace AjudeiMais.API.Services
                 throw new Exception("Erro ao buscar usuário por e-mail.");
             }
         }
-        
+
         public async Task<Usuario> GetByGUID(string GUID)
         {
             try
@@ -91,7 +91,7 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task SaveOrUpdate(UsuarioDTO model)
+        public async Task<ApiResponse<Usuario>> SaveOrUpdate(UsuarioDTO model)
         {
             try
             {
@@ -145,6 +145,15 @@ namespace AjudeiMais.API.Services
                     Usuario.DataUpdate = DateTime.Now;
 
                     await _usuarioRepository.SaveOrUpdate(Usuario);
+
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = true,
+                        Type = "success",
+                        Message = "Boas-vindas! Seu cadastro foi concluído. Acesse sua conta agora mesmo.",
+                        Data = Usuario
+
+                    };
                 }
                 else
                 {
@@ -161,25 +170,67 @@ namespace AjudeiMais.API.Services
                     Usuario.Senha = _passwordHasher.HashPassword(Usuario, Usuario.Senha);
 
                     await _usuarioRepository.SaveOrUpdate(Usuario);
+
                 }
+
+                return new ApiResponse<Usuario>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Dados atualizados com sucesso.",
+                    Data = Usuario
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao salvar ou atualizar o usuário");
-                throw new Exception("Erro ao salvar ou atualizar o usuário.");
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro inesperado ao salvar ou atualizar o usuário. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                };
             }
         }
 
-        public async Task Delete(int id)
+        public async Task<ApiResponse<object>> Delete(int id)
         {
             try
             {
-                await _usuarioRepository.Delete(id);
+                var usuario = await GetById(id);
+
+                if (usuario == null)
+                {
+                    return new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                usuario.Habilitado = false;
+                usuario.Excluido = true;
+                usuario.DataUpdate = DateTime.Now;
+
+                await _usuarioRepository.Delete(usuario);
+
+                return new ApiResponse<object>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Sua conta foi excluída com sucesso."
+                };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao excluir o usuário com ID {UsuarioId}", id);
-                throw new Exception("Erro ao excluir o usuário.");
+                return new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = $"Não foi possível excluir o usuário. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                };
             }
         }
 
@@ -196,7 +247,6 @@ namespace AjudeiMais.API.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao fazer login do usuário");
                 throw new Exception("Erro ao fazer login do usuário.");
             }
         }

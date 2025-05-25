@@ -84,6 +84,7 @@ app.MapControllerRoute(
     pattern: "usuario/alterardados",
     defaults: new { controller = "Usuario", action = "AlterarDados" });
 
+
 app.MapControllerRoute(
     name: "usuario-perfil",
     pattern: "usuario/perfil/{guid}",

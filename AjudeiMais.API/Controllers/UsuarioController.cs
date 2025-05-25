@@ -28,22 +28,22 @@ namespace AjudeiMais.API.Controllers
             {
                 return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
             }
-        } 
-        
+        }
+
         [HttpGet("GetByGUID/{GUID}")]
         public async Task<IActionResult> GetUsuarioByGuid(string GUID)
         {
             try
             {
                 var usuarios = await _service.GetByGUID(GUID);
-                return Ok(usuarios);  // Retorna todos os usuários
+                return Ok(usuarios);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
             }
         }
-        
+
         [HttpGet("GetByEmail/{email}")]
         public async Task<IActionResult> GetUsuarioByEmail(string email)
         {
@@ -64,6 +64,7 @@ namespace AjudeiMais.API.Controllers
             try
             {
                 var usuariosAtivos = await _service.GetItens();
+
                 return Ok(usuariosAtivos);  // Retorna apenas usuários ativos
             }
             catch (Exception ex)
@@ -78,20 +79,27 @@ namespace AjudeiMais.API.Controllers
         {
             try
             {
-                await _service.SaveOrUpdate(model);
+                var result = await _service.SaveOrUpdate(model);
 
-                if (model.Usuario_ID == 0)  // Verifica se é uma criação
+                if (result.Success) // Se a operação no serviço foi um sucesso
                 {
-                    return CreatedAtAction(nameof(GetUsuarios), new { id = model.Usuario_ID }, model);  // Retorna 201 para criação
+                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
                 }
                 else
                 {
-                    return Ok(model);  // Retorna 200 para atualização
+                    return BadRequest(result);
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                var errorResponse = new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                };
+
+                return StatusCode(500, errorResponse);
             }
         }
 
@@ -100,12 +108,20 @@ namespace AjudeiMais.API.Controllers
         {
             try
             {
-                await _service.Delete(id);
-                return Ok();  // Retorna 200 para exclusão bem-sucedida
+               var result = await _service.Delete(id);
+
+                if (result.Success) // Se a operação no serviço foi um sucesso
+                {
+                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message); 
+                return StatusCode(500, ex.Message);
             }
         }
     }

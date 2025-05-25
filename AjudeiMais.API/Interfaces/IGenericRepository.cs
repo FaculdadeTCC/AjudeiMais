@@ -8,6 +8,6 @@ namespace AjudeiMais.API.Interfaces
         Task<IEnumerable<T>> GetItens();
         Task<T> GetById(int id);
         Task SaveOrUpdate(T model);
-        Task Delete(int id);
+        Task Delete(T model);
     }
 }
