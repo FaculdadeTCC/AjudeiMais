@@ -1,0 +1,243 @@
+﻿/* Container Principal da Página de Edição */
+.user-edit-container {
+    max-width: 1200px; /* Limita a largura para melhor legibilidade */
+}
+
+/* Painel Lateral de Navegação (Abas) */
+.profile-sidebar {
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-lg);
+    overflow: hidden; /* Garante que o border-radius funcione com os list-group-items */
+}
+
+    .profile-sidebar .list-group-item {
+        border: none; /* Remove a borda padrão do Bootstrap */
+        border-left: 4px solid transparent; /* Para o indicador de aba ativa */
+        color: var(--color-gray-700);
+        font-family: var(--font-family-accent);
+        font-weight: var(--font-weight-medium);
+        padding: var(--spacing-md) var(--spacing-lg);
+        transition: all 0.2s ease-in-out;
+    }
+
+        .profile-sidebar .list-group-item:hover {
+            background-color: var(--color-gray-200);
+            color: var(--color-primary-dark);
+        }
+
+        .profile-sidebar .list-group-item.active {
+            background-color: var(--color-primary-light);
+            color: var(--color-gray-100);
+            border-left-color: var(--color-primary); /* Cor do indicador ativo */
+            font-weight: var(--font-weight-bold);
+        }
+
+        .profile-sidebar .list-group-item.text-danger:hover {
+            background-color: var(--color-danger);
+            color: var(--color-gray-100) !important;
+        }
+
+/* Conteúdo das Abas (Formulários) */
+.profile-content {
+    background-color: var(--color-surface);
+    box-shadow: var(--shadow-md);
+    border-radius: var(--radius-lg);
+}
+
+.section-title {
+    font-size: var(--font-size-xxl);
+    color: var(--color-primary-dark);
+    font-family: var(--font-family-heading);
+    border-bottom: 2px solid var(--color-gray-300);
+    padding-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-xl) !important;
+}
+
+    .section-title i {
+        color: var(--color-primary-dark);
+    }
+
+/* Estilo para campos flutuantes e labels */
+.form-floating > .form-control:focus,
+.form-floating > .form-control:not(:placeholder-shown),
+.form-floating > .form-select {
+    padding-top: calc(1.5rem + var(--spacing-sm));
+    padding-bottom: var(--spacing-sm);
+}
+
+.form-floating > label {
+    padding: var(--spacing-md) var(--spacing-sm);
+    color: var(--color-gray-600);
+}
+
+.form-floating .form-control,
+.form-floating .form-select {
+    height: calc(3.5rem + 2px);
+    border-radius: var(--radius-md);
+    border-color: var(--color-gray-300);
+}
+
+    .form-floating .form-control:focus,
+    .form-floating .form-select:focus {
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 0.25rem rgba(var(--color-primary-rgb), .25);
+    }
+
+/* Campos obrigatórios */
+.required-field::after {
+    content: " *";
+    color: var(--color-danger);
+}
+
+/* Campo de Upload de Foto */
+.file-upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--color-gray-400);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease-in-out;
+    background-color: var(--color-gray-100);
+}
+
+    .file-upload:hover {
+        border-color: var(--color-primary);
+        background-color: var(--color-gray-200);
+    }
+
+    .file-upload .fas.fa-cloud-upload-alt { /* Novo ícone para upload */
+        font-size: 3rem;
+        color: var(--color-primary-light);
+        margin-bottom: var(--spacing-sm);
+    }
+
+    .file-upload img#imagePreview {
+        border: 2px solid var(--color-primary);
+        object-fit: cover;
+        margin-top: var(--spacing-sm);
+        box-shadow: var(--shadow-sm);
+    }
+
+/* Botão de Remover Imagem */
+#removeImageButton {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    transition: all 0.2s ease;
+}
+
+    #removeImageButton:hover {
+        background-color: #bb2d3b; /* Tom mais escuro de danger */
+        border-color: #bb2d3b;
+    }
+
+/* Botões de Ação */
+.btn-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-bold);
+    transition: all 0.2s ease;
+    border-radius: var(--radius-md);
+}
+
+    .btn-primary:hover {
+        background-color: var(--color-primary-light);
+        border-color: var(--color-primary-light);
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+
+.btn-danger {
+    background-color: var(--color-danger);
+    border-color: var(--color-danger);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-bold);
+    transition: all 0.2s ease;
+    border-radius: var(--radius-md);
+}
+
+    .btn-danger:hover {
+        background-color: #bb2d3b; /* Tom mais escuro de danger */
+        border-color: #bb2d3b;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-sm);
+    }
+
+/* Estilo para o toggle de senha */
+.password-toggle {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: var(--color-gray-600);
+    transition: color 0.2s ease;
+    z-index: 5; /* Garante que o ícone esteja acima do input */
+}
+
+    .password-toggle:hover {
+        color: var(--color-primary);
+    }
+
+    .password-toggle .toggle-icon {
+        font-size: var(--font-size-md);
+    }
+
+/* Alerts de Exclusão de Conta */
+.alert-warning {
+    background-color: #fff3cd; /* Bootstrap default light yellow */
+    border-color: #ffc107; /* Bootstrap default yellow */
+    color: #664d03; /* Bootstrap default dark yellow */
+    border-radius: var(--radius-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+    .alert-warning .alert-heading {
+        color: #664d03;
+        font-family: var(--font-family-accent);
+    }
+
+/* Media Queries para Responsividade */
+@media (max-width: 767.98px) {
+    .user-edit-container .row {
+        flex-direction: column; /* Pilha em telas pequenas */
+    }
+
+    .profile-sidebar {
+        margin-bottom: var(--spacing-lg);
+    }
+
+        .profile-sidebar .list-group-item {
+            text-align: center;
+            border-left: none;
+            border-bottom: 2px solid transparent;
+        }
+
+            .profile-sidebar .list-group-item.active {
+                border-bottom-color: var(--color-primary);
+                border-left-color: transparent;
+            }
+
+            .profile-sidebar .list-group-item i {
+                display: block; /* Ícone acima do texto */
+                margin-bottom: var(--spacing-xxs);
+            }
+
+    .profile-content {
+        padding: var(--spacing-lg) !important; /* Ajusta padding em telas pequenas */
+    }
+
+    .section-title {
+        font-size: var(--font-size-xl); /* Reduz o tamanho do título */
+        text-align: center;
+    }
+
+    .file-upload {
+        padding: var(--spacing-md);
+    }
+}

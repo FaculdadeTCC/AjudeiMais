@@ -14,13 +14,13 @@ using System.Text;
 public class AuthController : ControllerBase
 {
     private readonly UsuarioService _usuarioService;
-    private readonly InstituicaoService _instituicaoService;
+    //private readonly InstituicaoService _instituicaoService;
     private readonly IConfiguration _config;
 
-    public AuthController(UsuarioService usuarioService, InstituicaoService instituicaoService ,IConfiguration config)
+    public AuthController(UsuarioService usuarioService, @*InstituicaoService instituicaoService*@ IConfiguration config)
     {
         _usuarioService = usuarioService;
-        _instituicaoService = instituicaoService;
+        //_instituicaoService = instituicaoService;
         _config = config;
     }
 
@@ -41,19 +41,18 @@ public class AuthController : ControllerBase
             });
         }
 
-        // Tenta logar como instituição
-        var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
-        if (instituicao != null)
-        {
-            var token = GenerateJwtToken(instituicao);
-            return Ok(new
-            {
-                token,
-                role = instituicao.Role,
-                id = instituicao.Instituicao_ID.ToString(),
-                GUID = instituicao.GUID
-            });
-        }
+        //// Tenta logar como instituição
+        //var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
+        //if (instituicao != null)
+        //{
+        //    var token = GenerateJwtToken(instituicao);
+        //    return Ok(new
+        //    {
+        //        token,
+        //        role = instituicao.Role,
+        //        id = instituicao.Instituicao_ID.ToString(),
+        //    });
+        //}
 
         return Unauthorized("Email ou senha inválidos.");
     }
@@ -65,7 +64,7 @@ public class AuthController : ControllerBase
 
     private string GenerateJwtToken(Instituicao instituicao)
     {
-        return GenerateJwt(instituicao.Instituicao_ID.ToString(), instituicao.Nome, instituicao.Email, instituicao.Role, instituicao.GUID);
+        return GenerateJwt(instituicao.Instituicao_ID.ToString(), instituicao.Nome, instituicao.Email, instituicao.Role, instituicao.Guid);
     }
 
     private string GenerateJwt(string id, string nome, string email, string role, string guid)

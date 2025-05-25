@@ -1,88 +1,168 @@
 ﻿@model AjudeiMais.Ecommerce.Models.UsuarioPerfilModel;
 @using AjudeiMais.Ecommerce.Tools;
+@{
+	Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 @{
-    var usuario = Model;
-
-    ViewData["Title"] = $"{usuario.NomeCompleto} - Perfil";
+	await Html.RenderPartialAsync("_Alertas");
 }
-<section class="my-5 container">
-    <!-- Topo do Perfil -->
-    <div class="row align-items-start mb-5">
-        <!-- Foto do usuário -->
-        <div class="position-relative col-auto text-center">
-            <img src="@(Assistant.ImageServerURL() + usuario.FotoDePerfil)" class="rounded-circle border-primary border border-2" alt="Foto do usuário" width="150" height="150">
-            <!-- Selo de verificado -->
-            <span class="position-absolute translate-middle p-2 bg-success rounded-circle border-light bottom-0 end-0 border">
-                <i class="fas fa-check text-white small"></i>
-            </span>
-        </div>
 
-        <!-- Informações principais -->
-        <div class="col">
-            <h2 class="d-flex align-items-center gap-2 fw-bold text-dark">@usuario.NomeCompleto</h2>
-            <p class="text-muted mb-2">@usuario.Cidade, @usuario.Estado</p>
+@{
+	var usuario = Model;
 
-            <!-- Avaliação -->
-            <div class="d-flex align-items-center text-warning mb-3">
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star"></i>
-                <i class="fas fa-star-half-alt"></i>
-                <span class="ms-2 text-muted small">(4.5 de 5)</span>
-            </div>
+	var userGuidLogado = User.FindFirst("GUID").Value;
 
-            <a href="#" class="btn btn-success rounded-pill">Enviar Mensagem</a>
-        </div>
-    </div>
+	bool isMeuPerfil = userGuidLogado.ToString() == usuario.GUID;
 
-    <!-- Produtos Anunciados -->
-    <div>
-        <h3 class="mb-4 h5 fw-semibold">Produtos Anunciados</h3>
-        <div class="row g-4">
-            @for (int i = 0; i < 6; i++)
-            {
-                bool doado = i % 3 == 0;
-                string categoria = "Roupas";
+	ViewData["Title"] = isMeuPerfil
+		? "Meu Perfil - " + usuario.NomeCompleto
+		: usuario.NomeCompleto + " - Perfil";
+}
 
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 shadow-sm">
-                        <div class="position-relative">
-                            <img src="https://placehold.co/400x400?text=Camisa+Masculina" class="card-img-top @(doado ? "opacity-50" : "")" alt="Imagem do Produto">
-                            @if (doado)
-                            {
-                                <span class="position-absolute top-0 start-0 m-2 badge bg-secondary text-dark">Doado</span>
-                            }
-                            else
-                            {
-                                <span class="position-absolute top-0 start-0 m-2 badge bg-success text-light">Bom</span>
-                            }
-                        </div>
-                        <div class="card-body d-flex flex-column">
-                            <p class="text-uppercase small fw-bold text-primary mb-1">@categoria</p>
-                            <h5 class="card-title mb-1">Camisa Masculina M</h5>
-                            <p class="card-text small mb-1"><strong>Doador:</strong> <a href="#" class="text-decoration-underline">João Silva</a></p>
-                            <p class="card-text small mb-1"><strong>Quantidade:</strong> 3 unidades</p>
-                            <p class="card-text small mb-3"><strong>Localização:</strong> Belo Horizonte, MG</p>
-                            <a href="#" class="btn btn-success mt-auto @(doado ? "disabled opacity-50" : "")">Ver Detalhes</a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
 
-        <!-- Paginação visual -->
-        <nav class="mt-5 d-flex justify-content-center">
-            <ul class="pagination">
-                <li class="page-item"><a class="page-link" href="#">&laquo; Anterior</a></li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item disabled"><span class="page-link">...</span></li>
-                <li class="page-item"><a class="page-link" href="#">10</a></li>
-                <li class="page-item"><a class="page-link" href="#">Próxima &raquo;</a></li>
-            </ul>
-        </nav>
-    </div>
+@section Styles {
+	<link rel="stylesheet" href="~/css/usuario/usuario-perfil.css" asp-append-version="true" />
+}
+
+<section class="my-5 user-profile-section container">
+	<div class="row align-items-center mb-5 flex-column flex-md-row">
+		<div class="position-relative mb-4 mb-md-0 profile-picture-wrapper col-auto text-center">
+			<img src="@(Assistant.ServerURL() + usuario.FotoDePerfil)" class="rounded-circle border-primary border-3 profile-picture border" alt="Foto do usuário" width="180" height="180">
+			<span class="position-absolute bottom-0 end-0 translate-middle-x p-2 bg-success rounded-circle border-light border-3 verified-badge" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuário Verificado">
+				<i class="fas fa-check text-white small"></i>
+			</span>
+		</div>
+
+		<div class="col text-md-start profile-info text-center">
+			<h1 class="d-flex align-items-center justify-content-center justify-content-md-start gap-3 fw-bold text-dark mb-2 display-6">
+				@usuario.NomeCompleto
+			</h1>
+			<p class="text-muted mb-2 lead">
+				<i class="fas fa-map-marker-alt me-2 text-primary"></i>@usuario.Cidade, @usuario.Estado
+			</p>
+
+			<div class="d-flex align-items-center justify-content-center justify-content-md-start text-warning mb-3 rating-stars">
+				<i class="fas fa-star fa-lg"></i>
+				<i class="fas fa-star fa-lg"></i>
+				<i class="fas fa-star fa-lg"></i>
+				<i class="fas fa-star fa-lg"></i>
+				<i class="fas fa-star-half-alt fa-lg"></i>
+				<span class="ms-3 text-muted small fw-bold">(4.5 de 5)</span>
+			</div>
+			@if (!isMeuPerfil)
+			{
+				<a href="#" class="btn btn-success rounded-pill px-4 py-2 mt-3 profile-action-btn shadow-sm">
+					<i class="fas fa-comment-dots me-2"></i>Enviar Mensagem
+				</a>
+			}
+		</div>
+	</div>
+
+	<hr class="my-5">
+
+	<h2 class="mb-4 h4 fw-semibold text-md-start section-title text-center">
+		<i class="fas fa-box me-2 text-primary"></i>Produtos Anunciados
+	</h2>
+
+	@if (usuario.Produtos != null && usuario.Produtos.Any())
+	{
+		<div class="products-grid">
+			<div class="row g-4">
+				@foreach (var item in Model.Produtos)
+				{
+					<div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+						<div class="card h-100 product-card overflow-hidden rounded-lg border-0 shadow-sm">
+							<div class="position-relative product-image-wrapper">
+								<img src="@(Assistant.ServerURL())@item.Nome" class="card-img-top product-image @(item.Disponivel ? "grayscale-image" : "")" alt="Imagem do Produto">
+								@if (item.Disponivel)
+								{
+									<span class="position-absolute top-0 start-0 m-3 badge bg-secondary text-dark px-3 py-2 product-status-badge donated-badge">
+										<i class="fas fa-handshake me-1"></i>Doado
+									</span>
+								}
+								else
+								{
+									<span class="position-absolute top-0 start-0 m-3 badge bg-success text-light px-3 py-2 product-status-badge available-badge">
+										<i class="fas fa-check-circle me-1"></i>Disponível
+									</span>
+								}
+							</div>
+							<div class="card-body d-flex flex-column product-card-body">
+								<p class="text-uppercase small fw-bold text-primary mb-1 product-category">
+									@item.CategoriaProduto_ID
+								</p>
+								<h5 class="card-title mb-2 fw-bold product-title">
+									@item.Nome
+								</h5>
+								<p class="card-text small mb-1 text-muted product-donor">
+									<strong>Doador:</strong> <a href="#" class="text-decoration-underline text-primary">@item.Usuario.NomeCompleto</a>
+								</p>
+								<p class="card-text small mb-1 text-muted product-quantity">
+									<strong>Quantidade:</strong> @item.Quantidade unidades
+								</p>
+								<p class="card-text small mb-3 text-muted product-location">
+									<strong>Localização:</strong> @item.Usuario.Cidade, @item.Usuario.Estado
+								</p>
+								<a href="#" class="btn btn-primary product-details-btn mt-auto @(item.Disponivel ? "disabled opacity-75" : "")">
+									<i class="fas fa-info-circle me-2"></i>Ver Detalhes
+								</a>
+							</div>
+						</div>
+					</div>
+				}
+			</div>
+
+			<nav class="mt-5 d-flex justify-content-center" aria-label="Navegação de Produtos">
+				<ul class="pagination pagination-lg rounded-pill overflow-hidden shadow-sm">
+					<li class="page-item">
+						<a class="page-link" href="#" aria-label="Anterior">
+							<i class="fas fa-angle-left me-1"></i>Anterior
+						</a>
+					</li>
+					<li class="page-item active" aria-current="page">
+						<a class="page-link" href="#">1</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">2</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">3</a>
+					</li>
+					<li class="page-item disabled">
+						<span class="page-link">...</span>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#">10</a>
+					</li>
+					<li class="page-item">
+						<a class="page-link" href="#" aria-label="Próxima">
+							Próxima<i class="fas fa-angle-right ms-1"></i>
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	}
+	else
+	{
+		<div class="alert alert-info py-4 empty-products-state text-center" role="alert">
+			<i class="fas fa-box-open fa-3x mb-3 text-primary"></i>
+			<h4 class="alert-heading">Nenhum produto anunciado ainda!</h4>
+			<p>Parece que @usuario.NomeCompleto ainda não publicou nenhum item para doação.</p>
+			<hr>
+			<p class="mb-0">Que tal ser o primeiro a ajudar a preencher esta página?</p>
+			<button class="btn btn-primary mt-3 announce-product-btn">
+				<i class="fas fa-plus-circle me-2"></i>Anunciar um produto
+			</button>
+		</div>
+	}
 </section>
+
+<script>
+	// Inicializa os tooltips do Bootstrap
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+	})
+</script>

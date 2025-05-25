@@ -5,11 +5,11 @@
 }
 
 @{
-	await Html.RenderPartialAsync("_Alertas");
+    await Html.RenderPartialAsync("_Alertas");
 }
 
 @section Styles {
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/login/login.css" asp-append-version="true" />
 }
 
@@ -37,13 +37,13 @@
 
         <!-- Toggle Tipo de Usuário -->
         <div class="user-type-toggle">
-            <input type="radio" id="tipoDoador"  name="UserType" value="Doador"  checked>
+            <input type="radio" id="tipoDoador" name="UserType" value="Doador" checked>
             <label for="tipoDoador">Sou Doador</label>
             <input type="radio" id="tipoInstituicao" name="UserType" value="Instituicao">
             <label for="tipoInstituicao">Sou Instituição</label>
         </div>
 
-        <form method="post" asp-controller="Home" asp-action="Login">
+        <form method="post" asp-controller="Login" asp-action="Login">
             <div class="mb-4">
                 <label asp-for="Email" class="form-label">E-mail <span class="text-danger">*</span></label>
                 <input asp-for="Email" type="email" class="form-control" required />
@@ -56,7 +56,7 @@
 
             <div class="d-flex justify-content-between align-items-center mb-3">
                 <div class="form-check">
-                    <input  class="form-check-input" id="lembrarCheck" />
+                    <input class="form-check-input" id="lembrarCheck" />
                     <label class="form-check-label" for="lembrarCheck">Lembrar de mim</label>
                 </div>
                 <a href="#" class="text-decoration-none">Esqueci minha senha</a>
