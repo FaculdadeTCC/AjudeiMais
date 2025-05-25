@@ -1,13 +1,22 @@
 ﻿using AjudeiMais.Ecommerce.Filters;
+using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Reflection;
+using System.Text;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
     public class InstituicaoController : Controller
     {
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public InstituicaoController(IHttpClientFactory httpClientFactory)
+        {
+            _httpClientFactory = httpClientFactory;
+        }
         public IActionResult Index()
         {
             return View();
@@ -19,7 +28,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Cadastro(InstituicaoModel model, List<IFormFile> Fotos)
+        public async Task<IActionResult> Cadastro(InstituicaoModel model, IFormFile[] Fotos)
         {
             try
             {
@@ -33,16 +42,21 @@ namespace AjudeiMais.Ecommerce.Controllers
                     // Adiciona a role
                     formData.Add(new StringContent("instituicao"), "Role");
 
+                    var enderecosJson = JsonConvert.SerializeObject(new List<EnderecoModel> { model.Endereco });
+
+                    formData.Add(new StringContent(enderecosJson, Encoding.UTF8, "application/json"), "Enderecos");
+
+
                     // Adiciona as fotos, se houver
-                    if (Fotos != null && Fotos.Count > 0)
+                    if (Fotos != null && Fotos.Length > 0)
                     {
-                        for (int i = 0; i < Fotos.Count; i++)
+                        for (int i = 0; i < Fotos.Length; i++)
                         {
                             var foto = Fotos[i];
                             if (foto != null && foto.Length > 0)
                             {
                                 // Usa um nome como Fotos[0], Fotos[1], etc.
-                                formData.AddFileContent(foto, $"Fotos[{i}]");
+                                formData.AddFileContent(foto, $"Fotos");
                             }
                         }
                     }
@@ -82,8 +96,8 @@ namespace AjudeiMais.Ecommerce.Controllers
             {
                 return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
             }
-
         }
+
 
         [HttpGet]
         public IActionResult Cadastro()

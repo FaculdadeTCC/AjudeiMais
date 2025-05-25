@@ -1,4 +1,5 @@
-﻿using AjudeiMais.API.Services;
+﻿using AjudeiMais.API.DTO;
+using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.InstituicaoModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +46,7 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(Instituicao model)
+        public async Task<IActionResult> SaveOrUpdate(InstituicaoDTO model)
         {
             try
             {
@@ -67,18 +68,18 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int Id)
-        {
-            try
-            {
-                await _instituicaoService.Delete(Id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> Delete(int Id)
+        //{
+        //    try
+        //    {
+        //        await _instituicaoService.Delete(Id);
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
     }
 }
