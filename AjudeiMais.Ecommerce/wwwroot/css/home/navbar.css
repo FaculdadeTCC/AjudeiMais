@@ -5,10 +5,10 @@
     backdrop-filter: blur(6px) !important;
 }
 
-.navbar.scrolled {
-    background-color: var(--color-primary) !important;
-    box-shadow: var(--shadow-md) !important;
-}
+    .navbar.scrolled {
+        background-color: var(--color-primary-dark) !important;
+        box-shadow: var(--shadow-md) !important;
+    }
 
 .navbar .navbar-brand span {
     font-family: var(--font-family-accent) !important;

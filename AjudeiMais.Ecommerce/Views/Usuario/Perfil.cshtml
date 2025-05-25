@@ -1,4 +1,4 @@
-﻿@model AjudeiMais.Ecommerce.Models.UsuarioPerfilModel;
+﻿@model AjudeiMais.Ecommerce.Models.Usuario.UsuarioPerfilModel;
 @using AjudeiMais.Ecommerce.Tools;
 @{
 	Layout = "~/Views/Shared/_Layout.cshtml";
@@ -28,7 +28,7 @@
 <section class="my-5 user-profile-section container">
 	<div class="row align-items-center mb-5 flex-column flex-md-row">
 		<div class="position-relative mb-4 mb-md-0 profile-picture-wrapper col-auto text-center">
-			<img src="@(Assistant.ServerURL() + usuario.FotoDePerfil)" class="rounded-circle border-primary border-3 profile-picture border" alt="Foto do usuário" width="180" height="180">
+			<img src="@(Assistant.ServerURL() + usuario.FotoDePerfil)" class="border-primary border-3 profile-picture border" alt="Foto do usuário" width="180" height="180">
 			<span class="position-absolute bottom-0 end-0 translate-middle-x p-2 bg-success rounded-circle border-light border-3 verified-badge" data-bs-toggle="tooltip" data-bs-placement="top" title="Usuário Verificado">
 				<i class="fas fa-check text-white small"></i>
 			</span>

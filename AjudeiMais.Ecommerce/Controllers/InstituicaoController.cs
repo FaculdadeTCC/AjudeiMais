@@ -15,7 +15,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         }
 
-        [RoleAuthorize("admin", "instituicao")]
+        //[RoleAuthorize("admin", "instituicao")]
         public IActionResult Cadastro()
         {
             return View();

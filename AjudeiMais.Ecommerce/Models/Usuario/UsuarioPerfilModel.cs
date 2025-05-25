@@ -2,11 +2,12 @@
 using System.Collections.Generic; // Para IEnumerable
 using Microsoft.AspNetCore.Http; // Para IFormFile
 
-namespace AjudeiMais.Ecommerce.Models
+namespace AjudeiMais.Ecommerce.Models.Usuario
 {
     public class UsuarioPerfilModel
     {
         // Propriedades do perfil (presentes em ambos)
+        public int? Usuario_ID { get; set; }
         public string NomeCompleto { get; set; }
         public string Documento { get; set; }
         public string Email { get; set; }

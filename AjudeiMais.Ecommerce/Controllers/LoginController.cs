@@ -1,4 +1,5 @@
 ﻿using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Models.Usuario;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;

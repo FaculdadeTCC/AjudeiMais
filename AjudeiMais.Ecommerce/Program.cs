@@ -74,21 +74,22 @@ app.UseAuthorization();
 
 #region USUARIO
 
+// ROTAS MAIS ESPECÍFICAS PRIMEIRO
+app.MapControllerRoute(
+    name: "usuario-alterar-dados",
+    pattern: "usuario/alterardados",
+    defaults: new { controller = "Usuario", action = "AlterarDados" });
+
 app.MapControllerRoute(
     name: "usuario-cadastrar",
     pattern: "usuario/cadastrar",
     defaults: new { controller = "Usuario", action = "Cadastro" });
 
 app.MapControllerRoute(
-    name: "usuario-alterar-dados",
-    pattern: "usuario/alterardados",
-    defaults: new { controller = "Usuario", action = "AlterarDados" });
-
-
-app.MapControllerRoute(
     name: "usuario-perfil",
     pattern: "usuario/perfil/{guid}",
     defaults: new { controller = "Usuario", action = "Perfil" });
+
 
 #region USUARIO VALIDAÇÕES
 

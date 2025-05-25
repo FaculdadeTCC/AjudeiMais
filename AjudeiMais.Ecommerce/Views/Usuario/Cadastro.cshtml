@@ -1,4 +1,10 @@
-﻿@model AjudeiMais.Ecommerce.Models.UsuarioModel
+﻿@model AjudeiMais.Ecommerce.Models.Usuario.UsuarioModel
+
+@{
+	ViewBag.Title = "Cadastro de Usuário";
+	ViewBag.Metadescription = "Crie sua conta no sistema de doações e contribua com quem precisa. Cadastro rápido, seguro e gratuito.";
+}
+
 
 @section Styles {
 	<link rel="stylesheet" href="~/css/usuario/usuario-cadastro.css" asp-append-version="true" />
@@ -27,24 +33,24 @@
 				<p class="mb-0">Preencha os campos abaixo para criar sua conta</p>
 			</div>
 
-			<div class="container">
-				<div class="step-indicator">
-					<div class="step active">
-						<div class="step-number">1</div>
-						<div class="step-title">Dados Pessoais</div>
-					</div>
-					<div class="step">
-						<div class="step-number">2</div>
-						<div class="step-title">Endereço</div>
-					</div>
-					<div class="step">
-						<div class="step-number">3</div>
-						<div class="step-title">Finalizar</div>
-					</div>
-				</div>
-			</div>
+			@* <div class="container"> *@
+			@* 	<div class="step-indicator"> *@
+			@* 		<div class="step active"> *@
+			@* 			<div class="step-number">1</div> *@
+			@* 			<div class="step-title">Dados Pessoais</div> *@
+			@* 		</div> *@
+			@* 		<div class="step"> *@
+			@* 			<div class="step-number">2</div> *@
+			@* 			<div class="step-title">Endereço</div> *@
+			@* 		</div> *@
+			@* 		<div class="step"> *@
+			@* 			<div class="step-number">3</div> *@
+			@* 			<div class="step-title">Finalizar</div> *@
+			@* 		</div> *@
+			@* 	</div> *@
+			@* </div> *@
 			<div class="section-padding pb-4 container">
-				<form id="formularioCadastro" method="post" action="/Usuario/CadastrarOuAtualizar" enctype="multipart/form-data">
+				<form id="formularioCadastro" method="post" action="/Usuario/Cadastrar" enctype="multipart/form-data">
 					<div class="form-step active">
 						<div class="mb-5">
 							<h2 class="section-title mb-4">
@@ -179,7 +185,7 @@
 									<div class="form-floating">
 										<select autocomplete="on" class="form-select" id="estado" name="Estado" required>
 											<option value="" selected disabled>Selecione</option>
-											<option value="AC">AC</option>
+											<option value="Acre">AC</option>
 											<option value="AL">AL</option>
 											<option value="AP">AP</option>
 											<option value="AM">AM</option>

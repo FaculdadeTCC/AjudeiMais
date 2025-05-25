@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     //private readonly InstituicaoService _instituicaoService;
     private readonly IConfiguration _config;
 
-    public AuthController(UsuarioService usuarioService, @*InstituicaoService instituicaoService*@ IConfiguration config)
+    public AuthController(UsuarioService usuarioService, IConfiguration config)
     {
         _usuarioService = usuarioService;
         //_instituicaoService = instituicaoService;
