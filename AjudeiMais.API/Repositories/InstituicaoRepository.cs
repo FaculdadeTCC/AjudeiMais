@@ -14,11 +14,11 @@ namespace AjudeiMais.API.Repositories
         {
             _context = context;
         }
-        public async Task Delete(int id)
+        public async Task Delete(Instituicao model)
         {
             try
             {
-                var instituicao = _context.Instituicao.FirstOrDefault(x => x.Instituicao_ID == id);
+                var instituicao = _context.Instituicao.FirstOrDefault(x => x.Instituicao_ID == model.Instituicao_ID);
 
                 if (instituicao != null)
                 {
@@ -31,7 +31,7 @@ namespace AjudeiMais.API.Repositories
                     await _context.SaveChangesAsync();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
@@ -58,7 +58,7 @@ namespace AjudeiMais.API.Repositories
 
                 return instituicao;
             }
-            catch(Exception ex) 
+            catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }

@@ -13,34 +13,34 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Registra o ApplicationDbContext com a string de conexão
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionDev-Danilo")));
 
 // Registra os outros serviços no container de dependências (DI)
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<UsuarioRepository>();
-builder.Services.AddScoped<ProdutoService>();
-builder.Services.AddScoped<ProdutoRepository>();
-builder.Services.AddScoped<ProdutoImagemService>();
-builder.Services.AddScoped<ProdutoImagemRepository>();
-builder.Services.AddScoped<CategoriaProdutoService>();
-builder.Services.AddScoped<CategoriaProdutoRepository>();
+//builder.Services.AddScoped<ProdutoService>();
+//builder.Services.AddScoped<ProdutoRepository>();
+//builder.Services.AddScoped<ProdutoImagemService>();
+//builder.Services.AddScoped<ProdutoImagemRepository>();
+//builder.Services.AddScoped<CategoriaProdutoService>();
+//builder.Services.AddScoped<CategoriaProdutoRepository>();
 builder.Services.AddScoped<InstituicaoService>();
 builder.Services.AddScoped<InstituicaoRepository>();
-builder.Services.AddScoped<InstituicaoCategoriaService>();
-builder.Services.AddScoped<InstituicaoCategoriaRepository>();
-builder.Services.AddScoped<InstituicaoImagemService>();
-builder.Services.AddScoped<InstituicaoImagemRepository>();
-builder.Services.AddScoped<CategoriaService>();
-builder.Services.AddScoped<CategoriaRepository>();
-builder.Services.AddScoped<ChatRepository>();
-builder.Services.AddScoped<ChatService>();
-builder.Services.AddScoped<MensagemChatRepository>();
-builder.Services.AddScoped<MensagemChatService>();
+//builder.Services.AddScoped<InstituicaoCategoriaService>();
+//builder.Services.AddScoped<InstituicaoCategoriaRepository>();
+//builder.Services.AddScoped<InstituicaoImagemService>();
+//builder.Services.AddScoped<InstituicaoImagemRepository>();
+//builder.Services.AddScoped<CategoriaService>();
+//builder.Services.AddScoped<CategoriaRepository>();
+//builder.Services.AddScoped<ChatRepository>();
+//builder.Services.AddScoped<ChatService>();
+//builder.Services.AddScoped<MensagemChatRepository>();
+//builder.Services.AddScoped<MensagemChatService>();
 builder.Services.AddScoped<NominatimService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 10485760; // 10 MB
+    options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
 });
 
 builder.Services.AddHttpClient();

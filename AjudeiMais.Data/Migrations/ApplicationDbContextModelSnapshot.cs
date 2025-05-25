@@ -180,7 +180,6 @@ namespace AjudeiMais.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Instituicao_ID"));
 
                     b.Property<string>("Avaliacao")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("DataCriacao")
