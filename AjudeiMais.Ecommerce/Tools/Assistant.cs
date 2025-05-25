@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using System.Security.Claims; // Necessary for ClaimTypes and ClaimsPrincipal
+using System.Reflection; // Necessary for PropertyInfo
 
 namespace AjudeiMais.Ecommerce.Tools
 {
@@ -35,26 +37,30 @@ namespace AjudeiMais.Ecommerce.Tools
         /// Método de extensão que adiciona todas as propriedades públicas simples (string, int, bool, etc)
         /// de um objeto genérico como campos string no MultipartFormDataContent.
         /// </summary>
-        /// <typeparam name="T">Tipo do objeto a ser convertido em campos form-data.</typeparam>
-        /// <param name="formData">O MultipartFormDataContent que receberá os campos.</param>
-        /// <param name="obj">O objeto com as propriedades a serem adicionadas.</param>
+        /// <typeparam name="T">Type of the object to be converted into form-data fields.</typeparam>
+        /// <param name="formData">The MultipartFormDataContent that will receive the fields.</param>
+        /// <param name="obj">The object with the properties to be added.</param>
         public static void AddObjectAsFormFields<T>(this MultipartFormDataContent formData, T obj)
         {
-            if (obj == null) return;
+            if (obj == null)
+                return;
 
-            var properties = typeof(T).GetProperties();
+            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var prop in properties)
             {
-                var value = prop.GetValue(obj);
-                var stringValue = value?.ToString() ?? "";
-
-                if (IsSimpleType(prop.PropertyType))
+                // Ensure the property is readable and is a simple type
+                if (prop.CanRead && IsSimpleType(prop.PropertyType))
                 {
+                    var value = prop.GetValue(obj);
+                    var stringValue = value?.ToString() ?? string.Empty;
                     formData.Add(new StringContent(stringValue), prop.Name);
                 }
             }
         }
+
+
+
 
         /// <summary>
         /// Verifica se um tipo é considerado "simples" para envio como campo string.

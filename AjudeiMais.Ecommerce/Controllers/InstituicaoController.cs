@@ -1,23 +1,13 @@
 ﻿using AjudeiMais.Ecommerce.Filters;
-using AjudeiMais.Ecommerce.Models;
-using AjudeiMais.Ecommerce.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
     public class InstituicaoController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-
-        public InstituicaoController(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-        }
-
         public IActionResult Index()
         {
             return View();
@@ -43,12 +33,6 @@ namespace AjudeiMais.Ecommerce.Controllers
                     // Adiciona a role
                     formData.Add(new StringContent("instituicao"), "Role");
 
-                    //Adiciona os endereços como JSON
-                    var enderecosJson = JsonConvert.SerializeObject(new List<EnderecoModel> { model.Endereco });
-
-                    formData.Add(new StringContent(enderecosJson, Encoding.UTF8, "application/json"), "Enderecos");
-
-
                     // Adiciona as fotos, se houver
                     if (Fotos != null && Fotos.Count > 0)
                     {
@@ -58,7 +42,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                             if (foto != null && foto.Length > 0)
                             {
                                 // Usa um nome como Fotos[0], Fotos[1], etc.
-                                formData.AddFileContent(foto, $"Fotos");
+                                formData.AddFileContent(foto, $"Fotos[{i}]");
                             }
                         }
                     }

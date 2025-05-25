@@ -20,7 +20,7 @@ namespace AjudeiMais.API.Repositories
                 .FirstOrDefaultAsync(u => u.Usuario_ID == id);
             return usuario;
         }
-        
+
         public async Task<Usuario> GetByGUID(string GUID)
         {
             var usuario = await _context.Usuario
@@ -30,9 +30,9 @@ namespace AjudeiMais.API.Repositories
 
         public async Task<Usuario> GetByEmail(string email)
         {
-                var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.Email == email && u.Excluido != true);
+            var usuario = await _context.Usuario.FirstOrDefaultAsync(u => u.Email == email && u.Excluido != true);
 
-                return usuario;
+            return usuario;
         }
 
         public async Task<IEnumerable<Usuario>> GetAll()
@@ -62,20 +62,11 @@ namespace AjudeiMais.API.Repositories
 
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(Usuario usuario)
         {
-            var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(u => u.Usuario_ID == id);
+            _context.Usuario.Update(usuario);
 
-            if (usuario != null)
-            {
-                usuario.Habilitado = false;
-                usuario.Excluido = true;
-                usuario.DataUpdate = DateTime.Now;
-
-                _context.Usuario.Update(usuario);
-                await _context.SaveChangesAsync();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

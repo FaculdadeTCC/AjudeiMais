@@ -64,7 +64,7 @@ public class AuthController : ControllerBase
 
     private string GenerateJwtToken(Instituicao instituicao)
     {
-        return GenerateJwt(instituicao.Instituicao_ID.ToString(), instituicao.Nome, instituicao.Email, instituicao.Role, instituicao.Guid);
+        return GenerateJwt(instituicao.Instituicao_ID.ToString(), instituicao.Nome, instituicao.Email, instituicao.Role, instituicao.GUID);
     }
 
     private string GenerateJwt(string id, string nome, string email, string role, string guid)

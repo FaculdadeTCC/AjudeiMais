@@ -1,10 +1,29 @@
 ﻿// ~/js/paginas/cadastro-usuario/form-validacoes.js (Atualizado)
 
-// Funções de validação existentes
-function validarEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
+async function validarEmail(email) {
+    try {
+        const response = await fetch(`/verificaremail?email=${encodeURIComponent(email)}`);
+
+        if (!response.ok) {
+            throw new Error('Erro ao consultar a API');
+        }
+
+        const resultado = await response.json();
+
+        // Email existe
+        if (resultado.exists) {
+            return false;
+        }
+
+        // Email não existe, valida formato
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    } catch (error) {
+        console.error('Erro:', error);
+        return false;
+    }
 }
+
 
 function validarCPF(cpf) {
     cpf = cpf.replace(/[^\d]+/g, '');

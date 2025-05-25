@@ -89,7 +89,7 @@
                                         <p class="mb-0">Clique ou arraste para alterar sua foto</p>
                                         <small class="text-muted">(Tamanho máximo: 5MB)</small>
                                     </div>
-                                    <img id="imagePreview" src="@(string.IsNullOrEmpty(Model.FotoDePerfil) + Model.FotoDePerfil)"
+                                    <img id="imagePreview" src="@(string.IsNullOrEmpty(Model.FotoDePerfil) ? "#" : Assistant.ServerURL() + Model.FotoDePerfil)"
                                          alt="Preview da Imagem"
                                          class="img-fluid rounded-circle @(string.IsNullOrEmpty(Model.FotoDePerfil) ? "d-none" : "d-block") mt-3"
                                          style="max-width: 150px; max-height: 150px; object-fit: cover;">

@@ -1,7 +1,8 @@
-﻿// ~/js/paginas/cadastro-usuario/form-tabs.js (Atualizado)
+﻿// ~/js/paginas/cadastro-usuario/form-tabs.js
 
+// Importa todas as funções de validação e feedback visual
 import {
-    validarEmail,
+    validarEmail, // Importado aqui, mas será usada de forma diferente agora
     validarCPF,
     validarNome,
     validarTelefone,
@@ -29,9 +30,11 @@ const confirmarSenhaInput = document.getElementById('confirmarSenha');
 // Elementos para mostrar/ocultar senha
 const passwordToggles = document.querySelectorAll('.password-toggle');
 
-
 let currentStep = 0;
 
+/**
+ * Atualiza a barra de progresso e os indicadores de passo.
+ */
 function updateProgressBar() {
     const progress = (currentStep / (formSteps.length - 1)) * 100;
     progressBar.style.width = `${progress}%`;
@@ -45,6 +48,10 @@ function updateProgressBar() {
     });
 }
 
+/**
+ * Exibe o passo do formulário especificado.
+ * @param {number} stepIndex - O índice do passo a ser exibido.
+ */
 function showStep(stepIndex) {
     formSteps.forEach((step, index) => {
         if (index === stepIndex) {
@@ -59,6 +66,9 @@ function showStep(stepIndex) {
     updateNavigationButtons();
 }
 
+/**
+ * Atualiza a visibilidade dos botões de navegação (Voltar, Próximo, Finalizar).
+ */
 function updateNavigationButtons() {
     if (currentStep === 0) {
         btnBack.classList.add('d-none');
@@ -78,9 +88,9 @@ function updateNavigationButtons() {
 /**
  * Valida os campos do passo atual do formulário.
  * @param {boolean} shouldFocus - Se deve focar no primeiro input inválido.
- * @returns {boolean} - True se todos os campos do passo atual são válidos, false caso contrário.
+ * @returns {Promise<boolean>} - True se todos os campos do passo atual são válidos, false caso contrário.
  */
-function validateCurrentStep(shouldFocus = false) {
+async function validateCurrentStep(shouldFocus = false) { // AGORA É ASSÍNCRONA
     let isValid = true;
     const currentFormStep = formSteps[currentStep];
     const inputs = currentFormStep.querySelectorAll('input[required], select[required], textarea[required]');
@@ -90,7 +100,8 @@ function validateCurrentStep(shouldFocus = false) {
     // Limpa o estado de validação de todos os inputs no passo atual antes de revalidar
     currentFormStep.querySelectorAll('.is-invalid, .is-valid').forEach(el => clearInputValidation(el));
 
-    inputs.forEach(input => {
+    // Usamos um loop for...of para poder usar await dentro
+    for (const input of inputs) {
         let inputIsValid = true;
         const value = input.value ? input.value.trim() : '';
         let currentFieldErrorMessage = '';
@@ -102,6 +113,8 @@ function validateCurrentStep(shouldFocus = false) {
             }
         } else if (input.type === 'file' && input.id === 'fotoPerfil') {
             if (input.files.length === 0) {
+                inputIsValid = false; // Foto de perfil é obrigatória
+                currentFieldErrorMessage = 'Por favor, selecione uma foto de perfil.';
                 setInputInvalid(input.closest('.file-upload') || input, false);
             } else {
                 const file = input.files[0];
@@ -109,11 +122,13 @@ function validateCurrentStep(shouldFocus = false) {
                 const allowedTypes = ['image/jpeg', 'image/png'];
 
                 if (!allowedTypes.includes(file.type)) {
+                    inputIsValid = false;
+                    currentFieldErrorMessage = 'Apenas arquivos JPG ou PNG são permitidos.';
                     setInputInvalid(input.closest('.file-upload') || input, false);
-                    displayAlert('Apenas arquivos JPG ou PNG são permitidos.', 'danger');
                 } else if (file.size > maxSize) {
+                    inputIsValid = false;
+                    currentFieldErrorMessage = 'A imagem deve ter no máximo 5MB.';
                     setInputInvalid(input.closest('.file-upload') || input, false);
-                    displayAlert('A imagem deve ter no máximo 5MB.', 'danger');
                 } else {
                     setInputValid(input.closest('.file-upload') || input);
                 }
@@ -138,9 +153,13 @@ function validateCurrentStep(shouldFocus = false) {
                         }
                         break;
                     case 'email':
-                        if (!validarEmail(value)) {
+                        // A função validarEmail AGORA faz tudo (formato + API)
+                        const emailValid = await validarEmail(value); // AWAIT AQUI!
+                        if (!emailValid) {
                             inputIsValid = false;
-                            currentFieldErrorMessage = 'E-mail inválido. Verifique o formato.';
+                            // A mensagem de erro já será exibida dentro de validarEmail via displayAlert,
+                            // mas podemos ter uma mensagem padrão aqui caso validarEmail não defina uma específica.
+                            currentFieldErrorMessage = currentFieldErrorMessage || 'E-mail inválido ou já cadastrado.';
                         }
                         break;
                     case 'telefone':
@@ -162,7 +181,7 @@ function validateCurrentStep(shouldFocus = false) {
                         }
                         break;
                     case 'senha':
-                        if (value === '') { // Prioriza a mensagem de campo obrigatório para senhas
+                        if (value === '') {
                             inputIsValid = false;
                             currentFieldErrorMessage = 'A senha é obrigatória.';
                         } else if (!validarSenha(value)) {
@@ -171,7 +190,7 @@ function validateCurrentStep(shouldFocus = false) {
                         }
                         break;
                     case 'confirmarSenha':
-                        if (value === '') { // Prioriza a mensagem de campo obrigatório
+                        if (value === '') {
                             inputIsValid = false;
                             currentFieldErrorMessage = 'A confirmação de senha é obrigatória.';
                         } else if (value !== senhaInput.value) {
@@ -187,34 +206,37 @@ function validateCurrentStep(shouldFocus = false) {
 
         if (!inputIsValid) {
             isValid = false;
-            // Aplica a classe is-invalid ao elemento correto, considerando o file-upload
             if (input.id === 'fotoPerfil') {
                 setInputInvalid(input.closest('.file-upload') || input, false);
             } else {
                 setInputInvalid(input, false);
             }
 
-            // Armazena o primeiro input inválido e sua mensagem de erro
             if (!firstInvalidInput) {
                 firstInvalidInput = input;
                 errorMessage = currentFieldErrorMessage;
             }
         } else {
-            // Aplica a classe is-valid
             if (input.id === 'fotoPerfil') {
                 setInputValid(input.closest('.file-upload') || input);
             } else {
                 setInputValid(input);
             }
         }
-    });
+    } // Fim do for...of
 
     if (!isValid) {
         if (shouldFocus && firstInvalidInput) {
             firstInvalidInput.focus();
         }
         // Exibe o alerta com a primeira mensagem de erro encontrada ou uma mensagem genérica
-        displayAlert(errorMessage || 'Por favor, preencha todos os campos obrigatórios corretamente.', 'danger');
+        // A displayAlert já foi chamada dentro de validarEmail para o caso específico.
+        // Aqui é para outros erros de validação.
+        if (errorMessage) { // Só mostra o alerta se houver uma mensagem específica de erro do campo
+            displayAlert(errorMessage, 'danger');
+        } else { // Caso não haja mensagem específica para o primeiro campo inválido
+            displayAlert('Por favor, preencha todos os campos obrigatórios corretamente.', 'danger');
+        }
     }
 
     return isValid;
@@ -222,8 +244,8 @@ function validateCurrentStep(shouldFocus = false) {
 
 
 // Event Listeners para botões de navegação
-btnNext.addEventListener('click', () => {
-    if (validateCurrentStep(true)) {
+btnNext.addEventListener('click', async () => { // btnNext agora é ASSÍNCRONO
+    if (await validateCurrentStep(true)) { // AGUARDA A VALIDAÇÃO
         if (currentStep < formSteps.length - 1) {
             showStep(currentStep + 1);
         }
@@ -241,9 +263,12 @@ showStep(0);
 
 // Adiciona listeners para feedback visual em tempo real ao sair do campo (blur)
 form.querySelectorAll('input, select, textarea').forEach(input => {
-    input.addEventListener('blur', () => {
+    input.addEventListener('blur', async () => { // listener blur agora é ASSÍNCRONO
         let inputIsValid = true;
         const value = input.value ? input.value.trim() : '';
+        let currentFieldErrorMessage = ''; // Para capturar a mensagem de erro específica.
+
+        clearInputValidation(input); // Sempre limpa antes de revalidar no blur
 
         // Tratamento específico para campos de senha no blur
         if (input.id === 'senha') {
@@ -253,7 +278,7 @@ form.querySelectorAll('input, select, textarea').forEach(input => {
                 inputIsValid = false;
             }
             // Dispara validação da confirmação se a senha principal for alterada
-            if (confirmarSenhaInput && confirmarSenhaInput.value !== '') { // Verifica se o input de confirmação existe e tem valor
+            if (confirmarSenhaInput && confirmarSenhaInput.value !== '') {
                 if (confirmarSenhaInput.value !== value) {
                     setInputInvalid(confirmarSenhaInput, false);
                 } else {
@@ -275,26 +300,31 @@ form.querySelectorAll('input, select, textarea').forEach(input => {
             switch (input.id) {
                 case 'nomeCompleto':
                     inputIsValid = validarNome(value);
+                    currentFieldErrorMessage = inputIsValid ? '' : 'Nome completo inválido.';
                     break;
                 case 'documento':
                     inputIsValid = validarCPF(value);
+                    currentFieldErrorMessage = inputIsValid ? '' : 'CPF inválido. Verifique o formato e os dígitos.';
                     break;
                 case 'email':
-                    inputIsValid = validarEmail(value);
+                    // A função validarEmail AGORA faz tudo (formato + API)
+                    inputIsValid = await validarEmail(value); // AWAIT AQUI!
+                    currentFieldErrorMessage = inputIsValid ? '' : 'E-mail inválido ou já cadastrado.'; // Mensagem genérica se a validarEmail já mostrou alerta.
                     break;
                 case 'telefone':
                     inputIsValid = validarTelefone(value);
+                    currentFieldErrorMessage = inputIsValid ? '' : 'Telefone inválido. Formato esperado: (XX) XXXXX-XXXX ou (XX) XXXX-XXXX.';
                     break;
                 case 'cep':
                     inputIsValid = value.replace(/\D/g, '').length === 8;
+                    currentFieldErrorMessage = inputIsValid ? '' : 'CEP inválido. Formato esperado: 00.000-000.';
                     break;
                 case 'estado':
                     inputIsValid = value !== '';
+                    currentFieldErrorMessage = inputIsValid ? '' : 'Por favor, selecione um Estado.';
                     break;
                 default:
-                    // Se o input não tem id específico e não é obrigatório, considera válido
-                    // Ou se é um input comum que não precisa de validação complexa
-                    inputIsValid = true;
+                    inputIsValid = true; // Se o input não tem id específico e não é obrigatório, considera válido
                     break;
             }
         }
@@ -306,6 +336,7 @@ form.querySelectorAll('input, select, textarea').forEach(input => {
             } else {
                 setInputInvalid(input, false);
             }
+            // Não exibe alert() no blur, apenas a classe de invalidação visual
         } else {
             if (input.id === 'fotoPerfil') {
                 setInputValid(input.closest('.file-upload') || input);
@@ -347,7 +378,7 @@ form.querySelectorAll('input, select, textarea').forEach(input => {
 
 // --- FUNCIONALIDADE: MOSTRAR/OCULTAR SENHA ---
 passwordToggles.forEach(toggle => {
-    toggle.addEventListener('click', function() {
+    toggle.addEventListener('click', function () {
         const targetId = this.dataset.target;
         const passwordInput = document.getElementById(targetId);
         const icon = this.querySelector('.toggle-icon');
@@ -366,9 +397,14 @@ passwordToggles.forEach(toggle => {
 });
 
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => { // submit agora é ASSÍNCRONO
+    event.preventDefault(); // Sempre previne o default para controlar o envio
+
     // Valida o passo atual antes de permitir o submit final
-    if (!validateCurrentStep(true)) {
-        event.preventDefault(); // Impede o envio do formulário se houver erros
+    if (await validateCurrentStep(true)) { // AGUARDA A VALIDAÇÃO
+        form.submit(); 
+    } else {
+        // validateCurrentStep já exibe o alerta de erro
+        console.log('Validação do formulário falhou.');
     }
 });

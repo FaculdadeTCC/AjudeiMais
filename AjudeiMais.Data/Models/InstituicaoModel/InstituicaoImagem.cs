@@ -13,7 +13,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
     {
         [Key]
         public int InsituicaoImagem_ID { get; set; }
-        public string Imagem { get; set; }
+        public string CaminhoImagem { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
 
