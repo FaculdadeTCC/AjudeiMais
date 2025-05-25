@@ -45,7 +45,7 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(Instituicao model)
+        public async Task<IActionResult> SaveOrUpdate(InstituicaoDTO model)
         {
             try
             {

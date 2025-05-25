@@ -148,6 +148,10 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
@@ -193,6 +197,10 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Documento")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -200,7 +208,7 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Guid")
+                    b.Property<string>("GUID")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -267,15 +275,15 @@ namespace AjudeiMais.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("InsituicaoImagem_ID"));
 
+                    b.Property<string>("CaminhoImagem")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Imagem")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");

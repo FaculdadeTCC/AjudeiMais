@@ -18,6 +18,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public string Complemento { get; set; }
         public string Bairro { get; set; }
         public string Cidade { get; set; }
+        public string Estado { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
 

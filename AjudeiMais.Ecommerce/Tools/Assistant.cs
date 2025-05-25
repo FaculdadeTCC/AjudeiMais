@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using System.Net.Http;
+using System.Reflection;
 
 namespace AjudeiMais.Ecommerce.Tools
 {
@@ -38,23 +39,42 @@ namespace AjudeiMais.Ecommerce.Tools
         /// <typeparam name="T">Tipo do objeto a ser convertido em campos form-data.</typeparam>
         /// <param name="formData">O MultipartFormDataContent que receberá os campos.</param>
         /// <param name="obj">O objeto com as propriedades a serem adicionadas.</param>
-        public static void AddObjectAsFormFields<T>(this MultipartFormDataContent formData, T obj)
+        public static void AddObjectAsFormFields(this MultipartFormDataContent formData, object obj, string prefix = "")
         {
-            if (obj == null) return;
+            if (obj == null)
+                return;
 
-            var properties = typeof(T).GetProperties();
+            var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var prop in properties)
             {
-                var value = prop.GetValue(obj);
-                var stringValue = value?.ToString() ?? "";
+                // Ignora propriedades que exigem parâmetros (ex: indexadores)
+                if (prop.GetIndexParameters().Length > 0)
+                    continue;
 
-                if (IsSimpleType(prop.PropertyType))
+                // Ignora arquivos
+                if (typeof(IFormFile).IsAssignableFrom(prop.PropertyType))
+                    continue;
+
+                var value = prop.GetValue(obj);
+                if (value == null)
+                    continue;
+
+                string propName = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
+
+                if (prop.PropertyType.IsClass && !(value is string))
                 {
-                    formData.Add(new StringContent(stringValue), prop.Name);
+                    formData.AddObjectAsFormFields(value, propName); // recursão para objetos aninhados
+                }
+                else
+                {
+                    formData.Add(new StringContent(value.ToString()), propName);
                 }
             }
         }
+
+
+
 
         /// <summary>
         /// Verifica se um tipo é considerado "simples" para envio como campo string.
