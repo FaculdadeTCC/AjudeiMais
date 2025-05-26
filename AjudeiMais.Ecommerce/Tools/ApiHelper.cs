@@ -3,7 +3,8 @@ using System.Text.Json; // Preferir System.Text.Json para .NET Core
 using System.Threading.Tasks;
 using Newtonsoft.Json; // Manter se ainda usar em outros lugares, mas System.Text.Json é o padrão moderno
 using Microsoft.AspNetCore.Mvc;
-using AjudeiMais.Ecommerce.Models.Usuario; // Para ProblemDetails
+using AjudeiMais.Ecommerce.Models.Usuario;
+using AjudeiMais.Ecommerce.Models;// Para ProblemDetails
 
 namespace AjudeiMais.Ecommerce.Tools
 {

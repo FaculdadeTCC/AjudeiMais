@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.Net.Http;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Text;
 
@@ -73,15 +75,31 @@ namespace AjudeiMais.Ecommerce.Controllers
                     HttpContext.Session.SetString("UserId", loginResponse.Id);
                     HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
-                var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
-                json = await usuario.Content.ReadAsStringAsync();
 
-                var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
-
-                    // Cria as claims do usuário autenticado
-                    var claims = new List<Claim>
+                string nome = "";
+                if (loginResponse.Role == "usuario")
                 {
-                    new Claim(ClaimTypes.Name, Nome),
+                    var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
+                    json = await usuario.Content.ReadAsStringAsync();
+                    var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
+
+                    nome = usuarioResponse.NomeCompleto;
+                }
+
+                if (loginResponse.Role == "instituicao")
+                {
+                    var usuario = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{loginResponse.GUID}");
+                    json = await usuario.Content.ReadAsStringAsync();
+                    var instituicaooResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
+
+                    nome = instituicaooResponse.Nome;
+                }
+
+
+                // Cria as claims do usuário autenticado
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, nome),
                     new Claim(ClaimTypes.Role, loginResponse.Role),
                     new Claim("UserId", loginResponse.Id),
                     new Claim("GUID", loginResponse.GUID),
@@ -98,7 +116,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     case "admin":
                         return RedirectToAction("Index", "Admin");
                     case "instituicao":
-                        return RedirectToAction("Perfil", "Instituicao");
+                        return RedirectToAction("Perfil", "Instituicao", new { guid = loginResponse.GUID.ToString() });
                     case "usuario":
                         return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
                     default:
