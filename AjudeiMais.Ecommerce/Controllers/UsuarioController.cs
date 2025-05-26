@@ -30,19 +30,24 @@ namespace AjudeiMais.Ecommerce.Controllers
         [RoleAuthorize("usuario", "admin")]
         public async Task<IActionResult> Index(string guid)
         {
-            if (!User.Identity.IsAuthenticated)
+            string loggedInUserGuid;
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
             {
-                return RedirectToRoute("home");
+                return unauthorizedResult; // Redireciona para login ou home
             }
 
-            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
-            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
-            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
             {
-                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
             }
 
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
             var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
@@ -52,7 +57,6 @@ namespace AjudeiMais.Ecommerce.Controllers
             else
             {
                 _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
-                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }
@@ -61,20 +65,26 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpGet]
         public async Task<IActionResult> Perfil(string guid)
         {
-            if (!User.Identity.IsAuthenticated)
+            string loggedInUserGuid;
+
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
             {
-                return RedirectToRoute("home");
+                return unauthorizedResult; // Redireciona para login ou home
             }
 
-            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
-            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
-            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
             {
-                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
             }
 
-            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid); // Use o GUID da URL aqui
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
+            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
             {
@@ -83,7 +93,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             else
             {
                 _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
-                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
+                // Em caso de erro na API, redireciona para o próprio perfil do usuário logado com a mensagem de erro
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }
@@ -111,20 +121,24 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             string loggedInUserGuid;
 
+
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
             var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
 
             if (unauthorizedResult != null)
             {
-                return unauthorizedResult; // Retorna login ou erro se GUID inválido
+                return unauthorizedResult; // Redireciona para login ou home
             }
 
-            // Valida se o usuário logado está tentando acessar seu próprio perfil ou se é um admin
-            if (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase))
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
             {
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
             }
 
-            // Busca os dados do usuário usando o GUID da URL (pode ser o próprio ou de outro se for admin)
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
             var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
@@ -609,7 +623,6 @@ namespace AjudeiMais.Ecommerce.Controllers
                 });
             }
         }
-
 
         public IActionResult Anuncios()
         {

@@ -17,7 +17,7 @@ namespace AjudeiMais.Ecommerce.Tools
         {
             // This URL should ideally be loaded from configuration (e.g., appsettings.json)
             // rather than hardcoded, for easier environment management.
-            return "https://localhost:7271/";
+            return "https://localhost:5168/";
         }
 
         /// <summary>

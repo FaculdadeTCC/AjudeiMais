@@ -19,7 +19,7 @@ namespace AjudeiMais.Data.Context
                 .Build();
 
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
-            optionsBuilder.UseSqlServer(configuration.GetConnectionString("Connection-Work"));
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }
