@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace AjudeiMais.Data.Models.InstituicaoModel
@@ -10,6 +11,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string Telefone { get; set; }
+        public string FotoPerfil { get; set; }
         public string Documento { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }

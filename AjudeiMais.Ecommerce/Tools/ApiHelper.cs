@@ -72,5 +72,67 @@ namespace AjudeiMais.Ecommerce.Tools
                 return (null, $"Ocorreu um erro inesperado: {ex.Message}");
             }
         }
+
+        public static async Task<(InstituicaoPerfilModel instituicao, string ErrorMessage)> GetInsituicaoByGuidAsync(IHttpClientFactory httpClientFactory, string guid)
+        {
+            if (string.IsNullOrEmpty(guid))
+            {
+                return (null, "GUID do Instituição não fornecido.");
+            }
+
+            try
+            {
+                var httpClient = httpClientFactory.CreateClient("ApiAjudeiMais");
+                var response = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{guid}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = await response.Content.ReadAsStringAsync();
+                    // Usar System.Text.Json.JsonSerializer.Deserialize para desserialização
+                    var instituicao = System.Text.Json.JsonSerializer.Deserialize<InstituicaoPerfilModel>(json,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    return (instituicao, null); // Retorna o usuário e null para a mensagem de erro
+                }
+                else
+                {
+                    var responseContent = await response.Content.ReadAsStringAsync();
+                    ProblemDetails problemDetails = null;
+
+                    // Tenta desserializar como ProblemDetails
+                    try
+                    {
+                        problemDetails = System.Text.Json.JsonSerializer.Deserialize<ProblemDetails>(responseContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (System.Text.Json.JsonException)
+                    {
+                        // Se não for ProblemDetails, apenas usa o conteúdo bruto como mensagem
+                    }
+
+                    if (problemDetails?.Title != null && problemDetails?.Detail != null)
+                    {
+                        return (null, $"{problemDetails.Title}: {problemDetails.Detail}");
+                    }
+                    else if (!string.IsNullOrEmpty(responseContent))
+                    {
+                        return (null, $"Erro ao buscar instituição: {responseContent}");
+                    }
+                    else
+                    {
+                        return (null, "Ocorreu um erro desconhecido ao buscar instituição.");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return (null, $"Não foi possível conectar ao servidor da API: {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return (null, $"Ocorreu um erro inesperado: {ex.Message}");
+            }
+
+        }
+
     }
 }

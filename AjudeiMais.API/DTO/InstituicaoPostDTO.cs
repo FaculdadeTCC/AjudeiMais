@@ -2,11 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace AjudeiMais.API.DTO;
-public class InstituicaoDTO
+public class InstituicaoPostDTO
 {
     public int Instituicao_ID { get; set; }
     public string Nome { get; set; }
     public string Descricao { get; set; }
+    public IFormFile FotoPerfil { get; set; }
     public string Documento { get; set; }
     public string Email { get; set; }
     public string Senha { get; set; }

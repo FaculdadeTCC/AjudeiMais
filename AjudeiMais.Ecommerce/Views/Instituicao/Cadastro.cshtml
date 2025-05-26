@@ -28,23 +28,24 @@
                 <p class="mb-0">Preencha os campos abaixo para registrar sua instituição</p>
             </div>
 
-@*                <div class="container">
-                  <div class="step-indicator">
-                      <div class="step active">
-                          <div class="step-number">1</div>
-                          <div class="step-title">Dados Institucionais</div>
-                      </div>
-                      <div class="step">
-                          <div class="step-number">2</div>
-                          <div class="step-title">Endereço</div>
-                      </div>
-                      <div class="step">
-                          <div class="step-number">3</div>
-                          <div class="step-title">Finalizar</div>
-                      </div>
-                  </div>
-              </div>  *@
+            @*<div class="container">
+            <div class="step-indicator">
+            <div class="step active">
+            <div class="step-number">1</div>
+            <div class="step-title">Dados Institucionais</div>
+            </div>
+            <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-title">Endereço</div>
+            </div>
+            <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-title">Finalizar</div>
+            </div>
+            </div>
+            </div>  *@
             <form method="post" asp-controller="Instituicao" asp-action="Cadastro" enctype="multipart/form-data">
+
                 <!-- DADOS INSTITUCIONAIS -->
                 <div class="form-step active">
                     <div class="mb-5">
@@ -82,6 +83,23 @@
                                 </div>
                                 <div class="form-text">Formato: (00) 00000-0000</div>
                             </div>
+
+                            <div class="col-12">
+                                <label class="form-label required-field mb-2">Foto de Perfil</label>
+                                <input asp-for="FotoPerfil" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
+                                <span asp-validation-for="FotoPerfil" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NOVA SESSÃO: APRESENTAÇÃO DA INSTITUIÇÃO -->
+                <div class="form-step">
+                    <div class="mb-5">
+                        <h2 class="section-title mb-4">
+                            <i class="bi bi-images"></i> Apresentação da Instituição
+                        </h2>
+                        <div class="row g-4">
                             <div class="col-12">
                                 <div class="form-floating">
                                     <textarea asp-for="Descricao" class="form-control" placeholder="Descrição da instituição" style="height: 120px;"></textarea>
@@ -91,7 +109,7 @@
                             </div>
 
                             <div class="col-md-12">
-                                <label class="form-label required-field mb-2">Fotos</label>
+                                <label class="form-label required-field mb-2">Fotos de Exibição</label>
                                 <label for="fotos" class="file-upload d-block">
                                     <input asp-for="Fotos" type="file" class="d-none" id="fotos" accept=".jpg,.jpeg,.png" multiple />
                                     <div id="fileUploadContent">
@@ -104,12 +122,11 @@
                                     <span asp-validation-for="Fotos" class="text-danger"></span>
                                 </label>
                             </div>
-
                         </div>
                     </div>
                 </div>
 
-                <!-- ENDEREÇO -->
+                <!-- ENDEREÇO (continua como estava) -->
                 <div class="form-step">
                     <div class="mb-5">
                         <h2 class="section-title mb-4">
@@ -175,7 +192,7 @@
                     </div>
                 </div>
 
-                <!-- SEGURANÇA -->
+                <!-- SEGURANÇA (continua como estava) -->
                 <div class="form-step">
                     <div class="mb-5">
                         <h2 class="section-title mb-4">
@@ -195,7 +212,7 @@
                                 <div class="form-floating position-relative">
                                     <input class="form-control" placeholder="Confirmar Senha" />
                                     <label class="required-field"></label>
-                                    <span  class="text-danger"></span>
+                                    <span class="text-danger"></span>
                                     <span class="password-toggle" data-target="confirmarSenha"><i class="fa fa-eye-slash toggle-icon"></i></span>
                                 </div>
                             </div>
@@ -219,47 +236,47 @@
                 </div>
             </form>
 
+
         </div>
     </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+@section Scripts {
+    <script src="~/js/paginas/cadastro-instituicao/cadastro-instituicao.js"></script>
 
-<script>
-    const inputFotos = document.getElementById('fotos');
-    const previewContainer = document.getElementById('previewContainer');
-    const removeBtn = document.getElementById('removeImagesButton');
 
-    inputFotos.addEventListener('change', function () {
-        previewContainer.innerHTML = '';
-        const files = Array.from(this.files);
+    <script>
+        const inputFotos = document.getElementById('fotos');
+        const previewContainer = document.getElementById('previewContainer');
+        const removeBtn = document.getElementById('removeImagesButton');
 
-        if (files.length > 0) {
-            removeBtn.classList.remove('d-none');
-        } else {
-            removeBtn.classList.add('d-none');
-        }
+        inputFotos.addEventListener('change', function () {
+            previewContainer.innerHTML = '';
+            const files = Array.from(this.files);
 
-        files.forEach(file => {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                const img = document.createElement('img');
-                img.src = event.target.result;
-                img.className = "img-thumbnail";
-                img.style.height = "100px";
-                img.style.objectFit = "cover";
-                previewContainer.appendChild(img);
-            };
-            reader.readAsDataURL(file);
+            if (files.length > 0) {
+                removeBtn.classList.remove('d-none');
+            } else {
+                removeBtn.classList.add('d-none');
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = "img-thumbnail";
+                    img.style.height = "100px";
+                    img.style.objectFit = "cover";
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
         });
-    });
 
-    removeBtn.addEventListener('click', function () {
-        inputFotos.value = '';
-        previewContainer.innerHTML = '';
-        removeBtn.classList.add('d-none');
-    });
-</script>
-
-<script src="~/js/paginas/cadastro-instituicao/cadastro-instituicao.js?v=@DateTime.Now"></script>
+        removeBtn.addEventListener('click', function () {
+            inputFotos.value = '';
+            previewContainer.innerHTML = '';
+            removeBtn.classList.add('d-none');
+        });
+    </script>
+}

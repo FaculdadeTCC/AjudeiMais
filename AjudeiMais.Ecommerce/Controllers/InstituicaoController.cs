@@ -12,7 +12,7 @@ namespace AjudeiMais.Ecommerce.Controllers
     public class InstituicaoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-
+        private readonly ILogger<UsuarioController> _logger; // Injeção de logger (opcional)
         public InstituicaoController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -22,13 +22,38 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         }
         [RoleAuthorize("admin", "instituicao")]
-        public IActionResult Perfil()
+        [HttpGet]
+        public async Task<IActionResult> Perfil(string guid)
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("home");
+            }
+
+            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
+            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
+            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            {
+                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
+                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+            }
+
+            var (instituicao, errorMessage) = await ApiHelper.GetInsituicaoByGuidAsync(_httpClientFactory, guid); // Use o GUID da URL aqui
+
+            if (instituicao != null)
+            {
+                return View(instituicao);
+            }
+            else
+            {
+                _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
+                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> Cadastro(InstituicaoModel model, IFormFile[] Fotos)
+        public async Task<IActionResult> Cadastro(InstituicaoModel model, IFormFile[] Fotos, IFormFile FotoPerfil)
         {
             try
             {
@@ -39,6 +64,8 @@ namespace AjudeiMais.Ecommerce.Controllers
                     // Adiciona os dados simples da instituição
                     formData.AddObjectAsFormFields(model);
 
+                    // Usa o método de extensão para adicionar o arquivo de forma limpa
+                    formData.AddFileContent(FotoPerfil, "FotoPerfil");
                     // Adiciona a role
                     formData.Add(new StringContent("instituicao"), "Role");
 

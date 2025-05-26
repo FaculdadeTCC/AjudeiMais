@@ -51,6 +51,7 @@ public class AuthController : ControllerBase
                 token,
                 role = instituicao.Role,
                 id = instituicao.Instituicao_ID.ToString(),
+                GUID = instituicao.GUID
             });
         }
 

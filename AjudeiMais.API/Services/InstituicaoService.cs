@@ -4,6 +4,8 @@ using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.InstituicaoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.Identity;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography;
 
 namespace AjudeiMais.API.Services
 {
@@ -25,6 +27,50 @@ namespace AjudeiMais.API.Services
             try
             {
                 return await _instituicaoRepository.GetById(id);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar instituição");
+                throw new Exception("Erro ao buscar instituição" + ex.Message);
+            }
+        }
+
+        public async Task<InstituicaoGetDTO> GetByGUID(string Guid)
+        {
+            try
+            {
+                var instituicao =  await _instituicaoRepository.GetByGUID(Guid);
+
+                var instituicaoDTO = new InstituicaoGetDTO
+                {
+                    GUID = instituicao.GUID,
+                    Nome = instituicao.Nome,
+                    Descricao = instituicao.Descricao,
+                    Telefone = instituicao.Telefone,
+                    Email = instituicao.Email,
+                    FotoPerfil = instituicao.FotoPerfil,
+                    Documento = instituicao.Documento,
+                    Enderecos = instituicao.Enderecos.Select(e => new EnderecoDTO
+                    {
+                        CEP = e.CEP,
+                        Rua = e.Rua,
+                        Numero = e.Numero,
+                        Complemento = e.Complemento,
+                        Bairro = e.Bairro,
+                        Cidade = e.Cidade,
+                        Estado = e.Estado
+
+                    }).ToList(),
+
+                    FotosUrl= instituicao.instituicaoImagems.Select(img => new InstituicaoImagemDTO
+                    {
+                        InsituicaoImagem_ID = img.InsituicaoImagem_ID,
+                        CaminhoImagem = img.CaminhoImagem
+                    }).ToList()
+                };
+
+                return instituicaoDTO;
 
             }
             catch (Exception ex)
@@ -62,7 +108,7 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task SaveOrUpdate(InstituicaoDTO model)
+        public async Task SaveOrUpdate(InstituicaoPostDTO model)
         {
             try
             {
@@ -74,6 +120,8 @@ namespace AjudeiMais.API.Services
                 model.GUID ??= Guid.NewGuid().ToString();
 
                 var pasta = new[] { "images", "profile", "instituicao", model.GUID };
+
+                string pathPerfil = await Helpers.SalvarImagemComoWebpAsync(model.FotoPerfil, pasta);
 
                 var listaImagens = new List<InstituicaoImagem>();
 
@@ -109,6 +157,7 @@ namespace AjudeiMais.API.Services
                     Instituicao_ID = model.Instituicao_ID,
                     Nome = model.Nome,
                     Documento = model.Documento,
+                    FotoPerfil = pathPerfil,
                     Descricao = model.Descricao,
                     Email = model.Email,
                     Senha = model.Senha,

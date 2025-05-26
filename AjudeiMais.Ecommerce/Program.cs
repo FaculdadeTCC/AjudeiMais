@@ -113,6 +113,35 @@ app.MapControllerRoute(
 
 #endregion
 
+#region INSTITUICAO
+
+app.MapControllerRoute(
+    name: "instituicao-cadastrar",
+    pattern: "instituicao/cadastrar",
+    defaults: new { controller = "Instituicao", action = "Cadastro" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-perfil",
+    pattern: "instituicao/perfil/{guid}",
+    defaults: new { controller = "Instituicao", action = "Perfil" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-alterar-dados",
+    pattern: "instituicao/alterar-dados",
+    defaults: new { controller = "Instituicao", action = "AlterarDados" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-index",
+    pattern: "instituicao",
+    defaults: new { controller = "Instituicao", action = "Index" }
+);
+
+#endregion
+
+
 #endregion
 app.MapControllerRoute(
     name: "home",

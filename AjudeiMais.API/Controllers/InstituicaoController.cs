@@ -30,6 +30,20 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
+        [HttpGet("GetByGUID/{GUID}")]
+        public async Task<IActionResult> GetInstituicaoByGuid(string GUID)
+        {
+            try
+            {
+                var instituicao = await _instituicaoService.GetByGUID(GUID);
+                return Ok(instituicao);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);  // Retorna erro em caso de falha
+            }
+        }
+
         [HttpGet("Ativos")]
 
         public async Task<IActionResult> GetInstituicoesAtivas()
@@ -46,7 +60,7 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate(InstituicaoDTO model)
+        public async Task<IActionResult> SaveOrUpdate(InstituicaoPostDTO model)
         {
             try
             {
