@@ -128,9 +128,7 @@ app.MapControllerRoute(
     defaults: new { controller = "Login", action = "Logout" }
 );
 
-//
-// Rota Home
-//
+#endregion
 app.MapControllerRoute(
     name: "home",
     pattern: "home",

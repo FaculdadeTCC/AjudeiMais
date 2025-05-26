@@ -45,14 +45,11 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            if (!User.Identity.IsAuthenticated)
+            try
             {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
-                try
-                {
-                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
-
-                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
+                httpClient.DefaultRequestHeaders.ConnectionClose = true;
 
                     var jsonContent = JsonConvert.SerializeObject(model);
                     var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
@@ -76,17 +73,15 @@ namespace AjudeiMais.Ecommerce.Controllers
                     HttpContext.Session.SetString("UserId", loginResponse.Id);
                     HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
-                    var role = User.FindFirstValue(ClaimTypes.Role);
+                var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
+                json = await usuario.Content.ReadAsStringAsync();
 
-                    var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
-                    json = await usuario.Content.ReadAsStringAsync();
-
-                    var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
+                var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
 
                     // Cria as claims do usuário autenticado
                     var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, usuarioResponse.NomeCompleto),
+                    new Claim(ClaimTypes.Name, Nome),
                     new Claim(ClaimTypes.Role, loginResponse.Role),
                     new Claim("UserId", loginResponse.Id),
                     new Claim("GUID", loginResponse.GUID),
@@ -97,29 +92,26 @@ namespace AjudeiMais.Ecommerce.Controllers
 
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                    // Redireciona com base no perfil (role)
-                    switch (loginResponse.Role.ToLower())
-                    {
-                        case "admin":
-                            return RedirectToAction("Index", "Admin");
-                        case "instituicao":
-                            return RedirectToAction("Perfil", "Instituicao");
-                        case "usuario":
-                            return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
-                        default:
-                            return RedirectToAction("AcessoNegado", "Home");
-                    }
-                }
-                catch (Exception ex)
+                // Redireciona com base no perfil (role)
+                switch (loginResponse.Role.ToLower())
                 {
-                    return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
-
+                    case "admin":
+                        return RedirectToAction("Index", "Admin");
+                    case "instituicao":
+                        return RedirectToAction("Perfil", "Instituicao");
+                    case "usuario":
+                        return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
+                    default:
+                        return RedirectToAction("AcessoNegado", "Home");
                 }
-            } else
+            }
+            catch (Exception ex)
             {
-                return RedirectToRoute("usuario-perfil", new { guid = User.FindFirst("GUID")?.Value });
+                return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
+
             }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
