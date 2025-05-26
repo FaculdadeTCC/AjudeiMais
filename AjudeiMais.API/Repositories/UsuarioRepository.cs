@@ -52,6 +52,8 @@ namespace AjudeiMais.API.Repositories
             if (model.Usuario_ID > 0)
             {
                 _context.Usuario.Update(model);
+
+                await _context.SaveChangesAsync();
             }
             else
             {

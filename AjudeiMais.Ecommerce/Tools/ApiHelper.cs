@@ -1,15 +1,23 @@
 ﻿using System.Net;
 using System.Text.Json; // Preferir System.Text.Json para .NET Core
 using System.Threading.Tasks;
-using AjudeiMais.Ecommerce.Models; // Assumindo que UsuarioPerfilModel está aqui
 using Newtonsoft.Json; // Manter se ainda usar em outros lugares, mas System.Text.Json é o padrão moderno
-using Microsoft.AspNetCore.Mvc; // Para ProblemDetails
+using Microsoft.AspNetCore.Mvc;
+using AjudeiMais.Ecommerce.Models.Usuario; // Para ProblemDetails
 
 namespace AjudeiMais.Ecommerce.Tools
 {
     public static class ApiHelper
     {
         private static string BASE_URL = Assistant.ServerURL(); // Usando o Helper existente
+
+        public class ApiResponse<T>
+        {
+            public bool Success { get; set; }
+            public string Type { get; set; } // "success", "error", "warning", etc.
+            public string Message { get; set; }
+            public T? Data { get; set; }
+        }
 
         // Método estático para buscar usuário por GUID
         public static async Task<(UsuarioPerfilModel Usuario, string ErrorMessage)> GetUsuarioByGuidAsync(

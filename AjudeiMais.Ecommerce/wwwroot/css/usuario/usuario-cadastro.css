@@ -106,7 +106,7 @@ h1, h2 {
 
 .form-header {
     text-align: center;
-    margin-bottom: var(--spacing-xl);
+/*    margin-bottom: var(--spacing-xl);*/
     flex-shrink: 0; /* Prevent header from shrinking */
 }
 
@@ -239,7 +239,7 @@ h1, h2 {
 .form-floating > .form-control,
 .form-floating > .form-select {
     height: calc(3.5rem + 2px);
-    padding: var(--spacing-md) var(--spacing-sm);
+/*    padding: var(--spacing-md) var(--spacing-sm);*/
     border-color: var(--color-gray-400);
     border-radius: var(--radius-sm);
     font-size: var(--font-size-md);

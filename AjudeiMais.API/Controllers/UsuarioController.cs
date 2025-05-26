@@ -50,6 +50,7 @@ namespace AjudeiMais.API.Controllers
             try
             {
                 var usuario = await _service.GetByEmail(email);
+
                 return Ok(usuario);
             }
             catch (Exception ex)
@@ -103,25 +104,188 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost("AtualizarDadosPessoais")]
+        public async Task<IActionResult> AtualizarDadosPessoais([FromForm] UsuarioDadosPessoaisDTO dto)
         {
             try
             {
-               var result = await _service.Delete(id);
-
-                if (result.Success) // Se a operação no serviço foi um sucesso
+                if (!ModelState.IsValid)
                 {
-                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
+                    // Extrai as mensagens de erro do ModelState
+                    var errors = ModelState.Values
+                                           .SelectMany(v => v.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Erro de validação nos dados enviados.",
+                        Data = errors
+                    });
+                }
+
+                var result = await _service.AtualizarDadosPessoais(dto);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Erro interno ao atualizar dados pessoais. Por favor, tente novamente."
+                });
+            }
+        }
+        
+        [HttpPost("AtualizarEndereco")]
+        public async Task<IActionResult> AtualizarEndereco([FromForm] UsuarioEnderecoDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Extrai as mensagens de erro do ModelState
+                    var errors = ModelState.Values
+                                           .SelectMany(v => v.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Erro de validação nos dados enviados.",
+                        Data = errors
+                    });
+                }
+
+                var result = await _service.AtualizarEndereco(dto);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Erro interno ao atualizar endereço. Por favor, tente novamente."
+                });
+            }
+        }
+
+        [HttpPost("AtualizarSenha")]
+        public async Task<IActionResult> AtualizarSenha([FromForm] UsuarioSenhaDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Extrai as mensagens de erro do ModelState
+                    var errors = ModelState.Values
+                                           .SelectMany(v => v.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Erro de validação nos dados enviados.",
+                        Data = errors
+                    });
+                }
+
+                var result = await _service.AtualizarSenha(dto);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Erro interno ao atualizar endereço. Por favor, tente novamente."
+                });
+            }
+        }
+
+        [HttpDelete("{guid}")] // Removemos "Delete" da rota, o GUID já é o identificador
+        public async Task<IActionResult> ExcluirUsuario(string guid) // Renomeei para ser mais descritivo
+        {
+            try
+            {
+                var result = await _service.Delete(guid); // Adapte seu serviço para aceitar apenas o GUID
+
+                if (result.Success)
+                {
+                    // Para exclusão bem-sucedida, 200 OK com uma mensagem ou 204 No Content são comuns.
+                    return Ok(result);
                 }
                 else
                 {
+                    // Dependendo do motivo da falha, pode ser NotFound, Forbidden, etc.
                     return BadRequest(result);
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno ao excluir o usuário. Por favor, tente novamente."
+                });
+            }
+        }
+
+        [HttpPost("VerificarSenha")] // Removemos "Delete" da rota, o GUID já é o identificador
+        public async Task<IActionResult> VerificarSenha([FromForm] UsuarioExcluirContaDTO usuario)
+        {
+            try
+            {
+
+                var result = await _service.VerificarSenha(usuario);
+
+                if (result.Success)
+                {
+                    // Para exclusão bem-sucedida, 200 OK com uma mensagem ou 204 No Content são comuns.
+                    return Ok(result);
+                }
+                else
+                {
+                    // Dependendo do motivo da falha, pode ser NotFound, Forbidden, etc.
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno ao comparar senha. Por favor, tente novamente."
+                });
             }
         }
     }

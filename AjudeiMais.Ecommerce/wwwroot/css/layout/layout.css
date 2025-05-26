@@ -30,39 +30,17 @@ body.cadastro-page {
     align-items: center;
 }
 
-body.cadastro-page main {
-    flex-grow: 0;
-    height: auto;
-    max-height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: var(--spacing-md);
-}
+    body.cadastro-page main {
+        flex-grow: 0;
+        height: auto;
+        max-height: 100vh;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: var(--spacing-md);
+    }
 
-/* Adicione suas variáveis RGB se não existirem, para uso em box-shadow com opacidade */
-:root {
-    /* ... suas outras variáveis ... */
-    --color-primary-rgb: 0, 33, 71;
-    --color-secondary-rgb: 125, 131, 255;
-    --color-accent-rgb: 98, 213, 142;
-}
-
-/* Remova o .container da view se estiver usando body.cadastro-page main para centralizar
-   Caso contrário, se .container for o principal da view, descomente e ajuste:
-*/
-/*
-.container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    height: 100%;
-    padding: var(--spacing-md);
-    overflow: hidden;
-}
-*/
 
 .form-container {
     background-color: var(--color-surface);
@@ -84,6 +62,7 @@ body.cadastro-page main {
         opacity: 0;
         transform: scale(0.92) translateY(15px);
     }
+
     to {
         opacity: 1;
         transform: scale(1) translateY(0);
@@ -114,19 +93,19 @@ body.cadastro-page main {
     margin-bottom: var(--spacing-xs);
 }
 
-.form-header h1 {
-    font-family: var(--font-family-heading);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-xs);
-    font-size: var(--font-size-3xl);
-    font-weight: var(--font-weight-bold);
-}
+    .form-header h1 {
+        font-family: var(--font-family-heading);
+        color: var(--color-primary-dark);
+        margin-bottom: var(--spacing-xs);
+        font-size: var(--font-size-3xl);
+        font-weight: var(--font-weight-bold);
+    }
 
-.form-header p {
-    color: var(--color-gray-600);
-    font-size: var(--font-size-lg);
-    font-family: var(--font-family-base);
-}
+    .form-header p {
+        color: var(--color-gray-600);
+        font-size: var(--font-size-lg);
+        font-family: var(--font-family-base);
+    }
 
 /* Form Steps Indicator */
 .step-indicator {
@@ -137,17 +116,17 @@ body.cadastro-page main {
     padding: 0 var(--spacing-sm);
 }
 
-.step-indicator::before {
-    content: '';
-    position: absolute;
-    top: calc(1.75rem / 2);
-    left: calc(var(--spacing-sm) + (1.75rem / 2));
-    right: calc(var(--spacing-sm) + (1.75rem / 2));
-    height: 3px;
-    background-color: var(--color-gray-300);
-    z-index: 1;
-    border-radius: 3px;
-}
+    .step-indicator::before {
+        content: '';
+        position: absolute;
+        top: calc(1.75rem / 2);
+        left: calc(var(--spacing-sm) + (1.75rem / 2));
+        right: calc(var(--spacing-sm) + (1.75rem / 2));
+        height: 3px;
+        background-color: var(--color-gray-300);
+        z-index: 1;
+        border-radius: 3px;
+    }
 
 .step-indicator-progress {
     content: '';
@@ -237,11 +216,11 @@ body.cadastro-page main {
     border-bottom: 1px solid var(--color-gray-200);
 }
 
-.section-title i {
-    color: var(--color-accent);
-    font-size: 1.8rem;
-    transition: transform 0.3s ease;
-}
+    .section-title i {
+        color: var(--color-accent);
+        font-size: 1.8rem;
+        transition: transform 0.3s ease;
+    }
 
 .form-step.active .section-title i {
     transform: rotate(-5deg) scale(1.05);
@@ -256,21 +235,21 @@ body.cadastro-page main {
     will-change: opacity, transform;
 }
 
-.form-step.active {
-    opacity: 1;
-    transform: translateX(0);
-    display: block;
-    /* Ajuste para evitar deslocamento de layout durante a transição de saída, se necessário. */
-    /* position: relative; */
-    /* width: 100%; */
-}
+    .form-step.active {
+        opacity: 1;
+        transform: translateX(0);
+        display: block;
+        /* Ajuste para evitar deslocamento de layout durante a transição de saída, se necessário. */
+        /* position: relative; */
+        /* width: 100%; */
+    }
 
-.form-step.exiting {
-    opacity: 0;
-    transform: translateX(-25px);
-    position: absolute;
-    width: calc(100% - (2 * var(--spacing-lg)));
-}
+    .form-step.exiting {
+        opacity: 0;
+        transform: translateX(-25px);
+        position: absolute;
+        width: calc(100% - (2 * var(--spacing-lg)));
+    }
 
 
 /* Inputs e Labels */
@@ -281,21 +260,21 @@ body.cadastro-page main {
     background-color: var(--color-gray-100);
 }
 
-.form-floating > .form-control:-webkit-autofill,
-.form-floating > .form-control:-webkit-autofill:hover,
-.form-floating > .form-control:-webkit-autofill:focus,
-.form-floating > .form-control:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--color-gray-100) inset !important;
-    -webkit-text-fill-color: var(--color-gray-800) !important;
-    border-color: var(--color-gray-300);
-}
+    .form-floating > .form-control:-webkit-autofill,
+    .form-floating > .form-control:-webkit-autofill:hover,
+    .form-floating > .form-control:-webkit-autofill:focus,
+    .form-floating > .form-control:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 30px var(--color-gray-100) inset !important;
+        -webkit-text-fill-color: var(--color-gray-800) !important;
+        border-color: var(--color-gray-300);
+    }
 
 
-.form-floating > .form-control:focus {
-    border-color: var(--color-secondary);
-    box-shadow: 0 0 0 3px rgba(var(--color-secondary-rgb), 0.2);
-    background-color: var(--color-surface);
-}
+    .form-floating > .form-control:focus {
+        border-color: var(--color-secondary);
+        box-shadow: 0 0 0 3px rgba(var(--color-secondary-rgb), 0.2);
+        background-color: var(--color-surface);
+    }
 
 .form-floating > label {
     color: var(--color-gray-500);
@@ -308,15 +287,15 @@ body.cadastro-page main {
     color: var(--color-gray-600);
 }
 
-.form-text a {
-    color: var(--color-secondary-dark);
-    text-decoration: none;
-}
+    .form-text a {
+        color: var(--color-secondary-dark);
+        text-decoration: none;
+    }
 
-.form-text a:hover {
-    text-decoration: underline;
-    color: var(--color-primary);
-}
+        .form-text a:hover {
+            text-decoration: underline;
+            color: var(--color-primary);
+        }
 
 .required-field::after {
     content: " *";
@@ -340,34 +319,34 @@ body.cadastro-page main {
     transition: all 0.3s ease;
 }
 
-.file-upload:hover {
-    border-color: var(--color-secondary);
-    background-color: rgba(var(--color-secondary-rgb), 0.08);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(var(--color-secondary-rgb), 0.1);
-}
+    .file-upload:hover {
+        border-color: var(--color-secondary);
+        background-color: rgba(var(--color-secondary-rgb), 0.08);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(var(--color-secondary-rgb), 0.1);
+    }
 
-.file-upload i {
-    font-size: 2.2rem;
-    margin-bottom: var(--spacing-xs);
-    color: var(--color-secondary);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
+    .file-upload i {
+        font-size: 2.2rem;
+        margin-bottom: var(--spacing-xs);
+        color: var(--color-secondary);
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
 
-.file-upload:hover i {
-    transform: scale(1.15) rotate(-7deg);
-}
+    .file-upload:hover i {
+        transform: scale(1.15) rotate(-7deg);
+    }
 
-.file-upload p {
-    font-family: var(--font-family-accent);
-    font-weight: var(--font-weight-medium);
-    color: var(--color-primary-dark);
-    margin-bottom: var(--spacing-xxs);
-}
+    .file-upload p {
+        font-family: var(--font-family-accent);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-primary-dark);
+        margin-bottom: var(--spacing-xxs);
+    }
 
-.file-upload small {
-    color: var(--color-gray-500);
-}
+    .file-upload small {
+        color: var(--color-gray-500);
+    }
 
 /* Termos e Condições Checkbox */
 .form-check {
@@ -388,15 +367,15 @@ body.cadastro-page main {
     margin-top: 0.2em;
 }
 
-.form-check-input:checked {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent-dark);
-}
+    .form-check-input:checked {
+        background-color: var(--color-accent);
+        border-color: var(--color-accent-dark);
+    }
 
-.form-check-input:focus {
-    box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.25);
-    border-color: var(--color-accent-dark);
-}
+    .form-check-input:focus {
+        box-shadow: 0 0 0 3px rgba(var(--color-accent-rgb), 0.25);
+        border-color: var(--color-accent-dark);
+    }
 
 .form-check-label a {
     color: var(--color-secondary-dark);
@@ -404,10 +383,10 @@ body.cadastro-page main {
     font-weight: var(--font-weight-medium);
 }
 
-.form-check-label a:hover {
-    text-decoration: underline;
-    color: var(--color-primary);
-}
+    .form-check-label a:hover {
+        text-decoration: underline;
+        color: var(--color-primary);
+    }
 
 /* Navigation Buttons */
 .btn {
@@ -423,20 +402,20 @@ body.cadastro-page main {
     cursor: pointer; /* Adicionado para indicar clicabilidade */
 }
 
-.btn:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-md);
-}
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-md);
+    }
 
-.btn:active {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+    .btn:active {
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
 
-.btn:focus-visible {
-    outline: 2px solid var(--color-focus, var(--color-primary-light));
-    outline-offset: 2px;
-}
+    .btn:focus-visible {
+        outline: 2px solid var(--color-focus, var(--color-primary-light));
+        outline-offset: 2px;
+    }
 
 
 #btnProximo,
@@ -446,10 +425,10 @@ body.cadastro-page main {
     color: var(--color-gray-100);
 }
 
-#btnProximo:hover,
-#btnFinalizar:hover {
-    background: linear-gradient(45deg, var(--color-accent-dark), var(--color-accent));
-}
+    #btnProximo:hover,
+    #btnFinalizar:hover {
+        background: linear-gradient(45deg, var(--color-accent-dark), var(--color-accent));
+    }
 
 #btnVoltar {
     background-color: transparent;
@@ -457,11 +436,11 @@ body.cadastro-page main {
     border: 2px solid var(--color-gray-300);
 }
 
-#btnVoltar:hover {
-    background-color: var(--color-gray-100);
-    border-color: var(--color-gray-500);
-    color: var(--color-primary-dark);
-}
+    #btnVoltar:hover {
+        background-color: var(--color-gray-100);
+        border-color: var(--color-gray-500);
+        color: var(--color-primary-dark);
+    }
 
 .btn i {
     transition: transform 0.2s ease-in-out;
@@ -489,78 +468,65 @@ body.cadastro-page main {
     transition: color 0.2s ease;
 }
 
-.mt-4.text-center a:hover {
-    color: var(--color-secondary-dark);
-    text-decoration: underline;
-}
-
----
-
-#
-
-#
-Responsividade
-
--
-Ajustes Finos
-
-`
-
-`
-`
-css
+    .mt-4.text-center a:hover {
+        color: var(--color-secondary-dark);
+        text-decoration: underline;
+    }
 
 @media (max-width: 768px) {
-    .form-container {
-        padding: var(--spacing-lg) var(--spacing-md);
-        gap: var(--spacing-md);
-        max-height: calc(100vh - (2 * var(--spacing-sm)));
-    }
+    .form-container
 
-    .form-header h1 {
-        font-size: var(--font-size-xxl);
-    }
+{
+    padding: var(--spacing-lg) var(--spacing-md);
+    gap: var(--spacing-md);
+    max-height: calc(100vh - (2 * var(--spacing-sm)));
+}
 
-    .form-header p {
-        font-size: var(--font-size-md);
-    }
+.form-header h1 {
+    font-size: var(--font-size-xxl);
+}
 
-    .section-title {
-        font-size: var(--font-size-lg);
-        margin-bottom: var(--spacing-md);
-    }
+.form-header p {
+    font-size: var(--font-size-md);
+}
 
-    .step-indicator {
-        margin-bottom: var(--spacing-lg);
-    }
+.section-title {
+    font-size: var(--font-size-lg);
+    margin-bottom: var(--spacing-md);
+}
 
-    .step-title {
-        font-size: 0.7rem;
-    }
+.step-indicator {
+    margin-bottom: var(--spacing-lg);
+}
 
-    .step-number {
-        width: 1.5rem;
-        height: 1.5rem;
-        font-size: 0.65rem;
-    }
+.step-title {
+    font-size: 0.7rem;
+}
 
-    .step-indicator::before, .step-indicator-progress {
-        top: calc(1.5rem / 2);
-        left: calc(var(--spacing-sm) + (1.5rem / 2));
-        right: calc(var(--spacing-sm) + (1.5rem / 2));
-    }
+.step-number {
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.65rem;
+}
 
-    .row.g-3.mt-4 {
-        flex-direction: column-reverse;
-    }
+.step-indicator::before, .step-indicator-progress {
+    top: calc(1.5rem / 2);
+    left: calc(var(--spacing-sm) + (1.5rem / 2));
+    right: calc(var(--spacing-sm) + (1.5rem / 2));
+}
+
+.row.g-3.mt-4 {
+    flex-direction: column-reverse;
+}
 
     .row.g-3.mt-4 > div {
         width: 100%;
     }
 
-    #btnVoltar {
-        margin-top: var(--spacing-sm);
-    }
+#btnVoltar {
+    margin-top: var(--spacing-sm);
+}
+
 }
 
 @media (max-width: 480px) {
@@ -580,21 +546,9 @@ css
     }
 }
 
----
-
-#
-
-#
-Navbar Styles
-
-`
-
-`
-`
-css
 .navbar {
     font-family: var(--font-family-base);
-    background-color: rgba(var(--color-primary-rgb, 0, 33, 71), 0.25);
+    background-color: var(--color-primary-dark) !important;
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
     padding-top: var(--spacing-xs);
@@ -608,7 +562,7 @@ css
 }
 
 .navbar.scrolled {
-    background-color: var(--color-primary);
+    background-color: var(--color-secondary-dark);
     box-shadow: var(--shadow-md);
 }
 
@@ -620,18 +574,18 @@ css
     margin-right: var(--spacing-md);
 }
 
-.navbar .navbar-brand img {
-    max-height: 40px;
-    width: auto;
-    margin-right: var(--spacing-sm);
-}
+    .navbar .navbar-brand img {
+        max-height: 40px;
+        width: auto;
+        margin-right: var(--spacing-sm);
+    }
 
-.navbar .navbar-brand span {
-    font-family: var(--font-family-accent);
-    font-weight: 700;
-    color: var(--color-gray-100);
-    font-size: var(--font-size-lg);
-}
+    .navbar .navbar-brand span {
+        font-family: var(--font-family-accent);
+        font-weight: 700;
+        color: var(--color-gray-100);
+        font-size: var(--font-size-lg);
+    }
 
 .navbar .nav-link {
     color: var(--color-gray-100);
@@ -642,7 +596,7 @@ css
     white-space: nowrap;
 }
 
-/* Para links de texto mais longos que podem precisar de truncamento:
+    /* Para links de texto mais longos que podem precisar de truncamento:
 .navbar .nav-link.truncate-link {
     display: inline-block;
     max-width: 150px;
@@ -652,21 +606,21 @@ css
 }
 */
 
-.navbar .nav-link:hover,
-.navbar .nav-link:focus {
-    color: var(--color-accent-light);
-    background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.1);
-}
+    .navbar .nav-link:hover,
+    .navbar .nav-link:focus {
+        color: var(--color-accent-light);
+        background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.1);
+    }
 
 .navbar.scrolled .nav-link {
     color: var(--color-gray-100);
 }
 
-.navbar.scrolled .nav-link:hover,
-.navbar.scrolled .nav-link:focus {
-    color: var(--color-gray-100);
-    background-color: var(--color-primary-light);
-}
+    .navbar.scrolled .nav-link:hover,
+    .navbar.scrolled .nav-link:focus {
+        color: var(--color-gray-100);
+        background-color: var(--color-primary-light);
+    }
 
 /* Botões na Navbar */
 .navbar .btn {
@@ -679,9 +633,9 @@ css
     cursor: pointer; /* Adicionado para indicar clicabilidade */
 }
 
-.navbar .btn:focus {
-    box-shadow: 0 0 0 0.2rem rgba(var(--color-accent-rgb, 98, 213, 142), 0.4);
-}
+    .navbar .btn:focus {
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-accent-rgb, 98, 213, 142), 0.4);
+    }
 
 
 .navbar .btn-primary {
@@ -690,34 +644,34 @@ css
     color: var(--color-gray-900);
 }
 
-.navbar .btn-primary:hover,
-.navbar .btn-primary:focus {
-    background-color: var(--color-accent-dark);
-    border-color: var(--color-accent-dark);
-    color: var(--color-gray-900);
-}
+    .navbar .btn-primary:hover,
+    .navbar .btn-primary:focus {
+        background-color: var(--color-accent-dark);
+        border-color: var(--color-accent-dark);
+        color: var(--color-gray-900);
+    }
 
 .navbar .btn-outline-light {
     border-color: var(--color-gray-100);
     color: var(--color-gray-100);
 }
 
-.navbar .btn-outline-light:hover,
-.navbar .btn-outline-light:focus {
-    background-color: var(--color-gray-100);
-    color: var(--color-primary-dark);
-}
+    .navbar .btn-outline-light:hover,
+    .navbar .btn-outline-light:focus {
+        background-color: var(--color-gray-100);
+        color: var(--color-primary-dark);
+    }
 
 .navbar.scrolled .btn-outline-light {
     border-color: var(--color-gray-200);
     color: var(--color-gray-200);
 }
 
-.navbar.scrolled .btn-outline-light:hover,
-.navbar.scrolled .btn-outline-light:focus {
-    background-color: var(--color-gray-200);
-    color: var(--color-primary-dark);
-}
+    .navbar.scrolled .btn-outline-light:hover,
+    .navbar.scrolled .btn-outline-light:focus {
+        background-color: var(--color-gray-200);
+        color: var(--color-primary-dark);
+    }
 
 /* Toggler (Botão do Menu Hamburger) */
 .navbar-toggler {
@@ -727,14 +681,14 @@ css
     cursor: pointer; /* Adicionado para indicar clicabilidade */
 }
 
-.navbar-toggler:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.2rem rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.25);
-}
+    .navbar-toggler:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.2rem rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.25);
+    }
 
-.navbar-toggler:hover {
-    background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.1);
-}
+    .navbar-toggler:hover {
+        background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.1);
+    }
 
 .navbar-toggler-icon {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.9)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
@@ -746,9 +700,9 @@ css
     border-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.7);
 }
 
-.navbar.scrolled .navbar-toggler:hover {
-    background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.15);
-}
+    .navbar.scrolled .navbar-toggler:hover {
+        background-color: rgba(var(--color-gray-100-rgb, 255, 255, 255), 0.15);
+    }
 
 .navbar-collapse {
     justify-content: flex-end;
@@ -762,68 +716,68 @@ css
     line-height: 1.7;
 }
 
-.footer a {
-    color: var(--color-gray-100);
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
+    .footer a {
+        color: var(--color-gray-100);
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
 
-.footer a:hover,
-.footer a:focus {
-    color: var(--color-accent);
-    text-decoration: none;
-}
+        .footer a:hover,
+        .footer a:focus {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
 
-.footer h5, .footer .h5 {
-    font-family: var(--font-family-heading);
-    color: var(--color-gray-100);
-    margin-bottom: var(--spacing-md);
-    font-size: var(--font-size-lg);
-    font-weight: var(--font-weight-bold);
-}
+    .footer h5, .footer .h5 {
+        font-family: var(--font-family-heading);
+        color: var(--color-gray-100);
+        margin-bottom: var(--spacing-md);
+        font-size: var(--font-size-lg);
+        font-weight: var(--font-weight-bold);
+    }
 
-.footer ul {
-    list-style: none;
-    padding-left: 0;
-    margin-bottom: var(--spacing-md);
-}
+    .footer ul {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: var(--spacing-md);
+    }
 
-.footer ul li {
-    margin-bottom: var(--spacing-xs);
-}
+        .footer ul li {
+            margin-bottom: var(--spacing-xs);
+        }
 
-.footer ul li a {
-    color: var(--color-gray-300);
-}
+            .footer ul li a {
+                color: var(--color-gray-300);
+            }
 
-.footer ul li a:hover,
-.footer ul li a:focus {
-    color: var(--color-accent);
-}
+                .footer ul li a:hover,
+                .footer ul li a:focus {
+                    color: var(--color-accent);
+                }
 
-.footer .social-links a {
-    display: inline-block;
-    padding: var(--spacing-xs);
-    color: var(--color-gray-200);
-    margin: 0 var(--spacing-xxs);
-}
+    .footer .social-links a {
+        display: inline-block;
+        padding: var(--spacing-xs);
+        color: var(--color-gray-200);
+        margin: 0 var(--spacing-xxs);
+    }
 
-.footer .social-links a i {
-    font-size: var(--font-size-xl);
-    transition: color 0.2s ease, transform 0.2s ease;
-}
+        .footer .social-links a i {
+            font-size: var(--font-size-xl);
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
 
-.footer .social-links a:hover i {
-    color: var(--color-accent);
-    transform: scale(1.15) translateY(-1px);
-}
+        .footer .social-links a:hover i {
+            color: var(--color-accent);
+            transform: scale(1.15) translateY(-1px);
+        }
 
-.footer .text-muted, .footer small {
-    color: var(--color-gray-500) !important;
-    font-size: var(--font-size-sm);
-    display: block;
-    margin-top: var(--spacing-md);
-}
+    .footer .text-muted, .footer small {
+        color: var(--color-gray-500) !important;
+        font-size: var(--font-size-sm);
+        display: block;
+        margin-top: var(--spacing-md);
+    }
 
 /* Ajustes responsivos para Footer */
 @media (max-width: 767.98px) {
@@ -836,9 +790,9 @@ css
         text-align: center;
     }
 
-    .footer .row > [class^="col-"]:last-child {
-        margin-bottom: 0;
-    }
+        .footer .row > [class^="col-"]:last-child {
+            margin-bottom: 0;
+        }
 
     .footer h5, .footer .h5 {
         margin-bottom: var(--spacing-sm);

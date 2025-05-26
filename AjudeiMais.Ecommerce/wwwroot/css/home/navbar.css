@@ -5,10 +5,10 @@
     backdrop-filter: blur(6px) !important;
 }
 
-.navbar.scrolled {
-    background-color: var(--color-primary) !important;
-    box-shadow: var(--shadow-md) !important;
-}
+    .navbar.scrolled {
+        background-color: var(--color-primary-dark) !important;
+        box-shadow: var(--shadow-md) !important;
+    }
 
 .navbar .navbar-brand span {
     font-family: var(--font-family-accent) !important;
@@ -22,19 +22,19 @@
 }
 .navbar .nav-link:hover,
 .navbar .nav-link:focus {
-    color: var(--color-primary-light) !important;
+    color: var(--color-accent) !important;
     background-color: rgba(255, 255, 255, 0.1) !important;
     border-radius: 4px !important;
 }
 .navbar.scrolled .nav-link {
     color: #FFF !important;
 }
-.navbar.scrolled .nav-link:hover,
-.navbar.scrolled .nav-link:focus {
-    color: var(--color-primary-dark) !important;
-    background-color: rgba(0, 33, 71, 0.05) !important;
-    border-radius: 4px !important;
-}
+    .navbar.scrolled .nav-link:hover,
+    .navbar.scrolled .nav-link:focus {
+        color: var(--color-accent) !important;
+        background-color: rgba(0, 33, 71, 0.05) !important;
+        border-radius: 4px !important;
+    }
 
 .navbar .btn-primary {
     background-color: var(--color-accent) !important;
@@ -117,3 +117,61 @@
         margin-top: var(--spacing-sm) !important;
     }
 }
+
+/* New button for logged in user */
+.btn-action-logged-in {
+    /* Base gradient for normal state */
+    background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark)) !important;
+    border: none !important; /* Remove border to rely fully on gradient */
+    color: var(--color-gray-100) !important;
+    font-family: var(--font-family-accent) !important;
+    font-weight: var(--font-weight-bold) !important;
+    transition: all 0.3s ease !important; /* Smooth transition for all properties */
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-lg); /* More rounded */
+    box-shadow: var(--shadow-md); /* Slightly more prominent shadow */
+    cursor: pointer; /* Indicate it's clickable */
+    position: relative; /* Needed for pseudo-elements */
+    overflow: hidden; /* Hide overflow for shine effect */
+    z-index: 1; /* Ensure content is above pseudo-elements */
+}
+
+    .btn-action-logged-in::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.2); /* White transparency for shine */
+        transform: skewX(-20deg); /* Angle the shine */
+        transition: left 0.6s ease;
+        z-index: 0;
+    }
+
+    .btn-action-logged-in:hover::before {
+        left: 100%; /* Move shine across button */
+    }
+
+    .btn-action-logged-in:hover {
+        /* Invert or subtly change gradient direction on hover */
+        background: linear-gradient(135deg, var(--color-accent-dark), var(--color-accent)) !important;
+        transform: translateY(-3px); /* More pronounced lift */
+        box-shadow: var(--shadow-lg); /* Larger shadow on hover */
+    }
+
+    .btn-action-logged-in:active {
+        transform: translateY(0); /* Return to original position */
+        box-shadow: var(--shadow-sm); /* Smaller shadow on click */
+        background: var(--color-accent-dark) !important; /* Solid color on active for direct feedback */
+        transition: background 0.1s ease; /* Faster transition for active state */
+    }
+
+    /* Icon color for consistency within the button */
+    .btn-action-logged-in i {
+        color: var(--color-gray-100) !important;
+        font-size: var(--font-size-md); /* Ensure icon size is appropriate */
+    }

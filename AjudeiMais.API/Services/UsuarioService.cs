@@ -99,7 +99,12 @@ namespace AjudeiMais.API.Services
 
                 if (currentUsuario != null)
                 {
-                    throw new Exception("Este e-mail já está sendo utilizado por outro usuário.");
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Este e-mail já está sendo utilizado por outro usuário.",
+                    };
                 }
 
                 model.GUID = Guid.NewGuid().ToString();
@@ -125,6 +130,7 @@ namespace AjudeiMais.API.Services
                     Cidade = model.Cidade,
                     Estado = model.Estado,
                     FotoDePerfil = path,
+                    Telefone = model.Telefone ?? "",
                     TelefoneFixo = model.TelefoneFixo ?? "",
                     Latitude = model.Latitude ?? "",
                     Longitude = model.Longitude ?? "",
@@ -150,9 +156,8 @@ namespace AjudeiMais.API.Services
                     {
                         Success = true,
                         Type = "success",
-                        Message = "Boas-vindas! Seu cadastro foi concluído. Acesse sua conta agora mesmo.",
+                        Message = "Dados atualizados com sucesso.",
                         Data = Usuario
-
                     };
                 }
                 else
@@ -177,7 +182,7 @@ namespace AjudeiMais.API.Services
                 {
                     Success = true,
                     Type = "success",
-                    Message = "Dados atualizados com sucesso.",
+                    Message = "Boas-vindas! Seu cadastro foi concluído. Acesse sua conta agora mesmo.",
                     Data = Usuario
                 };
             }
@@ -193,15 +198,15 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<object>> Delete(int id)
+        public async Task<ApiResponse<Usuario>> Delete(string guid)
         {
             try
             {
-                var usuario = await GetById(id);
+                var usuario = await GetByGUID(guid);
 
                 if (usuario == null)
                 {
-                    return new ApiResponse<object>
+                    return new ApiResponse<Usuario>
                     {
                         Success = false,
                         Type = "error",
@@ -215,7 +220,7 @@ namespace AjudeiMais.API.Services
 
                 await _usuarioRepository.Delete(usuario);
 
-                return new ApiResponse<object>
+                return new ApiResponse<Usuario>
                 {
                     Success = true,
                     Type = "success",
@@ -224,12 +229,11 @@ namespace AjudeiMais.API.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao excluir o usuário com ID {UsuarioId}", id);
-                return new ApiResponse<object>
+                return new ApiResponse<Usuario>
                 {
                     Success = false,
                     Type = "error",
-                    Message = $"Não foi possível excluir o usuário. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                    Message = "Não foi possível excluir o usuário. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
                 };
             }
         }
@@ -250,5 +254,212 @@ namespace AjudeiMais.API.Services
                 throw new Exception("Erro ao fazer login do usuário.");
             }
         }
+
+        public async Task<ApiResponse<Usuario>> AtualizarDadosPessoais(UsuarioDadosPessoaisDTO dadosAtualizados)
+        {
+            try
+            {
+                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+
+                if (usuarioExistente == null)
+                {
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                var emailCadastrado = await _usuarioRepository.GetByEmail(dadosAtualizados.Email);
+
+                if (emailCadastrado != null && dadosAtualizados.Email != usuarioExistente.Email)
+                {
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Este e-mail já está sendo utilizado por outro usuário.",
+                    };
+                }
+
+                var pasta = new[] { "images", "profile", "user", dadosAtualizados.GUID.ToString() };
+
+                if (dadosAtualizados.FotoDePerfil != null)
+                {
+                    string path = await Helpers.SalvarImagemComoWebpAsync(dadosAtualizados.FotoDePerfil, pasta);
+
+                    usuarioExistente.FotoDePerfil = path;
+                }
+
+                // Atualiza somente os campos pessoais que são permitidos mudar
+                usuarioExistente.NomeCompleto = dadosAtualizados.NomeCompleto ?? usuarioExistente.NomeCompleto;
+                usuarioExistente.Telefone = dadosAtualizados.Telefone ?? usuarioExistente.Telefone;
+                usuarioExistente.TelefoneFixo = dadosAtualizados.TelefoneFixo ?? usuarioExistente.TelefoneFixo;
+                usuarioExistente.Email = dadosAtualizados.Email ?? usuarioExistente.Email;
+                usuarioExistente.DataUpdate = DateTime.Now;
+
+                await _usuarioRepository.SaveOrUpdate(usuarioExistente);
+
+                return new ApiResponse<Usuario>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Dados pessoais atualizados com sucesso.",
+                    Data = usuarioExistente
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar dados pessoais do usuário");
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro ao atualizar seus dados pessoais. Tente novamente."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<Usuario>> AtualizarEndereco(UsuarioEnderecoDTO dadosAtualizados)
+        {
+            try
+            {
+                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+
+                if (usuarioExistente == null)
+                {
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(dadosAtualizados.CEP, dadosAtualizados.Cidade);
+
+                dadosAtualizados.Latitude = coordenadas.Latitude;
+                dadosAtualizados.Longitude = coordenadas.Longitude;
+
+                // Atualiza somente os campos pessoais que são permitidos mudar
+                usuarioExistente.CEP = dadosAtualizados.CEP ?? usuarioExistente.CEP;
+                usuarioExistente.Rua = dadosAtualizados.Rua ?? usuarioExistente.Rua;
+                usuarioExistente.Numero = dadosAtualizados.Numero > 0 ? dadosAtualizados.Numero : usuarioExistente.Numero;
+                usuarioExistente.Complemento = dadosAtualizados.Complemento ?? usuarioExistente.Complemento;
+                usuarioExistente.Bairro = dadosAtualizados.Bairro ?? usuarioExistente.Bairro;
+                usuarioExistente.Cidade = dadosAtualizados.Cidade ?? usuarioExistente.Cidade;
+                usuarioExistente.Estado = dadosAtualizados.Estado ?? usuarioExistente.Estado;
+                usuarioExistente.Latitude = dadosAtualizados.Latitude ?? usuarioExistente.Latitude;
+                usuarioExistente.Longitude = dadosAtualizados.Longitude ?? usuarioExistente.Longitude;
+                usuarioExistente.DataUpdate = DateTime.Now;
+
+                await _usuarioRepository.SaveOrUpdate(usuarioExistente);
+
+                return new ApiResponse<Usuario>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Endereço atualizados com sucesso.",
+                    Data = usuarioExistente
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar endereço do usuário");
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro ao atualizar seu endereço. Tente novamente."
+                };
+            }
+        }
+        
+        public async Task<ApiResponse<Usuario>> AtualizarSenha(UsuarioSenhaDTO dadosAtualizados)
+        {
+            try
+            {
+                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+
+                if (usuarioExistente == null)
+                {
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                var result = _passwordHasher.VerifyHashedPassword(usuarioExistente, usuarioExistente.Senha, dadosAtualizados.SenhaAtual);
+
+                if(result != PasswordVerificationResult.Success)
+                {
+                    return new ApiResponse<Usuario>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Senha atual inválida."
+                    };
+                }
+
+                usuarioExistente.Senha = _passwordHasher.HashPassword(usuarioExistente, dadosAtualizados.NovaSenha);
+
+                await _usuarioRepository.SaveOrUpdate(usuarioExistente);
+
+                return new ApiResponse<Usuario>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Senha alterada com sucesso.",
+                    Data = usuarioExistente
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar senha do usuário");
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro ao atualizar sua senha. Tente novamente."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<Usuario>> VerificarSenha(UsuarioExcluirContaDTO usuario)
+        {
+            var usuarioExistente = await GetById(usuario.Usuario_ID);
+
+            if (usuarioExistente == null)
+            {
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Usuário não encontrado."
+                };
+            }
+
+            var result = _passwordHasher.VerifyHashedPassword(usuarioExistente, usuarioExistente.Senha, usuario.SenhaAtual);
+
+            if (result != PasswordVerificationResult.Success)
+            {
+                return new ApiResponse<Usuario>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Senha atual inválida."
+                };
+            } else
+            {
+                return new ApiResponse<Usuario>
+                {
+                    Success = true,
+                };
+            }
+        }
+
     }
 }

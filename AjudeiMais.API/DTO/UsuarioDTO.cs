@@ -19,6 +19,7 @@ namespace AjudeiMais.API.DTO
         public string Cidade { get; set; }
         public string Estado { get; set; }
         public IFormFile FotoDePerfil { get; set; }
+        public string Telefone { get; set; }
         public string? TelefoneFixo { get; set; }
         public string? Latitude { get; set; }
         public string? Longitude { get; set; }

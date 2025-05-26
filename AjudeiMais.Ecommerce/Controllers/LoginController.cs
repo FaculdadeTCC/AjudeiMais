@@ -1,4 +1,5 @@
 ﻿using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Models.Usuario;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -44,91 +45,81 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
-            try
+            if (!User.Identity.IsAuthenticated)
             {
-                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
-                httpClient.DefaultRequestHeaders.ConnectionClose = true;
 
-                var jsonContent = JsonConvert.SerializeObject(model);
-                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                var response = await httpClient.PostAsync($"{BASE_URL}api/Auth/login", content);
-                if (!response.IsSuccessStatusCode)
+                try
                 {
-                    return RedirectToAction("Login", new
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
+                    var jsonContent = JsonConvert.SerializeObject(model);
+                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                    var response = await httpClient.PostAsync($"{BASE_URL}api/Auth/login", content);
+                    if (!response.IsSuccessStatusCode)
                     {
-                        alertType = "error",
-                        alertMessage = response.ReasonPhrase
-                    });
-                }
+                        return RedirectToAction("Login", new
+                        {
+                            alertType = "error",
+                            alertMessage = response.ReasonPhrase
+                        });
+                    }
 
-                var json = await response.Content.ReadAsStringAsync();
-                var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(json);
+                    var json = await response.Content.ReadAsStringAsync();
+                    var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(json);
 
-                // Armazena dados na sessão
-                HttpContext.Session.SetString("JwtToken", loginResponse.Token);
-                HttpContext.Session.SetString("UserRole", loginResponse.Role);
-                HttpContext.Session.SetString("UserId", loginResponse.Id);
-                HttpContext.Session.SetString("GUID", loginResponse.GUID);
+                    // Armazena dados na sessão
+                    HttpContext.Session.SetString("JwtToken", loginResponse.Token);
+                    HttpContext.Session.SetString("UserRole", loginResponse.Role);
+                    HttpContext.Session.SetString("UserId", loginResponse.Id);
+                    HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
-                dynamic usuarioResponse = null;
-                string Nome = "";
+                    var role = User.FindFirstValue(ClaimTypes.Role);
 
-                if (loginResponse.Role.ToLower() == "usuario")
-                {
                     var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
                     json = await usuario.Content.ReadAsStringAsync();
-                    usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
 
-                    Nome = usuarioResponse.NomeCompleto;
-                }
-                else if (loginResponse.Role.ToLower() == "instituicao")
+                    var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
+
+                    // Cria as claims do usuário autenticado
+                    var claims = new List<Claim>
                 {
-                    var instituicao = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{loginResponse.GUID}");
-                    json = await instituicao.Content.ReadAsStringAsync();
-                    usuarioResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
-
-                    Nome = usuarioResponse.Nome;
-                }
-
-                if (usuarioResponse == null)
-                {
-                    return RedirectToRoute("login", new
-                    {
-                        alertType = "error",
-                        alertMessage = "Perfil não encontrado."
-                    });
-                }
-
-                // Cria as claims do usuário autenticado
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, Nome),
+                    new Claim(ClaimTypes.Name, usuarioResponse.NomeCompleto),
                     new Claim(ClaimTypes.Role, loginResponse.Role),
                     new Claim("UserId", loginResponse.Id),
                     new Claim("GUID", loginResponse.GUID),
                 };
 
-                var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                var principal = new ClaimsPrincipal(identity);
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
 
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-                // Redireciona com base no perfil (role)
-                return loginResponse.Role.ToLower() switch
+                    // Redireciona com base no perfil (role)
+                    switch (loginResponse.Role.ToLower())
+                    {
+                        case "admin":
+                            return RedirectToAction("Index", "Admin");
+                        case "instituicao":
+                            return RedirectToAction("Perfil", "Instituicao");
+                        case "usuario":
+                            return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
+                        default:
+                            return RedirectToAction("AcessoNegado", "Home");
+                    }
+                }
+                catch (Exception ex)
                 {
-                    "admin" => RedirectToAction("Index", "Admin"),
-                    "instituicao" => RedirectToRoute("instituicao-perfil", new { guid = loginResponse.GUID }),
-                    "usuario" => RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID }),
-                    _ => RedirectToAction("AcessoNegado", "Home")
-                };
-            }
-            catch (Exception ex)
+                    return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
+
+                }
+            } else
             {
-                return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
+                return RedirectToRoute("usuario-perfil", new { guid = User.FindFirst("GUID")?.Value });
             }
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]

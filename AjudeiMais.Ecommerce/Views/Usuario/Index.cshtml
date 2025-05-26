@@ -1,84 +1,549 @@
 ﻿@{
-    ViewData["Title"] = "Gerenciar Usuários";
+    ViewData["Title"] = "Painel de Controle";
 }
 
+<style>
+    /* Botão "Anunciar Item" */
+    .announce-button-container {
+        text-align: center;
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .announce-button {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        background: linear-gradient(135deg, var(--color-accent), var(--color-accent-dark));
+        color: var(--color-gray-100);
+        padding: var(--spacing-md) var(--spacing-lg);
+        border-radius: var(--radius-lg);
+        font-family: var(--font-family-accent);
+        font-weight: var(--font-weight-bold);
+        font-size: var(--font-size-lg);
+        text-decoration: none;
+        box-shadow: var(--shadow-md);
+        transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+        .announce-button:hover {
+            background: linear-gradient(135deg, var(--color-accent-dark), var(--color-accent));
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .announce-button:active {
+            transform: translateY(0);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .announce-button i {
+            font-size: var(--font-size-xl);
+        }
+
+    /* Cards de Métricas */
+    .dashboard-metrics {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: var(--spacing-lg);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .metric-card {
+        position: relative;
+        background: var(--color-surface);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        padding: var(--spacing-lg);
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease;
+        overflow: hidden;
+        border: 1px solid var(--color-gray-300); /* Adiciona uma borda sutil */
+    }
+
+        .metric-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .metric-card::before { /* Efeito de brilho ao passar o mouse */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .metric-card:hover::before {
+            left: 100%;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .metric-card h3 {
+            margin: 0 0 var(--spacing-xs);
+            font-family: var(--font-family-heading);
+            font-size: var(--font-size-4xl);
+            color: var(--color-primary); /* Ajusta a cor para a paleta global */
+            position: relative;
+            z-index: 1;
+        }
+
+        .metric-card p {
+            margin: 0;
+            font-size: var(--font-size-lg);
+            color: var(--color-gray-700); /* Ajusta a cor para a paleta global */
+            font-weight: var(--font-weight-medium);
+            position: relative;
+            z-index: 1;
+        }
+
+    /* Layout Chat e Instituições */
+    .main-layout {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--spacing-lg);
+        min-height: 600px;
+    }
+
+    .chat-panel, .institutions-panel {
+        flex: 1;
+        min-width: 320px;
+        display: flex;
+        flex-direction: column;
+        background: var(--color-surface);
+        border-radius: var(--radius-md);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--color-gray-300); /* Adiciona uma borda sutil */
+    }
+
+        .chat-panel:hover, .institutions-panel:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+    /* Cabeçalhos dos Painéis */
+    .panel-header {
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-family: var(--font-family-accent);
+        font-size: var(--font-size-xl);
+        color: var(--color-gray-100);
+        background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light)); /* Degradê com cores primárias */
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        border-bottom: 1px solid var(--color-primary-dark);
+        font-weight: var(--font-weight-bold);
+    }
+
+        .panel-header i {
+            font-size: var(--font-size-xxl);
+            color: var(--color-accent); /* Ícone com cor de destaque */
+        }
+
+    /* Mensagens do Chat */
+    .chat-messages {
+        flex: 1;
+        padding: var(--spacing-md);
+        overflow-y: auto;
+        background-color: var(--color-gray-200); /* Fundo sutil para o chat */
+    }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: var(--color-secondary);
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--color-gray-200);
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: var(--color-gray-300);
+            border-radius: var(--radius-sm);
+        }
+
+    .chat-message {
+        margin-bottom: var(--spacing-sm);
+        display: flex;
+        font-size: var(--font-size-md);
+    }
+
+        .chat-message span {
+            max-width: 80%;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            line-height: 1.4;
+            box-shadow: var(--shadow-sm); /* Sombra suave nos balões */
+        }
+
+        .chat-message.user {
+            justify-content: flex-end;
+        }
+
+            .chat-message.user span {
+                background-color: var(--color-secondary);
+                color: var(--color-gray-100);
+                border-bottom-right-radius: 2px;
+                animation: slideInRight 0.3s ease-out;
+            }
+
+        .chat-message.other {
+            justify-content: flex-start;
+        }
+
+            .chat-message.other span {
+                background-color: var(--color-gray-300);
+                color: var(--color-gray-900);
+                border-bottom-left-radius: 2px;
+                animation: slideInLeft 0.3s ease-out;
+            }
+
+    /* Animações de balão de chat */
+    @@keyframes slideInRight {
+        from {
+            transform: translateX(20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideInLeft {
+        from {
+            transform: translateX(-20px);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Input do Chat */
+    .chat-input {
+        display: flex;
+        border-top: 1px solid var(--color-gray-300);
+        background-color: var(--color-surface);
+        padding: var(--spacing-sm);
+    }
+
+        .chat-input input {
+            flex: 1;
+            border: 1px solid var(--color-gray-400);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm);
+            font-size: var(--font-size-md);
+            font-family: var(--font-family-base);
+            transition: border-color 0.2s;
+        }
+
+            .chat-input input:focus {
+                outline: none;
+                border-color: var(--color-primary);
+                box-shadow: 0 0 0 2px rgba(0, 33, 71, 0.2);
+            }
+
+        .chat-input button {
+            background: var(--color-primary);
+            color: var(--color-gray-100);
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin-left: var(--spacing-sm);
+            cursor: pointer;
+            font-family: var(--font-family-accent);
+            font-weight: var(--font-weight-bold);
+            font-size: var(--font-size-md);
+            transition: background 0.2s ease, transform 0.1s ease;
+        }
+
+            .chat-input button:hover {
+                background: var(--color-primary-light);
+                transform: translateY(-1px);
+            }
+
+            .chat-input button:active {
+                transform: translateY(0);
+            }
+
+    /* Painel de Instituições */
+    .institutions-list {
+        flex: 1;
+        padding: var(--spacing-md);
+        overflow-y: auto;
+        background-color: var(--color-gray-200); /* Fundo sutil para a lista */
+    }
+
+        .institutions-list ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .institutions-list li {
+            background: var(--color-surface);
+            border-radius: var(--radius-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+            border: 1px solid var(--color-gray-300);
+        }
+
+            .institutions-list li:hover {
+                transform: translateX(5px);
+                box-shadow: var(--shadow-md);
+            }
+
+            .institutions-list li i {
+                color: var(--color-primary);
+                font-size: var(--font-size-lg);
+            }
+
+            .institutions-list li span {
+                font-family: var(--font-family-base);
+                font-size: var(--font-size-md);
+                color: var(--color-gray-800);
+                font-weight: var(--font-weight-medium);
+            }
+
+    /* Mapa Ilustrativo */
+    #map-illustrative {
+        height: 100%; /* Ocupa a altura total do painel de instituições */
+        border-radius: var(--radius-sm);
+        box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        background-color: var(--color-gray-300); /* Cor de fundo para o mapa ilustrativo */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: var(--font-family-accent);
+        font-size: var(--font-size-xl);
+        color: var(--color-gray-700);
+        font-weight: var(--font-weight-bold);
+        text-align: center;
+        background-image: url('https://via.placeholder.com/600x400?text=Mapa+Ilustrativo'); /* Imagem de placeholder */
+        background-size: cover;
+        background-position: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+        #map-illustrative::after { /* Overlay para texto */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.4); /* Transparência para o texto ser legível */
+        }
+
+        #map-illustrative .map-overlay-text {
+            position: relative;
+            z-index: 1;
+            padding: var(--spacing-md);
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-md);
+            font-size: var(--font-size-xxl);
+            color: var(--color-primary-dark);
+        }
+
+    /* Responsividade */
+    @@media (max-width: 768px) {
+        .main-layout {
+            flex-direction: column;
+            min-height: auto;
+        }
+
+        .metric-card {
+            padding: var(--spacing-md);
+        }
+
+            .metric-card h3 {
+                font-size: var(--font-size-3xl);
+            }
+
+        .announce-button {
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: var(--font-size-md);
+        }
+
+        .panel-header {
+            font-size: var(--font-size-lg);
+        }
+
+            .panel-header i {
+                font-size: var(--font-size-xl);
+            }
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Merriweather:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+
+
 <div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-body">
-            <h1 class="mb-4 h4 fw-bold text-dark">Gerenciar Usuários</h1>
+    <section class="announce-button-container">
+        <a href="#" class="announce-button">
+            <i class="fas fa-plus-circle"></i>
+            Anunciar Novo Item
+        </a>
+    </section>
 
-            <div class="row align-items-center mb-4">
-                <div class="col-md-6 mb-2 mb-md-0">
-                    <input type="text" class="form-control" placeholder="Buscar usuário...">
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <button class="btn btn-primary">
-                        <i class="fa fa-plus me-1"></i> Criar Usuário
-                    </button>
-                </div>
+    <section class="dashboard-metrics">
+        <div class="metric-card"><h3 id="count-anunciados">0</h3><p>Itens Anunciados</p></div>
+        <div class="metric-card"><h3 id="count-doados">0</h3><p>Itens Doados</p></div>
+        <div class="metric-card"><h3 id="count-conversas">0</h3><p>Conversas Ativas</p></div>
+        <div class="metric-card"><h3 id="count-instituicoes">0</h3><p>Instituições Próximas</p></div>
+    </section>
+
+    <section class="main-layout">
+        <div class="chat-panel">
+            <div class="panel-header">
+                <i class="fas fa-comment-dots"></i>
+                <span>Minhas Conversas</span>
             </div>
-
-            <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-secondary text-white bg-secondary">
-                        <tr>
-                            <th>Nome</th>
-                            <th>E-mail</th>
-                            <th>Documento</th>
-                            <th>Status</th>
-                            <th class="text-center">Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Luiz Henrique Silva</td>
-                            <td>luiz@email.com</td>
-                            <td>123.456.789-00</td>
-                            <td>
-                                <span class="badge bg-success">Ativo</span>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-primary" title="Editar">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" title="Excluir">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Adicione mais usuários aqui -->
-                    </tbody>
-                </table>
+            <div class="chat-messages" id="chatMessages">
+                <div class="chat-message other"><span>Olá! Tenho interesse no livro. Ainda está disponível?</span></div>
+                <div class="chat-message user"><span>Sim, está! Você pode retirar no bairro X.</span></div>
+                <div class="chat-message other"><span>Perfeito! Qual o melhor horário para você?</span></div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="chatInput" placeholder="Enviar mensagem..." />
+                <button id="chatSend"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-    </div>
-
-    <!-- Paginação -->
-    <nav class="mt-4 d-flex justify-content-center">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#">&laquo; Anterior</a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
-            <li class="page-item disabled">
-                <span class="page-link">...</span>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">10</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">Próxima &raquo;</a>
-            </li>
-        </ul>
-    </nav>
+        <div class="institutions-panel">
+            <div class="panel-header">
+                <i class="fas fa-hand-holding-heart"></i>
+                <span>Instituições Parceiras</span>
+            </div>
+            <div class="institutions-list" id="institutionsList">
+                <ul>
+                    <li data-lat="-23.558" data-lng="-46.625">
+                        <i class="fas fa-chevron-right"></i> <span>Lar de Crianças Felizes</span>
+                    </li>
+                    <li data-lat="-23.545" data-lng="-46.635">
+                        <i class="fas fa-chevron-right"></i> <span>Abrigo Doce Lar</span>
+                    </li>
+                    <li data-lat="-23.565" data-lng="-46.650">
+                        <i class="fas fa-chevron-right"></i> <span>Associação Comunitária Esperança</span>
+                    </li>
+                    <li data-lat="-23.540" data-lng="-46.610">
+                        <i class="fas fa-chevron-right"></i> <span>Casa do Bem</span>
+                    </li>
+                    <li data-lat="-23.570" data-lng="-46.640">
+                        <i class="fas fa-chevron-right"></i> <span>Acolhimento Fraterno</span>
+                    </li>
+                </ul>
+                <div id="map-illustrative">
+                    <div class="map-overlay-text">
+                        <span>Localize instituições próximas no mapa!</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. Animação de valores para as métricas
+        const stats = { anunciados: 128, doados: 76, conversasAtivas: 15, instituicoes: 12 };
+
+        function animateValue(id, end, duration) {
+            const el = document.getElementById(id);
+            let start = 0, startTime = null;
+            const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
+
+            function step(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const progress = timestamp - startTime;
+                const easedProgress = easeOutCubic(Math.min(progress / duration, 1));
+                const value = Math.floor(easedProgress * end);
+                el.innerText = value;
+                if (progress < duration) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    el.innerText = end;
+                }
+            }
+            window.requestAnimationFrame(step);
+        }
+
+        animateValue('count-anunciados', stats.anunciados, 1500);
+        animateValue('count-doados', stats.doados, 1500);
+        animateValue('count-conversas', stats.conversasAtivas, 1500);
+        animateValue('count-instituicoes', stats.instituicoes, 1500);
+
+        // 2. Fade-in sequencial dos cards de métricas
+        document.querySelectorAll('.dashboard-metrics .metric-card').forEach((card, i) => {
+            setTimeout(() => card.classList.add('visible'), i * 150 + 200);
+        });
+
+        // 3. Sistema de Conversas (anteriormente chat de suporte)
+        const chatBtn = document.getElementById('chatSend');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        function appendMessage(text, fromUser = true) {
+            const msgContainer = document.createElement('div');
+            msgContainer.className = 'chat-message ' + (fromUser ? 'user' : 'other');
+            const msgSpan = document.createElement('span');
+            msgSpan.innerText = text;
+            msgContainer.appendChild(msgSpan);
+            chatMessages.appendChild(msgContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        chatBtn.addEventListener('click', () => {
+            const txt = chatInput.value.trim();
+            if (!txt) return;
+            appendMessage(txt, true);
+            chatInput.value = '';
+
+            // Simula uma resposta da outra parte na conversa (item doado)
+            setTimeout(() => {
+                const responses = [
+                    "Combinado! Te vejo lá. 😊",
+                    "Entendido! Me avisa quando estiver a caminho.",
+                    "Ótimo! Qualquer dúvida, pode me chamar.",
+                    "Fechado! Que bom que o item terá um novo lar."
+                ];
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                appendMessage(randomResponse, false);
+            }, 800);
+        });
+
+        chatInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter') chatBtn.click();
+        });
+
+        // 4. Mapa Ilustrativo para Instituições Próximas
+        // A lógica do mapa Leaflet foi removida, pois você pediu um mapa ilustrativo.
+        // O elemento #map-illustrative agora exibe um placeholder visual.
+        // Se no futuro precisar de um mapa interativo, basta reintroduzir o código Leaflet.
+    });
+</script>

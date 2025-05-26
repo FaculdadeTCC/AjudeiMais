@@ -19,9 +19,10 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         }
 
-        public IActionResult AcessoNegado()
+        public async Task<IActionResult> AcessoNegado()
         {
-            return View();
+            await HttpContext.SignOutAsync("Cookies");
+            return RedirectToRoute("home");
         }
 
         public IActionResult Privacy()

@@ -1,14 +1,17 @@
 ﻿using System; // Para Exception
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json; // Usar System.Text.Json consistentemente
 using System.Threading.Tasks;
 using AjudeiMais.Ecommerce.Filters; // Para RoleAuthorize
-using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Models.Usuario;
 using AjudeiMais.Ecommerce.Tools; // Para Assistant e ApiHelper, e o novo ControllerHelpers
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http; // Para IFormFile
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging; // Para logging (opcional, mas boa prática)
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json; // Para logging (opcional, mas boa prática)
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -24,30 +27,28 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         // --- Ações do Controlador ---
-        [RoleAuthorize("admin")]
-        public IActionResult Index()
-        {
-            return View();
-        }
-
         [RoleAuthorize("usuario", "admin")]
-        [HttpGet]
-        public async Task<IActionResult> Perfil(string guid)
+        public async Task<IActionResult> Index(string guid)
         {
-            if (!User.Identity.IsAuthenticated)
+            string loggedInUserGuid;
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
             {
-                return RedirectToRoute("home");
+                return unauthorizedResult; // Redireciona para login ou home
             }
 
-            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
-            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
-            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
             {
-                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
             }
 
-            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid); // Use o GUID da URL aqui
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
+            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
             {
@@ -56,7 +57,43 @@ namespace AjudeiMais.Ecommerce.Controllers
             else
             {
                 _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
-                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+            }
+        }
+
+        [RoleAuthorize("usuario", "admin")]
+        [HttpGet]
+        public async Task<IActionResult> Perfil(string guid)
+        {
+            string loggedInUserGuid;
+
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult; // Redireciona para login ou home
+            }
+
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
+            {
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
+            }
+
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
+            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
+
+            if (usuario != null)
+            {
+                return View(usuario);
+            }
+            else
+            {
+                _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
+                // Em caso de erro na API, redireciona para o próprio perfil do usuário logado com a mensagem de erro
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }
@@ -84,20 +121,24 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             string loggedInUserGuid;
 
+
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
             var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
 
             if (unauthorizedResult != null)
             {
-                return unauthorizedResult; // Retorna login ou erro se GUID inválido
+                return unauthorizedResult; // Redireciona para login ou home
             }
 
-            // Valida se o usuário logado está tentando acessar seu próprio perfil ou se é um admin
-            if (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase))
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
             {
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
             }
 
-            // Busca os dados do usuário usando o GUID da URL (pode ser o próprio ou de outro se for admin)
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
             var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
@@ -111,6 +152,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }
+
 
         /// <summary>
         /// Método para realizar o cadastro de um usuário enviando os dados e a foto de perfil para a API.
@@ -129,69 +171,64 @@ namespace AjudeiMais.Ecommerce.Controllers
 
                     using (var formData = new MultipartFormDataContent())
                     {
-                        // Usa o método de extensão para adicionar automaticamente todas as propriedades simples do model
                         formData.AddObjectAsFormFields(model);
-
-                        // Adiciona manualmente campos extras que não estão no model (exemplo: Role)
                         formData.Add(new StringContent("usuario"), "Role");
-
-                        // Usa o método de extensão para adicionar o arquivo de forma limpa
                         formData.AddFileContent(FotoDePerfil, "FotoDePerfil");
 
-                        // Envia a requisição POST para a API com o formulário multipart/form-data
                         var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario", formData);
 
-                        if (response.IsSuccessStatusCode)
+                        // Sempre tentaremos deserializar para ApiResponse<Usuario>
+                        var apiResponseContent = await response.Content.ReadAsStringAsync();
+                        ApiHelper.ApiResponse<UsuarioPerfilModel> apiResponse = null;
+
+                        try
                         {
-                            // Cadastro realizado com sucesso, redireciona para login com mensagem de sucesso
-                            return RedirectToRoute("login", new { alertType = "success", alertMessage = "Cadastro realizado com sucesso. Faça o Login." });
+                            // Prioriza System.Text.Json
+                            apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                                apiResponseContent,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                            );
+                        }
+                        catch (System.Text.Json.JsonException jsonEx)
+                        {
+                            apiResponse = new ApiHelper.ApiResponse<UsuarioPerfilModel>
+                            {
+                                Success = false,
+                                Type = "error",
+                                Message = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
+                            };
+
+                            return RedirectToRoute("usuario-cadastrar", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message });
+
+                        }
+
+                        if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                        {
+                            return RedirectToRoute("login", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message });
                         }
                         else
                         {
-                            // Tenta ler e interpretar os detalhes do problema retornados pela API
-                            var responseContent = await response.Content.ReadAsStringAsync();
-                            ProblemDetails problemDetails = null;
+                            string alertType = "error";
+                            string alertMessage = apiResponse?.Message ?? "Não foi possível processar a requisição de cadastro. Tente novamente.";
 
-                            try
-                            {
-                                problemDetails = System.Text.Json.JsonSerializer.Deserialize<ProblemDetails>(responseContent,
-                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                            }
-                            catch (System.Text.Json.JsonException)
-                            {
-                                // Ignora se não for ProblemDetails, usa a mensagem crua
-                            }
-
-
-                            if (problemDetails?.Title != null && problemDetails?.Detail != null)
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
-                            }
-                            else if (!string.IsNullOrEmpty(responseContent))
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Erro ao cadastrar: {responseContent}" });
-                            }
-                            else
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar." });
-                            }
+                            return RedirectToRoute("usuario-cadastrar", new { alertType = alertType, alertMessage = alertMessage });
                         }
                     }
                 }
                 catch (HttpRequestException ex)
                 {
-                    // Trata erros de conexão com o servidor
-                    return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+                    // Este catch pegará erros de rede, API fora do ar, etc.
+                    return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com a nossa equipe." });
                 }
                 catch (Exception ex)
                 {
-                    // Trata erros inesperados no processo de cadastro
-                    return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                    // Erros inesperados no próprio Controller (ex: problema com IFormFile)
+                    return RedirectToRoute("usuario-cadastrar", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro." });
                 }
             }
             else
             {
-                return RedirectToRoute("usuario-home");
+                return RedirectToRoute("usuario-perfil", new { guid = User.FindFirst("GUID").Value });
             }
         }
 
@@ -247,82 +284,346 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
         }
 
+        /// <summary>
+        /// Método para realizar o cadastro de um usuário enviando os dados e a foto de perfil para a API.
+        /// </summary>
+        /// <param name="model">Objeto com os dados do usuário a serem cadastrados.</param>
+        /// <param name="FotoDePerfil">Arquivo da foto de perfil enviada pelo usuário.</param>
+        /// <returns>Redireciona para a página de login em caso de sucesso, ou para a página de cadastro com mensagem de erro em caso de falha.</returns>
+        [RoleAuthorize("usuario", "admin")]
         [HttpPost]
-        public async Task<IActionResult> AtualizarDadosPessoais(UsuarioPerfilModel model, IFormFile FotoDePerfil)
+        public async Task<IActionResult> AtualizarDadosPessoais(UsuarioDadosPessoais model, IFormFile FotoDePerfil)
         {
-            if (!User.Identity.IsAuthenticated)
+
+            if (User.Identity.IsAuthenticated)
             {
+                string guid = model.GUID;
+
                 try
                 {
                     var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
                     using (var formData = new MultipartFormDataContent())
                     {
-                        // Usa o método de extensão para adicionar automaticamente todas as propriedades simples do model
                         formData.AddObjectAsFormFields(model);
-
-                        // Adiciona manualmente campos extras que não estão no model (exemplo: Role)
-                        formData.Add(new StringContent("usuario"), "Role");
-
-                        // Usa o método de extensão para adicionar o arquivo de forma limpa
                         formData.AddFileContent(FotoDePerfil, "FotoDePerfil");
 
-                        // Envia a requisição POST para a API com o formulário multipart/form-data
-                        var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario", formData);
+                        var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario/AtualizarDadosPessoais", formData);
 
-                        if (response.IsSuccessStatusCode)
+                        var apiResponseContent = await response.Content.ReadAsStringAsync();
+                        ApiHelper.ApiResponse<UsuarioPerfilModel> apiResponse = null;
+
+                        try
                         {
-                            // Cadastro realizado com sucesso, redireciona para login com mensagem de sucesso
-                            return RedirectToRoute("login", new { alertType = "success", alertMessage = response });
+                            // Prioriza System.Text.Json
+                            apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                                apiResponseContent,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                            );
+                        }
+                        catch (System.Text.Json.JsonException jsonEx)
+                        {
+                            apiResponse = new ApiHelper.ApiResponse<UsuarioPerfilModel>
+                            {
+                                Success = false,
+                                Type = "error",
+                                Message = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
+                            };
+
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
+
+                        }
+
+                        if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                        {
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
                         }
                         else
                         {
-                            // Tenta ler e interpretar os detalhes do problema retornados pela API
-                            var responseContent = await response.Content.ReadAsStringAsync();
-                            ProblemDetails problemDetails = null;
+                            string alertType = "error";
+                            string alertMessage = apiResponse?.Message ?? "Não foi possível atualizar os dados. Tente novamente.";
 
-                            try
-                            {
-                                problemDetails = System.Text.Json.JsonSerializer.Deserialize<ProblemDetails>(responseContent,
-                                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
-                            }
-                            catch (System.Text.Json.JsonException)
-                            {
-                                // Ignora se não for ProblemDetails, usa a mensagem crua
-                            }
-
-
-                            if (problemDetails?.Title != null && problemDetails?.Detail != null)
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
-                            }
-                            else if (!string.IsNullOrEmpty(responseContent))
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Erro ao cadastrar: {responseContent}" });
-                            }
-                            else
-                            {
-                                return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar." });
-                            }
+                            return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = alertType, alertMessage = alertMessage });
                         }
                     }
                 }
                 catch (HttpRequestException ex)
                 {
-                    // Trata erros de conexão com o servidor
-                    return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+                    // Este catch pegará erros de rede, API fora do ar, etc.
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Não foi possível conectar ao servidor da API: {ex.Message}" });
                 }
                 catch (Exception ex)
                 {
-                    // Trata erros inesperados no processo de cadastro
-                    return RedirectToRoute("usuario-cadastro", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                    // Erros inesperados no próprio Controller (ex: problema com IFormFile)
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
                 }
             }
             else
             {
-                return RedirectToRoute("usuario-home");
+                return RedirectToRoute("home");
             }
         }
+
+        [RoleAuthorize("usuario", "admin")]
+        [HttpPost]
+        public async Task<IActionResult> AtualizarEndereco(UsuarioEndereco model)
+        {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                string guid = model.GUID;
+
+                try
+                {
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    using (var formData = new MultipartFormDataContent())
+                    {
+                        formData.AddObjectAsFormFields(model);
+
+                        var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario/AtualizarEndereco", formData);
+
+                        var apiResponseContent = await response.Content.ReadAsStringAsync();
+                        ApiHelper.ApiResponse<UsuarioPerfilModel> apiResponse = null;
+
+                        try
+                        {
+                            // Prioriza System.Text.Json
+                            apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                                apiResponseContent,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                            );
+                        }
+                        catch (System.Text.Json.JsonException jsonEx)
+                        {
+                            apiResponse = new ApiHelper.ApiResponse<UsuarioPerfilModel>
+                            {
+                                Success = false,
+                                Type = "error",
+                                Message = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
+                            };
+
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
+
+                        }
+
+                        if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                        {
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
+                        }
+                        else
+                        {
+                            string alertType = "error";
+                            string alertMessage = apiResponse?.Message ?? "Não foi possível atualizar os dados. Tente novamente.";
+
+                            return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = alertType, alertMessage = alertMessage });
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Este catch pegará erros de rede, API fora do ar, etc.
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Não foi possível conectar ao servidor da API: {ex.Message}" });
+                }
+                catch (Exception ex)
+                {
+                    // Erros inesperados no próprio Controller (ex: problema com IFormFile)
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                }
+            }
+            else
+            {
+                return RedirectToRoute("home");
+            }
+        }
+
+        [RoleAuthorize("usuario", "admin")]
+        [HttpPost]
+        public async Task<IActionResult> AtualizarSenha(UsuarioSenha model)
+        {
+
+            if (User.Identity.IsAuthenticated)
+            {
+                string guid = model.GUID;
+
+                try
+                {
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    using (var formData = new MultipartFormDataContent())
+                    {
+                        formData.AddObjectAsFormFields(model);
+
+                        var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario/AtualizarSenha", formData);
+
+                        var apiResponseContent = await response.Content.ReadAsStringAsync();
+                        ApiHelper.ApiResponse<UsuarioPerfilModel> apiResponse = null;
+
+                        try
+                        {
+                            // Prioriza System.Text.Json
+                            apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                                apiResponseContent,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                            );
+                        }
+                        catch (System.Text.Json.JsonException jsonEx)
+                        {
+                            apiResponse = new ApiHelper.ApiResponse<UsuarioPerfilModel>
+                            {
+                                Success = false,
+                                Type = "error",
+                                Message = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
+                            };
+
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
+
+                        }
+
+                        if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                        {
+                            return RedirectToRoute("usuario-alterar-dados", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = guid });
+                        }
+                        else
+                        {
+                            string alertType = "error";
+                            string alertMessage = apiResponse?.Message ?? "Não foi possível atualizar os dados. Tente novamente.";
+
+                            return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = alertType, alertMessage = alertMessage });
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    // Este catch pegará erros de rede, API fora do ar, etc.
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Não foi possível conectar ao servidor da API: {ex.Message}" });
+                }
+                catch (Exception ex)
+                {
+                    // Erros inesperados no próprio Controller (ex: problema com IFormFile)
+                    return RedirectToRoute("usuario-alterar-dados", new { guid = guid, alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                }
+            }
+            else
+            {
+                return RedirectToRoute("home");
+            }
+        }
+
+        [RoleAuthorize("usuario", "admin")]
+        [HttpPost]
+        public async Task<IActionResult> ExcluirConta(UsuarioExcluirConta model)
+        {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToRoute("home");
+
+            string guid = model.GUID;
+
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                using (var formData = new MultipartFormDataContent())
+                {
+                    formData.AddObjectAsFormFields(model);
+
+                    var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Usuario/VerificarSenha", formData);
+                    var apiResponseContent = await response.Content.ReadAsStringAsync();
+
+                    ApiHelper.ApiResponse<UsuarioPerfilModel> apiResponse;
+
+                    try
+                    {
+                        apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                            apiResponseContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+                    }
+                    catch (System.Text.Json.JsonException)
+                    {
+                        return RedirectToRoute("usuario-alterar-dados", new
+                        {
+                            alertType = "error",
+                            alertMessage = "Ocorreu um erro no formato da resposta da API. Contacte o suporte.",
+                            guid = guid
+                        });
+                    }
+
+                    if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                    {
+                        // 2) Se senha ok, deleta a conta
+                        var responseDelete = await httpClient.DeleteAsync($"{Tools.Assistant.ServerURL()}api/Usuario/{guid}");
+                        var apiDeleteContent = await responseDelete.Content.ReadAsStringAsync();
+
+                        ApiHelper.ApiResponse<UsuarioPerfilModel> apiDeleteResponse;
+                        try
+                        {
+                            apiDeleteResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<UsuarioPerfilModel>>(
+                                apiDeleteContent,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                            );
+                        }
+                        catch (System.Text.Json.JsonException)
+                        {
+                            return RedirectToRoute("usuario-alterar-dados", new
+                            {
+                                alertType = "error",
+                                alertMessage = "Ocorreu um erro no formato da resposta da API ao deletar. Contacte o suporte.",
+                                guid = guid
+                            });
+                        }
+
+                        if (responseDelete.IsSuccessStatusCode && apiDeleteResponse != null && apiDeleteResponse.Success)
+                        {
+                            await HttpContext.SignOutAsync();
+
+                            return RedirectToRoute("home", new
+                            {
+                                alertType = apiDeleteResponse.Type,
+                                alertMessage = apiDeleteResponse.Message
+                            });
+                        }
+                        else
+                        {
+                            return RedirectToRoute("usuario-alterar-dados", new
+                            {
+                                guid = guid,
+                                alertType = "error",
+                                alertMessage = apiDeleteResponse?.Message ?? "Não foi possível deletar a conta. Tente novamente."
+                            });
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToRoute("usuario-alterar-dados", new
+                        {
+                            guid = guid,
+                            alertType = "error",
+                            alertMessage = "Senha incorreta. Tente novamente."
+                        });
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return RedirectToRoute("usuario-alterar-dados", new
+                {
+                    guid = guid,
+                    alertType = "error",
+                    alertMessage = $"Não foi possível conectar ao servidor da API: {ex.Message}"
+                });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute("usuario-alterar-dados", new
+                {
+                    guid = guid,
+                    alertType = "error",
+                    alertMessage = $"Ocorreu um erro inesperado durante a operação. {ex.Message}"
+                });
+            }
+        }
+
         public IActionResult Anuncios()
         {
             return View();

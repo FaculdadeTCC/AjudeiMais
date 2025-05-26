@@ -2,11 +2,12 @@
 using System.Collections.Generic; // Para IEnumerable
 using Microsoft.AspNetCore.Http; // Para IFormFile
 
-namespace AjudeiMais.Ecommerce.Models
+namespace AjudeiMais.Ecommerce.Models.Usuario
 {
     public class UsuarioPerfilModel
     {
         // Propriedades do perfil (presentes em ambos)
+        public int? Usuario_ID { get; set; }
         public string NomeCompleto { get; set; }
         public string Documento { get; set; }
         public string Email { get; set; }
@@ -19,6 +20,7 @@ namespace AjudeiMais.Ecommerce.Models
         public string Estado { get; set; }
         public string Telefone { get; set; }
         public string? TelefoneFixo { get; set; }
+        public DateTime? DataCadastro { get; set; }
         public string Role { get; set; } = "role"; // Defina um valor padrão razoável, se aplicável
 
         // Propriedades específicas de cadastro/login

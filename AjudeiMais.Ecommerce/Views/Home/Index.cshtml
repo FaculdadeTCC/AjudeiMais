@@ -12,10 +12,15 @@
 }
 
 
+@{
+    await Html.RenderPartialAsync("_Alertas");
+}
+
+
 <div class="container-fluid" style="padding: 0">
     <!-- Hero Section -->
-    <section class="hero d-flex align-items-center text-center text-white">
-        <div class="container hero-content">
+    <section class="hero d-flex align-items-center text-white text-center">
+        <div class="hero-content container">
             <h1 class="hero-title">
                 Conecte-se com causas que importam<br>
                 e transforme vidas com sua doação
@@ -39,9 +44,9 @@
     </section>
 
 
-    <section id="explore" class="explore-section container py-5">
+    <section id="explore" class="explore-section py-5 container">
         <!-- Cabeçalho -->
-        <div class="text-center mb-5">
+        <div class="mb-5 text-center">
             <h2 class="display-5 fw-bold text-secondary">Encontre itens para doar ou receber</h2>
             <p class="text-muted fs-5">Pesquise, filtre por categoria e condição, e descubra o que você precisa.</p>
         </div>
@@ -110,7 +115,7 @@
                             </ul>
 
                             <!-- CTA -->
-                            <a href="#" class="mt-auto btn btn-outline-accent fw-semibold" aria-label="Ver detalhes">
+                            <a href="#" class="btn btn-outline-accent fw-semibold mt-auto" aria-label="Ver detalhes">
                                 <i class="fas fa-info-circle me-2"></i> Ver detalhes
                             </a>
                         </div>
@@ -158,7 +163,7 @@
         <div class="container">
 
             <!-- Título -->
-            <div class="text-center mb-5">
+            <div class="mb-5 text-center">
                 <h2 class="fw-bold text-secondary">Explore Categorias</h2>
                 <p class="text-muted fs-5">Descubra os tipos de itens que você pode doar ou receber.</p>
             </div>
