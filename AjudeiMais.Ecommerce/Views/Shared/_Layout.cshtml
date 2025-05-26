@@ -68,7 +68,15 @@
 									<i class="fa fa-user me-2"></i> @User.Identity.Name
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-									<li><a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
+
+									@if (User.IsInRole("usuario"))
+									{
+										<li><a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
+									}
+									@if (User.IsInRole("instituicao"))
+									{
+										<li><a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
+									}
 									<li>
 										<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">Sair</a>
 										<form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">

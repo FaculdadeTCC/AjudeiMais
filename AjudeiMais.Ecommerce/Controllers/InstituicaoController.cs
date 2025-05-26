@@ -3,6 +3,7 @@ using AjudeiMais.Ecommerce.Models;
 using AjudeiMais.Ecommerce.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
@@ -133,9 +134,34 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [RoleAuthorize("admin", "instituicao")]
-        public IActionResult AlterarDados()
+        [HttpGet]
+        public async Task<IActionResult> AlterarDados(string guid)
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("home");
+            }
+
+            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
+            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
+            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            {
+                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
+                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+            }
+
+            var (instituicao, errorMessage) = await ApiHelper.GetInsituicaoByGuidAsync(_httpClientFactory, guid); // Use o GUID da URL aqui
+
+            if (instituicao != null)
+            {
+                return View(instituicao);
+            }
+            else
+            {
+                _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
+                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+            }
         }
     }
 }

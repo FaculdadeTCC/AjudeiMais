@@ -1,5 +1,20 @@
-﻿@{
+﻿@model AjudeiMais.Ecommerce.Models.InstituicaoPerfilModel
+@using AjudeiMais.Ecommerce.Tools
+@{
     ViewData["Title"] = "Alterar Dados da empresa";
+}
+
+@{
+    var instituicao = Model;
+    var endereco = instituicao.Enderecos.FirstOrDefault();
+
+    var userGuidLogado = User.FindFirst("GUID").Value;
+
+    bool isMeuPerfil = userGuidLogado.ToString() == instituicao.Guid;
+
+    ViewData["Title"] = isMeuPerfil
+        ? "Meu Perfil - " + instituicao.Nome
+        : instituicao.Nome + " - Perfil";
 }
 
 <div class="container mt-5">
@@ -7,40 +22,66 @@
         <div class="card-body">
             <h1 class="h4 fw-bold mb-4">Cadastro de Instituição</h1>
 
-            <form method="post" enctype="multipart/form-data">
+            <form method="post" asp-controller="Instituicao" asp-action="Cadastro" enctype="multipart/form-data">
                 <!-- Grupo: Dados da Instituição -->
                 <h5 class="border-bottom pb-2 mb-4">Dados da Instituição</h5>
                 <div class="row g-4">
                     <!-- Nome -->
                     <div class="col-md-6">
                         <label class="form-label">Nome da Instituição <span class="text-danger">*</span></label>
-                        <input type="text" name="Nome" placeholder="Ex: Instituto Esperança Solidária" class="form-control" />
+                        <input type="text" name="Nome" value="@instituicao.Nome" class="form-control" />
                     </div>
 
                     <!-- E-mail -->
                     <div class="col-md-6">
                         <label class="form-label">E-mail <span class="text-danger">*</span></label>
-                        <input type="email" name="Email" placeholder="contato@institutoesperanca.org.br" class="form-control" />
+                        <input type="email" name="Email" value="@instituicao.Email" class="form-control" />
                     </div>
 
                     <!-- Telefone -->
                     <div class="col-md-6">
                         <label class="form-label">Telefone <span class="text-danger">*</span></label>
-                        <input type="tel" name="Telefone" placeholder="(11) 91234-5678" class="form-control" />
+                        <input type="tel" name="Telefone" value="@instituicao.Telefone" class="form-control" />
                     </div>
 
-                    <!-- Foto(s) -->
-                    <div class="col-md-6">
-                        <label class="form-label">Foto(s) da Instituição <span class="text-danger">*</span></label>
-                        <input type="file" name="Fotos" multiple accept="image/*" class="form-control" />
+                    <!-- Foto de perfil  -->
+                    <label class="form-label">Foto de perfil</label>
+                    <input type="file" name="FotoPerfil" accept="image/*" class="form-control" onchange="previewImages(this, 'previewCapa')" />
+
+                    <div id="previewCapa" class="mt-2 d-flex flex-wrap gap-2">
+                        @if (!string.IsNullOrEmpty(Model.FotoPerfil))
+                        {
+                            <div class="position-relative d-inline-block" data-existente="true">
+                                <img src="@(Assistant.ServerURL() + Model.FotoPerfil)" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
+                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
+                            </div>
+                        }
                     </div>
+
 
                     <!-- Descrição -->
                     <div class="col-12">
                         <label class="form-label">Descrição <span class="text-danger">*</span></label>
-                        <textarea name="Descricao" rows="4" class="form-control"
-                                  placeholder="Atuamos na arrecadação e distribuição de alimentos, roupas e itens de higiene para famílias em situação de vulnerabilidade social. Nossa missão é promover dignidade e inclusão."></textarea>
+                        <textarea name="Descricao" rows="4" class="form-control" value="@instituicao.Descricao"></textarea>
                     </div>
+
+                    <!-- Fotos da instituição -->
+                    <label class="form-label">Fotos da Instituição</label>
+                    <input type="file" name="Fotos" multiple accept="image/*" class="form-control" onchange="previewImages(this, 'previewFotos')" />
+
+                    <div id="previewFotos" class="mt-2 d-flex flex-wrap gap-2">
+                        @if (Model.FotosUrl != null)
+                        {
+                            foreach (var foto in Model.FotosUrl)
+                            {
+                                <div class="position-relative d-inline-block" data-existente="true">
+                                    <img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
+                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
+                                </div>
+                            }
+                        }
+                    </div>
+
                 </div>
 
                 <!-- Grupo: Criar Senha -->
@@ -48,7 +89,7 @@
                 <div class="row g-4">
                     <!-- Senha -->
                     <div class="col-md-6">
-                        <label class="form-label">Senha</label>
+                        <label class="form-label">Nova Senha</label>
                         <input type="password" name="Senha" placeholder="Digite uma senha segura" class="form-control" />
                     </div>
 
@@ -73,3 +114,35 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function previewImages(input, containerId) {
+            const container = document.getElementById(containerId);
+
+            Array.from(input.files).forEach(file => {
+                if (file.type.startsWith("image/")) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        const div = document.createElement("div");
+                        div.className = "position-relative d-inline-block";
+                        div.innerHTML = `
+                                    <img src="${e.target.result}" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
+                                    <button type="button" c lass="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
+                                `;
+                        container.appendChild(div);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function removerImagem(button) {
+            const div = button.closest("div");
+            div.remove();
+
+            // Opcional: marca uma flag oculta para enviar ao servidor
+            // exemplo: adiciona <input type="hidden" name="ImagensRemovidas" value="nome-ou-url-da-imagem" />
+        }
+    </script>
+}

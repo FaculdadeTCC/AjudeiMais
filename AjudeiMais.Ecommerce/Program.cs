@@ -129,7 +129,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "instituicao-alterar-dados",
-    pattern: "instituicao/alterar-dados",
+    pattern: "instituicao/alterar-dados/{guid}",
     defaults: new { controller = "Instituicao", action = "AlterarDados" }
 );
 
