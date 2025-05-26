@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
-    public class AnuncioController : Controller
+    public class ProdutoController : Controller
     {
         [RoleAuthorize("admin")]
 
@@ -18,7 +18,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [RoleAuthorize("admin", "usuario")]
-        public IActionResult Adicionar()
+        public IActionResult Cadastro()
         {
             return View();
         }

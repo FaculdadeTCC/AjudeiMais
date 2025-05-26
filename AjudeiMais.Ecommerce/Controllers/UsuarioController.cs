@@ -27,10 +27,34 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         // --- Ações do Controlador ---
-        [RoleAuthorize("admin")]
-        public IActionResult Index()
+        [RoleAuthorize("usuario", "admin")]
+        public async Task<IActionResult> Index(string guid)
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("home");
+            }
+
+            // Validação de segurança para garantir que o usuário só veja seu próprio perfil
+            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
+            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(guid, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            {
+                // Se não for admin e o GUID não corresponder, redireciona para o próprio perfil ou home
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = "Você não tem permissão para acessar este perfil.", guid = loggedInUserGuid });
+            }
+
+            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
+
+            if (usuario != null)
+            {
+                return View(usuario);
+            }
+            else
+            {
+                _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
+                // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+            }
         }
 
         [RoleAuthorize("usuario", "admin")]

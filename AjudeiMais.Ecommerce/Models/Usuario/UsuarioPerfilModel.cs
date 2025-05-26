@@ -20,6 +20,7 @@ namespace AjudeiMais.Ecommerce.Models.Usuario
         public string Estado { get; set; }
         public string Telefone { get; set; }
         public string? TelefoneFixo { get; set; }
+        public DateTime? DataCadastro { get; set; }
         public string Role { get; set; } = "role"; // Defina um valor padrão razoável, se aplicável
 
         // Propriedades específicas de cadastro/login
