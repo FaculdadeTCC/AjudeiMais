@@ -2,51 +2,89 @@
     ViewData["Title"] = "Dashboard Administrativo";
 }
 
-<section class="mx-auto mt-10 max-w-6xl rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
-    <h1 class="mb-6 text-2xl font-bold text-gray-800">Dashboard Administrativo</h1>
+<section class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <div class="card border-0 shadow-lg rounded-lg p-4" style="background-color: var(--color-surface);">
+                <header class="mb-4">
+                    <h1 class="h3 mb-1" style="font-family: var(--font-family-heading); font-weight: var(--font-weight-bold); color: var(--color-primary-dark);">
+                        Dashboard Administrativo
+                    </h1>
+                    <hr class="border-2" style="border-color: var(--color-primary-light)" />
+                </header>
 
-    <!-- Cards de Indicadores -->
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-        <div class="rounded-lg bg-primary p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Usuários Ativos</h2>
-            <p class="text-2xl font-bold">120</p>
-        </div>
-        <div class="rounded-lg bg-secondary p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Instituições Ativas</h2>
-            <p class="text-2xl font-bold">45</p>
-        </div>
-        <div class="rounded-lg bg-highlight p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Pedidos Ativos</h2>
-            <p class="text-2xl font-bold">30</p>
-        </div>
-        <div class="rounded-lg bg-accent p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Pedidos Concluídos</h2>
-            <p class="text-2xl font-bold">150</p>
-        </div>
-    </div>
+                <!-- Indicadores -->
+                <div class="row gy-4">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="d-flex align-items-center border rounded-lg p-3 h-100 shadow-sm" style="background-color: var(--color-primary); color: var(--color-gray-100);">
+                            <div class="me-3 display-6">
+                                <i class="fa fa-user"></i>
+                            </div>
+                            <div>
+                                <small class="d-block" style="font-family: var(--font-family-base); font-weight: var(--font-weight-medium);">Usuários Ativos</small>
+                                <span class="fs-3 fw-bold">120</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="d-flex align-items-center border rounded-lg p-3 h-100 shadow-sm" style="background-color: var(--color-secondary); color: var(--color-gray-100);">
+                            <div class="me-3 display-6">
+                                <i class="fa fa-building"></i>
+                            </div>
+                            <div>
+                                <small class="d-block" style="font-family: var(--font-family-base); font-weight: var(--font-weight-medium);">Instituições Ativas</small>
+                                <span class="fs-3 fw-bold">45</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="d-flex align-items-center border rounded-lg p-3 h-100 shadow-sm" style="background-color: var(--color-accent); color: var(--color-gray-100);">
+                            <div class="me-3 display-6">
+                                <i class="fa fa-shopping-cart"></i>
+                            </div>
+                            <div>
+                                <small class="d-block" style="font-family: var(--font-family-base); font-weight: var(--font-weight-medium);">Pedidos Ativos</small>
+                                <span class="fs-3 fw-bold">30</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="d-flex align-items-center border rounded-lg p-3 h-100 shadow-sm" style="background-color: var(--color-info); color: var(--color-gray-100);">
+                            <div class="me-3 display-6">
+                                <i class="fa fa-check-circle"></i>
+                            </div>
+                            <div>
+                                <small class="d-block" style="font-family: var(--font-family-base); font-weight: var(--font-weight-medium);">Pedidos Concluídos</small>
+                                <span class="fs-3 fw-bold">150</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-    <!-- Acesso Rápido -->
-    <h2 class="mt-8 text-lg font-semibold text-gray-700">Acesso Rápido</h2>
-    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <a href="/Admin/Usuarios" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-user text-xl text-primary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Usuários</span>
-        </a>
-        <a href="/Admin/Instituicoes" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-building text-xl text-secondary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Instituições</span>
-        </a>
-        <a href="/Admin/Categorias" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-tags text-xl text-highlight"></i>
-            <span class="ml-2 font-semibold text-gray-700">Categorias</span>
-        </a>
-        <a href="/Admin/Anuncios" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-bullhorn text-xl text-accent"></i>
-            <span class="ml-2 font-semibold text-gray-700">Anúncios</span>
-        </a>
-        <a href="/Admin/Pedidos" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-shopping-cart text-xl text-primary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Pedidos</span>
-        </a>
+                <!-- Seção Acesso Rápido -->
+                <section class="mt-5">
+                    <h2 class="h5 mb-3" style="font-family: var(--font-family-heading); font-weight: var(--font-weight-medium); color: var(--color-primary-dark);">
+                        Acesso Rápido
+                    </h2>
+                    <div class="row gx-3 gy-4">
+                        @* Card link padrão *@
+                        @functions {
+                            string CardLink(string url, string icon, string label, string colorVar) =>
+        $@"<a href='{url}' class='col-6 col-md-4 col-lg-3'>
+                        <div class='border rounded-lg p-3 h-100 d-flex flex-column align-items-center justify-content-center text-decoration-none shadow-sm' style='background-color: var({colorVar}); color: var(--color-gray-100); transition: transform .2s;'>
+                        <i class='{icon} fa-2x mb-2'></i>
+                        <span class='fw-semibold'>{label}</span>
+                        </div>
+                        </a>";
+                        }
+                        @Html.Raw(CardLink("/Admin/Usuarios", "fa fa-user", "Usuários", "--color-primary"))
+                        @Html.Raw(CardLink("/Admin/Instituicoes", "fa fa-building", "Instituições", "--color-secondary"))
+                        @Html.Raw(CardLink(Url.RouteUrl("admin-categorias-produto"), "fa fa-tags", "Categorias", "--color-accent"))
+                        @Html.Raw(CardLink("/Admin/Anuncios", "fa fa-bullhorn", "Anúncios", "--color-warning"))
+                        @Html.Raw(CardLink("/Admin/Pedidos", "fa fa-shopping-cart", "Pedidos", "--color-primary-light"))
+                    </div>
+                </section>
+            </div>
+        </div>
     </div>
 </section>

@@ -14,6 +14,8 @@ namespace AjudeiMais.Ecommerce.Controllers
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILogger<UsuarioController> _logger; // Injeção de logger (opcional)
+        string BASE_URL = Tools.Assistant.ServerURL();
+
         public InstituicaoController(IHttpClientFactory httpClientFactory)
         {
             _httpClientFactory = httpClientFactory;
@@ -90,7 +92,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     }
 
                     // Faz a chamada para a API
-                    var response = await httpClient.PostAsync("http://localhost:5168/api/Instituicao", formData);
+                    var response = await httpClient.PostAsync($"{BASE_URL}api/Instituicao", formData);
 
                     if (response.IsSuccessStatusCode)
                     {

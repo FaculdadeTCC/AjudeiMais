@@ -28,9 +28,9 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         //[RoleAuthorize("admin")]
-        public IActionResult Cadastro()
+        public IActionResult _CadastroCategoriaProduto()
         {
-            return View();
+            return PartialView();
         }
 
         //[RoleAuthorize("admin")]

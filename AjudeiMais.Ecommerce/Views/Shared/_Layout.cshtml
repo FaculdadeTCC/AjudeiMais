@@ -1,228 +1,186 @@
-﻿0<!DOCTYPE html>
+﻿@* _Layout.cshtml *@
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-	<meta charset="utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<title>@ViewBag.Title | Ajudei+ </title>
-	<meta name="description" content="@ViewBag.MetaDescription" />
-	<meta name="theme-color" content="#002147" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title | Ajudei+ </title>
+    <meta name="description" content="@ViewBag.MetaDescription" />
+    <meta name="theme-color" content="#002147" />
 
-	<link rel="icon" type="image/png" sizes="32x32" href="~/favicon.png" />
-	<link rel="icon" type="image/png" sizes="16x16" href="~/favicon.png" />
-	<link rel="apple-touch-icon" sizes="180x180" href="~/favicon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/favicon.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="~/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/favicon.png" />
 
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
-	<link rel="stylesheet" href="~/css/global/global.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/css/layout/layout.css" asp-append-version="true" />
-	<link rel="stylesheet" href="~/css/alertas/alertas.css" asp-append-version="true" />
-	@RenderSection("Styles", required: false);
-	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/css/splide.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/global/global.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout/layout.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/alertas/alertas.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false);
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/css/splide.min.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 
-	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        /* Variáveis de tema para Sidebar */
+        :root {
+            --sidebar-bg: #002147;
+            --sidebar-text: #ffffff;
+            --sidebar-hover: #1a1f3a;
+            --sidebar-active-bg: #1f2748;
+            --sidebar-width: 240px;
+        }
 
-	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            background-color: var(--sidebar-bg);
+            overflow-y: auto;
+            z-index: 1000;
+        }
+
+            .sidebar .sidebar-header {
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+            }
+
+            .sidebar .nav-link {
+                color: var(--sidebar-text);
+                padding: 0.75rem 1rem;
+                transition: background-color 0.2s;
+            }
+
+                .sidebar .nav-link:hover {
+                    background-color: var(--sidebar-hover);
+                }
+
+                .sidebar .nav-link.active {
+                    background-color: var(--sidebar-active-bg);
+                    font-weight: 600;
+                }
+
+        .content-with-sidebar {
+            margin-left: var(--sidebar-width);
+            transition: margin-left 0.2s;
+        }
+
+        @@media (max-width: 768px) {
+            .sidebar {
+                width: 0;
+                overflow: hidden;
+            }
+
+            .content-with-sidebar {
+                margin-left: 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    @{
+        bool isAdmin = User.IsInRole("admin");
+    }
 
-	<header class="position-relative">
-		<nav id="mainNav" class="navbar navbar-expand-md sticky-top shadow-sm">
-			<div class="container">
-				<a class="navbar-brand d-flex align-items-center gap-2" href="#">
-					<img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" />
-					<span>Ajudei+</span>
-				</a>
+    @if (isAdmin)
+    {
+        <!-- Sidebar para Admin -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="32" height="32" class="me-2" />
+                <span class="fs-5 fw-bold text-white">Ajudei+</span>
+            </div>
+            <ul class="nav nav-pills flex-column">
+                <li class="nav-item">
+                    <a href="" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Index" ? "active" : "")">
+                        <i class="fa fa-home me-2"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")">
+                        <i class="fa fa-users me-2"></i> Usuários
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
+                        <i class="fa fa-cog me-2"></i> Configurações
+                    </a>
+                </li>
+                <!-- Outros links -->
+            </ul>
+        </nav>
 
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-						data-bs-target="#navbarMain" aria-controls="navbarMain"
-						aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button>
+        <div class="content-with-sidebar">
+            <main class="p-4">
+                @RenderBody()
+            </main>
+        </div>
+    }
+    else
+    {
+        <!-- Navbar padrão para usuários comuns -->
+        <header>
+            <nav id="mainNav" class="navbar navbar-expand-md sticky-top shadow-sm">
+                <div class="container">
+                    <!-- marca e toggler -->
+                    <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                        <img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" />
+                        <span>Ajudei+</span>
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
 
-				<div class="navbar-collapse collapse" id="navbarMain">
-					<ul class="navbar-nav align-items-center gap-3 ms-auto">
+                    <div class="collapse navbar-collapse" id="navbarMain">
+                        <ul class="navbar-nav align-items-center gap-3 ms-auto">
+                            @* links de autenticação e categorias *@
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        </header>
 
-						@if (User.Identity.IsAuthenticated)
-						{
-							var userGuidLogado = User.FindFirst("GUID")?.Value; /* Added null check */
+        <main class="mt-3">
+            @RenderBody()
+        </main>
+    }
 
-							<li class="nav-item d-flex align-items-center">
-								@* Added d-flex and align-items-center for consistency *@
-								<a class="btn btn-action-logged-in" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
-									<i class="fas fa-plus-circle"></i> Anunciar Item
-								</a>
-							</li>
+    <!-- Footer comum a todos -->
+    <footer class="footer bg-primary-dark text-white py-4 mt-5">
+        <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+            <a href="#" class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none">
+                <img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" />
+                <span>Ajudei+</span>
+            </a>
+            <p class="mb-3 mb-md-0 small text-center text-md-start">
+                Projeto de TCC Unicesumar Londrina — Estudantes de ADS: Luiz Matheus da Silva & Danilo Derio
+            </p>
+            <div class="social-links">
+                <!-- ícones sociais -->
+            </div>
+        </div>
+    </footer>
 
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									<i class="fa fa-user me-2"></i> @User.Identity.Name
-								</a>
-								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-									<li><a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
-											<i class="fas fa-chart-line"></i> Dashboard
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
-											<i class="fas fa-user-circle"></i> Meu Perfil
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
-											<i class="fas fa-edit"></i> Editar Dados
-										</a>
-									</li>
-									<li><hr class="dropdown-divider"></li>
-									<li>
-										<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-											<i class="fas fa-sign-out-alt"></i> Sair
-										</a>
-										<form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-											@Html.AntiForgeryToken()
-										</form>
-									</li>
-								</ul>
-							</li>
-						}
-						else
-						{
-							<li class="nav-item position-relative search-form-wrapper">
-								<form class="d-flex" role="search">
-									<input class="form-control" type="search" placeholder="Buscar itens…" aria-label="Buscar itens" />
-									<span class="input-group-text">
-										<i class="fa fa-search"></i>
-									</span>
-								</form>
-							</li>
-
-							<li class="nav-item dropdown">
-								<a class="nav-link dropdown-toggle" href="#" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-									Categorias
-								</a>
-								<ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
-									<li><a class="dropdown-item" href="#">Roupas</a></li>
-									<li><a class="dropdown-item" href="#">Alimentos</a></li>
-									<li><a class="dropdown-item" href="#">Brinquedos</a></li>
-									<li><a class="dropdown-item" href="#">Outros</a></li>
-								</ul>
-							</li>
-
-							<li class="nav-item"><a class="nav-link" href="#">Sobre</a></li>
-
-							<li class="nav-item">
-								<a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">
-									<i class="fa fa-user me-2"></i> Entrar
-								</a>
-							</li>
-							<li class="nav-item">
-								<a class="btn btn-outline-light rounded-pill px-4 ms-md-2" asp-controller="Doacao" asp-action="Cadastrar">
-									Doar Agora
-								</a>
-							</li>
-						}
-					</ul>
-				</div>
-			</div>
-		</nav>
-	</header>
-
-	<main class="mt-3">
-		@RenderBody()
-	</main>
-
-	<footer class="footer bg-primary-dark text-white py-4 mt-5">
-		<div class="d-flex flex-column flex-md-row align-items-center justify-content-between container">
-			<a href="#" class="d-flex align-items-center mb-3 mb-md-0 text-white text-decoration-none">
-				<img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" />
-				<span>Ajudei+</span>
-			</a>
-
-			<p class="mb-3 mb-md-0 small text-md-start text-center">
-				Projeto de TCC Unicesumar Londrina —
-				Estudantes de ADS: Luiz Matheus da Silva &amp; Danilo Derio
-			</p>
-
-			<div class="social-links">
-				<a href="https://www.linkedin.com/in/luiz-matheus-silva" target="_blank" rel="noopener" aria-label="LinkedIn Luiz Matheus" class="text-white me-3">
-					<i class="fab fa-linkedin fa-lg"></i>
-				</a>
-				<a href="https://www.linkedin.com/in/danilo-derio" target="_blank" rel="noopener" aria-label="LinkedIn Danilo Derio" class="text-white me-3">
-					<i class="fab fa-linkedin fa-lg"></i>
-				</a>
-				<a href="https://github.com/luizmatheussilva/tcc-ajudeimais" target="_blank" rel="noopener" aria-label="GitHub do projeto" class="text-white">
-					<i class="fab fa-github fa-lg"></i>
-				</a>
-			</div>
-		</div>
-	</footer>
-
-
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-	<script src="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/js/splide.min.js"></script>
-
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			// Initialize Splide carousel if it exists on the page
-			if (document.querySelector('.splide')) {
-				new Splide('.splide', {
-					type: 'loop',
-					perPage: 1,
-					autoplay: true,
-					interval: 5000, // Customize autoplay interval (5 seconds)
-					pauseOnHover: true, // Pause autoplay on hover
-				}).mount();
-			}
-
-			// Navbar scroll effect
-			const mainNav = document.getElementById('mainNav');
-			if (mainNav) {
-				window.addEventListener('scroll', () => {
-					if (window.scrollY > 50) { // Adjust scroll threshold as needed
-						mainNav.classList.add('scrolled');
-					} else {
-						mainNav.classList.remove('scrolled');
-					}
-				});
-			}
-
-			// Dynamic padding for main content when navbar collapses/expands
-			const navbarToggler = document.querySelector('.navbar-toggler');
-			const mainContent = document.querySelector('main');
-			const navbarCollapse = document.getElementById('navbarMain');
-
-			if (navbarToggler && mainContent && navbarCollapse) {
-				navbarToggler.addEventListener('click', () => {
-					// Give Bootstrap time to apply 'show' class
-					setTimeout(() => {
-						if (navbarCollapse.classList.contains('show')) {
-							// When navbar is expanded (mobile view), adjust padding based on its height
-							const expandedNavbarHeight = navbarCollapse.offsetHeight;
-							mainContent.style.paddingTop = `calc(70px + ${expandedNavbarHeight}px)`;
-						} else {
-							// When navbar collapses, revert to default padding
-							mainContent.style.paddingTop = '70px';
-						}
-					}, 0);
-				});
-
-				// Reset padding on window resize (e.g., changing from mobile to desktop)
-				window.addEventListener('resize', () => {
-					if (window.innerWidth >= 768) { // Bootstrap's MD breakpoint
-						mainContent.style.paddingTop = '70px'; // Revert to desktop padding
-					} else if (navbarCollapse.classList.contains('show')) {
-						// If still in mobile view and navbar is open, re-calculate padding
-						const expandedNavbarHeight = navbarCollapse.offsetHeight;
-						mainContent.style.paddingTop = `calc(70px + ${expandedNavbarHeight}px)`;
-					}
-				});
-			}
-		});
-	</script>
-
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-	@await RenderSectionAsync("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/js/splide.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            if (document.querySelector('.splide')) {
+                new Splide('.splide', { type: 'loop', perPage: 1, autoplay: true, interval: 5000, pauseOnHover: true }).mount();
+            }
+            const mainNav = document.getElementById('mainNav');
+            if (mainNav) {
+                window.addEventListener('scroll', () => {
+                    mainNav.classList.toggle('scrolled', window.scrollY > 50);
+                });
+            }
+        });
+    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

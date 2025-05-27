@@ -28,7 +28,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ApiAjudeiMais", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5168/");
+    client.BaseAddress = new Uri("https://localhost:7271/");
 });
 
 builder.Services.AddSession();
@@ -78,9 +78,44 @@ app.MapControllerRoute(
     defaults: new { controller = "Produto", action = "Cadastro" }
 );
 
+#region INSTITUIÇÃO
+// Rotas de instituição 
+
+app.MapControllerRoute(
+    name: "instituicao-cadastrar",
+    pattern: "instituicao/cadastrar",
+    defaults: new { controller = "Instituicao", action = "Cadastro" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-perfil",
+    pattern: "instituicao/perfil, {guid}",
+    defaults: new { controller = "Instituicao", action = "Perfil" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-alterar-dados",
+    pattern: "instituicao/alterar-dados",
+    defaults: new { controller = "Instituicao", action = "AlterarDados" }
+);
+
+app.MapControllerRoute(
+    name: "instituicao-index",
+    pattern: "instituicao",
+    defaults: new { controller = "Instituicao", action = "Index" }
+);
+
+#endregion
+
 #region ADMIN
 
 #region CATEGORIA DE PRODUTO
+app.MapControllerRoute(
+    name: "admin-categorias-produto",
+    pattern: "admin/categorias-do-produto",
+    defaults: new { controller = "Categoria", action = "Index" }
+);
+
 app.MapControllerRoute(
     name: "admin-categoria-produto-cadastrar",
     pattern: "admin/categoria-do-produto/cadastrar",
