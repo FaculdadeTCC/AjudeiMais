@@ -1,5 +1,27 @@
-﻿@{
-    ViewData["Title"] = "Nome - Instituição";
+﻿@model AjudeiMais.Ecommerce.Models.InstituicaoPerfilModel
+@using AjudeiMais.Ecommerce.Tools
+@{
+    ViewData["Title"] = "Instituição - perfil";
+}
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    await Html.RenderPartialAsync("_Alertas");
+}
+
+@{
+    var instituicao = Model;
+    var endereco = instituicao.Enderecos.FirstOrDefault();
+
+    var userGuidLogado = User.FindFirst("GUID").Value;
+
+    bool isMeuPerfil = userGuidLogado.ToString() == instituicao.Guid;
+
+    ViewData["Title"] = isMeuPerfil
+        ? "Meu Perfil - " + instituicao.Nome
+        : instituicao.Nome + " - Perfil";
 }
 
 <div class="container mt-5">
@@ -8,7 +30,7 @@
         <div class="d-flex flex-column flex-sm-row align-items-center gap-3 gap-sm-4">
             <!-- Foto da instituição -->
             <div class="position-relative">
-                <img src="https://placehold.co/150x150" alt="Foto da Instituição"
+                <img src="@(Assistant.ServerURL() + instituicao.FotoPerfil)" alt="Foto da Instituição"
                      class="rounded-circle" style="width: 9rem; height: 9rem; object-fit: cover; border: 3px solid #0d6efd;" />
                 <!-- Selo de verificado -->
                 <span class="position-absolute bottom-0 end-0 translate-middle p-1 bg-success border border-white rounded-circle shadow">
@@ -18,12 +40,12 @@
 
             <!-- Informações principais -->
             <div class="flex-grow-1">
-                <h2 class="h4 fw-bold text-dark">Instituto Esperança Viva</h2>
-                <p class="text-muted mb-1">São Paulo, SP</p>
-                <p class="text-muted mb-1"><strong>Endereço:</strong> Rua da Solidariedade, 123</p>
+                <h2 class="h4 fw-bold text-dark">@instituicao.Nome</h2>
+                <p class="text-muted mb-1">@endereco?.Cidade, @endereco?.Estado</p>
+                <p class="text-muted mb-1"><strong>Endereço:</strong> @endereco?.Rua, @endereco?.Numero</p>
                 <p class="text-muted mb-1"><strong>Categoria:</strong> Assistência Social</p>
-                <p class="text-muted mb-1"><strong>E-mail:</strong> contato@iev.org.br</p>
-                <p class="text-muted mb-2"><strong>Telefone:</strong> (11) 98765-4321</p>
+                <p class="text-muted mb-1"><strong>E-mail:</strong> @instituicao.Email</p>
+                <p class="text-muted mb-2"><strong>Telefone:</strong> @instituicao.Telefone</p>
 
                 <!-- Avaliação -->
                 <div class="d-flex align-items-center text-warning mb-3" style="font-size: 1rem;">
@@ -47,9 +69,7 @@
         <div class="mt-4">
             <h3 class="h5 fw-semibold text-dark mb-2">Sobre a Instituição</h3>
             <p class="text-muted">
-                O Instituto Esperança Viva atua há mais de 10 anos oferecendo apoio a famílias em situação de vulnerabilidade.
-                Promovemos campanhas de arrecadação e distribuímos alimentos, roupas e outros itens essenciais com o apoio da
-                comunidade.
+                @instituicao.Descricao
             </p>
         </div>
 
@@ -57,28 +77,19 @@
         <div class="mt-5">
             <h3 class="h5 fw-semibold text-dark mb-3">Galeria de Fotos</h3>
             <div class="row g-3">
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <img src="https://placehold.co/600x400?text=Campanha+de+Natal" alt="Campanha de Natal"
-                         class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <img src="https://placehold.co/600x400?text=Entrega+de+Cestas" alt="Entrega de Cestas"
-                         class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <img src="https://placehold.co/600x400?text=Voluntariado" alt="Voluntariado"
-                         class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
-                </div>
-                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <img src="https://placehold.co/600x400?text=Arrecadações" alt="Arrecadações"
-                         class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
-                </div>
+                @foreach(var foto in instituicao.FotosUrl)
+                {
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" alt="Foto exibição instituição"
+                             class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
+                    </div>
+                };
             </div>
         </div>
 
         <!-- CHAT -->
         <div id="chatBox" class="d-none flex-column rounded-3 border border-secondary bg-light p-3 mt-5 shadow-sm">
-            <div class="mb-3 text-muted small">Inicie uma conversa com <strong>Instituto Esperança Viva</strong></div>
+            <div class="mb-3 text-muted small">Inicie uma conversa com <strong>@instituicao.Nome</strong></div>
             <div class="overflow-auto rounded bg-white p-3 shadow-sm" style="height: 10rem; font-size: 0.9rem;">
                 <div class="text-secondary mb-2"><strong>Instituto:</strong> Olá! Como podemos ajudar?</div>
                 <!-- Mensagens vão aqui futuramente -->

@@ -1,74 +1,282 @@
-﻿@{
-    ViewData["Title"] = "Alterar Dados da Empresa";
+﻿@model AjudeiMais.Ecommerce.Models.InstituicaoModel
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/instituicao/instituicao-cadastro.css" asp-append-version="true" />
 }
 
-<div class="container mt-5">
-    <div class="card shadow">
-        <div class="card-body">
-            <h1 class="h4 fw-bold mb-4">Cadastro de Instituição</h1>
+@{
+    await Html.RenderPartialAsync("_Alertas");
+}
 
-            <form method="post" enctype="multipart/form-data">
-                <!-- Grupo: Dados da Instituição -->
-                <h5 class="border-bottom pb-2 mb-3">Dados da Instituição</h5>
-                <div class="row g-4">
-                    <!-- Nome -->
-                    <div class="col-md-6">
-                        <label class="form-label">Nome da Instituição <span class="text-danger">*</span></label>
-                        <input type="text" name="Nome" class="form-control" />
-                    </div>
+<div class="registration-page-container">
+    <div class="left-panel d-none d-md-flex">
+        <div class="logo-area">
+            <img src="~/img/brand/logo_icon.png" alt="AjudeiMais Logo" class="img-fluid mb-4">
+            <h2>Seja parceiro do AjudeiMais!</h2>
+            <p>Cadastre sua instituição e ajude quem precisa.</p>
+        </div>
+    </div>
 
-                    <!-- E-mail -->
-                    <div class="col-md-6">
-                        <label class="form-label">E-mail <span class="text-danger">*</span></label>
-                        <input type="email" name="Email" class="form-control" />
-                    </div>
+    <div class="right-panel">
+        <div class="form-container">
+            <div class="progress-container">
+                <div class="progress-bar"></div>
+            </div>
 
-                    <!-- Telefone -->
-                    <div class="col-md-6">
-                        <label class="form-label">Telefone <span class="text-danger">*</span></label>
-                        <input type="tel" name="Telefone" placeholder="(xx) xxxxx-xxxx" class="form-control" />
-                    </div>
+            <div class="form-header">
+                <h1>Cadastro de Instituição</h1>
+                <p class="mb-0">Preencha os campos abaixo para registrar sua instituição</p>
+            </div>
 
-                    <!-- Foto(s) -->
-                    <div class="col-md-6">
-                        <label class="form-label">Foto(s) da Instituição <span class="text-danger">*</span></label>
-                        <input type="file" name="Fotos" multiple accept="image/*" class="form-control" />
-                    </div>
+            @*<div class="container">
+            <div class="step-indicator">
+            <div class="step active">
+            <div class="step-number">1</div>
+            <div class="step-title">Dados Institucionais</div>
+            </div>
+            <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-title">Endereço</div>
+            </div>
+            <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-title">Finalizar</div>
+            </div>
+            </div>
+            </div>  *@
+            <form method="post" asp-controller="Instituicao" asp-action="Cadastro" enctype="multipart/form-data">
 
-                    <!-- Descrição -->
-                    <div class="col-12">
-                        <label class="form-label">Descrição <span class="text-danger">*</span></label>
-                        <textarea name="Descricao" rows="4" class="form-control"
-                                  placeholder="Descreva brevemente os serviços ou missão da instituição..."></textarea>
+                <!-- DADOS INSTITUCIONAIS -->
+                <div class="form-step active">
+                    <div class="mb-5">
+                        <h2 class="section-title mb-4">
+                            <i class="bi bi-building"></i> Dados Institucionais
+                        </h2>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <input asp-for="Nome" class="form-control" placeholder="Nome da Instituição" />
+                                    <label asp-for="Nome" class="required-field"></label>
+                                    <span asp-validation-for="Nome" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="Documento" class="form-control" placeholder="CNPJ" />
+                                    <label asp-for="Documento" class="required-field"></label>
+                                    <span asp-validation-for="Documento" class="text-danger"></span>
+                                </div>
+                                <div class="form-text">Formato: 00.000.000/0000-00</div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="Email" class="form-control" placeholder="E-mail" />
+                                    <label asp-for="Email" class="required-field"></label>
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input asp-for="Telefone" class="form-control" placeholder="Telefone" />
+                                    <label asp-for="Telefone" class="required-field"></label>
+                                    <span asp-validation-for="Telefone" class="text-danger"></span>
+                                </div>
+                                <div class="form-text">Formato: (00) 00000-0000</div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label required-field mb-2">Foto de Perfil</label>
+                                <input asp-for="FotoPerfil" type="file" class="form-control" accept=".jpg,.jpeg,.png" />
+                                <span asp-validation-for="FotoPerfil" class="text-danger"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Grupo: Criar Senha -->
-                <h5 class="border-bottom pb-2 mt-5 mb-3">Criar Senha</h5>
-                <div class="row g-4">
-                    <!-- Senha -->
-                    <div class="col-md-6">
-                        <label class="form-label">Senha</label>
-                        <input type="password" name="Senha" class="form-control" />
-                    </div>
+                <!-- NOVA SESSÃO: APRESENTAÇÃO DA INSTITUIÇÃO -->
+                <div class="form-step">
+                    <div class="mb-5">
+                        <h2 class="section-title mb-4">
+                            <i class="bi bi-images"></i> Apresentação da Instituição
+                        </h2>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-floating">
+                                    <textarea asp-for="Descricao" class="form-control" placeholder="Descrição da instituição" style="height: 120px;"></textarea>
+                                    <label asp-for="Descricao" class="required-field"></label>
+                                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                                </div>
+                            </div>
 
-                    <!-- Confirmar Senha -->
-                    <div class="col-md-6">
-                        <label class="form-label">Confirmar Senha</label>
-                        <input type="password" name="ConfirmarSenha" class="form-control" />
+                            <div class="col-md-12">
+                                <label class="form-label required-field mb-2">Fotos de Exibição</label>
+                                <label for="fotos" class="file-upload d-block">
+                                    <input asp-for="Fotos" type="file" class="d-none" id="fotos" accept=".jpg,.jpeg,.png" multiple />
+                                    <div id="fileUploadContent">
+                                        <i class="bi bi-cloud-arrow-up"></i>
+                                        <p class="mb-0">Clique ou arraste suas fotos aqui</p>
+                                        <small class="text-muted">(Tamanho máximo: 5MB por imagem)</small>
+                                    </div>
+                                    <div id="previewContainer" class="mt-3 d-flex flex-wrap gap-2"></div>
+                                    <button type="button" id="removeImagesButton" class="btn btn-sm btn-danger mt-2 d-none">Remover Imagens</button>
+                                    <span asp-validation-for="Fotos" class="text-danger"></span>
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Botões -->
-                <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                    <button type="submit" class="btn btn-primary w-100 w-sm-auto">
-                        Cadastrar Instituição
-                    </button>
-                    <button type="reset" class="btn btn-outline-secondary w-100 w-sm-auto">
-                        Cancelar
-                    </button>
+                <!-- ENDEREÇO (continua como estava) -->
+                <div class="form-step">
+                    <div class="mb-5">
+                        <h2 class="section-title mb-4">
+                            <i class="bi bi-geo-alt"></i> Endereço
+                        </h2>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Cep" class="form-control" placeholder="CEP" />
+                                    <label asp-for="Endereco.Cep" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Cep" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Rua" class="form-control" placeholder="Rua" />
+                                    <label asp-for="Endereco.Rua" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Rua" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Numero" class="form-control" placeholder="Número" />
+                                    <label asp-for="Endereco.Numero" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Numero" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Complemento" class="form-control" placeholder="Complemento" />
+                                    <label asp-for="Endereco.Complemento"></label>
+                                    <span asp-validation-for="Endereco.Complemento" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Bairro" class="form-control" placeholder="Bairro" />
+                                    <label asp-for="Endereco.Bairro" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Bairro" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-floating">
+                                    <input asp-for="Endereco.Cidade" class="form-control" placeholder="Cidade" />
+                                    <label asp-for="Endereco.Cidade" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Cidade" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select asp-for="Endereco.Estado" class="form-select">
+                                        <option value="">Selecione</option>
+                                        @foreach (var uf in new[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" })
+                                        {
+                                            <option value="@uf">@uf</option>
+                                        }
+                                    </select>
+                                    <label asp-for="Endereco.Estado" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.Estado" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEGURANÇA (continua como estava) -->
+                <div class="form-step">
+                    <div class="mb-5">
+                        <h2 class="section-title mb-4">
+                            <i class="bi bi-key"></i> Segurança da Conta
+                        </h2>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="form-floating position-relative">
+                                    <input asp-for="Senha" class="form-control" placeholder="Senha" />
+                                    <label asp-for="Senha" class="required-field"></label>
+                                    <span asp-validation-for="Senha" class="text-danger"></span>
+                                    <span class="password-toggle" data-target="senha"><i class="fa fa-eye-slash toggle-icon"></i></span>
+                                </div>
+                                <div class="form-text">Mínimo 8 caracteres com letra, número e símbolo.</div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating position-relative">
+                                    <input class="form-control" placeholder="Confirmar Senha" />
+                                    <label class="required-field"></label>
+                                    <span class="text-danger"></span>
+                                    <span class="password-toggle" data-target="confirmarSenha"><i class="fa fa-eye-slash toggle-icon"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="termos" required />
+                            <label class="form-check-label" for="termos">
+                                Li e aceito os <a href="#" class="text-decoration-none">Termos de Uso</a> e <a href="#" class="text-decoration-none">Política de Privacidade</a>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" id="btnVoltar" class="btn btn-secondary d-none">Voltar</button>
+                    <button type="button" id="btnProximo" class="btn btn-primary">Próximo</button>
+                    <button type="submit" id="btnFinalizar" class="btn btn-success d-none">Finalizar</button>
                 </div>
             </form>
+
+
         </div>
     </div>
 </div>
+@section Scripts {
+    <script src="~/js/paginas/cadastro-instituicao/cadastro-instituicao.js"></script>
+
+
+    <script>
+        const inputFotos = document.getElementById('fotos');
+        const previewContainer = document.getElementById('previewContainer');
+        const removeBtn = document.getElementById('removeImagesButton');
+
+        inputFotos.addEventListener('change', function () {
+            previewContainer.innerHTML = '';
+            const files = Array.from(this.files);
+
+            if (files.length > 0) {
+                removeBtn.classList.remove('d-none');
+            } else {
+                removeBtn.classList.add('d-none');
+            }
+
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.className = "img-thumbnail";
+                    img.style.height = "100px";
+                    img.style.objectFit = "cover";
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        removeBtn.addEventListener('click', function () {
+            inputFotos.value = '';
+            previewContainer.innerHTML = '';
+            removeBtn.classList.add('d-none');
+        });
+    </script>
+}

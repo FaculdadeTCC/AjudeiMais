@@ -56,26 +56,42 @@ namespace AjudeiMais.Ecommerce.Tools
         }
 
         /// <summary>
-        /// Extension method that adds all simple public properties (string, int, bool, etc.)
-        /// of a generic object as string fields in MultipartFormDataContent.
+        /// Método de extensão que adiciona todas as propriedades públicas simples (string, int, bool, etc)
+        /// de um objeto genérico como campos string no MultipartFormDataContent.
         /// </summary>
-        /// <typeparam name="T">Type of the object to be converted into form-data fields.</typeparam>
-        /// <param name="formData">The MultipartFormDataContent that will receive the fields.</param>
-        /// <param name="obj">The object with the properties to be added.</param>
-        public static void AddObjectAsFormFields<T>(this MultipartFormDataContent formData, T obj)
+        /// <typeparam name="T">Tipo do objeto a ser convertido em campos form-data.</typeparam>
+        /// <param name="formData">O MultipartFormDataContent que receberá os campos.</param>
+        /// <param name="obj">O objeto com as propriedades a serem adicionadas.</param>
+        public static void AddObjectAsFormFields(this MultipartFormDataContent formData, object obj, string prefix = "")
         {
-            if (obj == null) return;
+            if (obj == null)
+                return;
 
-            var properties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            var properties = obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (var prop in properties)
             {
-                // Ensure the property is readable and is a simple type
-                if (prop.CanRead && IsSimpleType(prop.PropertyType))
+                // Ignora propriedades que exigem parâmetros (ex: indexadores)
+                if (prop.GetIndexParameters().Length > 0)
+                    continue;
+
+                // Ignora arquivos
+                if (typeof(IFormFile).IsAssignableFrom(prop.PropertyType))
+                    continue;
+
+                var value = prop.GetValue(obj);
+                if (value == null)
+                    continue;
+
+                string propName = string.IsNullOrEmpty(prefix) ? prop.Name : $"{prefix}.{prop.Name}";
+
+                if (prop.PropertyType.IsClass && !(value is string))
                 {
-                    var value = prop.GetValue(obj);
-                    var stringValue = value?.ToString() ?? string.Empty;
-                    formData.Add(new StringContent(stringValue), prop.Name);
+                    formData.AddObjectAsFormFields(value, propName); // recursão para objetos aninhados
+                }
+                else
+                {
+                    formData.Add(new StringContent(value.ToString()), propName);
                 }
             }
         }
