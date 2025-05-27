@@ -110,50 +110,6 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [RoleAuthorize("usuario", "admin")]
-        [HttpGet]
-        public async Task<IActionResult> AlterarDados(string guid)
-        {
-            // Unificado o tratamento de não autenticado/GUID inválido
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToRoute("home"); // Redireciona para home se não autenticado
-            }
-
-            string loggedInUserGuid;
-
-
-            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
-            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
-
-            if (unauthorizedResult != null)
-            {
-                return unauthorizedResult; // Redireciona para login ou home
-            }
-
-            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
-            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
-
-            if (profileAccessResult != null)
-            {
-                return profileAccessResult; // Redireciona com mensagem de erro de permissão
-            }
-
-            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
-            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
-
-            if (usuario != null)
-            {
-                return View("AlterarDados", usuario); // Retorna a view AlterarDados
-            }
-            else
-            {
-                _logger?.LogError("Erro ao obter dados para AlterarDados para o GUID {Guid}: {ErrorMessage}", guid, errorMessage);
-                // Redireciona para o perfil do usuário logado se os dados do perfil solicitado não puderem ser carregados
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
-            }
-        }
-
-
         /// <summary>
         /// Método para realizar o cadastro de um usuário enviando os dados e a foto de perfil para a API.
         /// </summary>
@@ -229,6 +185,48 @@ namespace AjudeiMais.Ecommerce.Controllers
             else
             {
                 return RedirectToRoute("usuario-perfil", new { guid = User.FindFirst("GUID").Value });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> AlterarDados(string guid)
+        {
+            // Unificado o tratamento de não autenticado/GUID inválido
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToRoute("home"); // Redireciona para home se não autenticado
+            }
+
+            string loggedInUserGuid;
+
+
+            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult; // Redireciona para login ou home
+            }
+
+            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
+            {
+                return profileAccessResult; // Redireciona com mensagem de erro de permissão
+            }
+
+            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
+            var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
+
+            if (usuario != null)
+            {
+                return View("AlterarDados", usuario); // Retorna a view AlterarDados
+            }
+            else
+            {
+                _logger?.LogError("Erro ao obter dados para AlterarDados para o GUID {Guid}: {ErrorMessage}", guid, errorMessage);
+                // Redireciona para o perfil do usuário logado se os dados do perfil solicitado não puderem ser carregados
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }
 

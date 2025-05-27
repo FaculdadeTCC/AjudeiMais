@@ -16,5 +16,7 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public string Icone { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
+        public DateTime DataCadastro { get; set; }
+        public DateTime DataUpdate { get; set; }
     }
 }

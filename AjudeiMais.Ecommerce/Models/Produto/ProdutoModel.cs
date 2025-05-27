@@ -2,12 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using AjudeiMais.Ecommerce.Models.Usuario;
 
-namespace AjudeiMais.Ecommerce.Models
+namespace AjudeiMais.Ecommerce.Models.Produto
 {
     public class ProdutoModel
     {
         [Key]
-        public int Produto_ID { get; set; }
+        public int? Produto_ID { get; set; }
+        public string Guid { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string? Condicao { get; set; }
@@ -20,7 +21,7 @@ namespace AjudeiMais.Ecommerce.Models
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
 
-        //public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
+        public List<IFormFile> ProdutoImagens { get; set; }
 
         [ForeignKey("Usuario")]
         public int Usuario_ID { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic; // Para IEnumerable
+using AjudeiMais.Ecommerce.Models.Produto;
 using Microsoft.AspNetCore.Http; // Para IFormFile
 
 namespace AjudeiMais.Ecommerce.Models.Usuario

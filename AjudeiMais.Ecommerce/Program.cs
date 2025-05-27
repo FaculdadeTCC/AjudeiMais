@@ -77,9 +77,19 @@ app.MapControllerRoute(
     pattern: "usuario/{guid}/anunciar",
     defaults: new { controller = "Produto", action = "Cadastro" }
 );
-//
-// Rotas específicas de "usuario"
-//
+
+#region ADMIN
+
+#region CATEGORIA DE PRODUTO
+app.MapControllerRoute(
+    name: "admin-categoria-produto-cadastrar",
+    pattern: "admin/categoria-do-produto/cadastrar",
+    defaults: new { controller = "Categoria", action = "Cadastro" }
+);
+#endregion
+#endregion
+
+#region USUARIO 
 app.MapControllerRoute(
     name: "usuario-alterar-dados",
     pattern: "usuario/alterardados",
@@ -104,18 +114,16 @@ app.MapControllerRoute(
     defaults: new { controller = "Usuario", action = "Perfil" }
 );
 
-//
-// Rotas de validações de usuário
-//
+#region VALIDAÇÕES
 app.MapControllerRoute(
     name: "verificar-email",
     pattern: "verificaremail",
     defaults: new { controller = "Usuario", action = "VerificarEmailExistente" }
 );
+#endregion
+#endregion
 
-//
-// Rotas de Login/Logout
-//
+#region LOGIN
 app.MapControllerRoute(
     name: "login",
     pattern: "login",
@@ -128,18 +136,14 @@ app.MapControllerRoute(
     defaults: new { controller = "Login", action = "Logout" }
 );
 
-//
-// Rota Home
-//
+#endregion
+
 app.MapControllerRoute(
     name: "home",
     pattern: "home",
     defaults: new { controller = "Home", action = "Index" }
 );
 
-//
-// Rota padrão
-//
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"

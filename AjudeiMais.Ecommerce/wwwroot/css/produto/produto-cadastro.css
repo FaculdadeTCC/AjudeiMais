@@ -1,4 +1,7 @@
-﻿/* === Estrutura do Card Principal === */
+﻿main {
+    background: linear-gradient(45deg, var(--color-accent), var(--color-primary)) !important;
+}
+/* === Estrutura do Card Principal === */
 .manage-ad-section {
     background: var(--color-surface);
     border-radius: var(--radius-lg);
