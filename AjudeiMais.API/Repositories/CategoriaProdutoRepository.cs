@@ -18,6 +18,7 @@ namespace AjudeiMais.API.Repositories
         {
             var categoriaProduto = await _context.CategoriaProduto
                 .FirstOrDefaultAsync(u => u.CategoriaProduto_ID == id);
+
             return categoriaProduto;
         }
 
@@ -29,7 +30,7 @@ namespace AjudeiMais.API.Repositories
         public async Task<IEnumerable<CategoriaProduto>> GetItens()
         {
             return await _context.CategoriaProduto
-                .Where(u => u.Habilitado == true && u.Excluido != true)
+                .Where(u => u.Excluido != true)
                 .ToListAsync();
         }
 
@@ -41,33 +42,17 @@ namespace AjudeiMais.API.Repositories
             }
             else
             {
-                model.Habilitado = true;
-
                 _context.CategoriaProduto.Add(model);
             }
 
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int id)
+        public async Task Delete(CategoriaProduto model)
         {
-            var categoriaProduto = await _context.CategoriaProduto
-                .FirstOrDefaultAsync(u => u.CategoriaProduto_ID == id);
+            _context.CategoriaProduto.Update(model);
 
-            if (categoriaProduto != null)
-            {
-                categoriaProduto.Habilitado = false;
-                categoriaProduto.Excluido = true;
-
-                _context.CategoriaProduto.Update(categoriaProduto);
-
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public Task Delete(CategoriaProduto model)
-        {
-            throw new NotImplementedException();
+            await _context.SaveChangesAsync();
         }
     }
 }

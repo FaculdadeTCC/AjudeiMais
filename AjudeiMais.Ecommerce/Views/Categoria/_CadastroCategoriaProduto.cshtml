@@ -1,35 +1,49 @@
-﻿<!-- Modal Criar Categoria -->
+﻿
+<!-- Modal Criar Categoria -->
 <div class="modal fade" id="modalCreateCategory" tabindex="-1" aria-labelledby="modalCreateCategoryLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content shadow">
-            <div class="modal-header" style="background-color: var(--color-primary);">
-                <h5 class="modal-title text-white" id="modalCreateCategoryLabel" style="font-family: var(--font-family-heading);">
-                    Nova Categoria
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-            </div>
-            <div class="modal-body">
-                <form action="@Url.RouteUrl("admin-categoria-produto-cadastrar")" method="post" enctype="multipart/form-data">
-                    <div class="mb-3">
-                        <label for="categoryName" class="form-label" style="font-family: var(--font-family-base);">Nome da Categoria</label>
-                        <input type="text" class="form-control" id="categoryName" placeholder="Digite o nome" />
-                    </div>
-                    <div class="mb-3">
-                        <label for="categoryIcon" class="form-label" style="font-family: var(--font-family-base);">Ícone (classe FontAwesome)</label>
-                        <input type="text" class="form-control" id="categoryIcon" placeholder="ex: fa fa-book" />
-                    </div>
-                    <div class="form-check form-switch mb-3">
-                        <input class="form-check-input" type="checkbox" id="categoryStatus" checked>
-                        <label class="form-check-label" for="categoryStatus" style="font-family: var(--font-family-base);">
-                            Ativar categoria
-                        </label>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Salvar</button>
-            </div>
-        </div>
-    </div>
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content shadow">
+			<div class="modal-header" style="background-color: var(--color-primary);">
+				<h5 class="modal-title text-white" id="modalCreateCategoryLabel" style="font-family: var(--font-family-heading);">
+					Nova Categoria
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+			</div>
+			<div class="modal-body">
+				<form action="@Url.RouteUrl("admin-categoria-produto-cadastrar")" method="post" enctype="multipart/form-data">
+					<div class="mb-3">
+						<label for="categoryName" class="form-label" style="font-family: var(--font-family-base);">Nome da Categoria</label>
+						<input type="text" name="Nome" class="form-control" id="categoryName" placeholder="Digite o nome" />
+					</div>
+					<div class="mb-3">
+						<label for="categoryIcon" class="form-label" style="font-family: var(--font-family-base);">Ícone (classe FontAwesome)</label>
+						<input type="text" name="Icone" class="form-control" id="categoryIcon" placeholder="ex: fa fa-book" />
+					</div>
+					<div class="form-check form-switch mb-3">
+						<input class="form-check-input" type="checkbox" id="categoryStatus" checked>
+						<input type="hidden" name="Habilitado" id="hiddenCategoryStatus" value="true">
+						<label class="form-check-label" for="categoryStatus" style="font-family: var(--font-family-base);">
+							Ativar categoria
+						</label>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Salvar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 </div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const checkbox = document.getElementById('categoryStatus');
+		const hiddenInput = document.getElementById('hiddenCategoryStatus');
+
+		checkbox.addEventListener('change', function () {
+			hiddenInput.value = checkbox.checked ? 'true' : 'false';
+		});
+	});
+</script>

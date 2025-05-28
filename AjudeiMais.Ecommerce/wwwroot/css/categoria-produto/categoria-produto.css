@@ -1,0 +1,133 @@
+﻿/* Estilos para a página de Gerenciamento de Categorias */
+
+body {
+    background-color: var(--color-bg);
+    font-family: var(--font-family-base);
+}
+
+.dashboard-container {
+    /* Removendo a aparência de "card" */
+    padding: var(--spacing-lg) var(--spacing-xl);
+    background-color: var(--color-surface);
+    min-height: calc(100vh - var(--spacing-xxl) * 2); /* Ensures it pushes footer down */
+    border-radius: 0; /* Remove border-radius for a more "full screen" feel, or use var(--radius-lg) for subtle corners */
+    box-shadow: none; /* Remove shadow */
+}
+
+.header-section {
+    background-color: var(--color-primary);
+    padding: var(--spacing-md) var(--spacing-lg);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+}
+
+.table-section {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-md); /* Keep a subtle shadow for the table itself */
+}
+
+.table {
+    --bs-table-bg: var(--color-surface);
+    --bs-table-hover-bg: var(--color-gray-200);
+}
+
+    .table thead {
+        background-color: var(--color-gray-300);
+    }
+
+    .table th {
+        color: var(--color-gray-800);
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+    .table td {
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--color-gray-700);
+    }
+
+.btn-outline-light {
+    color: var(--color-gray-100);
+    border-color: var(--color-gray-100);
+    transition: all 0.3s ease;
+}
+
+    .btn-outline-light:hover {
+        background-color: var(--color-gray-100);
+        color: var(--color-primary);
+    }
+
+.input-group-text {
+    background-color: var(--color-gray-300);
+    border-color: var(--color-gray-300);
+    color: var(--color-gray-700);
+    border-top-left-radius: var(--radius-md);
+    border-bottom-left-radius: var(--radius-md);
+}
+
+.form-control {
+    border-color: var(--color-gray-300);
+    border-top-right-radius: var(--radius-md);
+    border-bottom-right-radius: var(--radius-md);
+    padding-left: var(--spacing-md);
+}
+
+    .form-control:focus {
+        border-color: var(--color-secondary);
+        box-shadow: 0 0 0 0.25rem rgba(125, 131, 255, 0.25);
+    }
+
+.badge {
+    font-weight: var(--font-weight-medium);
+    padding: var(--spacing-xxs) var(--spacing-xs);
+    border-radius: var(--radius-sm);
+}
+
+/* Pagination styles for jQuery pagination */
+.pagination .page-item .page-link {
+    color: var(--color-primary);
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-gray-300);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-medium);
+}
+
+.pagination .page-item.active .page-link {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: var(--color-gray-100);
+}
+
+.pagination .page-item .page-link:hover {
+    background-color: var(--color-secondary-light);
+    color: var(--color-primary-dark);
+    border-color: var(--color-secondary-light);
+}
+
+.btn-outline-primary {
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--color-primary);
+        color: var(--color-gray-100);
+    }
+
+.btn-outline-danger {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+}
+
+    .btn-outline-danger:hover {
+        background-color: var(--color-danger);
+        color: var(--color-gray-100);
+    }
+
+.text-secondary {
+    color: var(--color-secondary) !important;
+}

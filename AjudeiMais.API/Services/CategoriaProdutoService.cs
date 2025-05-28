@@ -3,6 +3,8 @@ using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace AjudeiMais.API.Services
@@ -20,32 +22,53 @@ namespace AjudeiMais.API.Services
             _logger = logger;
         }
 
-        //        public async Task<CategoriaProduto> GetById(int id)
-        //        {
-        //            try
-        //            {
-        //                var categoriaProduto = await _categoriaProdutoRepository.GetById(id);
-        //                return categoriaProduto;
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                _logger.LogError(ex, "Erro ao buscar categoria por ID");
-        //                throw new Exception("Erro ao buscar categorias.");
-        //            }
-        //        }
+        public async Task<ApiResponse<CategoriaProduto>> GetById(int id)
+        {
+            try
+            {
+                var categoriaProduto = await _categoriaProdutoRepository.GetById(id);
 
-        //        public async Task<IEnumerable<CategoriaProduto>> GetAll()
-        //        {
-        //            try
-        //            {
-        //                return await _categoriaProdutoRepository.GetAll();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                _logger.LogError(ex, "Erro ao buscar todas as categorias");
-        //                throw new Exception("Erro ao buscar categorias.");
-        //            }
-        //        }
+                return new ApiResponse<CategoriaProduto>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Categoria do produto editada com sucesso.",
+                    Data = categoriaProduto
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<CategoriaProduto>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro inesperado ao editar a categoria. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<IEnumerable<CategoriaProduto>>> GetItens()
+        {
+            try
+            {
+                IEnumerable<CategoriaProduto> categorias = await _categoriaProdutoRepository.GetItens();
+
+                return new ApiResponse<IEnumerable<CategoriaProduto>>
+                {
+                    Success = true,
+                    Data = categorias
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<IEnumerable<CategoriaProduto>>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro inesperado ao buscar as categorias. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                };
+            }
+        }
 
         //        public async Task<IEnumerable<CategoriaProduto>> GetItens()
         //        {
@@ -64,7 +87,6 @@ namespace AjudeiMais.API.Services
         {
             try
             {
-                string[] folder = ["products", "categories", "icons"];
                 CategoriaProduto categoriaProduto;
 
                 if (model.CategoriaProduto_ID > 0)
@@ -82,27 +104,18 @@ namespace AjudeiMais.API.Services
                     }
 
                     categoriaProduto.Nome = model.Nome ?? categoriaProduto.Nome;
+                    categoriaProduto.Nome = model.Icone ?? categoriaProduto.Icone;
 
-                    if (model.Icone != null)
-                    {
-                        var path = await Helpers.SalvarImagemComoWebpAsync(model.Icone, folder);
-                        categoriaProduto.Icone = path;
-                    }
-
-                    categoriaProduto.Excluido = model.Excluido ?? categoriaProduto.Excluido;
-                    categoriaProduto.Habilitado = model.Habilitado ?? categoriaProduto.Habilitado;
                     categoriaProduto.DataUpdate = DateTime.Now;
 
                     await _categoriaProdutoRepository.SaveOrUpdate(categoriaProduto);
                 }
                 else
                 {
-                    var path = await Helpers.SalvarImagemComoWebpAsync(model.Icone, folder);
-
                     categoriaProduto = new CategoriaProduto
                     {
                         Nome = model.Nome,
-                        Icone = path,
+                        Icone = model.Icone,
                         Excluido = false,
                         Habilitado = true,
                         DataCadastro = DateTime.Now
@@ -118,7 +131,7 @@ namespace AjudeiMais.API.Services
                     Message = (model.CategoriaProduto_ID == 0)
                         ? "Categoria do Produto cadastrada com sucesso."
                         : "Categoria do Produto atualizada com sucesso.",
-                    Data = categoriaProduto
+                    Data = categoriaProduto,
                 };
             }
             catch (Exception ex)
@@ -134,17 +147,48 @@ namespace AjudeiMais.API.Services
         }
 
 
-        //        public async Task Delete(int id)
-        //        {
-        //            try
-        //            {
-        //                await _categoriaProdutoRepository.Delete(id);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                _logger.LogError(ex, "Erro ao excluir o categoria com ID {CategoriaProduto_Id}", id);
-        //                throw new Exception("Erro ao excluir a categoria.");
-        //            }
-        //        }
+        public async Task<ApiResponse<object>> Delete(int id)
+        {
+            try
+            {
+                var categoriaProduto = await _categoriaProdutoRepository.GetById(id);
+
+                if (categoriaProduto != null)
+                {
+                    categoriaProduto.Habilitado = false;
+                    categoriaProduto.Excluido = true;
+                    categoriaProduto.DataUpdate = DateTime.Now;
+
+
+                    await _categoriaProdutoRepository.Delete(categoriaProduto); 
+
+                    return new ApiResponse<object>
+                    {
+                        Success = true,
+                        Type = "success",
+                        Message = "Categoria excluída com sucesso."
+                    };
+                }
+                else
+                {
+                    // Resource not found scenario
+                    return new ApiResponse<object>
+                    {
+                        Success = false, 
+                        Type = "error",
+                        Message = "Categoria do produto não encontrada. Por favor, verifique o ID e tente novamente."
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro inesperado ao excluir a categoria do produto. Se o problema persistir, entre em contato com nosso suporte."
+                };
+            }
+        }
     }
 }

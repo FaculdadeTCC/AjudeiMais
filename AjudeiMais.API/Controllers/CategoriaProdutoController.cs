@@ -1,6 +1,7 @@
 ﻿using AjudeiMais.API.DTO;
 using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.ProdutoModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AjudeiMais.API.Controllers
@@ -16,36 +17,51 @@ namespace AjudeiMais.API.Controllers
             _service = categoriaProdutoService;
         }
 
-        //        [HttpGet]
-        //        public async Task<IActionResult> GetCategorias()
-        //        {
-        //            try
-        //            {
-        //                var categoriaProdutos = await _service.GetAll();
-        //                return Ok(categoriaProdutos);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                return StatusCode(500, ex.Message);
-        //            }
-        //        }
+        [HttpGet("ativos")]
+        public async Task<IActionResult> GetCategoriasAtivos()
+        {
+            try
+            {
+                var categoriaProdutos = await _service.GetItens();
+                return Ok(categoriaProdutos);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
-        //        [HttpGet("ativos")]
-        //        public async Task<IActionResult> GetCategoriasAtivos()
-        //        {
-        //            try
-        //            {
-        //                var categoriaProdutosAtivas = await _service.GetItens();
-        //                return Ok(categoriaProdutosAtivas);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                return StatusCode(500, ex.Message);
-        //            }
-        //        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            try
+            {
+                var result = await _service.GetById(id);
+
+                if (result.Success)
+                {
+                    return Ok(result); 
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                };
+
+                return StatusCode(500, errorResponse);
+            }
+        }
 
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromBody] CategoriaProdutoDTO model)
+        public async Task<IActionResult> SaveOrUpdate([FromForm] CategoriaProdutoDTO model)
         {
             if (!ModelState.IsValid)
             {
@@ -90,20 +106,33 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                var result = await _service.Delete(id);
 
+                if (result.Success) // Se a operação no serviço foi um sucesso
+                {
+                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                };
 
-        //        [HttpDelete("{id}")]
-        //        public async Task<IActionResult> Delete(int id)
-        //        {
-        //            try
-        //            {
-        //                await _service.Delete(id);
-        //                return Ok();
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                return StatusCode(500, ex.Message);
-        //            }
-        //        }
+                return StatusCode(500, errorResponse);
+            }
+        }
     }
 }

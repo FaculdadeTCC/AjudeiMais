@@ -28,7 +28,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ApiAjudeiMais", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7271/");
+    client.BaseAddress = new Uri("http://localhost:5168/");
 });
 
 builder.Services.AddSession();
@@ -108,6 +108,13 @@ app.MapControllerRoute(
 #endregion
 
 #region ADMIN
+#region DASHBOARD
+app.MapControllerRoute(
+    name: "admin-dashboard",
+    pattern: "admin/dashboard",
+    defaults: new { controller = "Admin", action = "Index" }
+);
+#endregion
 
 #region CATEGORIA DE PRODUTO
 app.MapControllerRoute(
@@ -120,6 +127,18 @@ app.MapControllerRoute(
     name: "admin-categoria-produto-cadastrar",
     pattern: "admin/categoria-do-produto/cadastrar",
     defaults: new { controller = "Categoria", action = "Cadastro" }
+);
+
+app.MapControllerRoute(
+    name: "admin-categoria-produto-excluir",
+    pattern: "admin/categoria-do-produto/excluir",
+    defaults: new { controller = "Categoria", action = "Excluir" }
+);
+
+app.MapControllerRoute(
+    name: "admin-categoria-produto-editar",
+    pattern: "admin/categoria-produto/editar/{id}",
+    defaults: new { controller = "Categoria", action = "_AtualizarCategoriaProduto" }
 );
 #endregion
 #endregion
