@@ -1,7 +1,11 @@
-﻿namespace AjudeiMais.API.DTO
+﻿using AjudeiMais.Data.Models.InstituicaoModel;
+
+namespace AjudeiMais.API.DTO
 {
     public class EnderecoDTO
     {
+
+        public int Endereco_ID { get; set; }
         public string CEP { get; set; }
         public string Rua { get; set; }
         public int Numero { get; set; }
@@ -9,6 +13,8 @@
         public string Bairro { get; set; }
         public string Cidade { get; set; }
         public string Estado { get; set; }
+
+        public string instituicao_GUID { get; set; }
     }
 
 }

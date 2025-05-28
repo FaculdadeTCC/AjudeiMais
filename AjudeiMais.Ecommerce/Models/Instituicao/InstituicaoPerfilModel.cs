@@ -1,4 +1,4 @@
-﻿namespace AjudeiMais.Ecommerce.Models
+﻿namespace AjudeiMais.Ecommerce.Models.Instituicao
 {
     public class InstituicaoPerfilModel
     {
@@ -10,7 +10,7 @@
         public string Email { get; set; }
         public string Senha { get; set; }
         public string ConfirmarSenha { get; set; }
-        public string? Guid { get; set; }
+        public string? GUID { get; set; }
         public string? Role { get; set; }
         public string? Avaliacao { get; set; }
 

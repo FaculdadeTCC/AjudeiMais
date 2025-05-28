@@ -124,7 +124,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "instituicao-perfil",
-    pattern: "instituicao/perfil, {guid}",
+    pattern: "instituicao/perfil/{guid}",
     defaults: new { controller = "Instituicao", action = "Perfil"}
 );
 
@@ -161,6 +161,27 @@ app.MapControllerRoute(
     name: "home",
     pattern: "home",
     defaults: new { controller = "Home", action = "Index" }
+);
+//
+// Rodas de categoria 
+//
+
+app.MapControllerRoute(
+    name: "categoria_index",
+    pattern: "admin/categorias",
+    defaults: new { controller = "Categoria", action = "Index" }
+);
+
+app.MapControllerRoute(
+    name: "categoria_adicionar",
+    pattern: "admin/categorias/adicionar",
+    defaults: new { controller = "Categoria", action = "Adicionar" }
+);
+
+app.MapControllerRoute(
+    name: "categoria_alterar",
+    pattern: "admin/categorias/alterar",
+    defaults: new { controller = "Categoria", action = "AlterarDados" }
 );
 
 //

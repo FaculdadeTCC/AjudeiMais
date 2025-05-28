@@ -1,4 +1,4 @@
-﻿@model AjudeiMais.Ecommerce.Models.InstituicaoModel
+﻿@model AjudeiMais.Ecommerce.Models.Instituicao.InstituicaoModel
 
 @section Styles {
     <link rel="stylesheet" href="~/css/instituicao/instituicao-cadastro.css" asp-append-version="true" />
@@ -135,9 +135,9 @@
                         <div class="row g-4">
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.Cep" class="form-control" placeholder="CEP" />
-                                    <label asp-for="Endereco.Cep" class="required-field"></label>
-                                    <span asp-validation-for="Endereco.Cep" class="text-danger"></span>
+                                    <input asp-for="Endereco.CEP" class="form-control" placeholder="CEP" />
+                                    <label asp-for="Endereco.CEP" class="required-field"></label>
+                                    <span asp-validation-for="Endereco.CEP" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-8">

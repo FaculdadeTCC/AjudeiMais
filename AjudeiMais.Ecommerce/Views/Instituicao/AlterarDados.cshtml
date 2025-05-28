@@ -1,148 +1,544 @@
-﻿@model AjudeiMais.Ecommerce.Models.InstituicaoPerfilModel
+﻿@model AjudeiMais.Ecommerce.Models.Instituicao.InstituicaoPerfilModel
 @using AjudeiMais.Ecommerce.Tools
-@{
-    ViewData["Title"] = "Alterar Dados da empresa";
+
+@section Styles {
+	<link rel="stylesheet" href="~/css/usuario/usuario-alterar-dados.css" asp-append-version="true" />
+	<style>
+		/* Estilos específicos para a aba de exclusão de conta */
+		.list-group-item-action.danger {
+			color: var(--bs-danger); /* Cor do texto vermelho */
+			border-color: var(--bs-danger); /* Borda vermelha */
+		}
+
+			.list-group-item-action.danger:hover {
+				background-color: var(--bs-danger); /* Fundo vermelho ao hover */
+				color: var(--bs-white); /* Texto branco ao hover */
+			}
+
+		.delete-account-section {
+			background-color: var(--bs-danger-bg-subtle); /* Fundo levemente vermelho */
+			border: 1px solid var(--bs-danger-border-subtle); /* Borda sutil vermelha */
+			border-radius: var(--bs-border-radius);
+			padding: 2rem;
+			text-align: center;
+		}
+
+			.delete-account-section .icon {
+				font-size: 3rem;
+				color: var(--bs-danger);
+				margin-bottom: 1rem;
+			}
+
+			.delete-account-section h3 {
+				color: var(--bs-danger);
+				margin-bottom: 1rem;
+			}
+
+			.delete-account-section p {
+				color: var(--bs-danger-text-emphasis); /* Texto mais escuro do vermelho */
+				margin-bottom: 1.5rem;
+			}
+
+			.delete-account-section .btn-danger {
+				background-color: var(--bs-danger);
+				border-color: var(--bs-danger);
+			}
+
+				.delete-account-section .btn-danger:hover {
+					background-color: var(--bs-danger-hover); /* Um vermelho um pouco mais escuro no hover */
+					border-color: var(--bs-danger-hover);
+				}
+	</style>
 }
 
 @{
-    var instituicao = Model;
-    var endereco = instituicao.Enderecos.FirstOrDefault();
-
-    var userGuidLogado = User.FindFirst("GUID").Value;
-
-    bool isMeuPerfil = userGuidLogado.ToString() == instituicao.Guid;
-
-    ViewData["Title"] = isMeuPerfil
-        ? "Meu Perfil - " + instituicao.Nome
-        : instituicao.Nome + " - Perfil";
+	ViewData["Title"] = "Editar Perfil da Instituição";
+	await Html.RenderPartialAsync("_Alertas"); // Mantendo a parcial de alertas
 }
 
-<div class="container mt-5">
-    <div class="card shadow rounded-3">
-        <div class="card-body">
-            <h1 class="h4 fw-bold mb-4">Cadastro de Instituição</h1>
+<div class="user-edit-container my-5 container">
+	<div class="row g-4">
+		<div class="col-md-3">
+			<div class="list-group profile-sidebar rounded-lg shadow-sm" id="list-tab" role="tablist">
+				<a class="list-group-item list-group-item-action active" id="list-instituicao-list" data-bs-toggle="list" href="#list-instituicao" role="tab" aria-controls="list-instituicao">
+					<i class="fas fa-building me-2"></i> Dados da Instituição
+				</a>
+				<a class="list-group-item list-group-item-action" id="list-endereco-list" data-bs-toggle="list" href="#list-endereco" role="tab" aria-controls="list-endereco">
+					<i class="fas fa-map-marked-alt me-2"></i> Endereço
+				</a>
+				<a class="list-group-item list-group-item-action" id="list-fotos-list" data-bs-toggle="list" href="#list-fotos" role="tab" aria-controls="list-fotos">
+					<i class="fas fa-images me-2"></i> Fotos da Instituição
+				</a>
+				<a class="list-group-item list-group-item-action" id="list-seguranca-list" data-bs-toggle="list" href="#list-seguranca" role="tab" aria-controls="list-seguranca">
+					<i class="fas fa-key me-2"></i> Segurança da Conta
+				</a>
+				@* Nova aba para Excluir Conta *@
+				<a class="list-group-item list-group-item-action danger" id="list-excluir-conta-list" data-bs-toggle="list" href="#list-excluir-conta" role="tab" aria-controls="list-excluir-conta">
+					<i class="fas fa-trash-alt me-2"></i> Excluir Conta
+				</a>
+			</div>
+		</div>
 
-            <form method="post" asp-controller="Instituicao" asp-action="Cadastro" enctype="multipart/form-data">
-                <!-- Grupo: Dados da Instituição -->
-                <h5 class="border-bottom pb-2 mb-4">Dados da Instituição</h5>
-                <div class="row g-4">
-                    <!-- Nome -->
-                    <div class="col-md-6">
-                        <label class="form-label">Nome da Instituição <span class="text-danger">*</span></label>
-                        <input type="text" name="Nome" value="@instituicao.Nome" class="form-control" />
-                    </div>
+		<div class="col-md-9">
+			<div class="tab-content profile-content p-4 p-md-5 rounded-lg shadow-sm">
+				<div class="tab-pane fade show active" id="list-instituicao" role="tabpanel" aria-labelledby="list-instituicao-list">
+					<h2 class="section-title mb-4">
+						<i class="fas fa-building me-2"></i> Dados da Instituição
+					</h2>
+					<form id="formInstituicao" method="POST"  enctype="multipart/form-data">
+						<input type="text" class="form-control" id="GUID" name="GUID"
+							   required value="@Model.GUID" hidden>
 
-                    <!-- E-mail -->
-                    <div class="col-md-6">
-                        <label class="form-label">E-mail <span class="text-danger">*</span></label>
-                        <input type="email" name="Email" value="@instituicao.Email" class="form-control" />
-                    </div>
+						<div class="row g-2">
+							<div class="col-12">
+								<label class="form-label required-field mb-2">Foto de Perfil</label>
+								<label for="fotoPerfil" class="file-upload d-block">
+									<input type="file" class="d-none" id="fotoPerfil" name="FotoPerfil" accept=".jpg,.jpeg,.png">
+									<div id="fileUploadContent">
+										<i class="fas fa-cloud-upload-alt"></i>
+										<p class="mb-0">Clique ou arraste para alterar sua foto</p>
+										<small class="text-muted">(Tamanho máximo: 5MB)</small>
+									</div>
+									<img id="imagePreview" src="@(string.IsNullOrEmpty(Model.FotoPerfil) ? "#" : Assistant.ServerURL() + Model.FotoPerfil)"
+										 alt="Preview da Imagem"
+										 class="img-fluid @(string.IsNullOrEmpty(Model.FotoPerfil) ? "d-none" : "d-block") mt-3"
+										 style="max-width: 150px; max-height: 150px; object-fit: cover;">
+									<button type="button" id="removeImageButton" class="btn btn-sm btn-danger mt-2 @(string.IsNullOrEmpty(Model.FotoPerfil) ? "d-none" : "")">Remover Imagem</button>
+								</label>
+								<span asp-validation-for="FotoPerfil" class="text-danger form-text"></span>
+							</div>
 
-                    <!-- Telefone -->
-                    <div class="col-md-6">
-                        <label class="form-label">Telefone <span class="text-danger">*</span></label>
-                        <input type="tel" name="Telefone" value="@instituicao.Telefone" class="form-control" />
-                    </div>
+							<div class="col-12">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="nome"
+										   name="Nome" placeholder="Nome da Instituição" required value="@Model.Nome">
+									<label for="nome" class="required-field">Nome da Instituição</label>
+								</div>
+								<span asp-validation-for="Nome" class="text-danger form-text"></span>
+							</div>
 
-                    <!-- Foto de perfil  -->
-                    <label class="form-label">Foto de perfil</label>
-                    <input type="file" name="FotoPerfil" accept="image/*" class="form-control" onchange="previewImages(this, 'previewCapa')" />
+							<div class="col-12">
+								<div class="form-floating">
+									<textarea class="form-control" id="descricao" name="Descricao"
+											  placeholder="Descrição" required style="height: 100px">@Model.Descricao</textarea>
+									<label for="descricao" class="required-field">Descrição</label>
+								</div>
+								<span asp-validation-for="Descricao" class="text-danger form-text"></span>
+							</div>
 
-                    <div id="previewCapa" class="mt-2 d-flex flex-wrap gap-2">
-                        @if (!string.IsNullOrEmpty(Model.FotoPerfil))
-                        {
-                            <div class="position-relative d-inline-block" data-existente="true">
-                                <img src="@(Assistant.ServerURL() + Model.FotoPerfil)" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
-                                <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
-                            </div>
-                        }
-                    </div>
+							<div class="col-md-6">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="documento"
+										   name="Documento" placeholder="CNPJ" required value="@Model.Documento" readonly>
+									<label for="documento" class="required-field">CNPJ</label>
+								</div>
+								<div class="form-text">Este campo não pode ser alterado.</div>
+								<span asp-validation-for="Documento" class="text-danger form-text"></span>
+							</div>
 
+							<div class="col-md-6">
+								<div class="form-floating">
+									<input autocomplete="on" type="tel" class="form-control" id="telefone" name="Telefone"
+										   placeholder="Telefone" required value="@Model.Telefone">
+									<label for="telefone" class="required-field">Telefone</label>
+								</div>
+								<div class="form-text">Formato: (00) 00000-0000</div>
+								<span asp-validation-for="Telefone" class="text-danger form-text"></span>
+							</div>
 
-                    <!-- Descrição -->
-                    <div class="col-12">
-                        <label class="form-label">Descrição <span class="text-danger">*</span></label>
-                        <textarea name="Descricao" rows="4" class="form-control" value="@instituicao.Descricao"></textarea>
-                    </div>
+							<div class="col-12">
+								<div class="form-floating">
+									<input autocomplete="on" type="email" class="form-control" id="email" name="Email"
+										   placeholder="E-mail" required value="@Model.Email">
+									<label for="email" class="required-field">E-mail</label>
+								</div>
+								<span asp-validation-for="Email" class="text-danger form-text"></span>
+							</div>
+						</div>
+						<div class="d-flex justify-content-end mt-4">
+							<button type="submit" class="btn btn-primary px-4 py-2">
+								<i class="fas fa-save me-2"></i>Salvar Alterações
+							</button>
+						</div>
+					</form>
+				</div>
 
-                    <!-- Fotos da instituição -->
-                    <label class="form-label">Fotos da Instituição</label>
-                    <input type="file" name="Fotos" multiple accept="image/*" class="form-control" onchange="previewImages(this, 'previewFotos')" />
+				<div class="tab-pane fade" id="list-endereco" role="tabpanel" aria-labelledby="list-endereco-list">
+					<h2 class="section-title mb-4">
+						<i class="fas fa-map-marked-alt me-2"></i> Endereço
+					</h2>
+					<form id="formEndereco" method="post" action="/Instituicao/AtualizarEndereco">
+						<input type="text" class="form-control" id="Instituicao_GUID" name="Instituicao_GUID"
+							   required value="@Model.GUID" hidden>
+						<input type="text" class="form-control" id="Endereco_ID" name="Enderecos[0].Endereco_ID"
+							   required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Endereco_ID : 0)" hidden>
 
-                    <div id="previewFotos" class="mt-2 d-flex flex-wrap gap-2">
-                        @if (Model.FotosUrl != null)
-                        {
-                            foreach (var foto in Model.FotosUrl)
-                            {
-                                <div class="position-relative d-inline-block" data-existente="true">
-                                    <img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
-                                    <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
-                                </div>
-                            }
-                        }
-                    </div>
+						<div class="row g-4">
+							<div class="col-md-4">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="cep" name="Enderecos[0].CEP"
+										   placeholder="CEP" required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].CEP : "")">
+									<label for="cep" class="required-field">CEP</label>
+								</div>
+								<div class="form-text">
+									<a href="https://buscacepinter.correios.com.br/app/endereco/index.php" target="_blank"
+									   class="text-decoration-none text-primary">
+										Não sei meu CEP
+									</a>
+								</div>
+								<span asp-validation-for="Enderecos[0].CEP" class="text-danger form-text"></span>
+							</div>
 
-                </div>
+							<div class="col-md-8">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="rua" name="Enderecos[0].Rua"
+										   placeholder="Rua" required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Rua : "")">
+									<label for="rua" class="required-field">Rua</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Rua" class="text-danger form-text"></span>
+							</div>
 
-                <!-- Grupo: Criar Senha -->
-                <h5 class="border-bottom pb-2 mt-5 mb-4">Criar Senha</h5>
-                <div class="row g-4">
-                    <!-- Senha -->
-                    <div class="col-md-6">
-                        <label class="form-label">Nova Senha</label>
-                        <input type="password" name="Senha" placeholder="Digite uma senha segura" class="form-control" />
-                    </div>
+							<div class="col-md-4">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="numero" name="Enderecos[0].Numero"
+										   placeholder="Número" required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Numero : "")">
+									<label for="numero" class="required-field">Número</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Numero" class="text-danger form-text"></span>
+							</div>
 
-                    <!-- Confirmar Senha -->
-                    <div class="col-md-6">
-                        <label class="form-label">Confirmar Senha</label>
-                        <input type="password" name="ConfirmarSenha" placeholder="Confirme a senha digitada" class="form-control" />
-                    </div>
-                </div>
+							<div class="col-md-8">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="complemento"
+										   name="Enderecos[0].Complemento" placeholder="Complemento" value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Complemento : "")">
+									<label for="complemento">Complemento</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Complemento" class="text-danger form-text"></span>
+							</div>
 
-                <!-- Botões -->
-                <div class="d-flex flex-column flex-sm-row justify-content-between gap-3 mt-4">
-                    <button type="submit" class="btn btn-primary w-100 w-sm-auto">
-                        Salvar Alterações
-                    </button>
+							<div class="col-md-4">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="bairro" name="Enderecos[0].Bairro"
+										   placeholder="Bairro" required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Bairro : "")">
+									<label for="bairro" class="required-field">Bairro</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Bairro" class="text-danger form-text"></span>
+							</div>
 
-                    <button type="button" class="btn btn-outline-danger w-100 w-sm-auto">
-                        Excluir Conta
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
+							<div class="col-md-5">
+								<div class="form-floating">
+									<input autocomplete="on" type="text" class="form-control" id="cidade" name="Enderecos[0].Cidade"
+										   placeholder="Cidade" required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Cidade : "")">
+									<label for="cidade" class="required-field">Cidade</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Cidade" class="text-danger form-text"></span>
+							</div>
+
+							<div class="col-md-3">
+								<div class="form-floating">
+									<select autocomplete="on" class="form-select" id="estado" name="Enderecos[0].Estado" required>
+										<option value="" disabled>Selecione</option>
+										@foreach (var uf in new List<string> { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" })
+										{
+											<option value="@uf" selected="@(Model.Enderecos.Any() && uf == Model.Enderecos[0].Estado)">@uf</option>
+										}
+									</select>
+									<label for="estado" class="required-field">Estado</label>
+								</div>
+								<span asp-validation-for="Enderecos[0].Estado" class="text-danger form-text"></span>
+							</div>
+						</div>
+						<div class="d-flex justify-content-end mt-4">
+							<button type="submit" class="btn btn-primary px-4 py-2">
+								<i class="fas fa-save me-2"></i>Salvar Alterações
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="list-fotos" role="tabpanel" aria-labelledby="list-fotos-list">
+					<h2 class="section-title mb-4">
+						<i class="fas fa-images me-2"></i> Fotos da Instituição
+					</h2>
+					<form id="formFotos" method="post" action="/Instituicao/AtualizarFotos" enctype="multipart/form-data">
+						<input type="text" class="form-control" id="Instituicao_GUID" name="Instituicao_GUID"
+							   required value="@Model.GUID" hidden>
+
+						<div class="mb-4">
+							<label class="form-label">Fotos Atuais</label>
+							<div class="d-flex flex-wrap gap-3" id="currentPhotosContainer">
+								@if (Model.FotosUrl != null && Model.FotosUrl.Any())
+								{
+									foreach (var foto in Model.FotosUrl)
+									{
+										<div class="position-relative photo-item">
+											<img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" alt="Foto da Instituição" class="rounded shadow-sm" style="width: 150px; height: 150px; object-fit: cover;" />
+											<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-photo-btn" data-foto-id="@foto.InsituicaoImagem_ID" title="Remover">
+												<i class="fas fa-times"></i>
+											</button>
+										</div>
+									}
+								}
+								else
+								{
+									<p class="text-muted" id="noPhotosMessage">Nenhuma foto cadastrada.</p>
+								}
+							</div>
+						</div>
+
+						<div class="mb-4">
+							<label for="NovasFotos" class="form-label">Adicionar Novas Fotos</label>
+							<input type="file" name="Fotos" id="NovasFotos" class="form-control" accept=".jpg,.jpeg,.png" multiple />
+							<small class="form-text text-muted">Você pode selecionar várias imagens. (Tamanho máximo por imagem: 5MB)</small>
+							<div class="mt-3 d-flex flex-wrap gap-3" id="newPhotosPreview">
+							</div>
+						</div>
+
+						<div class="d-flex justify-content-end mt-4">
+							<button type="submit" class="btn btn-primary px-4 py-2">
+								<i class="fas fa-save me-2"></i>Salvar Fotos
+							</button>
+						</div>
+					</form>
+				</div>
+
+				<div class="tab-pane fade" id="list-seguranca" role="tabpanel" aria-labelledby="list-seguranca-list">
+					<h2 class="section-title mb-4">
+						<i class="fas fa-key me-2"></i> Segurança da Conta
+					</h2>
+					<form id="formSeguranca" method="post" action="/Instituicao/AtualizarSenha">
+						<input type="text" class="form-control" id="GUID_Senha" name="GUID"
+							   required value="@Model.GUID" hidden>
+						<div class="row g-4">
+							<div class="col-12">
+								<div class="form-floating position-relative">
+									<input type="password" class="form-control" id="senhaAtual"
+										   name="SenhaAtual" placeholder="Senha Atual" required>
+									<label for="senhaAtual" class="required-field">Senha Atual</label>
+									<span class="password-toggle" data-target="senhaAtual">
+										<i class="fas fa-eye-slash toggle-icon"></i>
+									</span>
+								</div>
+							</div>
+							<div class="col-12">
+								<div class="form-floating position-relative">
+									<input type="password" class="form-control" id="novaSenha"
+										   name="NovaSenha" placeholder="Nova Senha" required>
+									<label for="novaSenha" class="required-field">Nova Senha</label>
+									<span class="password-toggle" data-target="novaSenha">
+										<i class="fas fa-eye-slash toggle-icon"></i>
+									</span>
+								</div>
+								<div class="form-text">Mínimo 8 caracteres, com letra, número e símbolo.</div>
+							</div>
+
+							<div class="col-12">
+								<div class="form-floating position-relative">
+									<input autocomplete="new-password" type="password" class="form-control" id="confirmarNovaSenha"
+										   name="ConfirmarNovaSenha" placeholder="Confirmar Nova Senha" required>
+									<label for="confirmarNovaSenha" class="required-field">Confirmar Nova Senha</label>
+									<span class="password-toggle" data-target="confirmarNovaSenha">
+										<i class="fas fa-eye-slash toggle-icon"></i>
+									</span>
+								</div>
+							</div>
+						</div>
+						<div class="d-flex justify-content-end mt-4">
+							<button type="submit" class="btn btn-primary px-4 py-2">
+								<i class="fas fa-save me-2"></i>Alterar Senha
+							</button>
+						</div>
+					</form>
+				</div>
+
+				@* Painel da nova aba de Excluir Conta *@
+				<div class="tab-pane fade" id="list-excluir-conta" role="tabpanel" aria-labelledby="list-excluir-conta-list">
+					<h2 class="section-title mb-4 text-danger">
+						<i class="fas fa-exclamation-triangle me-2"></i> Excluir Conta
+					</h2>
+					<div class="delete-account-section shadow-sm">
+						<i class="fas fa-skull-crossbones icon"></i>
+						<h3>Atenção: Excluir sua Conta é Irreversível</h3>
+						<p>
+							Ao prosseguir com a exclusão da sua conta, você perderá permanentemente todos os dados associados à sua instituição, incluindo perfil, fotos, histórico de doações, e qualquer outra informação. Esta ação não pode ser desfeita.
+						</p>
+						<p class="fw-bold">
+							Por favor, pense cuidadosamente antes de continuar.
+						</p>
+						<form id="formExcluirConta" method="post" action="/Instituicao/ExcluirConta">
+							<input type="hidden" name="GUID" value="@Model.GUID" />
+							<div class="form-floating mb-3">
+								<input type="password" class="form-control" id="senhaExcluirConta" name="SenhaConfirmacao" placeholder="Sua Senha Atual" required>
+								<label for="senhaExcluirConta">Digite sua senha para confirmar</label>
+							</div>
+							<button type="submit" class="btn btn-danger btn-lg px-5 py-3">
+								<i class="fas fa-bomb me-2"></i> Excluir Minha Conta Permanentemente
+							</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 
-@section Scripts {
-    <script>
-        function previewImages(input, containerId) {
-            const container = document.getElementById(containerId);
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+<script src="~/js/paginas/usuario-alterar-dados/validar-senha.js"></script> @* Reutilizando script, ajustar se necessário *@
+<script src="~/js/paginas/cadastro-usuario/buscar-cep.js"></script> @* Reutilizando script, ajustar se necessário *@
 
-            Array.from(input.files).forEach(file => {
-                if (file.type.startsWith("image/")) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        const div = document.createElement("div");
-                        div.className = "position-relative d-inline-block";
-                        div.innerHTML = `
-                                    <img src="${e.target.result}" class="rounded border" style="max-width: 150px; max-height: 150px; object-fit: cover;" />
-                                    <button type="button" c lass="btn btn-sm btn-danger position-absolute top-0 end-0" onclick="removerImagem(this)">×</button>
-                                `;
-                        container.appendChild(div);
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-        }
+<script>
+	// Inicializa tooltips (se houver algum)
+	var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+	var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+		return new bootstrap.Tooltip(tooltipTriggerEl)
+	});
 
-        function removerImagem(button) {
-            const div = button.closest("div");
-            div.remove();
+	// Pré-visualização e remoção de imagem de perfil
+	document.getElementById("fotoPerfil").addEventListener("change", function () {
+		const file = this.files[0];
+		const maxSizeInMB = 5;
+		const imagePreview = document.getElementById("imagePreview");
+		const fileUploadContent = document.getElementById("fileUploadContent");
+		const removeImageButton = document.getElementById("removeImageButton");
 
-            // Opcional: marca uma flag oculta para enviar ao servidor
-            // exemplo: adiciona <input type="hidden" name="ImagensRemovidas" value="nome-ou-url-da-imagem" />
-        }
-    </script>
-}
+		if (file) {
+			if (file.size > maxSizeInMB * 1024 * 1024) {
+				alert("A imagem selecionada excede o limite de 5MB.");
+				this.value = ""; // limpa o campo
+				imagePreview.classList.add('d-none');
+				fileUploadContent.classList.remove('d-none');
+				removeImageButton.classList.add('d-none');
+				return;
+			}
+
+			const reader = new FileReader();
+			reader.onload = function (e) {
+				imagePreview.src = e.target.result;
+				imagePreview.classList.remove('d-none');
+				fileUploadContent.classList.add('d-none');
+				removeImageButton.classList.remove('d-none');
+			};
+			reader.readAsDataURL(file);
+		} else {
+			imagePreview.src = "#";
+			imagePreview.classList.add('d-none');
+			fileUploadContent.classList.remove('d-none');
+			removeImageButton.classList.add('d-none');
+		}
+	});
+
+	document.getElementById("removeImageButton").addEventListener("click", function () {
+		document.getElementById("fotoPerfil").value = ""; // Limpa o input file
+		document.getElementById("imagePreview").src = "#";
+		document.getElementById("imagePreview").classList.add('d-none');
+		document.getElementById("fileUploadContent").classList.remove('d-none');
+		this.classList.add('d-none');
+	});
+
+	// Pré-visualização de múltiplas fotos (aba "Fotos")
+	document.getElementById("NovasFotos").addEventListener("change", function () {
+		const previewContainer = document.getElementById("newPhotosPreview");
+		previewContainer.innerHTML = ''; // Limpa previews anteriores
+
+		const files = this.files;
+		const maxSizeInMB = 5;
+
+		if (files.length > 0) {
+			Array.from(files).forEach(file => {
+				if (file.size > maxSizeInMB * 1024 * 1024) {
+					alert(`A imagem "${file.name}" excede o limite de 5MB e não será carregada.`);
+					return; // Pula para a próxima imagem
+				}
+
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					const imgWrapper = document.createElement("div");
+					imgWrapper.classList.add("position-relative");
+					imgWrapper.style.cssText = "width: 150px; height: 150px; object-fit: cover;";
+
+					const img = document.createElement("img");
+					img.src = e.target.result;
+					img.classList.add("img-fluid", "rounded", "shadow-sm");
+					img.style.cssText = "width: 100%; height: 100%; object-fit: cover;";
+
+					const removeBtn = document.createElement("button");
+					removeBtn.type = "button";
+					removeBtn.classList.add("btn", "btn-sm", "btn-danger", "position-absolute", "top-0", "end-0");
+					removeBtn.title = "Remover";
+					removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+					removeBtn.addEventListener("click", function () {
+						imgWrapper.remove();
+						// Futuramente, pode ser necessário ajustar o input file para remover o arquivo específico
+					});
+
+					imgWrapper.appendChild(img);
+					imgWrapper.appendChild(removeBtn);
+					previewContainer.appendChild(imgWrapper);
+				};
+				reader.readAsDataURL(file);
+			});
+		}
+	});
+
+	// Máscaras de input
+	jQuery(document).ready(function ($) {
+		$('#documento').mask('00.000.000/0000-00'); // Máscara de CNPJ
+		$('#telefone').mask('(00) 00000-0000');
+		$('#cep').mask('00.000-000');
+
+		// Toggle de visibilidade da senha
+		$('.password-toggle').on('click', function () {
+			const targetId = $(this).data('target');
+			const targetInput = $('#' + targetId);
+			const icon = $(this).find('.toggle-icon');
+
+			if (targetInput.attr('type') === 'password') {
+				targetInput.attr('type', 'text');
+				icon.removeClass('fa-eye-slash').addClass('fa-eye');
+			} else {
+				targetInput.attr('type', 'password');
+				icon.removeClass('fa-eye').addClass('fa-eye-slash');
+			}
+		});
+	});
+
+	// Para remover fotos já existentes (requer lógica de backend para exclusão)
+	document.querySelectorAll('.remove-photo-btn').forEach(button => {
+		button.addEventListener('click', function () {
+			const fotoId = this.dataset.fotoId; // Ou o GUID da foto
+			if (confirm('Tem certeza que deseja remover esta foto?')) {
+				// Aqui você faria uma chamada AJAX para o backend para remover a foto
+				// Exemplo (usando jQuery para simplicidade):
+				/*
+				$.ajax({
+					url: '/Instituicao/RemoverFoto', // Seu endpoint para remover foto
+					type: 'POST',
+					data: { fotoId: fotoId, instituicaoGuid: '@Model.GUID' },
+					success: function(response) {
+						if (response.success) {
+							$(button).closest('.photo-item').remove();
+							if ($('#currentPhotosContainer .photo-item').length === 0) {
+								$('#noPhotosMessage').removeClass('d-none').show();
+							}
+							alert('Foto removida com sucesso!');
+						} else {
+							alert('Erro ao remover foto: ' + response.message);
+						}
+					},
+					error: function() {
+						alert('Erro de comunicação com o servidor.');
+					}
+				});
+				*/
+				// Por enquanto, apenas remove visualmente:
+				$(this).closest('.photo-item').remove();
+				if ($('#currentPhotosContainer .photo-item').length === 0) {
+					$('#noPhotosMessage').removeClass('d-none').show();
+				}
+				alert('Funcionalidade de remoção de foto ainda não implementada no backend. Foto removida visualmente.');
+			}
+		});
+	});
+
+</script>

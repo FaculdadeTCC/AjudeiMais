@@ -57,31 +57,63 @@
 									<i class="fa fa-user me-2"></i> @User.Identity.Name
 								</a>
 								<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-									<li><a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
-											<i class="fas fa-chart-line"></i> Dashboard
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
-											<i class="fas fa-user-circle"></i> Meu Perfil
-										</a>
-									</li>
-									<li>
-										<a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
-											<i class="fas fa-edit"></i> Editar Dados
-										</a>
-									</li>
-									<li><hr class="dropdown-divider"></li>
-									<li>
-										<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-											<i class="fas fa-sign-out-alt"></i> Sair
-										</a>
-										<form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-											@Html.AntiForgeryToken()
-										</form>
-									</li>
+									@if (User.IsInRole("usuario"))
+									{
+										<li><a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
+												<i class="fas fa-chart-line"></i> Dashboard
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
+												<i class="fas fa-user-circle"></i> Meu Perfil
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
+												<i class="fas fa-edit"></i> Editar Dados
+											</a>
+										</li>
+										<li><hr class="dropdown-divider"></li>
+										<li>
+											<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+												<i class="fas fa-sign-out-alt"></i> Sair
+											</a>
+											<form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+												@Html.AntiForgeryToken()
+											</form>
+										</li>
+									}
+									@if (User.IsInRole("instituicao"))
+									{
+										<li><a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">Perfil</a></li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
+												<i class="fas fa-chart-line"></i> Dashboard
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
+												<i class="fas fa-user-circle"></i> Meu Perfil
+											</a>
+										</li>
+										<li>
+											<a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">
+												<i class="fas fa-edit"></i> Editar Dados
+											</a>
+										</li>
+										<li><hr class="dropdown-divider"></li>
+										<li>
+											<a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+												<i class="fas fa-sign-out-alt"></i> Sair
+											</a>
+											<form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+												@Html.AntiForgeryToken()
+											</form>
+										</li>
+									}
+
 								</ul>
 							</li>
 						}

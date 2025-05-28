@@ -14,7 +14,8 @@ namespace AjudeiMais.Ecommerce.Controllers
         [RoleAuthorize("admin")]
         public IActionResult AlterarDados()
         {
-            return View();
+            return View("~/Views/Categoria/AlterarDados.cshtml");
+
         }
 
         [RoleAuthorize("admin")]

@@ -1,10 +1,11 @@
 ﻿using AjudeiMais.Ecommerce.Filters;
-using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Models.Instituicao;
 using AjudeiMais.Ecommerce.Tools;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 
@@ -90,7 +91,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     }
 
                     // Faz a chamada para a API
-                    var response = await httpClient.PostAsync("http://localhost:5168/api/Instituicao", formData);
+                    var response = await httpClient.PostAsync($"{Assistant.ServerURL}api/Instituicao", formData);
 
                     if (response.IsSuccessStatusCode)
                     {
@@ -162,6 +163,191 @@ namespace AjudeiMais.Ecommerce.Controllers
                 // Redireciona para o perfil do usuário logado em caso de erro ao obter os dados
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
+        }
+
+        [HttpPost("AlterarDados")]
+        public async Task<IActionResult> AlterarDados(InstituicaoDadosModel model, IFormFile FotoPerfil)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                string GUID = model.GUID;
+                try
+                {
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    using (var formData = new MultipartFormDataContent())
+                    {
+                        // Adiciona os dados simples da instituição
+                        formData.AddObjectAsFormFields(model);
+
+                        formData.AddFileContent(FotoPerfil, "FotoPerfil");
+
+                        // Adiciona a role
+                        formData.Add(new StringContent("instituicao"), "Role");
+
+                        // Faz a chamada para a API
+                        var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/Instituicao/AtualizarDados", formData);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToRoute($"instituicao-Alterar-dados", new { alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
+                        }
+                        else
+                        {
+                            var responseContent = await response.Content.ReadAsStringAsync();
+                            var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+
+                            if (problemDetails?.Title != null && problemDetails?.Detail != null)
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
+                            }
+                            else if (!string.IsNullOrEmpty(responseContent))
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Erro ao cadastrar: {responseContent}" });
+                            }
+                            else
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar a instituição." });
+                            }
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                }
+            }
+            else
+            {
+                return RedirectToRoute("home");
+
+            }
+          
+        }
+
+        [HttpPost("AtualizarFotos")]
+        public async Task<IActionResult> AtualizarFotos(AtualizaFotosModel model, IFormFile[] Fotos)
+        {
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                using (var formData = new MultipartFormDataContent())
+                {
+                    formData.Add(new StringContent(model.Instituicao_GUID), "Instituicao_GUID");
+
+                    if (Fotos != null && Fotos.Length > 0)
+                    {
+                        foreach (var foto in Fotos)
+                        {
+                            if (foto != null && foto.Length > 0)
+                            {
+                                var streamContent = new StreamContent(foto.OpenReadStream());
+                                streamContent.Headers.ContentType = new MediaTypeHeaderValue(foto.ContentType);
+                                formData.Add(streamContent, "Fotos", foto.FileName);
+                            }
+                        }
+                    }
+
+                    var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/InstituicaoImagem/AtualizarFotos", formData);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        return RedirectToRoute("instituicao-perfil", new { alertType = "success", alertMessage = "Fotos atualizadas com sucesso!" });
+                    }
+                    else
+                    {
+                        var responseContent = await response.Content.ReadAsStringAsync();
+                        var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+
+                        var mensagemErro = problemDetails?.Title != null
+                            ? $"{problemDetails.Title}: {problemDetails.Detail}"
+                            : $"Erro ao atualizar fotos: {responseContent}";
+
+                        return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = mensagemErro });
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+            }
+            catch (Exception ex)
+            {
+                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Erro inesperado ao atualizar fotos. {ex.Message}" });
+            }
+        }
+
+
+        [HttpPost("AtualizarEndereco")]
+        public async Task<IActionResult> AtualizarEndereco(List<EnderecoModel> enderecos)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                var model = enderecos.FirstOrDefault();
+                
+                string GUID = model.instituicao_GUID;
+                try
+                {
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    using (var formData = new MultipartFormDataContent())
+                    {
+                        // Adiciona os dados simples da instituição
+
+                        var json = JsonConvert.SerializeObject(model);
+                        var content = new StringContent(json, Encoding.UTF8, "application/json");
+                        // Faz a chamada para a API
+                        var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/Endereco/AtualizarEndereco", content);
+
+                        if (response.IsSuccessStatusCode)
+                        {
+                            return RedirectToRoute($"instituicao-perfil", new { alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
+                        }
+                        else
+                        {
+                            var responseContent = await response.Content.ReadAsStringAsync();
+                            var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+
+                            if (problemDetails?.Title != null && problemDetails?.Detail != null)
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
+                            }
+                            else if (!string.IsNullOrEmpty(responseContent))
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Erro ao cadastrar: {responseContent}" });
+                            }
+                            else
+                            {
+                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = "Ocorreu um erro ao cadastrar a instituição." });
+                            }
+                        }
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+                }
+                catch (Exception ex)
+                {
+                    return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. {ex.Message}" });
+                }
+            }
+            else
+            {
+                return RedirectToRoute("home");
+
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AtualizarSenha(string guid)
+        {
+            return View();
         }
     }
 }

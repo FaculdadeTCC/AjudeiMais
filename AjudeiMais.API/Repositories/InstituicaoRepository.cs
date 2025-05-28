@@ -16,25 +16,15 @@ namespace AjudeiMais.API.Repositories
         }
         public async Task Delete(Instituicao model)
         {
-            //try
-            //{
-            //    var instituicao = _context.Instituicao.FirstOrDefault(x => x.Instituicao_ID == id);
-
-            //    if (instituicao != null)
-            //    {
-            //        instituicao.Habilitado = false;
-            //        instituicao.Excluido = true;
-            //        instituicao.DataUpdate = DateTime.Now;
-
-            //        _context.Instituicao.Update(instituicao);
-
-            //        await _context.SaveChangesAsync();
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw new Exception(ex.Message);
-            //}
+            try
+            {
+                _context.Update(model);
+                _context.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
 
         public async Task<IEnumerable<Instituicao>> GetAll()
@@ -112,7 +102,10 @@ namespace AjudeiMais.API.Repositories
         {
             if (model.Instituicao_ID > 0)
             {
+                model.DataUpdate = DateTime.Now;
+
                 _context.Instituicao.Update(model);
+                await _context.SaveChangesAsync();
             }
             else
             {

@@ -1,113 +1,291 @@
-﻿@model AjudeiMais.Ecommerce.Models.InstituicaoPerfilModel
+﻿@model AjudeiMais.Ecommerce.Models.Instituicao.InstituicaoPerfilModel
 @using AjudeiMais.Ecommerce.Tools
-@{
-    ViewData["Title"] = "Instituição - perfil";
-}
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
 
 @{
-    await Html.RenderPartialAsync("_Alertas");
-}
+    ViewBag.Title = "Meu Perfil"; // Changed to match user profile ViewBag.Title
 
-@{
     var instituicao = Model;
     var endereco = instituicao.Enderecos.FirstOrDefault();
 
     var userGuidLogado = User.FindFirst("GUID").Value;
 
-    bool isMeuPerfil = userGuidLogado.ToString() == instituicao.Guid;
+    bool isMeuPerfil = userGuidLogado.ToString() == instituicao.GUID;
 
     ViewData["Title"] = isMeuPerfil
         ? "Meu Perfil - " + instituicao.Nome
         : instituicao.Nome + " - Perfil";
 }
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded-3 p-4">
-        <!-- Topo do Perfil -->
-        <div class="d-flex flex-column flex-sm-row align-items-center gap-3 gap-sm-4">
-            <!-- Foto da instituição -->
-            <div class="position-relative">
-                <img src="@(Assistant.ServerURL() + instituicao.FotoPerfil)" alt="Foto da Instituição"
-                     class="rounded-circle" style="width: 9rem; height: 9rem; object-fit: cover; border: 3px solid #0d6efd;" />
-                <!-- Selo de verificado -->
-                <span class="position-absolute bottom-0 end-0 translate-middle p-1 bg-success border border-white rounded-circle shadow">
-                    <i class="fas fa-check text-white" style="font-size: 0.7rem;"></i>
-                </span>
-            </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/usuario/usuario-perfil.css" asp-append-version="true" />
+    <style>
+        /* Adicionando estilos específicos para instituição se necessário, ou ajustando o CSS existente */
+        /* Para o hero-profile da instituição */
+        .hero-profile.instituicao {
+            background: linear-gradient(135deg, #2a7e72 0%, #1a5e55 100%); /* Cor ajustada para instituições, exemplo */
+        }
 
-            <!-- Informações principais -->
-            <div class="flex-grow-1">
-                <h2 class="h4 fw-bold text-dark">@instituicao.Nome</h2>
-                <p class="text-muted mb-1">@endereco?.Cidade, @endereco?.Estado</p>
-                <p class="text-muted mb-1"><strong>Endereço:</strong> @endereco?.Rua, @endereco?.Numero</p>
-                <p class="text-muted mb-1"><strong>Categoria:</strong> Assistência Social</p>
-                <p class="text-muted mb-1"><strong>E-mail:</strong> @instituicao.Email</p>
-                <p class="text-muted mb-2"><strong>Telefone:</strong> @instituicao.Telefone</p>
+        .rating-display .stars .fas.fa-star,
+        .rating-display .stars .fas.fa-star-half-alt {
+            color: var(--color-warning); /* Estrelas em amarelo */
+        }
 
-                <!-- Avaliação -->
-                <div class="d-flex align-items-center text-warning mb-3" style="font-size: 1rem;">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                    <span class="ms-2 text-muted" style="font-size: 0.875rem;">(4.8 de 5)</span>
-                </div>
+        /* Estilos específicos para a galeria de fotos */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-                <!-- Botão de mensagem -->
-                <button onclick="toggleChat()"
-                        class="btn btn-primary btn-sm px-4">
-                    Enviar Mensagem
-                </button>
-            </div>
-        </div>
+            .gallery-item:hover {
+                transform: translateY(-5px);
+                box-shadow: var(--shadow-lg);
+            }
 
-        <!-- Descrição -->
-        <div class="mt-4">
-            <h3 class="h5 fw-semibold text-dark mb-2">Sobre a Instituição</h3>
-            <p class="text-muted">
-                @instituicao.Descricao
-            </p>
-        </div>
+            .gallery-item img {
+                width: 100%;
+                height: 200px; /* Altura fixa para as imagens da galeria */
+                object-fit: cover;
+                display: block;
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+            }
 
-        <!-- Galeria de fotos -->
-        <div class="mt-5">
-            <h3 class="h5 fw-semibold text-dark mb-3">Galeria de Fotos</h3>
-            <div class="row g-3">
-                @foreach(var foto in instituicao.FotosUrl)
-                {
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" alt="Foto exibição instituição"
-                             class="img-fluid rounded shadow-sm" style="height: 12rem; object-fit: cover; width: 100%;" />
+            .gallery-item:hover img {
+                transform: scale(1.05);
+            }
+
+        .gallery-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 8px;
+        }
+
+        .gallery-item:hover .gallery-overlay {
+            opacity: 1;
+        }
+
+        .gallery-overlay .icon {
+            color: white;
+            font-size: 2rem;
+        }
+    </style>
+}
+
+@{
+    await Html.RenderPartialAsync("_Alertas");
+}
+
+<section class="hero-profile instituicao">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-md-auto text-center mb-4 mb-md-0">
+                <div class="profile-avatar mx-auto">
+                    <img src="@Assistant.ServerURL()@instituicao.FotoPerfil" alt="@instituicao.Nome">
+                    <div class="verified-badge">
+                        <i class="fas fa-check fa-sm"></i>
                     </div>
-                };
+                </div>
             </div>
-        </div>
 
-        <!-- CHAT -->
-        <div id="chatBox" class="d-none flex-column rounded-3 border border-secondary bg-light p-3 mt-5 shadow-sm">
-            <div class="mb-3 text-muted small">Inicie uma conversa com <strong>@instituicao.Nome</strong></div>
-            <div class="overflow-auto rounded bg-white p-3 shadow-sm" style="height: 10rem; font-size: 0.9rem;">
-                <div class="text-secondary mb-2"><strong>Instituto:</strong> Olá! Como podemos ajudar?</div>
-                <!-- Mensagens vão aqui futuramente -->
-            </div>
-            <div class="d-flex gap-2 mt-3">
-                <input type="text" placeholder="Digite sua mensagem..."
-                       class="form-control rounded-pill" />
-                <button class="btn btn-primary rounded-pill px-4">
-                    Enviar
-                </button>
+            <div class="col-md">
+                <div class="profile-info">
+                    <h1 class="fade-in">@instituicao.Nome</h1>
+                    <div class="profile-location fade-in">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        @endereco?.Cidade, @endereco?.Estado
+                    </div>
+
+                    <p class="profile-detail fade-in">
+                        <i class="fas fa-road me-2"></i>
+                        <strong>Endereço:</strong> @endereco?.Rua, @endereco?.Numero
+                    </p>
+                    <p class="profile-detail fade-in">
+                        <i class="fas fa-tag me-2"></i>
+                        <strong>Categoria:</strong> Assistência Social
+                    </p>
+                    <p class="profile-detail fade-in">
+                        <i class="fas fa-envelope me-2"></i>
+                        <strong>E-mail:</strong> @instituicao.Email
+                    </p>
+                    <p class="profile-detail fade-in">
+                        <i class="fas fa-phone me-2"></i>
+                        <strong>Telefone:</strong> @instituicao.Telefone
+                    </p>
+
+                    <div class="rating-display fade-in">
+                        <div class="stars">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star-half-alt star"></i>
+                        </div>
+                        <span class="text-white fw-bold">4.8 de 5</span>
+                        <span class="text-white-50 ms-2">(150 avaliações)</span> @* Valor mockado para exemplo *@
+                    </div>
+
+                    @if (!isMeuPerfil)
+                    {
+                        <button class="cta-button interactive-element" onclick="toggleChat()">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            Iniciar Conversa
+                        </button>
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
+</section>
 
-<script>
-    function toggleChat() {
-        const chat = document.getElementById('chatBox');
-        chat.classList.toggle('d-none');
-    }
-</script>
+<div class="container">
+    ---
+    <section class="description-section slide-up">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-info-circle me-3 text-primary"></i>
+                Sobre a @instituicao.Nome
+            </h2>
+            <p class="section-subtitle">
+                Conheça um pouco mais sobre a nossa missão e os impactos que geramos.
+            </p>
+        </div>
+        <p class="text-muted text-justify">
+            @instituicao.Descricao
+        </p>
+    </section>
+
+    ---
+    <section class="gallery-section slide-up">
+        <div class="section-header">
+            <h2 class="section-title">
+                <i class="fas fa-images me-3 text-info"></i>
+                Nossa Galeria
+            </h2>
+            <p class="section-subtitle">
+                Momentos e ações que fazem a diferença na nossa comunidade.
+            </p>
+        </div>
+
+        @if (instituicao.FotosUrl != null && instituicao.FotosUrl.Any())
+        {
+            <div class="row g-4 mb-5">
+                @foreach (var foto in instituicao.FotosUrl)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6">
+                        <a href="@(Assistant.ServerURL() + foto.CaminhoImagem)" data-lightbox="gallery" data-title="Galeria de Fotos da @instituicao.Nome">
+                            <div class="gallery-item interactive-element">
+                                <img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" alt="Foto da Galeria">
+                                <div class="gallery-overlay">
+                                    <i class="fas fa-search-plus icon"></i>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="text-center py-5">
+                <i class="fas fa-camera fa-4x text-muted mb-3"></i>
+                <h3 class="text-muted">Nenhuma foto disponível na galeria.</h3>
+                <p class="text-muted">Em breve, novas imagens serão adicionadas aqui!</p>
+            </div>
+        }
+    </section>
+
+  
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet" />
+    <script>
+        // Configuração do Lightbox
+            lightbox.option({
+                'resizeDuration': 200,
+                'wrapAround': true
+            });
+
+            // Inicialização de tooltips (mantido do perfil de usuário)
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // Animação de entrada dos elementos (mantido do perfil de usuário)
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.slide-up').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
+            });
+
+            // Efeito de hover nos quick action buttons (mantido do perfil de usuário)
+            // Removido, pois não se aplica à galeria de fotos como antes aos produtos
+            // document.querySelectorAll('.quick-action-btn').forEach(btn => {
+            //     btn.addEventListener('mouseenter', function() {
+            //         this.style.transform = 'scale(1.1) rotate(5deg)';
+            //     });
+            //
+            //     btn.addEventListener('mouseleave', function() {
+            //         this.style.transform = 'scale(1) rotate(0deg)';
+            //     });
+            // });
+
+            // Animação de clique nos botões interativos (mantido do perfil de usuário)
+            document.querySelectorAll('.interactive-element').forEach(element => {
+                element.addEventListener('mousedown', function() {
+                    this.style.transform = 'scale(0.98)';
+                });
+
+                element.addEventListener('mouseup', function() {
+                    this.style.transform = 'scale(1)';
+                });
+
+                element.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // Função para alternar o chat (mantida, mas com a estilização do novo layout)
+            function toggleChat() {
+                const chat = document.getElementById('chatBox');
+                chat.classList.toggle('d-none');
+                // Adiciona a animação de slide-up ao mostrar o chat
+                if (!chat.classList.contains('d-none')) {
+                    chat.style.opacity = '0';
+                    chat.style.transform = 'translateY(30px)';
+                    setTimeout(() => {
+                        chat.style.opacity = '1';
+                        chat.style.transform = 'translateY(0)';
+                    }, 50);
+                }
+            }
+    </script>
+}

@@ -1,4 +1,5 @@
 ﻿using AjudeiMais.Ecommerce.Models;
+using AjudeiMais.Ecommerce.Models.Instituicao;
 using AjudeiMais.Ecommerce.Models.Usuario;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -44,6 +45,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         /// Também utiliza sessão para armazenar o token JWT e outros dados auxiliares.
         /// </remarks>
         /// <exception cref="Exception">Captura erros de comunicação com a API ou falhas inesperadas.</exception>
+        /// 
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -90,9 +92,9 @@ namespace AjudeiMais.Ecommerce.Controllers
                 {
                     var usuario = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{loginResponse.GUID}");
                     json = await usuario.Content.ReadAsStringAsync();
-                    var instituicaooResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
+                    var instituicaoResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
 
-                    nome = instituicaooResponse.Nome;
+                    nome = instituicaoResponse.Nome;
                 }
 
 
