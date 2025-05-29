@@ -24,7 +24,11 @@ namespace AjudeiMais.API.Repositories
 
         public async Task<IEnumerable<CategoriaProduto>> GetAll()
         {
-            return await _context.CategoriaProduto.ToListAsync();
+            return await _context.CategoriaProduto
+                .OrderByDescending(c => c.DataCadastro)
+                .ThenByDescending(c => c.DataUpdate)
+                .ThenBy(c => c.Nome)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<CategoriaProduto>> GetItens()

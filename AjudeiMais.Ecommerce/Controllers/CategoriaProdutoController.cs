@@ -11,14 +11,14 @@ using X.PagedList.Extensions;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
-    public class CategoriaController : Controller
+    public class CategoriaProdutoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<CategoriaController> _logger;
+        private readonly ILogger<CategoriaProdutoController> _logger;
 
         string BASE_URL = Assistant.ServerURL();
 
-        public CategoriaController(IHttpClientFactory httpClientFactory, ILogger<CategoriaController> logger = null)
+        public CategoriaProdutoController(IHttpClientFactory httpClientFactory, ILogger<CategoriaProdutoController> logger = null)
         {
             _httpClientFactory = httpClientFactory;
             _logger = logger;

@@ -52,6 +52,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             if (usuario != null)
             {
+
                 return View(usuario);
             }
             else

@@ -120,19 +120,19 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "admin-categorias-produto",
     pattern: "admin/categorias-do-produto",
-    defaults: new { controller = "Categoria", action = "Index" }
+    defaults: new { controller = "CategoriaProduto", action = "Index" }
 );
 
 app.MapControllerRoute(
     name: "admin-categoria-produto-cadastrar",
     pattern: "admin/categoria-do-produto/cadastrar",
-    defaults: new { controller = "Categoria", action = "Cadastro" }
+    defaults: new { controller = "CategoriaProduto", action = "Cadastro" }
 );
 
 app.MapControllerRoute(
     name: "admin-categoria-produto-excluir",
     pattern: "admin/categoria-do-produto/excluir",
-    defaults: new { controller = "Categoria", action = "Excluir" }
+    defaults: new { controller = "CategoriaProduto", action = "Excluir" }
 );
 #endregion
 #endregion
