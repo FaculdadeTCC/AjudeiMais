@@ -10,7 +10,7 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; } 
         public string Icone { get; set; }
-
+        public string? GUID { get; set; }
         public ICollection<InstituicaoCategoria>? InstituicaoCategorias { get; set; }
     }
 }

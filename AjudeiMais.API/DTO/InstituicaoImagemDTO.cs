@@ -4,5 +4,7 @@
     {
         public int InsituicaoImagem_ID { get; set; }
         public string CaminhoImagem { get; set; }
+
+        public string instituicao_GUID { get; set; }
     }
 }

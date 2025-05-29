@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace AjudeiMais.Ecommerce.Models
+namespace AjudeiMais.Ecommerce.Models.Instituicao
 {
     public class InstituicaoModel
     {
@@ -19,7 +19,7 @@ namespace AjudeiMais.Ecommerce.Models
 
         [Required(ErrorMessage = "Uma foto de perfil é obrigatória.")]
         public IFormFile FotoPerfil { get; set; }
-              
+
         [Required(ErrorMessage = "O documento é obrigatório.")]
         [StringLength(20, ErrorMessage = "O documento deve ter no máximo 20 caracteres.")]
         public string Documento { get; set; }
