@@ -323,5 +323,105 @@ namespace AjudeiMais.API.Services
                 };
             }
         }
+
+        public async Task<ApiResponse<Instituicao>> AtualizarSenha(InstituicaoSenhaDTO instituicaoSenha)
+        {
+            try
+            {
+                var instituicao = await _instituicaoRepository.GetByGUID(instituicaoSenha.GUID);
+
+                if (instituicao == null)
+                {
+                    return new ApiResponse<Instituicao>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                var result = _passwordHasher.VerifyHashedPassword(instituicao, instituicao.Senha, instituicaoSenha.SenhaAtual);
+
+                if (result != PasswordVerificationResult.Success)
+                {
+                    return new ApiResponse<Instituicao>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Senha atual inválida."
+                    };
+                }
+
+                instituicao.Senha = _passwordHasher.HashPassword(instituicao, instituicaoSenha.NovaSenha);
+
+                await _instituicaoRepository.SaveOrUpdate(instituicao);
+
+                return new ApiResponse<Instituicao>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Senha alterada com sucesso.",
+                    Data = instituicao
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar senha do usuário");
+                return new ApiResponse<Instituicao>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro ao atualizar sua senha. Tente novamente."
+                };
+            }
+        }
+
+        public async Task<ApiResponse<Instituicao>> ValidarSenha(InstituicaoValidarSenhaDTO instituicaoSenha)
+        {
+            try
+            {
+                var instituicao = await _instituicaoRepository.GetByGUID(instituicaoSenha.GUID);
+
+                if (instituicao == null)
+                {
+                    return new ApiResponse<Instituicao>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado."
+                    };
+                }
+
+                var result = _passwordHasher.VerifyHashedPassword(instituicao, instituicao.Senha, instituicaoSenha.Senha);
+
+                if (result != PasswordVerificationResult.Success)
+                {
+                    return new ApiResponse<Instituicao>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Senha atual inválida."
+                    };
+                }
+
+                return new ApiResponse<Instituicao>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Senha valida com sucesso.",
+                    Data = instituicao
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar senha do usuário");
+                return new ApiResponse<Instituicao>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro ao atualizar sua senha. Tente novamente."
+                };
+            }
+        }
     }
 }

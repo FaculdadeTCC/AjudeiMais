@@ -167,19 +167,19 @@ app.MapControllerRoute(
 //
 
 app.MapControllerRoute(
-    name: "categoria_index",
+    name: "categoria-index",
     pattern: "admin/categorias",
     defaults: new { controller = "Categoria", action = "Index" }
 );
 
 app.MapControllerRoute(
-    name: "categoria_adicionar",
+    name: "categoria-adicionar",
     pattern: "admin/categorias/adicionar",
     defaults: new { controller = "Categoria", action = "Adicionar" }
 );
 
 app.MapControllerRoute(
-    name: "categoria_alterar",
+    name: "categoria-alterar",
     pattern: "admin/categorias/alterar",
     defaults: new { controller = "Categoria", action = "AlterarDados" }
 );

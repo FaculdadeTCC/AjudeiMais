@@ -4,7 +4,7 @@
     {
         public InstituicaoDadosDTO Instituicao { get; set; }
         public EnderecoDTO Endereco { get; set; }
-        public SenhaDTO Senha { get; set; }
+        public InstituicaoSenhaDTO Senha { get; set; }
     }
     public class InstituicaoDadosDTO
     {
@@ -18,10 +18,17 @@
         public List<IFormFile> Fotos { get; set; } = new List<IFormFile>();
     }
 
-    public class SenhaDTO
+    public class InstituicaoSenhaDTO
     {
+        public string GUID { get; set; }
         public string SenhaAtual { get; set; }
         public string NovaSenha { get; set; }
         public string ConfirmarNovaSenha { get; set; }
+    }
+
+    public class InstituicaoValidarSenhaDTO
+    {
+        public string GUID { get; set; }
+        public string Senha { get; set; }
     }
 }

@@ -4,7 +4,7 @@
     {
         public InstituicaoDadosModel Instituicao { get; set; }
         public EnderecoModel Endereco { get; set; }
-        public SenhaModel Senha { get; set; }
+        public InstituicaoSenhaModel Senha { get; set; }
     }
     public class InstituicaoDadosModel
     {
@@ -17,10 +17,17 @@
         public string Descricao { get; set; }
     }
 
-    public class SenhaModel
+    public class InstituicaoSenhaModel
     {
+        public string GUID { get; set; }
         public string SenhaAtual { get; set; }
         public string NovaSenha { get; set; }
         public string ConfirmarNovaSenha { get; set; }
+
+    }
+    public class InstituicaoExcluirContaDTO
+    {
+        public string GUID { get; set; }
+        public string Senha { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Gerenciar Categorias";
 }
 
@@ -16,7 +17,7 @@
                 </span>
                 <input type="text" class="form-control border-start-0 rounded-end" placeholder="Buscar categoria..." aria-label="Buscar" aria-describedby="search-addon">
             </div>
-            <a href="/Categoria/Cadastrar" class="btn btn-primary px-4 py-2 text-nowrap">
+            <a href="/Categoria/Adicionar" class="btn btn-primary px-4 py-2 text-nowrap">
                 <i class="fas fa-plus me-2"></i> Criar Categoria
             </a>
         </div>
@@ -102,7 +103,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Tem certeza de que deseja excluir a categoria "<strong id="categoryToDeleteName"></strong>"?
+                Tem certeza de que deseja excluir a categoria?
                 Esta ação não pode ser desfeita.
             </div>
             <div class="modal-footer">

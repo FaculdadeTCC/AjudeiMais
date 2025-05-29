@@ -51,6 +51,18 @@ namespace AjudeiMais.API.Repositories
             }
         }
 
+        public async Task<Categoria> GetByName(string nome)
+        {
+            try
+            {
+                return await _context.Categoria.FirstOrDefaultAsync(x => x.Nome == nome);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
         public async Task<IEnumerable<Categoria>> GetItens()
         {
             try

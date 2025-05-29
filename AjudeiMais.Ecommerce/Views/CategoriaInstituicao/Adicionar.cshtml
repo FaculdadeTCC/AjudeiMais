@@ -1,4 +1,6 @@
-﻿@{
+﻿@model AjudeiMais.Ecommerce.Models.Instituicao.CategoriaModel
+
+@{
     ViewData["Title"] = "Cadastro de Categoria";
 }
 
@@ -9,7 +11,7 @@
         </h1>
         <hr class="mb-4" />
 
-        <form method="post" enctype="multipart/form-data">
+        <form asp-controller="Categoria" asp-action="Adicionar" method="POST" enctype="multipart/form-data">
             <h2 class="mb-3 text-secondary">
                 <i class="fas fa-info-circle me-2"></i> Dados da Categoria
             </h2>
@@ -17,7 +19,7 @@
                 <div class="col-md-6">
                     <div class="form-floating">
                         <input type="text" class="form-control" id="nomeCategoria" name="Nome" placeholder="Nome da Categoria" required />
-                        <label for="nomeCategoria" class="required-field">Nome da Categoria</label>
+                        <label for="Nome" class="required-field">Nome da Categoria</label>
                     </div>
                     @* <span asp-validation-for="Nome" class="text-danger"></span> *@
                 </div>
@@ -32,10 +34,10 @@
 
             <div class="mb-4">
                 <label for="statusCategoria" class="form-label required-field">Status</label>
-                <select class="form-select" id="statusCategoria" name="Status" required>
+                <select class="form-select" id="statusCategoria" name="Habilitado" required>
                     <option value="" selected disabled>Selecione um status</option>
-                    <option value="Ativo">Ativo</option>
-                    <option value="Inativo">Inativo</option>
+                    <option value="true">Ativo</option>
+                    <option value="false">Inativo</option>
                 </select>
                 @* <span asp-validation-for="Status" class="text-danger"></span> *@
             </div>

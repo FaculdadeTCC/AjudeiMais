@@ -2,51 +2,240 @@
     ViewData["Title"] = "Dashboard Administrativo";
 }
 
-<section class="mx-auto mt-10 max-w-6xl rounded-xl bg-white p-6 shadow ring-1 ring-gray-200">
-    <h1 class="mb-6 text-2xl font-bold text-gray-800">Dashboard Administrativo</h1>
+<div class="container my-5">
+    <div class="card shadow-lg rounded-lg p-4 p-md-5 mx-auto" style="max-width: 1200px;">
+        <h1 class="mb-4 text-center text-primary">
+            <i class="fas fa-chart-line me-2"></i> Dashboard Administrativo
+        </h1>
+        <hr class="mb-4" />
 
-    <!-- Cards de Indicadores -->
-    <div class="grid grid-cols-1 gap-6 md:grid-cols-3 lg:grid-cols-4">
-        <div class="rounded-lg bg-primary p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Usuários Ativos</h2>
-            <p class="text-2xl font-bold">120</p>
+        <h2 class="mb-3 text-secondary">
+            <i class="fas fa-tachometer-alt me-2"></i> Visão Geral
+        </h2>
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4 mb-5">
+            <div class="col">
+                <div class="card text-white bg-primary-gradient h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-users fa-2x me-3 opacity-75"></i>
+                            <h5 class="card-title mb-0">Usuários Ativos</h5>
+                        </div>
+                        <p class="card-text display-4 fw-bold">120</p>
+                    </div>
+                    <div class="card-footer bg-white bg-opacity-10 border-0 text-end py-2">
+                        <small>Última atualização: hoje</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white bg-info-gradient h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-building fa-2x me-3 opacity-75"></i>
+                            <h5 class="card-title mb-0">Instituições Ativas</h5>
+                        </div>
+                        <p class="card-text display-4 fw-bold">45</p>
+                    </div>
+                    <div class="card-footer bg-white bg-opacity-10 border-0 text-end py-2">
+                        <small>Última atualização: hoje</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white bg-warning-gradient h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-hourglass-half fa-2x me-3 opacity-75"></i>
+                            <h5 class="card-title mb-0">Pedidos Ativos</h5>
+                        </div>
+                        <p class="card-text display-4 fw-bold">30</p>
+                    </div>
+                    <div class="card-footer bg-white bg-opacity-10 border-0 text-end py-2">
+                        <small>Última atualização: hoje</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card text-white bg-success-gradient h-100 shadow-sm border-0">
+                    <div class="card-body d-flex flex-column justify-content-between">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="fas fa-check-circle fa-2x me-3 opacity-75"></i>
+                            <h5 class="card-title mb-0">Pedidos Concluídos</h5>
+                        </div>
+                        <p class="card-text display-4 fw-bold">150</p>
+                    </div>
+                    <div class="card-footer bg-white bg-opacity-10 border-0 text-end py-2">
+                        <small>Última atualização: ontem</small>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="rounded-lg bg-secondary p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Instituições Ativas</h2>
-            <p class="text-2xl font-bold">45</p>
+
+        <h2 class="mb-3 text-secondary">
+            <i class="fas fa-bolt me-2"></i> Acesso Rápido
+        </h2>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+            <div class="col">
+                <a asp-controller="Usuario" asp-action="Index" class="card text-decoration-none text-dark bg-light-hover h-100 shadow-sm transition-effect">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                        <i class="fas fa-user-friends fa-3x text-primary mb-2"></i>
+                        <h6 class="card-title mb-0 fw-bold">Usuários</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a asp-controller="Instituicao" asp-action="Index" class="card text-decoration-none text-dark bg-light-hover h-100 shadow-sm transition-effect">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                        <i class="fas fa-university fa-3x text-info mb-2"></i>
+                        <h6 class="card-title mb-0 fw-bold">Instituições</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a asp-route="categoria-index" class="card text-decoration-none text-dark bg-light-hover h-100 shadow-sm transition-effect">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                        <i class="fas fa-tags fa-3x text-warning mb-2"></i>
+                        <h6 class="card-title mb-0 fw-bold">Categorias</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/Admin/Anuncios" class="card text-decoration-none text-dark bg-light-hover h-100 shadow-sm transition-effect">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                        <i class="fas fa-bullhorn fa-3x text-danger mb-2"></i>
+                        <h6 class="card-title mb-0 fw-bold">Anúncios</h6>
+                    </div>
+                </a>
+            </div>
+            <div class="col">
+                <a href="/Admin/Pedidos" class="card text-decoration-none text-dark bg-light-hover h-100 shadow-sm transition-effect">
+                    <div class="card-body d-flex flex-column align-items-center justify-content-center p-3">
+                        <i class="fas fa-shopping-cart fa-3x text-success mb-2"></i>
+                        <h6 class="card-title mb-0 fw-bold">Pedidos</h6>
+                    </div>
+                </a>
+            </div>
         </div>
-        <div class="rounded-lg bg-highlight p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Pedidos Ativos</h2>
-            <p class="text-2xl font-bold">30</p>
-        </div>
-        <div class="rounded-lg bg-accent p-4 text-white shadow">
-            <h2 class="text-lg font-semibold">Pedidos Concluídos</h2>
-            <p class="text-2xl font-bold">150</p>
+
+        <hr class="my-5" />
+        <h2 class="mb-3 text-secondary">
+            <i class="fas fa-chart-pie me-2"></i> Dados Detalhados
+        </h2>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-light fw-bold"><i class="fas fa-chart-bar me-2"></i> Distribuição de Usuários por Tipo</div>
+                    <div class="card-body">
+                        <p class="text-muted text-center">Gráfico de barras ou pizza aqui (Ex: Chart.js)</p>
+                        <div class="placeholder-glow">
+                            <span class="placeholder col-12" style="height: 200px;"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card h-100 shadow-sm">
+                    <div class="card-header bg-light fw-bold"><i class="fas fa-history me-2"></i> Atividade Recente</div>
+                    <div class="card-body">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Novo usuário cadastrado: João S. <small class="text-muted">5 min atrás</small>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Pedido #1234 atualizado para "Concluído" <small class="text-muted">15 min atrás</small>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Categoria "Alimentos" criada <small class="text-muted">1 hora atrás</small>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Instituição "Hospital da Luz" aprovada <small class="text-muted">3 horas atrás</small>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+</div>
 
-    <!-- Acesso Rápido -->
-    <h2 class="mt-8 text-lg font-semibold text-gray-700">Acesso Rápido</h2>
-    <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        <a href="/Admin/Usuarios" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-user text-xl text-primary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Usuários</span>
-        </a>
-        <a href="/Admin/Instituicoes" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-building text-xl text-secondary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Instituições</span>
-        </a>
-        <a href="/Admin/Categorias" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-tags text-xl text-highlight"></i>
-            <span class="ml-2 font-semibold text-gray-700">Categorias</span>
-        </a>
-        <a href="/Admin/Anuncios" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-bullhorn text-xl text-accent"></i>
-            <span class="ml-2 font-semibold text-gray-700">Anúncios</span>
-        </a>
-        <a href="/Admin/Pedidos" class="flex items-center justify-center rounded-lg bg-gray-100 p-4 shadow hover:bg-gray-200">
-            <i class="fa fa-shopping-cart text-xl text-primary"></i>
-            <span class="ml-2 font-semibold text-gray-700">Pedidos</span>
-        </a>
-    </div>
-</section>
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+
+    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
+    @* <script>
+        // Código Chart.js para renderizar seu gráfico aqui
+        // Exemplo:
+        // var ctx = document.getElementById('myChart').getContext('2d');
+        // var myChart = new Chart(ctx, { /* ... */ });
+    </script> *@
+}
+
+<style>
+    /* Estilos Customizados para o Dashboard */
+    body {
+        background-color: #f0f2f5; /* Um fundo mais suave e moderno */
+    }
+
+    .card {
+        border: none;
+        border-radius: 0.75rem; /* Bordas mais arredondadas para os cards */
+        box-shadow: 0 0.5rem 1.2rem rgba(0, 0, 0, 0.08) !important; /* Sombra mais destacada */
+    }
+
+    .text-primary {
+        color: #0d6efd !important; /* Azul padrão do Bootstrap */
+    }
+
+    .text-secondary {
+        color: #6c757d !important; /* Cinza padrão do Bootstrap */
+    }
+
+    /* Cores personalizadas para os cards de indicadores */
+    .bg-primary-gradient {
+        background: linear-gradient(45deg, #0d6efd, #007bff); /* Azul gradiente */
+    }
+
+    .bg-info-gradient {
+        background: linear-gradient(45deg, #0dcaf0, #0d8cae); /* Ciano gradiente */
+    }
+
+    .bg-warning-gradient {
+        background: linear-gradient(45deg, #ffc107, #e0a800); /* Amarelo gradiente */
+    }
+
+    .bg-success-gradient {
+        background: linear-gradient(45deg, #198754, #28a745); /* Verde gradiente */
+    }
+
+    /* Estilo para os cards de acesso rápido */
+    .bg-light-hover {
+        background-color: #f8f9fa; /* Fundo leve */
+        transition: background-color 0.2s ease-in-out, transform 0.2s ease-in-out;
+    }
+
+        .bg-light-hover:hover {
+            background-color: #e2e6ea; /* Fundo um pouco mais escuro no hover */
+            transform: translateY(-3px); /* Efeito de "levantar" */
+        }
+
+    .transition-effect {
+        transition: all 0.2s ease-in-out; /* Transição suave para hover e outras interações */
+    }
+
+    /* Ajustes para ícones grandes */
+    .fa-3x {
+        font-size: 2.5em; /* Ajusta o tamanho para ficar mais proporcional nos links */
+    }
+
+    .display-4 {
+        font-size: 3.5rem; /* Tamanho maior para os números dos cards */
+    }
+
+    .card-title {
+        font-size: 1.25rem; /* Título dos cards */
+    }
+
+    .card-footer {
+        font-size: 0.85rem;
+    }
+</style>

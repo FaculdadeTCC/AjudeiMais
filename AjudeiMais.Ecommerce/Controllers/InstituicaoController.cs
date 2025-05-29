@@ -1,6 +1,8 @@
 ﻿using AjudeiMais.Ecommerce.Filters;
 using AjudeiMais.Ecommerce.Models.Instituicao;
+using AjudeiMais.Ecommerce.Models.Usuario;
 using AjudeiMais.Ecommerce.Tools;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
@@ -8,6 +10,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -166,6 +169,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [HttpPost("AlterarDados")]
+        [RoleAuthorize("instituicao", "admin")]
         public async Task<IActionResult> AlterarDados(InstituicaoDadosModel model, IFormFile FotoPerfil)
         {
             if (User.Identity.IsAuthenticated)
@@ -230,6 +234,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
         [HttpPost("AtualizarFotos")]
+        [RoleAuthorize("instituicao", "admin")]
         public async Task<IActionResult> AtualizarFotos(AtualizaFotosModel model, IFormFile[] Fotos)
         {
             try
@@ -284,6 +289,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
 
         [HttpPost("AtualizarEndereco")]
+        [RoleAuthorize("instituicao", "admin")]
         public async Task<IActionResult> AtualizarEndereco(List<EnderecoModel> enderecos)
         {
             if (User.Identity.IsAuthenticated)
@@ -344,10 +350,232 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
         }
 
+        [RoleAuthorize("instituicao", "admin")]
         [HttpPost]
-        public async Task<IActionResult> AtualizarSenha(string guid)
+        public async Task<IActionResult> ExcluirConta(InstituicaoExcluirContaDTO model) // Use InstituicaoExcluirContaModel
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToRoute("home");
+
+            // Validação de segurança: garantir que o usuário só pode deletar sua própria conta (a menos que seja admin)
+            var loggedInUserGuid = Assistant.GetUserGuidFromClaims(User, "GUID");
+            if (string.IsNullOrEmpty(loggedInUserGuid) || (!User.IsInRole("admin") && !string.Equals(model.GUID, loggedInUserGuid, StringComparison.OrdinalIgnoreCase)))
+            {
+                TempData["alertType"] = "error";
+                TempData["alertMessage"] = "Você não tem permissão para excluir esta conta.";
+                return RedirectToRoute("instituicao-alterar-dados", new { guid = loggedInUserGuid });
+            }
+
+            string guid = model.GUID;
+
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                // 1) Verificar a senha da instituição
+                var jsonContentVerify = System.Text.Json.JsonSerializer.Serialize(model);
+                var contentVerify = new StringContent(jsonContentVerify, Encoding.UTF8, "application/json");
+
+                // Ajuste o endpoint da API se necessário. No exemplo do usuário, era 'ValidarSenha'.
+                var responseVerify = await httpClient.PostAsync($"{Assistant.ServerURL()}api/Instituicao/ValidarSenha", contentVerify);
+                var apiResponseContentVerify = await responseVerify.Content.ReadAsStringAsync();
+
+                ApiHelper.ApiResponse<InstituicaoPerfilModel> apiVerifyResponse; // Use InstituicaoPerfilModel aqui
+
+                try
+                {
+                    apiVerifyResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<InstituicaoPerfilModel>>(
+                        apiResponseContentVerify,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                catch (System.Text.Json.JsonException jsonEx)
+                {
+                    _logger?.LogError(jsonEx, "Erro ao desserializar resposta da API (VerificarSenha da Instituicao).");
+                    TempData["alertType"] = "error";
+                    TempData["alertMessage"] = "Ocorreu um erro no formato da resposta da API ao verificar a senha. Contacte o suporte.";
+                    return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                }
+
+                if (responseVerify.IsSuccessStatusCode && apiVerifyResponse != null && apiVerifyResponse.Success)
+                {
+                    // 2) Se a senha estiver ok, prosseguir para a exclusão
+                    var responseDelete = await httpClient.DeleteAsync($"{Assistant.ServerURL()}api/Instituicao/{guid}");
+                    var apiDeleteContent = await responseDelete.Content.ReadAsStringAsync();
+
+                    ApiHelper.ApiResponse<InstituicaoPerfilModel> apiDeleteResponse;
+
+                    try
+                    {
+                        apiDeleteResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<InstituicaoPerfilModel>>(
+                            apiDeleteContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+                    }
+                    catch (System.Text.Json.JsonException jsonEx)
+                    {
+                        _logger?.LogError(jsonEx, "Erro ao desserializar resposta da API (Excluir Instituicao).");
+                        TempData["alertType"] = "error";
+                        TempData["alertMessage"] = "Ocorreu um erro no formato da resposta da API ao tentar excluir a conta. Contacte o suporte.";
+                        return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                    }
+
+                    if (responseDelete.IsSuccessStatusCode && apiDeleteResponse != null && apiDeleteResponse.Success)
+                    {
+                        await HttpContext.SignOutAsync(); // Desloga a instituição
+                        TempData["alertType"] = apiDeleteResponse.Type;
+                        TempData["alertMessage"] = apiDeleteResponse.Message;
+                        return RedirectToRoute("home"); // Redireciona para a home após a exclusão
+                    }
+                    else
+                    {
+                        // Erro ao tentar deletar (APÓS a senha ser verificada)
+                        TempData["alertType"] = "error";
+                        TempData["alertMessage"] = apiDeleteResponse?.Message ?? "Não foi possível excluir a conta da instituição. Tente novamente.";
+                        return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                    }
+                }
+				else // Este é o bloco que você precisa ajustar
+				{
+					// Senha incorreta ou outra falha na verificação da senha
+					string alertType = "error";
+					string alertMessage = "Ocorreu um erro na verificação da senha. Tente novamente."; // Mensagem padrão para falha
+
+					// Tente desserializar o erro se a resposta não foi de sucesso, mas contém JSON
+					if (responseVerify.Content.Headers.ContentType?.MediaType == "application/json")
+					{
+						try
+						{
+							var errorResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<object>>(
+								apiResponseContentVerify,
+								new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+							);
+
+							if (errorResponse != null && !string.IsNullOrEmpty(errorResponse.Message))
+							{
+								alertMessage = errorResponse.Message; // Use a mensagem específica da API
+																	  // Se houver Data (erros de validação), você pode formatá-los também
+								if (errorResponse.Data is JsonElement dataElement && dataElement.ValueKind == JsonValueKind.Array)
+								{
+									var validationErrors = dataElement.EnumerateArray()
+																	  .Select(e => e.GetString())
+																	  .Where(s => !string.IsNullOrEmpty(s))
+																	  .ToList();
+									if (validationErrors.Any())
+									{
+										alertMessage += " Detalhes: " + string.Join(", ", validationErrors);
+									}
+								}
+							}
+						}
+						catch (System.Text.Json.JsonException jsonEx)
+						{
+							_logger?.LogError(jsonEx, "Erro ao desserializar o BAD REQUEST da API para verificação de senha.");
+							alertMessage = "Erro inesperado ao processar a resposta da API de validação de senha.";
+						}
+					}
+
+					TempData["alertType"] = alertType;
+					TempData["alertMessage"] = alertMessage;
+					return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+				}
+			}
+            catch (HttpRequestException ex)
+            {
+                _logger?.LogError(ex, "Erro de requisição HTTP ao tentar excluir conta da Instituição.");
+                TempData["alertType"] = "error";
+                TempData["alertMessage"] = $"Não foi possível conectar ao servidor da API: {ex.Message}";
+                return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "Erro inesperado ao excluir conta da Instituição.");
+                TempData["alertType"] = "error";
+                TempData["alertMessage"] = $"Ocorreu um erro inesperado ao excluir a conta da instituição. {ex.Message}";
+                return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+            }
         }
+
+        [RoleAuthorize("instituicao", "admin")]
+        [HttpPost]
+        public async Task<IActionResult> AtualizarSenha(InstituicaoSenhaModel model)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                string guid = model.GUID;
+
+                try
+                {
+                    var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                    // Use System.Text.Json for serialization
+                    var jsonContent = System.Text.Json.JsonSerializer.Serialize(model);
+                    var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                    var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/Instituicao/AtualizarSenha", content);
+
+                    var apiResponseContent = await response.Content.ReadAsStringAsync();
+                    ApiHelper.ApiResponse<InstituicaoPerfilModel> apiResponse = null;
+
+                    try
+                    {
+                        // CORRECTED: Use System.Text.Json for deserialization
+                        apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<InstituicaoPerfilModel>>(
+                            apiResponseContent,
+                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                        );
+                    }
+                    catch (System.Text.Json.JsonException jsonEx) // Catch specific System.Text.JsonException
+                    {
+                        // Log the deserialization error for debugging
+                        _logger?.LogError(jsonEx, "Erro ao desserializar resposta da API em AtualizarSenha.");
+
+                        apiResponse = new ApiHelper.ApiResponse<InstituicaoPerfilModel>
+                        {
+                            Success = false,
+                            Type = "error",
+                            Message = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
+                        };
+                        TempData["alertType"] = apiResponse.Type;
+                        TempData["alertMessage"] = apiResponse.Message;
+                        return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                    }
+
+                    if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                    {
+                        TempData["alertType"] = apiResponse.Type;
+                        TempData["alertMessage"] = apiResponse.Message;
+                        return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                    }
+                    else
+                    {
+                        string alertType = "error";
+                        string alertMessage = apiResponse?.Message ?? "Não foi possível atualizar a senha. Tente novamente.";
+                        TempData["alertType"] = alertType;
+                        TempData["alertMessage"] = alertMessage;
+                        return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                    }
+                }
+                catch (HttpRequestException ex)
+                {
+                    _logger?.LogError(ex, "Erro de requisição HTTP ao atualizar senha.");
+                    TempData["alertType"] = "error";
+                    TempData["alertMessage"] = $"Não foi possível conectar ao servidor da API: {ex.Message}";
+                    return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                }
+                catch (Exception ex)
+                {
+                    _logger?.LogError(ex, "Erro inesperado ao atualizar senha.");
+                    TempData["alertType"] = "error";
+                    TempData["alertMessage"] = $"Ocorreu um erro inesperado durante a atualização da senha. {ex.Message}";
+                    return RedirectToRoute("instituicao-alterar-dados", new { guid = guid });
+                }
+            }
+            else
+            {
+                return RedirectToRoute("home");
+            }
+        }
+
     }
 }

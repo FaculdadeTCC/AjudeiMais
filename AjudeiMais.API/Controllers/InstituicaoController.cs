@@ -120,7 +120,7 @@ namespace AjudeiMais.API.Controllers
 
         [HttpPost("AtualizarDados")]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> AtualizarDados([FromForm] AtualizarDadosDTO model)
+        public async Task<IActionResult> AtualizarDados(AtualizarDadosDTO model)
         {
             try
             {
@@ -155,6 +155,89 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
+        [HttpPost("AtualizarSenha")]
+        public async Task<IActionResult> AtualizarSenha([FromBody] InstituicaoSenhaDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Extrai as mensagens de erro do ModelState
+                    var errors = ModelState.Values
+                                           .SelectMany(v => v.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Erro de validação nos dados enviados.",
+                        Data = errors
+                    });
+                }
+
+                var result = await _instituicaoService.AtualizarSenha(dto);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Erro interno ao atualizar endereço. Por favor, tente novamente."
+                });
+            }
+        }
+
+        [HttpPost("ValidarSenha")]
+        public async Task<IActionResult> ValidarSenha([FromBody] InstituicaoValidarSenhaDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    // Extrai as mensagens de erro do ModelState
+                    var errors = ModelState.Values
+                                           .SelectMany(v => v.Errors)
+                                           .Select(e => e.ErrorMessage)
+                                           .ToList();
+
+                    return BadRequest(new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Erro de validação nos dados enviados.",
+                        Data = errors
+                    });
+                }
+
+                var result = await _instituicaoService.ValidarSenha(dto);
+
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+
+                return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Erro interno ao atualizar endereço. Por favor, tente novamente."
+                });
+            }
+        }
 
         [HttpDelete("{GUID}")]
         public async Task<IActionResult> Delete(string GUID) // Renomeei para ser mais descritivo
@@ -184,5 +267,7 @@ namespace AjudeiMais.API.Controllers
                 });
             }
         }
+
+
     }
 }
