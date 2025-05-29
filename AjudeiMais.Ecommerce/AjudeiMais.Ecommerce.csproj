@@ -11,13 +11,11 @@
       <Content Remove="wwwroot\lib\bootstrap\**" />
       <EmbeddedResource Remove="wwwroot\lib\bootstrap\**" />
       <None Remove="wwwroot\lib\bootstrap\**" />
-      <None Include="Views\Categoria\_AtualizarCategoriaProduto.cshtml" />
       <None Include="wwwroot\favicon.png" />
       <None Include="wwwroot\img\brand\logo_icon.png" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Remove="Views\Categoria\_AtualizarCategoriaProduto.cshtml" />
       <Content Remove="Views\Home\Privacy.cshtml" />
       <Content Remove="Views\Instituicao\Pedidos.cshtml" />
     </ItemGroup>

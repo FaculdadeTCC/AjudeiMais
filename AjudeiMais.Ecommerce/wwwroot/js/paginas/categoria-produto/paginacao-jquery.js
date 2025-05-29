@@ -16,6 +16,7 @@
         $filteredRows.slice(startIndex, endIndex).show();
 
         renderPaginationControls(); // Update pagination controls based on current state
+        updatePaginationSummary(); // <--- CHAMA A NOVA FUNÇÃO AQUI
     }
 
     // Function to render pagination controls
@@ -73,6 +74,22 @@
         });
     }
 
+    // <--- NOVA FUNÇÃO PARA ATUALIZAR O RESUMO DA PAGINAÇÃO ---
+    function updatePaginationSummary() {
+        const totalFilteredResults = $filteredRows.length;
+        const startIndex = (currentPage - 1) * categoriesPerPage;
+        const endIndex = Math.min(startIndex + categoriesPerPage, totalFilteredResults); // Garante que não ultrapasse o total
+
+        let summaryText = '';
+        if (totalFilteredResults > 0) {
+            summaryText = `Mostrando ${startIndex + 1}-${endIndex} de ${totalFilteredResults} resultados`;
+        } else {
+            summaryText = 'Nenhum resultado encontrado.';
+        }
+        $('#paginationSummary').text(summaryText);
+    }
+    // <--- FIM DA NOVA FUNÇÃO ---
+
     // Search functionality
     $('#searchInput').on('keyup', function () {
         const searchText = $(this).val().toLowerCase().trim();
@@ -96,4 +113,3 @@
     // This will show the first page of categories and generate initial pagination controls
     displayRowsForPage();
 });
-

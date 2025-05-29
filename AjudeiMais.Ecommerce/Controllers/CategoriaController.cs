@@ -83,7 +83,13 @@ namespace AjudeiMais.Ecommerce.Controllers
 
 
         [RoleAuthorize("admin")]
-        public IActionResult _CadastroCategoriaProduto()
+        public IActionResult _CadastrarCategoriaProduto()
+        {
+            return PartialView();
+        } 
+        
+        [RoleAuthorize("admin")]
+        public IActionResult _EditarCategoriaProduto()
         {
             return PartialView();
         }
@@ -93,64 +99,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             return PartialView();
         }
-        [RoleAuthorize("admin")]
-        [HttpGet]
-        public async Task<IActionResult> _AtualizarCategoriaProduto(int id)
-        {
-            if (!User.Identity.IsAuthenticated)
-            {
-                return RedirectToRoute("usuario-perfil", new { guid = User.FindFirst("GUID").Value });
-            }
-
-            try
-            {
-                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
-
-                var response = await httpClient.GetAsync($"{BASE_URL}api/CategoriaProduto/{id}");
-
-                var apiResponseContent = await response.Content.ReadAsStringAsync();
-                ApiHelper.ApiResponse<CategoriaProdutoResponse> apiResponse = null;
-
-                try
-                {
-                    apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<CategoriaProdutoResponse>>(
-                        apiResponseContent,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                    );
-                }
-                catch (System.Text.Json.JsonException)
-                {
-                    return RedirectToRoute("admin-categorias-produto", new
-                    {
-                        alertType = "error",
-                        alertMessage = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
-                    });
-                }
-
-                if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
-                {
-                    return PartialView(apiResponse.Data);
-
-                }
-                else
-                {
-                    string alertType = apiResponse.Type;
-                    string alertMessage = apiResponse?.Message ?? "Não foi possível processar a requisição de cadastro. Tente novamente.";
-
-                    return RedirectToRoute("admin-categorias-produto", new { alertType = alertType, alertMessage = alertMessage });
-                }
-            }
-            catch (HttpRequestException)
-            {
-                return RedirectToRoute("admin-categorias-produto", new { alertType = "error", alertMessage = "Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com a nossa equipe." });
-            }
-            catch (Exception)
-            {
-                return RedirectToRoute("admin-categorias-produto", new { alertType = "error", alertMessage = "Ocorreu um erro inesperado durante o cadastro." });
-            }
-
-        }
-
+        
         [RoleAuthorize("admin")]
         [HttpPost]
         public async Task<IActionResult> Excluir(int CategoriaProduto_ID)

@@ -104,8 +104,8 @@ namespace AjudeiMais.API.Services
                     }
 
                     categoriaProduto.Nome = model.Nome ?? categoriaProduto.Nome;
-                    categoriaProduto.Nome = model.Icone ?? categoriaProduto.Icone;
-
+                    categoriaProduto.Icone = model.Icone ?? categoriaProduto.Icone;
+                    categoriaProduto.Habilitado = (bool)model.Habilitado;
                     categoriaProduto.DataUpdate = DateTime.Now;
 
                     await _categoriaProdutoRepository.SaveOrUpdate(categoriaProduto);
@@ -117,7 +117,7 @@ namespace AjudeiMais.API.Services
                         Nome = model.Nome,
                         Icone = model.Icone,
                         Excluido = false,
-                        Habilitado = true,
+                        Habilitado = (bool)model.Habilitado,
                         DataCadastro = DateTime.Now
                     };
 

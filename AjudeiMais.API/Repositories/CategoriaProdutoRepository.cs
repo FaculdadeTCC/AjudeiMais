@@ -30,7 +30,10 @@ namespace AjudeiMais.API.Repositories
         public async Task<IEnumerable<CategoriaProduto>> GetItens()
         {
             return await _context.CategoriaProduto
-                .Where(u => u.Excluido != true)
+                .Where(c => c.Excluido != true)
+                .OrderByDescending(c => c.DataCadastro)
+                .ThenByDescending(c => c.DataUpdate)
+                .ThenBy(c => c.Nome)
                 .ToListAsync();
         }
 

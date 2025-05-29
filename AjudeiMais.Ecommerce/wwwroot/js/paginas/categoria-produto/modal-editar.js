@@ -1,76 +1,69 @@
-﻿// wwwroot/js/paginas/categoria-produto/modal-edicao.js
+﻿
+// Script existente para o modal de criação
+document.addEventListener("DOMContentLoaded", function () {
+    const createCheckbox = document.getElementById('categoryStatus');
+    const createHiddenInput = document.getElementById('hiddenCategoryStatus');
 
-$(document).ready(function () {
-    // Listener de evento para o botão "Editar"
-    // Usando delegação de evento porque as linhas da tabela são carregadas dinamicamente (ex: paginação)
-    $(document).on('click', '.edit-category-btn', function (e) {
-        e.preventDefault(); // Previne o comportamento padrão do link
+    if (createCheckbox && createHiddenInput) {
+        createCheckbox.addEventListener('change', function () {
+            createHiddenInput.value = createCheckbox.checked ? 'true' : 'false';
+        });
+    }
 
-        var editUrl = $(this).attr('href'); // Obtém a URL do atributo href
+    // --- Novo script para o modal de edição ---
 
-        // Faz uma requisição AJAX para carregar a partial view de edição
-        $.ajax({
-            url: editUrl,
-            type: 'GET',
-            success: function (data) {
-                // Se a chamada AJAX for bem-sucedida, 'data' conterá o HTML da partial view (seu modal)
-                $('#modalEditCategoryContainer').html(data); // Insere o HTML do modal em um contêiner
-                $('#modalEditCategory').modal('show'); // Mostra o modal do Bootstrap
+    // Pega uma referência ao modal de edição
+    const editCategoryModal = document.getElementById('modalEditCategory');
 
-                // Inicializa o status do checkbox após o conteúdo do modal ser carregado
-                // Isso garante que o valor do input hidden corresponda ao estado do checkbox dos dados do modelo
-                const editCheckbox = document.getElementById('editCategoryStatus');
-                const hiddenEditInput = document.getElementById('hiddenEditCategoryStatus');
-                if (editCheckbox && hiddenEditInput) {
-                    editCheckbox.checked = (hiddenEditInput.value === 'true'); // Define o checkbox com base no input hidden
-                    editCheckbox.addEventListener('change', function () {
-                        hiddenEditInput.value = editCheckbox.checked ? 'true' : 'false';
-                    });
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Erro ao carregar o modal de edição:", error);
-                console.error("Status:", status);
-                console.error("Response Text:", xhr.responseText);
-                // Opcionalmente, exiba um alerta para o usuário
-                alert("Não foi possível carregar a categoria para edição. Tente novamente.");
+    // Adiciona um listener para quando o modal for mostrado (antes de animar)
+    if (editCategoryModal) {
+        editCategoryModal.addEventListener('show.bs.modal', function (event) {
+            // Botão que disparou o modal
+            const button = event.relatedTarget;
+
+            // Extrai as informações dos atributos data- do botão
+            const id = button.getAttribute('data-id');
+            const nome = button.getAttribute('data-nome');
+            const icone = button.getAttribute('data-icone');
+            const habilitado = button.getAttribute('data-habilitado') === 'true'; // Converte para booleano
+
+            // Pega referências aos elementos do formulário dentro do modal de edição
+            const modalTitle = editCategoryModal.querySelector('#modalEditCategoryLabel');
+            const inputId = editCategoryModal.querySelector('#editCategoryId');
+            const inputName = editCategoryModal.querySelector('#editCategoryName');
+            const inputIcon = editCategoryModal.querySelector('#editCategoryIcon');
+            const checkboxStatus = editCategoryModal.querySelector('#editCategoryStatus');
+            const hiddenInputStatus = editCategoryModal.querySelector('#hiddenEditCategoryStatus');
+
+            // Preenche o modal com os dados
+            if (modalTitle) {
+                modalTitle.textContent = `Editar Categoria: ${nome}`;
+            }
+            if (inputId) {
+                inputId.value = id;
+            }
+            if (inputName) {
+                inputName.value = nome;
+            }
+            if (inputIcon) {
+                inputIcon.value = icone;
+            }
+            if (checkboxStatus) {
+                checkboxStatus.checked = habilitado ? true : false;
+            }
+            if (hiddenInputStatus) {
+                hiddenInputStatus.checked = habilitado ? true : false;    
             }
         });
-    });
 
-    // Lida com o envio do formulário dentro do modal
-    // Isso é importante se você quiser enviar o formulário via AJAX em vez de recarregar a página
-    $(document).on('submit', '#editCategoryForm', function (e) {
-        e.preventDefault(); // Previne o envio padrão do formulário
+        // Adiciona um listener para a mudança do checkbox de status no modal de edição
+        const editCheckbox = document.getElementById('editCategoryStatus');
+        const editHiddenInput = document.getElementById('hiddenEditCategoryStatus');
 
-        var form = $(this);
-        var formData = new FormData(form[0]); // Obtém os dados do formulário, incluindo arquivos (se houver)
-        var actionUrl = form.attr('action');
-
-        $.ajax({
-            url: actionUrl,
-            type: 'POST',
-            data: formData,
-            processData: false, // Não processa os dados
-            contentType: false, // Não define o tipo de conteúdo (FormData fará isso)
-            success: function (response) {
-                // Supondo que seu controller retorne uma resposta JSON indicando sucesso/falha
-                if (response.success) {
-                    $('#modalEditCategory').modal('hide'); // Oculta o modal
-                    // Atualiza a tabela ou a linha específica
-                    // Por simplicidade, vamos apenas recarregar a página por enquanto (você pode otimizar isso depois)
-                    location.reload();
-                    // Ou, se você tiver uma atualização parcial, você poderia fazer:
-                    // window.location.href = '@Url.RouteUrl("admin-categorias-produto")?alertType=success&alertMessage=' + encodeURIComponent(response.message);
-                } else {
-                    // Exibe a mensagem de erro da resposta
-                    alert("Erro ao salvar: " + response.message);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Erro ao submeter o formulário de edição:", error);
-                alert("Ocorreu um erro ao salvar as alterações. Tente novamente.");
-            }
-        });
-    });
+        if (editCheckbox && editHiddenInput) {
+            editCheckbox.addEventListener('change', function () {
+                editHiddenInput.value = editCheckbox.checked ? 'true' : 'false';
+            });
+        }
+    }
 });

@@ -134,12 +134,6 @@ app.MapControllerRoute(
     pattern: "admin/categoria-do-produto/excluir",
     defaults: new { controller = "Categoria", action = "Excluir" }
 );
-
-app.MapControllerRoute(
-    name: "admin-categoria-produto-editar",
-    pattern: "admin/categoria-produto/editar/{id}",
-    defaults: new { controller = "Categoria", action = "_AtualizarCategoriaProduto" }
-);
 #endregion
 #endregion
 

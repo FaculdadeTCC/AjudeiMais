@@ -15,11 +15,11 @@
 	await Html.RenderPartialAsync("_Alertas");
 }
 
-<section class="container-fluid py-5">
+<section class="container-fluid">
 	<div id="modalEditCategoryContainer">
 	</div>
 	<div class="dashboard-container">
-		<div class="header-section">
+		<div class="header-section d-block d-md-flex">
 			<h2 class="h5 mb-0" style="font-family: var(--font-family-heading); font-weight: var(--font-weight-bold); color: var(--color-gray-100);">
 				Gerenciar Categorias de Produtos
 			</h2>
@@ -42,7 +42,7 @@
 		<div class="table-section table-responsive">
 			@if (Model != null && Model.Any())
 			{
-				<table class="table-hover mb-0 table align-middle">
+				<table class="table-hover mb-0 table-striped table align-middle">
 					<thead class="table-light">
 						<tr>
 							<th scope="col" style="font-family: var(--font-family-base); font-weight: var(--font-weight-medium);">Cadastro/Atualização</th>
@@ -72,13 +72,18 @@
 								</td>
 								<td class="text-center">
 									<a type="button" class="btn btn-sm btn-primary edit-category-btn"
-									   href="@Url.Action("_AtualizarCategoriaProduto", "Categoria", new { id = categoria.CategoriaProduto_ID})">
-										Editar
+									   data-bs-toggle="modal" data-bs-target="#modalEditCategory"
+									   data-id="@categoria.CategoriaProduto_ID"
+									   data-nome="@categoria.Nome"
+									   data-icone="@categoria.Icone"
+									   data-habilitado="@categoria.Habilitado">
+										<i class="fa fa-pencil"></i>
 									</a>
+
 									<button type="button" class="btn btn-sm btn-danger delete-category-btn"
 											data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
 											data-id="@categoria.CategoriaProduto_ID">
-										Excluir
+										<i class="fa fa-trash"></i>
 									</button>
 								</td>
 							</tr>
@@ -94,6 +99,10 @@
 			}
 		</div>
 
+		<div class="mt-2 text-center">
+			<span id="paginationSummary" class="text-muted" style="font-family: var(--font-family-base);"></span>
+		</div>
+
 		<div class="mt-4 d-flex justify-content-center">
 			<nav aria-label="Paginação de Categorias">
 				<ul class="pagination" id="paginationControls">
@@ -105,7 +114,8 @@
 </section>
 
 @* Modals for category operations *@
-@await Html.PartialAsync("_CadastroCategoriaProduto")
+@await Html.PartialAsync("_CadastrarCategoriaProduto")
+@await Html.PartialAsync("_EditarCategoriaProduto")
 @await Html.PartialAsync("_DeletarCategoriaProduto")
 
 @section Scripts {

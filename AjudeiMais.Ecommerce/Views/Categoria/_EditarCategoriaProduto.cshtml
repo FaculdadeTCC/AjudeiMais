@@ -1,0 +1,48 @@
+﻿<div class="modal fade" id="modalEditCategory" tabindex="-1" aria-labelledby="modalEditCategoryLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content shadow">
+			<div class="modal-header" style="background-color: var(--color-primary);">
+				<h5 class="modal-title text-white" id="modalEditCategoryLabel" style="font-family: var(--font-family-heading);">
+					Editar Categoria
+				</h5>
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
+			</div>
+			<div class="modal-body">
+				<form action="@Url.RouteUrl("admin-categoria-produto-cadastrar")" method="post" enctype="multipart/form-data">
+					<input type="hidden" name="CategoriaProduto_ID" id="editCategoryId" />
+					<div class="mb-3">
+						<label for="editCategoryName" class="form-label" style="font-family: var(--font-family-base);">Nome da Categoria</label>
+						<input type="text" name="Nome" class="form-control" id="editCategoryName" placeholder="Digite o nome" />
+					</div>
+					<div class="mb-3">
+						<label for="editCategoryIcon" class="form-label" style="font-family: var(--font-family-base);">Ícone (classe FontAwesome)</label>
+						<input type="text" name="Icone" class="form-control" id="editCategoryIcon" placeholder="ex: fa fa-book" />
+					</div>
+					<div class="form-check form-switch mb-3">
+						<input class="form-check-input" type="checkbox" id="editCategoryStatus">
+						<input type="hidden" name="Habilitado" id="hiddenEditCategoryStatus" value="true">
+						<label class="form-check-label" for="editCategoryStatus" style="font-family: var(--font-family-base);">
+							Ativar categoria
+						</label>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+						<button type="submit" class="btn btn-primary">Salvar Alterações</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const checkbox = document.getElementById('editCategoryStatus');
+		const hiddenInput = document.getElementById('hiddenEditCategoryStatus');
+
+		checkbox.addEventListener('change', function () {
+			hiddenInput.value = checkbox.checked ? 'true' : 'false';
+		});
+	});
+</script>

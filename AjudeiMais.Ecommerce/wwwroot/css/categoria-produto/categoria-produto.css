@@ -1,133 +1,344 @@
 ﻿/* Estilos para a página de Gerenciamento de Categorias */
 
-body {
-    background-color: var(--color-bg);
-    font-family: var(--font-family-base);
+
+main {
+    padding: 0 !important; /* Mantém o padding da main como 0, para controle total do dashboard */
 }
 
 .dashboard-container {
-    /* Removendo a aparência de "card" */
-    padding: var(--spacing-lg) var(--spacing-xl);
-    background-color: var(--color-surface);
-    min-height: calc(100vh - var(--spacing-xxl) * 2); /* Ensures it pushes footer down */
-    border-radius: 0; /* Remove border-radius for a more "full screen" feel, or use var(--radius-lg) for subtle corners */
-    box-shadow: none; /* Remove shadow */
+    padding: var(--spacing-lg) var(--spacing-xl); /* Espaçamento interno generoso */
+    min-height: calc(100vh - var(--spacing-xxl) * 2); /* Empurra o footer para baixo */
+    background-color: var(--color-bg); /* Garante que o fundo do container seja o mesmo do body */
+    /* Remove a aparência de "card" para uma sensação de "tela cheia" */
+    border-radius: 0;
+    box-shadow: none;
+    display: flex; /* Adicionado para organizar os elementos verticalmente */
+    flex-direction: column; /* Coloca os filhos em coluna */
+    gap: var(--spacing-lg); /* Espaçamento entre as seções do dashboard */
 }
 
+/* --- Seção do Cabeçalho (Header-section) --- */
 .header-section {
-    background-color: var(--color-primary);
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    background-color: var(--color-primary); /* Fundo primário para destaque */
+    padding: var(--spacing-md) var(--spacing-lg); /* Padding para o conteúdo interno */
+    border-radius: var(--radius-lg); /* Bordas arredondadas suaves para o cabeçalho completo */
     display: flex;
+    flex-wrap: wrap; /* Permite que os itens quebrem a linha em telas menores */
     justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--spacing-lg);
+    gap: var(--spacing-md); /* Espaçamento entre o título e o botão */
+    margin-bottom: var(--spacing-md); /* Reduz um pouco o espaçamento para a busca */
+    box-shadow: var(--shadow-sm); /* Sombra sutil para "elevar" o cabeçalho */
 }
 
-.table-section {
-    background-color: var(--color-surface);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    box-shadow: var(--shadow-md); /* Keep a subtle shadow for the table itself */
+    .header-section h2 {
+        font-family: var(--font-family-heading);
+        font-weight: var(--font-weight-bold);
+        color: var(--color-gray-100); /* Título em branco para contraste */
+        font-size: var(--font-size-xl); /* Um pouco maior para destaque */
+        margin-bottom: 0; /* Remove margem inferior padrão do h2 */
+    }
+
+    .header-section .btn-outline-light {
+        color: var(--color-gray-100);
+        border-color: var(--color-gray-100);
+        transition: all 0.3s ease;
+        font-family: var(--font-family-accent); /* Fonte de destaque para botões */
+        font-weight: var(--font-weight-medium); /* Peso da fonte adequado */
+        padding: var(--spacing-xs) var(--spacing-md); /* Padding confortável */
+        border-radius: var(--radius-md); /* Bordas arredondadas */
+    }
+
+        .header-section .btn-outline-light:hover {
+            background-color: var(--color-gray-100);
+            color: var(--color-primary); /* Inverte as cores no hover */
+        }
+
+/* --- Seção de Busca (Input Group) --- */
+.input-group.shadow-sm {
+    border-radius: var(--radius-md); /* Arredonda todo o input group */
+    overflow: hidden; /* Garante que o raio da borda seja aplicado corretamente */
+    margin-bottom: var(--spacing-xl); /* Mais espaçamento após a busca */
 }
-
-.table {
-    --bs-table-bg: var(--color-surface);
-    --bs-table-hover-bg: var(--color-gray-200);
-}
-
-    .table thead {
-        background-color: var(--color-gray-300);
-    }
-
-    .table th {
-        color: var(--color-gray-800);
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-
-    .table td {
-        padding: var(--spacing-sm) var(--spacing-md);
-        color: var(--color-gray-700);
-    }
-
-.btn-outline-light {
-    color: var(--color-gray-100);
-    border-color: var(--color-gray-100);
-    transition: all 0.3s ease;
-}
-
-    .btn-outline-light:hover {
-        background-color: var(--color-gray-100);
-        color: var(--color-primary);
-    }
 
 .input-group-text {
     background-color: var(--color-gray-300);
     border-color: var(--color-gray-300);
     color: var(--color-gray-700);
-    border-top-left-radius: var(--radius-md);
-    border-bottom-left-radius: var(--radius-md);
+    /* Removido border-top/bottom-left-radius pois o pai já tem border-radius */
+    padding: var(--spacing-sm) var(--spacing-md); /* Padding uniforme */
+    font-size: var(--font-size-md);
 }
 
 .form-control {
     border-color: var(--color-gray-300);
-    border-top-right-radius: var(--radius-md);
-    border-bottom-right-radius: var(--radius-md);
+    /* Removido border-top/bottom-right-radius pois o pai já tem border-radius */
     padding-left: var(--spacing-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+    color: var(--color-gray-800); /* Cor do texto digitado */
 }
 
-    .form-control:focus {
-        border-color: var(--color-secondary);
-        box-shadow: 0 0 0 0.25rem rgba(125, 131, 255, 0.25);
+    .form-control::placeholder {
+        color: var(--color-gray-500); /* Cor mais suave para o placeholder */
     }
 
+    .form-control:focus {
+        border-color: var(--color-secondary); /* Borda secundária no foco */
+        box-shadow: 0 0 0 0.25rem rgba(125, 131, 255, 0.25); /* Sombra mais vibrante */
+    }
+
+/* --- Seção da Tabela (Table-section) --- */
+.table-section {
+    background-color: var(--color-surface); /* Fundo branco para a tabela */
+    border-radius: var(--radius-lg); /* Bordas mais arredondadas para a seção da tabela */
+    overflow: hidden; /* Esconde qualquer conteúdo que transborde e garante o border-radius */
+    box-shadow: var(--shadow-md); /* Sombra sutil para "elevar" a tabela */
+    flex-grow: 1; /* Permite que a tabela ocupe o espaço restante */
+}
+
+.table {
+    --bs-table-bg: var(--color-surface);
+    --bs-table-hover-bg: var(--color-gray-200); /* Fundo suave no hover */
+    margin-bottom: 0; /* Remove a margem inferior padrão da tabela */
+}
+
+    .table thead {
+        background-color: var(--color-gray-300); /* Fundo cinza para o cabeçalho da tabela */
+    }
+
+    .table th {
+        color: var(--color-gray-800);
+        padding: var(--spacing-sm) var(--spacing-md);
+        font-family: var(--font-family-base); /* Fonte base para consistência */
+        font-weight: var(--font-weight-bold); /* Títulos da coluna em negrito */
+        font-size: var(--font-size-sm); /* Um pouco menor para as colunas */
+        text-transform: uppercase; /* Deixa os títulos das colunas em maiúsculas */
+        letter-spacing: 0.05em; /* Espaçamento entre letras para legibilidade */
+        white-space: nowrap; /* Evita que o texto quebre em telas pequenas */
+    }
+
+    .table td {
+        padding: var(--spacing-sm) var(--spacing-md);
+        color: var(--color-gray-700);
+        font-size: var(--font-size-sm); /* Texto do corpo da tabela */
+        vertical-align: middle; /* Alinha o conteúdo verticalmente ao centro */
+    }
+
+/* Status Badges */
 .badge {
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-bold); /* Negrito para os badges */
     padding: var(--spacing-xxs) var(--spacing-xs);
     border-radius: var(--radius-sm);
+    font-size: var(--font-size-xs); /* Tamanho menor para badges */
+    min-width: 60px; /* Garante uma largura mínima para consistência */
+    display: inline-flex; /* Permite alinhamento vertical e padding interno */
+    justify-content: center;
+    align-items: center;
 }
 
-/* Pagination styles for jQuery pagination */
-.pagination .page-item .page-link {
-    color: var(--color-primary);
-    background-color: var(--color-surface);
-    border: 1px solid var(--color-gray-300);
+/* Ícone da Categoria na Tabela */
+.table td .fa-lg {
+    color: var(--color-secondary); /* Usa a cor secundária para os ícones */
+    font-size: var(--font-size-xl); /* Ícones um pouco maiores para visibilidade */
+}
+
+/* --- Botões de Ação na Tabela --- */
+.table td .btn {
     font-family: var(--font-family-accent);
     font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm); /* Tamanho padrão para botões de ação */
+    padding: var(--spacing-xxs) var(--spacing-xs); /* Padding compacto */
+    border-radius: var(--radius-sm); /* Bordas mais arredondadas */
+    transition: all 0.2s ease-in-out; /* Transição suave para hover */
+    margin: 0 var(--spacing-xxs); /* Pequena margem entre os botões */
+    min-width: 70px; /* Largura mínima para botões */
 }
 
-.pagination .page-item.active .page-link {
-    background-color: var(--color-secondary);
-    border-color: var(--color-secondary);
+.btn-primary { /* Estilos para o botão "Editar" */
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
     color: var(--color-gray-100);
 }
 
-.pagination .page-item .page-link:hover {
-    background-color: var(--color-secondary-light);
-    color: var(--color-primary-dark);
-    border-color: var(--color-secondary-light);
-}
-
-.btn-outline-primary {
-    color: var(--color-primary);
-    border-color: var(--color-primary);
-}
-
-    .btn-outline-primary:hover {
-        background-color: var(--color-primary);
-        color: var(--color-gray-100);
+    .btn-primary:hover {
+        background-color: var(--color-primary-dark);
+        border-color: var(--color-primary-dark);
     }
 
-.btn-outline-danger {
-    color: var(--color-danger);
+.btn-danger { /* Estilos para o botão "Excluir" */
+    background-color: var(--color-danger);
     border-color: var(--color-danger);
+    color: var(--color-gray-100);
 }
 
-    .btn-outline-danger:hover {
-        background-color: var(--color-danger);
+    .btn-danger:hover {
+        background-color: darken(var(--color-danger), 10%); /* Escurece um pouco no hover (precisa de Sass ou JS para isso, ou defina uma var para hover) */
+        /* Alternativa para o hover: */
+        background-color: #C82333; /* Uma cor um pouco mais escura para o hover de danger */
+        border-color: #BD2130;
+    }
+
+
+/* --- Paginação --- */
+.pagination {
+    margin-top: var(--spacing-xl); /* Mais espaçamento acima da paginação */
+    margin-bottom: var(--spacing-lg); /* Margem inferior para alinhar com o footer */
+}
+
+    .pagination .page-item .page-link {
+        color: var(--color-primary);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-gray-300);
+        font-family: var(--font-family-accent);
+        font-weight: var(--font-weight-medium);
+        border-radius: var(--radius-sm); /* Bordas arredondadas para os links de paginação */
+        min-width: 40px; /* Largura mínima para botões de paginação */
+        text-align: center;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: var(--color-secondary);
+        border-color: var(--color-secondary);
+        color: var(--color-gray-100);
+        box-shadow: var(--shadow-sm); /* Sombra sutil para o item ativo */
+    }
+
+    .pagination .page-item .page-link:hover {
+        background-color: var(--color-secondary-light);
+        color: var(--color-primary-dark); /* Texto mais escuro no hover para contraste */
+        border-color: var(--color-secondary-light);
+        box-shadow: var(--shadow-sm); /* Sombra no hover */
+    }
+
+/* --- Estilos para o Partial _Alertas --- */
+/* (Assumindo que seus alertas Bootstrap já são bem estilizados, mas se quiser ajustar) */
+.alert {
+    margin-bottom: var(--spacing-lg); /* Garante que os alertas tenham espaçamento */
+    border-radius: var(--radius-md);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+}
+
+
+/* --- Media Queries para Responsividade --- */
+@media (max-width: 767.98px) { /* Para telas pequenas (mobile) */
+    .dashboard-container {
+        padding: var(--spacing-md); /* Reduz o padding em telas menores */
+        gap: var(--spacing-md); /* Reduz o gap entre as seções */
+    }
+
+    .header-section {
+        flex-direction: column; /* Empilha título e botão em telas menores */
+        align-items: flex-start; /* Alinha o conteúdo à esquerda */
+        text-align: left;
+        padding: var(--spacing-sm) var(--spacing-md);
+    }
+
+        .header-section h2 {
+            font-size: var(--font-size-lg); /* Reduz o tamanho do título em mobile */
+            margin-bottom: var(--spacing-sm); /* Adiciona um pouco de margem abaixo do título */
+        }
+
+        .header-section .btn-outline-light {
+            width: 100%; /* Botão ocupa a largura total */
+            text-align: center;
+            margin-top: var(--spacing-sm); /* Espaçamento do botão para o título */
+        }
+
+    .table-responsive {
+        /* A classe .table-responsive já cuida da rolagem horizontal.
+           Apenas garanta que não haja nada a sobrescrevendo aqui. */
+    }
+
+    .table th,
+    .table td {
+        padding: var(--spacing-xs) var(--spacing-sm); /* Padding menor nas células da tabela */
+        font-size: var(--font-size-sm);
+    }
+
+        .table td .btn {
+            min-width: unset; /* Remove largura mínima para botões em mobile */
+            margin: var(--spacing-xxs) 0; /* Ajusta a margem para empilhar botões se necessário */
+            display: block; /* Faz com que os botões se empilhem */
+        }
+
+    .pagination .page-item .page-link {
+        min-width: 32px; /* Reduz a largura mínima para links de paginação em mobile */
+        padding: var(--spacing-xxs) var(--spacing-xs); /* Padding menor */
+    }
+}
+
+/* --- Estilos para o Modal --- */
+/* (Assumindo que os modais usam as classes do Bootstrap) */
+.modal-content {
+    border-radius: var(--radius-lg); /* Bordas mais arredondadas para os modais */
+    box-shadow: var(--shadow-lg); /* Sombra mais pronunciada para o modal */
+    font-family: var(--font-family-base);
+}
+
+.modal-header {
+    background-color: var(--color-primary); /* Fundo primário */
+    color: var(--color-gray-100); /* Texto branco */
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0; /* Apenas no topo */
+    padding: var(--spacing-md) var(--spacing-lg); /* Padding */
+}
+
+.modal-title {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-xl);
+}
+
+.modal-body {
+    padding: var(--spacing-lg); /* Padding interno generoso */
+}
+
+    .modal-body .form-label {
+        font-family: var(--font-family-base);
+        font-weight: var(--font-weight-medium);
+        color: var(--color-gray-700);
+        margin-bottom: var(--spacing-xxs); /* Espaçamento menor para o label */
+        font-size: var(--font-size-sm); /* Tamanho menor para labels */
+    }
+
+.modal-footer {
+    padding: var(--spacing-md) var(--spacing-lg); /* Padding consistente */
+    border-top: 1px solid var(--color-gray-300); /* Linha divisória suave */
+}
+
+    .modal-footer .btn {
+        font-family: var(--font-family-accent);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-md);
+        padding: var(--spacing-xs) var(--spacing-md);
+        border-radius: var(--radius-md);
+    }
+
+    .modal-footer .btn-secondary {
+        background-color: var(--color-gray-400);
+        border-color: var(--color-gray-400);
+        color: var(--color-gray-900);
+    }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: var(--color-gray-500);
+            border-color: var(--color-gray-500);
+            color: var(--color-gray-100);
+        }
+
+    .modal-footer .btn-primary {
+        background-color: var(--color-accent); /* Usar a cor de acento para o botão de salvar principal */
+        border-color: var(--color-accent);
         color: var(--color-gray-100);
     }
 
-.text-secondary {
-    color: var(--color-secondary) !important;
+        .modal-footer .btn-primary:hover {
+            background-color: var(--color-accent-dark);
+            border-color: var(--color-accent-dark);
+        }
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Ajusta o 'x' para branco */
 }
