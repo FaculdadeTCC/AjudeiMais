@@ -49,10 +49,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 inputIcon.value = icone;
             }
             if (checkboxStatus) {
-                checkboxStatus.checked = habilitado ? true : false;
+                checkboxStatus.checked = habilitado ? 'true' : 'false';
             }
             if (hiddenInputStatus) {
-                hiddenInputStatus.checked = habilitado ? true : false;    
+                hiddenInputStatus = habilitado ? 'true' : 'false';    
             }
         });
 

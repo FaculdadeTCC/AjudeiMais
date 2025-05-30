@@ -24,6 +24,7 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
+        public string UnidadeMedida { get; set; }
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
 

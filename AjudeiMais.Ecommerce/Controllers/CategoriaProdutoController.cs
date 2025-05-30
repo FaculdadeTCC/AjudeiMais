@@ -26,7 +26,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
 
         [RoleAuthorize("admin")]
-        public async Task<IActionResult> Index() 
+        public async Task<IActionResult> Index()
         {
             if (!User.Identity.IsAuthenticated)
             {
@@ -35,49 +35,28 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             try
             {
-                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+                var apiResponse = await ApiHelper.ListAllCategoriasProdutoAtivosAsync(_httpClientFactory);
 
-                var response = await httpClient.GetAsync($"{BASE_URL}api/CategoriaProduto/ativos");
-
-                var apiResponseContent = await response.Content.ReadAsStringAsync();
-                ApiHelper.ApiResponse<List<CategoriaProdutoResponse>> apiResponse = null;
-
-                try
-                {
-                    apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<List<CategoriaProdutoResponse>>>(
-                        apiResponseContent,
-                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                    );
-                }
-                catch (System.Text.Json.JsonException)
-                {
-                    return RedirectToRoute("admin-categorias-produto", new
-                    {
-                        alertType = "error",
-                        alertMessage = "Ocorreu um erro no formato da resposta da API. Contacte o suporte."
-                    });
-                }
-
-                if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                if (apiResponse.Success)
                 {
                     return View(apiResponse.Data);
-
                 }
                 else
                 {
-                    string alertType = apiResponse.Type;
-                    string alertMessage = apiResponse?.Message ?? "Não foi possível processar a requisição de cadastro. Tente novamente.";
-
-                    return RedirectToRoute("admin-categorias-produto", new { alertType = alertType, alertMessage = alertMessage });
+                    return RedirectToRoute("admin-categorias-produto", new
+                    {
+                        alertType = apiResponse.Type,
+                        alertMessage = apiResponse.Message
+                    });
                 }
             }
-            catch (HttpRequestException)
+            catch (Exception ex)
             {
-                return RedirectToRoute("admin-categorias-produto", new { alertType = "error", alertMessage = "Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com a nossa equipe." });
-            }
-            catch (Exception)
-            {
-                return RedirectToRoute("admin-categorias-produto", new { alertType = "error", alertMessage = "Ocorreu um erro inesperado durante o cadastro." });
+                return RedirectToRoute("admin-categorias-produto", new
+                {
+                    alertType = "error",
+                    alertMessage = "Ocorreu um erro inesperado ao carregar as categorias. Tente novamente mais tarde."
+                });
             }
         }
 
@@ -86,8 +65,8 @@ namespace AjudeiMais.Ecommerce.Controllers
         public IActionResult _CadastrarCategoriaProduto()
         {
             return PartialView();
-        } 
-        
+        }
+
         [RoleAuthorize("admin")]
         public IActionResult _EditarCategoriaProduto()
         {
@@ -99,7 +78,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             return PartialView();
         }
-        
+
         [RoleAuthorize("admin")]
         [HttpPost]
         public async Task<IActionResult> Excluir(int CategoriaProduto_ID)

@@ -138,6 +138,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync("Cookies");
+
             return RedirectToRoute("home");
         }
 

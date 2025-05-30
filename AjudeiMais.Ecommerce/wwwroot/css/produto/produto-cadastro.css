@@ -1,6 +1,7 @@
 ﻿main {
-    background: linear-gradient(45deg, var(--color-accent), var(--color-primary)) !important;
+    background: linear-gradient(45deg, var(--color-primary-light), var(--color-primary)) !important;
 }
+
 /* === Estrutura do Card Principal === */
 .manage-ad-section {
     background: var(--color-surface);
@@ -27,28 +28,46 @@
         position: relative;
         font-family: var(--font-family-accent);
         font-weight: var(--font-weight-medium);
-        color: var(--color-gray-700);
+        /* Cor do texto para abas NÃO ATIVAS:
+           Agora, vamos usar um tom mais escuro de cinza para a cor padrão,
+           dando a sensação de "mais escuro" ou "menos em evidência". */
+        color: var(--color-gray-600); /* Era var(--color-gray-700), deixei um pouco mais claro para não parecer "apagado" demais */
+        background-color: var(--color-gray-100); /* Um fundo levemente cinza para dar a ideia de escuro/desativado */
         padding: var(--spacing-sm) var(--spacing-md);
-        transition: color 0.3s;
+        transition: color 0.3s, background-color 0.3s; /* Adicionado transition para background */
+        border-top-left-radius: var(--radius-sm); /* Arredonda as bordas da aba */
+        border-top-right-radius: var(--radius-sm);
+        margin-right: var(--spacing-xs); /* Pequeno espaçamento entre as abas */
+        border: 1px solid var(--color-gray-300); /* Borda padrão para as abas */
+        border-bottom: none; /* Remove a borda inferior, pois a linha da tab-content fará isso */
     }
 
-        .nav-tabs .nav-link:hover {
-            color: var(--color-primary);
+        /* Hover para abas NÃO ATIVAS */
+        .nav-tabs .nav-link:not(.active):hover { /* Aplicar hover apenas se não for a aba ativa */
+            color: var(--color-primary); /* Ao passar o mouse, a cor do texto fica mais vibrante */
+            background-color: var(--color-gray-200); /* Fundo um pouco mais claro no hover */
+            border-color: var(--color-gray-400); /* Borda mais escura no hover */
         }
 
         .nav-tabs .nav-link.active {
-            color: var(--color-primary-dark);
+            color: var(--color-primary-dark); /* Texto da aba ativa fica mais escuro/principal */
+            background-color: var(--color-surface); /* Fundo da aba ativa (branco ou cor principal) */
+            border-color: var(--color-gray-300); /* Mantém a borda igual ou similar à barra de tabs */
+            border-bottom-color: transparent; /* A linha de destaque subistitui a borda inferior */
+            font-weight: var(--font-weight-bold); /* Deixa o texto da aba ativa em negrito para destaque */
+            z-index: 1; /* Garante que a aba ativa fique por cima visualmente */
         }
 
             .nav-tabs .nav-link.active::after {
                 content: '';
                 position: absolute;
-                bottom: -2px;
+                bottom: -2px; /* Ajusta para cobrir a borda inferior da nav-tabs */
                 left: 0;
                 right: 0;
                 height: 4px;
                 background: linear-gradient(90deg, var(--color-secondary), var(--color-accent));
                 border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+                z-index: 2; /* Garante que a linha de destaque fique acima de tudo */
             }
 
 /* === Conteúdo das Tabs === */
@@ -57,10 +76,12 @@
 }
 
 .tab-pane {
-    background: var(--color-gray-200);
+    background: var(--color-gray-200); /* Fundo padrão para o conteúdo da tab */
     padding: var(--spacing-lg);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-md);
+    border: 1px solid var(--color-gray-300); /* Adiciona uma borda ao conteúdo da tab */
+    border-top-left-radius: 0; /* Remove o arredondamento superior esquerdo para encaixar na aba ativa */
 }
 
 /* === Campos Customizados === */
@@ -171,7 +192,7 @@
         outline: 3px solid var(--color-focus);
     }
 
-.button {
+.button { /* Botões secundários (Voltar, Adicionar Mais Imagens) */
     background: transparent;
     color: var(--color-gray-700);
     border: 1px solid var(--color-gray-400);
@@ -180,7 +201,7 @@
     font-family: var(--font-family-accent);
     font-weight: var(--font-weight-medium);
     transition: background 0.3s, border-color 0.3s, color 0.3s;
-    margin-right: var(--spacing-md); /* separa dos demais botões */
+    margin-right: var(--spacing-md);
 }
 
     .button:hover {
@@ -194,6 +215,6 @@
         background: var(--color-gray-100);
     }
 
-    footer {
-        display: none;
-    }
+footer {
+    display: none;
+}

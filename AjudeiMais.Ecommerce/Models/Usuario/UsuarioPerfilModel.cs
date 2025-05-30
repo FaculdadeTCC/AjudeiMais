@@ -30,7 +30,6 @@ namespace AjudeiMais.Ecommerce.Models.Usuario
         // Propriedades que variam em tipo ou uso
         public string? GUID { get; set; } // Pode ser nulo no cadastro inicial
         public string? FotoDePerfil { get; set; } // Para exibir a URL da foto existente
-        public IFormFile? NovaFotoDePerfil { get; set; } // Para o upload de uma nova foto
 
         // Propriedades de geolocalização (ajustando o tipo)
         public string? Latitude { get; set; }

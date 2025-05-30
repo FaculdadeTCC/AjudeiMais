@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 using AjudeiMais.Ecommerce.Models.Usuario;
+using AjudeiMais.Ecommerce.Models.CategoriaProduto;
 
 namespace AjudeiMais.Ecommerce.Models.Produto
 {
@@ -20,8 +21,10 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
+        public string UnidadeMedida { get; set; }
 
         public List<IFormFile> ProdutoImagens { get; set; }
+        public List<CategoriaProdutoResponse>? Categorias { get; set; }
 
         [ForeignKey("Usuario")]
         public int Usuario_ID { get; set; }

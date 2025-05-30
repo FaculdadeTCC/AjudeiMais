@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 // using Newtonsoft.Json; // Manter se ainda usar em outros lugares, mas System.Text.Json é o padrão moderno
 using Microsoft.AspNetCore.Mvc; // Para ProblemDetails
 using AjudeiMais.Ecommerce.Models.Usuario;
-using AjudeiMais.Ecommerce.Models.Instituicao; // Para CategoriaModel e InstituicaoPerfilModel
+using AjudeiMais.Ecommerce.Models.Instituicao;
+using AjudeiMais.Ecommerce.Models.CategoriaProduto; // Para CategoriaModel e InstituicaoPerfilModel
 
 namespace AjudeiMais.Ecommerce.Tools
 {
@@ -23,11 +24,6 @@ namespace AjudeiMais.Ecommerce.Tools
             public T? Data { get; set; }
         }
 
-        /// <summary>
-        /// Busca todos as categorias da API.
-        /// </summary>
-        /// <param name="httpClientFactory">Factory para criar instâncias de HttpClient.</param>
-        /// <returns>Uma tupla contendo uma lista de CategoriaModel se encontrado, e uma mensagem de erro caso contrário.</returns>
         public static async Task<(List<CategoriaDtoGet>? categorias, string? errorMessage)> ListAllCategoriasAsync(
             IHttpClientFactory httpClientFactory)
         {
@@ -88,6 +84,195 @@ namespace AjudeiMais.Ecommerce.Tools
             }
         }
 
+        /// <summary>
+        /// Lista todas as categorias de produto ativas da API.
+        /// </summary>
+        /// <param name="httpClientFactory">Fábrica para criar instâncias de HttpClient.</param>
+        /// <returns>Um ApiResponse contendo a lista de categorias ou informações de erro.</returns>
+        public static async Task<ApiResponse<List<CategoriaProdutoResponse>>> ListAllCategoriasProdutoAtivosAsync(
+            IHttpClientFactory httpClientFactory)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient("ApiAjudeiMais");
+                string requestUri = $"{BASE_URL}api/CategoriaProduto/ativos";
+
+                var response = await client.GetAsync(requestUri);
+                var apiResponseContent = await response.Content.ReadAsStringAsync();
+
+                ApiResponse<List<CategoriaProdutoResponse>> apiResponse;
+
+                try
+                {
+                    // Tenta desserializar diretamente para ApiResponse<List<CategoriaProdutoResponse>>
+                    apiResponse = JsonSerializer.Deserialize<ApiResponse<List<CategoriaProdutoResponse>>>(
+                        apiResponseContent,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                catch (JsonException jsonEx)
+                {
+                    // Se houver um erro na desserialização JSON, retorna um ApiResponse de erro
+                    return new ApiResponse<List<CategoriaProdutoResponse>>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Ocorreu um erro no formato da resposta da API ao listar categorias. Contacte o suporte."
+                    };
+                }
+
+                // Verifica o status HTTP e o sucesso da resposta da API
+                if (!response.IsSuccessStatusCode || apiResponse == null || !apiResponse.Success)
+                {
+                    // Retorna a mensagem de erro da API, ou uma mensagem genérica se não disponível
+                    return new ApiResponse<List<CategoriaProdutoResponse>>
+                    {
+                        Success = false,
+                        Type = apiResponse?.Type ?? "error",
+                        Message = apiResponse?.Message ?? "Não foi possível listar as categorias. Tente novamente."
+                    };
+                }
+
+                // Se tudo estiver OK, retorna o ApiResponse completo com os dados
+                return apiResponse;
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Captura erros de rede ou conexão com a API
+                return new ApiResponse<List<CategoriaProdutoResponse>>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online."
+                };
+            }
+            catch (Exception ex)
+            {
+                // Captura quaisquer outros erros inesperados
+                return new ApiResponse<List<CategoriaProdutoResponse>>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = $"Ocorreu um erro inesperado ao listar categorias: {ex.Message}"
+                };
+            }
+        }
+
+        public static async Task<(List<UsuarioPerfilModel>? usuarios, string? errorMessage)> ListAllUsuariosAtivosAsync(
+       IHttpClientFactory httpClientFactory)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient("ApiAjudeiMais");
+                string requestUri = $"{BASE_URL}api/Usuario/ativos";
+
+                var response = await client.GetAsync(requestUri);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
+                    var usuarios = JsonSerializer.Deserialize<List<UsuarioPerfilModel>>(
+                        content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return (usuarios, null);
+                }
+                else
+                {
+                    // Erro HTTP (4xx, 5xx)
+                    ProblemDetails? problemDetails = null;
+                    try
+                    {
+                        problemDetails = JsonSerializer.Deserialize<ProblemDetails>(
+                            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (JsonException)
+                    {
+                        // Não é um ProblemDetails, usa o conteúdo bruto como mensagem de erro
+                    }
+
+                    string errorMsg = problemDetails?.Detail ?? problemDetails?.Title ?? content;
+                    if (string.IsNullOrWhiteSpace(errorMsg))
+                    {
+                        errorMsg = $"Erro ao listar usuários: {response.ReasonPhrase} (Status: {response.StatusCode})";
+                    }
+                    return (null, errorMsg);
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Erros de rede ou conexão
+                return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
+            }
+            catch (JsonException jsonEx)
+            {
+                // Erros de desserialização JSON
+                return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar usuários: {jsonEx.Message}.");
+            }
+            catch (Exception ex)
+            {
+                // Quaisquer outros erros inesperados
+                return (null, $"Ocorreu um erro inesperado ao listar usuários: {ex.Message}");
+            }
+        }
+
+        public static async Task<(List<InstituicaoModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
+       IHttpClientFactory httpClientFactory)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient("ApiAjudeiMais");
+                string requestUri = $"{BASE_URL}api/Instituicao/ativos";
+
+                var response = await client.GetAsync(requestUri);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
+                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoModel>>(
+                        content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    return (instituicoes, null);
+                }
+                else
+                {
+                    // Erro HTTP (4xx, 5xx)
+                    ProblemDetails? problemDetails = null;
+                    try
+                    {
+                        problemDetails = JsonSerializer.Deserialize<ProblemDetails>(
+                            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (JsonException)
+                    {
+                        // Não é um ProblemDetails, usa o conteúdo bruto como mensagem de erro
+                    }
+
+                    string errorMsg = problemDetails?.Detail ?? problemDetails?.Title ?? content;
+                    if (string.IsNullOrWhiteSpace(errorMsg))
+                    {
+                        errorMsg = $"Erro ao listar instituições: {response.ReasonPhrase} (Status: {response.StatusCode})";
+                    }
+                    return (null, errorMsg);
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Erros de rede ou conexão
+                return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
+            }
+            catch (JsonException jsonEx)
+            {
+                // Erros de desserialização JSON
+                return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar instituições: {jsonEx.Message}.");
+            }
+            catch (Exception ex)
+            {
+                // Quaisquer outros erros inesperados
+                return (null, $"Ocorreu um erro inesperado ao listar instituições: {ex.Message}");
+            }
+        }
         // Método estático para buscar usuário por GUID
         public static async Task<(UsuarioPerfilModel? Usuario, string? ErrorMessage)> GetUsuarioByGuidAsync(
             IHttpClientFactory httpClientFactory, string guid)
