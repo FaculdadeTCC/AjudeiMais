@@ -69,17 +69,26 @@ namespace AjudeiMais.API.Controllers
         }
 
 
-        [HttpGet("imagensProduto")]
+        [HttpGet("imagensProduto/{produtoId}")]
         public async Task<IActionResult> GetImagensPorProduto(int produtoId)
         {
             try
             {
-                var imagensDoProduto = await _service.GetImagensPorProduto(produtoId);
-                return Ok(imagensDoProduto);
+                var result = await _service.GetImagensPorProduto(produtoId);
+
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ex.Message);
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
             }
         }
 

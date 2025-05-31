@@ -20,41 +20,41 @@ namespace AjudeiMais.API.Controllers
             _usuarioService = usuarioService;
         }
 
-        /// <summary>
-        /// Retorna todos os produtos.
-        /// </summary>
-        /// <returns>Lista de produtos.</returns>
-        [HttpGet]
-        public async Task<IActionResult> GetAllProdutos()
-        {
-            try
-            {
-                //var produtos = await _service.GetAll();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        ///// <summary>
+        ///// Retorna todos os produtos.
+        ///// </summary>
+        ///// <returns>Lista de produtos.</returns>
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllProdutos()
+        //{
+        //    try
+        //    {
+        //        //var produtos = await _service.GetAll();
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
-        /// <summary>
-        /// Retorna todos os produtos ativos (habilitados e não excluídos).
-        /// </summary>
-        /// <returns>Lista de produtos ativos.</returns>
-        [HttpGet("ativos")]
-        public async Task<IActionResult> GetProdutosAtivos()
-        {
-            try
-            {
-                //var produtosAtivos = await _service.GetItens();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        ///// <summary>
+        ///// Retorna todos os produtos ativos (habilitados e não excluídos).
+        ///// </summary>
+        ///// <returns>Lista de produtos ativos.</returns>
+        //[HttpGet("ativos")]
+        //public async Task<IActionResult> GetProdutosAtivos()
+        //{
+        //    try
+        //    {
+        //        //var produtosAtivos = await _service.GetItens();
+        //        return Ok();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
 
         /// <summary>
         /// Cria ou atualiza um produto.
@@ -141,43 +141,60 @@ namespace AjudeiMais.API.Controllers
         //    }
         //}
 
-        ///// <summary>
-        ///// Retorna todos os produtos pertencentes a um usuário.
-        ///// </summary>
-        ///// <param name="usuarioId">ID do usuário.</param>
-        ///// <returns>Lista de produtos do usuário.</returns>
-        //[HttpGet("usuario/{usuarioId}")]
-        //public async Task<IActionResult> GetProdutosByUsuarioId(int usuarioId)
-        //{
-        //    try
-        //    {
-        //        var produtos = await _service.GetByUsuarioId(usuarioId);
-        //        return Ok(produtos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        /// <summary>
+        /// Retorna todos os produtos pertencentes a um usuário.
+        /// </summary>
+        /// <returns>Lista de produtos do usuário.</returns>
+        [HttpGet("usuario/{guid}")]
+        public async Task<IActionResult> GetProdutosByUsuarioGuid(string guid)
+        {
+            try
+            {
+                var result = await _service.GetProdutosByUsuarioGuid(guid);
 
-        ///// <summary>
-        ///// Retorna os produtos (anúncios) próximos a uma localização (latitude e longitude).
-        ///// </summary>
-        ///// <param name="lat">Latitude do ponto de referência.</param>
-        ///// <param name="lng">Longitude do ponto de referência.</param>
-        ///// <returns>Lista de produtos próximos.</returns>
-        //[HttpGet("proximos")]
-        //public async Task<IActionResult> GetProdutosProximos(double lat, double lng)
-        //{
-        //    try
-        //    {
-        //        var produtosProximos = await _service.GetProdutosProximos(lat, lng);
-        //        return Ok(produtosProximos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
+
+        /// <summary>
+        /// Retorna os produtos (anúncios) próximos a uma localização (latitude e longitude).
+        /// </summary>
+        /// <param name="lat">Latitude do ponto de referência.</param>
+        /// <param name="lng">Longitude do ponto de referência.</param>
+        /// <returns>Lista de produtos próximos.</returns>
+        [HttpGet("proximos")]
+        public async Task<IActionResult> GetProdutosProximos(double lat, double lng)
+        {
+            try
+            {
+                var result = await _service.GetProdutosProximos(lat, lng);
+
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
     }
 }

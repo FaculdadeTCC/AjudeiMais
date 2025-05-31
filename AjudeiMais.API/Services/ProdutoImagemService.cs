@@ -1,10 +1,14 @@
-﻿using AjudeiMais.API.DTO;
+﻿using System.Runtime.ConstrainedExecution;
+using AjudeiMais.API.DTO;
 using AjudeiMais.API.Models;
 using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.ProdutoModel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using static Azure.Core.HttpHeader;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace AjudeiMais.API.Services
 {
@@ -73,11 +77,61 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<IEnumerable<ProdutoImagem>> GetImagensPorProduto(int produtoId)
+        public async Task<ApiResponse<IEnumerable<ProdutoImagem>>> GetImagensPorProduto(int produtoId)
         {
-            return await _produtoImagemRepository.GetImagensPorProduto(produtoId);
-        }
+            // 1. Validação básica do ID
+            if (produtoId <= 0)
+            {
+                return new ApiResponse<IEnumerable<ProdutoImagem>> // Cria a instância
+                {
+                    Success = false, // Define o sucesso como falso
+                    Message = "ID do produto inválido.",
+                    Type = "validation_error",
+                    Errors = new List<string> { "ID do produto inválido." } // Adiciona o erro à lista
+                };
+            }
 
+            try
+            {
+                // 2. Busca as imagens no repositório
+                var imagens = await _produtoImagemRepository.GetImagensPorProduto(produtoId);
+
+                // 3. Lida com casos onde nenhuma imagem é encontrada
+                if (imagens == null || !imagens.Any())
+                {
+                    // Retorna sucesso, mas com lista vazia e mensagem informativa
+                    return new ApiResponse<IEnumerable<ProdutoImagem>> // Cria a instância
+                    {
+                        Success = true, // Ainda é sucesso, mas sem dados
+                        Data = new List<ProdutoImagem>(), // Dados vazios
+                        Message = "Nenhuma imagem encontrada para este produto.",
+                        Type = "not_found" // Tipo específico para "não encontrado"
+                    };
+                }
+
+                // 4. Retorna sucesso com as imagens encontradas
+                return new ApiResponse<IEnumerable<ProdutoImagem>> // Cria a instância
+                {
+                    Success = true, // Sucesso
+                    Data = imagens, // Os dados
+                    Message = "Imagens do produto retornadas com sucesso.",
+                    Type = "success" // Tipo de sucesso
+                };
+            }
+            catch (Exception ex)
+            {
+                // 5. Captura erros inesperados
+                // Em uma aplicação real, você deve logar 'ex' com um logger adequado
+                Console.WriteLine($"[ERRO SERVICE] Erro ao buscar imagens para o produto {produtoId}: {ex.Message}");
+                return new ApiResponse<IEnumerable<ProdutoImagem>> // Cria a instância
+                {
+                    Success = false, // Erro
+                    Message = $"Ocorreu um erro interno ao buscar as imagens: {ex.Message}",
+                    Type = "server_error", // Tipo de erro de servidor
+                    Errors = new List<string> { $"Ocorreu um erro interno ao buscar as imagens: {ex.Message}" } // Adiciona o erro
+                };
+            }
+        }
 
         public async Task<ApiResponse<ProdutoImagem>> SaveOrUpdate(ProdutoImagemUploadDto dto)
         {

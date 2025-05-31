@@ -8,7 +8,9 @@ namespace AjudeiMais.Ecommerce.Models.Produto
     public class ProdutoModel
     {
         public int? Produto_ID { get; set; }
+
         public string Usuario_GUID { get; set; }
+        public int? Usuario_ID { get; set; }
 
         [Required(ErrorMessage = "O nome do produto é obrigatório.")]
         [StringLength(100, ErrorMessage = "O nome do produto deve ter no máximo 100 caracteres.")]
@@ -52,6 +54,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
     public class ProdutoResponse
     {
         public int Produto_ID { get; set; }
+        public string Guid { get; set; }
         public string Usuario_GUID { get; set; }
         public string Nome { get; set; }
         public int? CategoriaProduto_ID { get; set; }
@@ -64,24 +67,13 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime? DataCriacao { get; set; }
         public DateTime? DataUpdate { get; set; }
         public decimal? Peso { get; set; }
+        public IEnumerable<ProdutoImagemModel>? ProdutoImagens { get; set; }
     }
 
-    public class ProdutoImagemUploadDto
-    {
-        [Required]
-        public int Produto_ID { get; set; }
-
-        [Required]
-        public IFormFile Imagem { get; set; }
-
-        [Required]
-        public bool IsPrincipal { get; set; }
-    }
-
-
-    public class ProdutoResponseModel
+    public class ProdutosProximosDto
     {
         public int Produto_ID { get; set; }
+        public string Guid { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string? Condicao { get; set; }
@@ -95,15 +87,32 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime DataUpdate { get; set; }
         public string UnidadeMedida { get; set; }
 
-        public ICollection<ProdutoImagemModel> ProdutoImagens { get; set; } = new List<ProdutoImagemModel>();
+        public ICollection<ProdutoImagemResponseDto> ProdutoImagens { get; set; } = new List<ProdutoImagemResponseDto>();
+        public UsuarioResumoDTO Usuario { get; set; }
+        public CategoriaProdutoResponse CategoriaProduto { get; set; }
+    }
 
-        [ForeignKey("Usuario")]
-        public int Usuario_ID { get; set; }
-        public UsuarioModel? Usuario { get; set; }
+    public class ProdutoImagemUploadDto
+    {
+        [Required]
+        public int Produto_ID { get; set; }
 
-        [ForeignKey("CategoriaProduto")]
-        public int CategoriaProduto_ID { get; set; }
-        public CategoriaProdutoModel? CategoriaProduto { get; set; }
+        [Required]
+        public IFormFile Imagem { get; set; }
+
+        [Required]
+        public bool IsPrincipal { get; set; }
+    }
+    public class ProdutoImagemResponseDto
+    {
+        [Required]
+        public int Produto_ID { get; set; }
+
+        [Required]
+        public string Imagem { get; set; }
+
+        [Required]
+        public bool IsPrincipal { get; set; }
     }
 
     public class ProdutoImagemModel

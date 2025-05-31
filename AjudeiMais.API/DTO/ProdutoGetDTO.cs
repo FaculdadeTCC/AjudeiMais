@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace AjudeiMais.Data.Models.ProdutoModel
+namespace AjudeiMais.API.DTO
 {
-    public class Produto
+    public class ProdutoGetDTO
     {
-        [Key]
         public int Produto_ID { get; set; }
         public string Guid { get; set; }
         public string Nome { get; set; }
@@ -28,13 +23,8 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public string UnidadeMedida { get; set; }
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
+        public UsuarioResumoDTO Usuario { get; set; }
+        public CategoriaProdutoDTO CategoriaProduto { get; set; }
 
-        [ForeignKey("Usuario")]
-        public int Usuario_ID { get; set; }
-        public Usuario? Usuario { get; set; }
-
-        [ForeignKey("CategoriaProduto")]
-        public int CategoriaProduto_ID { get; set; }
-        public CategoriaProduto? CategoriaProduto { get; set; }
     }
 }

@@ -247,7 +247,7 @@ jQuery.fn = jQuery.prototype = {
 		return this.prevObject || this.constructor();
 	},
 
-	// For internal use only.
+	// ernal use only.
 	// Behaves like an Array's method, not like a jQuery method.
 	push: push,
 	sort: arr.sort,

@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json; // Usar System.Text.Json consistentemente
 using System.Threading.Tasks;
 using AjudeiMais.Ecommerce.Filters; // Para RoleAuthorize
+using AjudeiMais.Ecommerce.Models.Produto;
 using AjudeiMais.Ecommerce.Models.Usuario;
 using AjudeiMais.Ecommerce.Tools; // Para Assistant e ApiHelper, e o novo ControllerHelpers
 using Microsoft.AspNetCore.Authentication;
@@ -31,33 +32,51 @@ namespace AjudeiMais.Ecommerce.Controllers
         public async Task<IActionResult> Index(string guid)
         {
             string loggedInUserGuid;
-            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
             var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
 
             if (unauthorizedResult != null)
             {
-                return unauthorizedResult; // Redireciona para login ou home
+                return unauthorizedResult;
             }
 
-            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
             var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
 
             if (profileAccessResult != null)
             {
-                return profileAccessResult; // Redireciona com mensagem de erro de permissão
+                return profileAccessResult;
             }
 
-            // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
             var (usuario, errorMessage) = await ApiHelper.GetUsuarioByGuidAsync(_httpClientFactory, guid);
 
             if (usuario != null)
             {
+                var (produtos, errorMessage2) = await ApiHelper.ListAllAnunciosAtivosByGuidAsync(_httpClientFactory, guid);
 
-                return View(usuario);
+                if (errorMessage2 != null)
+                {
+                    return RedirectToRoute("usuario-perfil", new
+                    {
+                        alertType = "error",
+                        alertMessage = errorMessage2,
+                        guid = loggedInUserGuid
+                    });
+                }
+
+                UsuarioIndex model = new UsuarioIndex
+                {
+                    Anuncios = produtos
+                };
+
+                return View(model);
             }
             else
             {
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+                return RedirectToRoute("usuario-perfil", new
+                {
+                    alertType = "error",
+                    alertMessage = errorMessage,
+                    guid = loggedInUserGuid
+                });
             }
         }
 
@@ -109,7 +128,6 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View();
         }
 
-        [RoleAuthorize("usuario", "admin")]
         /// <summary>
         /// Método para realizar o cadastro de um usuário enviando os dados e a foto de perfil para a API.
         /// </summary>

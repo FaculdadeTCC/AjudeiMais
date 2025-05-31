@@ -193,6 +193,13 @@ app.MapControllerRoute(
     defaults: new { controller = "Produto", action = "Cadastro" }
 );
 
+app.MapControllerRoute(
+    name: "usuario-anuncio-cadastrar",
+    pattern: "anuncio/{guid}",
+    defaults: new { controller = "Produto", action = "Detalhe" }
+);
+
+
 #endregion
 app.MapControllerRoute(
     name: "home",

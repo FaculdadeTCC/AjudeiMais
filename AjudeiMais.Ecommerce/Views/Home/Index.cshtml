@@ -1,4 +1,7 @@
-﻿@{
+﻿@model AjudeiMais.Ecommerce.Models.Home.HomeModel
+@using AjudeiMais.Ecommerce.Tools
+
+@{
     ViewData["Title"] = "Doe com Amor e Encontre Solidariedade";
     ViewData["MetaDescription"] = "Conecte-se com pessoas que precisam. No AjudeiMais, você doa ou recebe roupas, calçados, móveis e muito mais. Faça o bem e transforme vidas com um clique.";
 }
@@ -8,14 +11,17 @@
     <link rel="stylesheet" href="~/css/home/explore.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/home/donate.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/home/categories.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/home/navbar.css" asp-append-version="true"/>
 }
 
-
 @{
+    // This partial view should contain your alert/notification display logic
     await Html.RenderPartialAsync("_Alertas");
 }
 
+@{
+    // This partial view should contain your alert/notification display logic
+    await Html.RenderPartialAsync("_PopupLocalizacao");
+}
 
 <div class="container-fluid" style="padding: 0">
     <!-- Hero Section -->
@@ -86,43 +92,41 @@
 
         <!-- Grid de Itens -->
         <div id="items" class="row g-4">
-            @for (int i = 0; i < 4; i++)
+            @if (Model.Anuncios != null && Model.Anuncios.Any())
             {
-                <article class="col-12 col-sm-6 col-md-4 col-lg-3">
-                    <div class="card h-100 rounded-4 border-0 shadow-sm">
-                        <!-- Imagem + badge de condição -->
-                        <div class="position-relative">
-                            <img src="https://placehold.co/400x400?text=Camisa" class="card-img-top" alt="Camisa">
-                            <span class="badge bg-success position-absolute top-0 start-0 m-3">Bom</span>
+                foreach (var item in Model.Anuncios)
+                {
+                    <article class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 rounded-4 border-0 shadow-sm">
+                            <div class="position-relative">
+                                <img src="@Assistant.ServerURL()@item.ProdutoImagens.FirstOrDefault().Imagem" class="card-img-top" alt="@item.Nome"> 
+                                <span class="badge bg-success position-absolute top-0 start-0 m-3">@item.Condicao</span>
+                            </div>
+                            <div class="card-body d-flex flex-column">
+                                <span class="badge mb-2" style="background-color: var(--color-secondary); font-size:.75rem;">
+                                    @item.CategoriaProduto.Nome
+                                </span>
+                                <h5 class="card-title text-secondary mb-1">@item.Nome</h5>
+                                <ul class="list-unstyled small text-muted mb-4">
+                                    <li><i class="fas fa-map-marker-alt me-1"></i> @item.Usuario.Cidade, @item.Usuario.Estado</li>
+                                     <li><i class="fas fa-calendar-alt me-1"></i> @Assistant.ToTempoAtras(@item.DataCriacao)</li>
+                                    <li><i class="fas fa-box me-1"></i> @item.Quantidade unidades</li>  
+                                </ul>
+                                <a href="/produto/detalhes/@item.Produto_ID" class="btn btn-outline-accent fw-semibold mt-auto"> 
+                                     <i class="fas fa-info-circle me-2"></i> Ver detalhes 
+                                 </a>
+                            </div>
                         </div>
-
-                        <div class="card-body d-flex flex-column">
-                            <!-- Categoria -->
-                            <span class="badge mb-2" 
-                                  style="background-color: var(--color-secondary); font-size:.75rem;">
-                                Roupas
-                            </span>
-
-                            <!-- Título e descrição -->
-                            <h5 class="card-title text-secondary mb-1">Camisa Masculina M</h5>
-                            <p class="text-muted small mb-3">Camisa de algodão, pouco uso.</p>
-
-                            <!-- Localização, Data e Quantidade -->
-                            <ul class="list-unstyled small text-muted mb-4">
-                                <li><i class="fas fa-map-marker-alt me-1"></i> Belo Horizonte, MG</li>
-                                <li><i class="fas fa-calendar-alt me-1"></i> 5 dias atrás</li>
-                                <li><i class="fas fa-box me-1"></i> 3 unidades</li>
-                            </ul>
-
-                            <!-- CTA -->
-                            <a href="#" class="btn btn-outline-accent fw-semibold mt-auto" aria-label="Ver detalhes">
-                                <i class="fas fa-info-circle me-2"></i> Ver detalhes
-                            </a>
-                        </div>
-                    </div>
-                </article>
-
+                    </article>
+                }
             }
+            else
+            {
+                <div class="text-muted py-5 text-center">
+                    <p>@Model.ErrorMessage</p>
+                </div>
+            }
+
         </div>
     </section>
 
@@ -214,28 +218,74 @@
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const navbar = document.querySelector('.navbar');
-        const banner = document.querySelector('.hero'); // ou #mainBanner, o seletor do seu banner
-
-        if (!navbar || !banner) return;
-
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Navbar + Banner Observer
+      const navbar = document.querySelector('.navbar');
+      const banner = document.querySelector('.hero');
+      if (navbar && banner) {
         const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    // banner visível → transparente
-                    navbar.classList.remove('scrolled');
-                } else {
-                    // banner saiu da viewport → cor fixa
-                    navbar.classList.add('scrolled');
-                }
-            },
-            {
-                rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
-                threshold: 0
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              navbar.classList.remove('scrolled');
+            } else {
+              navbar.classList.add('scrolled');
             }
+          },
+          {
+            rootMargin: `-${navbar.offsetHeight}px 0px 0px 0px`,
+            threshold: 0
+          }
         );
-
         observer.observe(banner);
+      }
+
+      // Controle de localização e modal
+      const locationDenied = localStorage.getItem('locationDenied') === 'true';
+
+      try {
+        const status = await navigator.permissions.query({ name: 'geolocation' });
+
+        if (status.state === 'denied') {
+          localStorage.setItem('locationDenied', 'true');
+          new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
+          return;
+        }
+
+        // Se permissão não negada e há erro do backend (substitua conforme seu Model)
+        const hasLocationError = "@(string.IsNullOrEmpty(Model.ErrorMessage) ? "false" : "true")" === "true";
+        if (!locationDenied && hasLocationError) {
+          new bootstrap.Modal(document.getElementById('locationModal')).show();
+        }
+      } catch (e) {
+        console.error("Erro ao verificar permissões:", e);
+      }
     });
+
+    // Função chamada no botão do modal
+    function obterLocalizacao() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (position) {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            localStorage.removeItem('locationDenied');
+            const url = new URL(window.location.href);
+            url.searchParams.set("lat", lat);
+            url.searchParams.set("lng", lng);
+            window.location.href = url.toString();
+          },
+          function (error) {
+            if (error.code === error.PERMISSION_DENIED) {
+              localStorage.setItem('locationDenied', 'true');
+              new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
+            } else {
+              alert("Erro ao obter localização. Tente novamente.");
+            }
+          }
+        );
+      } else {
+        alert("Geolocalização não suportada neste navegador.");
+      }
+    }
 </script>
+

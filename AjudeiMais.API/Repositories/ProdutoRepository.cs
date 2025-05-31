@@ -83,10 +83,15 @@ namespace AjudeiMais.API.Repositories
         /// </summary>
         /// <param name="id">O ID do usuário.</param>
         /// <returns>Uma coleção de produtos pertencentes ao usuário especificado.</returns>
-        public async Task<IEnumerable<Produto>> GetByUsuarioId(int id)
+        public async Task<IEnumerable<Produto>> GetByUsuarioGuid(string guid)
         {
             // Retorna os produtos filtrados pelo ID do usuário.
-            var produtos = _context.Produto.Where(p => p.Usuario_ID == id)
+            var produtos = _context.Produto.Where(p => p.Usuario.GUID == guid && p.Excluido != true)
+                .Include(p => p.Usuario)
+                .Include(p => p.CategoriaProduto)
+                .Include(p => p.ProdutoImagens)
+                .OrderByDescending(a => a.DataCriacao)
+                .ThenByDescending(a => a.DataUpdate)
                 .AsQueryable(); // Usa AsQueryable() para melhor performance em alguns casos
 
             return await produtos.ToListAsync();

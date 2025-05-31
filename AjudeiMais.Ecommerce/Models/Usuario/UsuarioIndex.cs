@@ -4,6 +4,6 @@ namespace AjudeiMais.Ecommerce.Models.Usuario
 {
     public class UsuarioIndex
     {
-        public IEnumerable<ProdutoModel> Anuncios { get; set; }
+        public IEnumerable<ProdutoResponse> Anuncios { get; set; }
     }
 }

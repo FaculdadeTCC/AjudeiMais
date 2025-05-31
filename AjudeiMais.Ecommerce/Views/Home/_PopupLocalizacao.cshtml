@@ -1,0 +1,97 @@
+﻿<!-- Modal principal estilizado -->
+<div class="modal fade" id="locationModal" tabindex="-1" aria-labelledby="locationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-gradient-warning text-dark rounded-top-4 border-0">
+                <h5 class="modal-title fw-bold" id="locationModalLabel">
+                    <i class="fa-solid fa-location-dot me-2"></i> Quer ver produtos próximos?
+                </h5>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="fs-6 mb-3">Precisamos da sua localização para mostrar itens perto de você.</p>
+                <button class="btn btn-warning btn-lg rounded-pill px-4" onclick="obterLocalizacao()">
+                    <i class="fa-solid fa-location-crosshairs me-2"></i> Permitir Localização
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de permissão negada -->
+<div class="modal fade" id="permissaoNegadaModal" tabindex="-1" aria-labelledby="permissaoNegadaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content rounded-4 border-0 shadow-lg">
+            <div class="modal-header bg-danger text-white rounded-top-4 border-0">
+                <h5 class="modal-title fw-bold" id="permissaoNegadaLabel">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i> Permissão negada
+                </h5>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <p class="fs-6 mb-3">
+                    A permissão de localização foi recusada.<br>
+                    Vá nas configurações do navegador para ativá-la.
+                </p>
+                <a href="https://support.google.com/chrome/answer/142065?hl=pt-BR" target="_blank" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                    Como permitir localização
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    async function obterLocalizacao() {
+        try {
+            // Verifica o status atual da permissão
+            const status = await navigator.permissions.query({ name: 'geolocation' });
+            if (status.state === 'denied') {
+                localStorage.setItem('locationDenied', 'true');
+                new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    localStorage.removeItem('locationDenied');
+                    window.location.href = `?lat=${lat}&lng=${lng}`;
+                },
+                function (error) {
+                    if (error.code === error.PERMISSION_DENIED) {
+                        localStorage.setItem('locationDenied', 'true');
+                        new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
+                    }
+                }
+            );
+        } catch (e) {
+            alert("Erro ao acessar geolocalização.");
+        }
+    }
+
+        window.addEventListener("DOMContentLoaded", async () => {
+        const locationDenied = localStorage.getItem('locationDenied') === 'true';
+
+        // Checa dinamicamente o status da permissão
+        try {
+            const status = await navigator.permissions.query({ name: 'geolocation' });
+
+            if (status.state === 'denied') {
+                localStorage.setItem('locationDenied', 'true');
+                // Abre o modal de permissão negada (opcional)
+                new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
+                return;
+            }
+
+            // Se ainda não negou e há erro de localização (enviado do backend)
+            const hasLocationError = "@(string.IsNullOrEmpty(Model.ErrorMessage) ? "false" : "true")" === "true";
+            if (!locationDenied && hasLocationError) {
+                new bootstrap.Modal(document.getElementById('locationModal')).show();
+            }
+        } catch (e) {
+            console.error("Erro ao verificar permissões:", e);
+        }
+    });
+
+</script>
+    

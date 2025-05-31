@@ -5,6 +5,7 @@ public class ProdutoPostDto
 {
     public int? Produto_ID { get; set; }
     public string Usuario_GUID { get; set; }
+    public string? Guid { get; set; }
 
     [Required(ErrorMessage = "O nome do produto é obrigatório.")]
     [StringLength(100, ErrorMessage = "O nome do produto deve ter no máximo 100 caracteres.")]

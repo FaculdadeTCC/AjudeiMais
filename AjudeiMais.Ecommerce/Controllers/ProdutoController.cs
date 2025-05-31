@@ -24,10 +24,39 @@ namespace AjudeiMais.Ecommerce.Controllers
             _logger = logger; // Atribui o logger, se injetado
         }
 
-        [RoleAuthorize("usuario")]
-        public IActionResult Index()
+        [RoleAuthorize("usuario", "admin")]
+        public async Task<IActionResult> Index(string guid)
         {
-            return View();
+            string loggedInUserGuid;
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
+
+            if (profileAccessResult != null)
+            {
+                return profileAccessResult;
+            }
+
+            var (produtos, errorMessage) = await ApiHelper.ListAllAnunciosAtivosByGuidAsync(_httpClientFactory, guid);
+
+            if (produtos != null)
+            {
+                ProdutoIndex model = new ProdutoIndex
+                {
+                    Anuncios = produtos
+                };
+
+                return View(model);
+            }
+            else
+            {
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+            }
         }
 
         public IActionResult Detalhe()
@@ -39,106 +68,131 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpPost]
         public async Task<IActionResult> Cadastro(ProdutoModel model, IFormFile[] ProdutoImagens)
         {
-            // Validação de autenticação
+            // 1. Validação de sessão/autenticação
             var userGuidFromClaims = User.FindFirst("GUID")?.Value;
             if (string.IsNullOrEmpty(userGuidFromClaims))
             {
-                return RedirectToRoute("login", new { alertType = "error", alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente." });
+                return RedirectToRoute("login", new
+                {
+                    alertType = "error",
+                    alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente."
+                });
             }
 
             model.Usuario_GUID = userGuidFromClaims;
 
-            // Validação do modelo
+            // 2. Validação do modelo enviado pelo formulário
             if (!ModelState.IsValid)
             {
                 var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
                 string mensagemErro = "Corrija os erros no formulário: " + string.Join(" ", erros);
-                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = mensagemErro, guid = userGuidFromClaims });
+
+                return RedirectToRoute("usuario-anuncio-cadastrar", new
+                {
+                    alertType = "error",
+                    alertMessage = mensagemErro,
+                    guid = userGuidFromClaims
+                });
             }
 
+            // 3. Validação obrigatória da imagem principal
             if (ProdutoImagens == null || ProdutoImagens.Length == 0 || ProdutoImagens[0] == null || ProdutoImagens[0].Length == 0)
             {
-                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = "A imagem principal do produto é obrigatória.", guid = userGuidFromClaims });
+                return RedirectToRoute("usuario-anuncio-cadastrar", new
+                {
+                    alertType = "error",
+                    alertMessage = "A imagem principal do produto é obrigatória.",
+                    guid = userGuidFromClaims
+                });
             }
 
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
-                // 1. Envia o produto via JSON (POST api/Produto)
-                var jsonContent = new StringContent(
-                    JsonSerializer.Serialize(model),
-                    Encoding.UTF8,
-                    "application/json"
-                );
-
+                // 4. Envia os dados do produto para a API
                 var json = JsonSerializer.Serialize(model);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Produto", content);
 
                 var responseBody = await response.Content.ReadAsStringAsync();
 
-                if (!response.IsSuccessStatusCode)
+                ApiHelper.ApiResponse<ProdutoResponse> apiResponse;
+                try
                 {
-                    var errorMessage = await response.Content.ReadAsStringAsync();
-                    return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = $"Erro ao cadastrar produto: {errorMessage}", guid = userGuidFromClaims });
+                    apiResponse = JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoResponse>>(responseBody,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
                 }
-
-                // Lê a resposta para extrair o produtoId retornado
-                var responseContent = await response.Content.ReadAsStringAsync();
-                var apiResponse = JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoResponse>>(responseContent,
-                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Erro ao desserializar resposta da API no cadastro do produto.");
+                    return RedirectToRoute("usuario-anuncio-cadastrar", new
+                    {
+                        alertType = "error",
+                        alertMessage = "Erro inesperado no cadastro. Tente novamente.",
+                        guid = userGuidFromClaims
+                    });
+                }
 
                 if (apiResponse == null || !apiResponse.Success)
                 {
-                    return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = apiResponse?.Message ?? "Erro ao cadastrar produto.", guid = userGuidFromClaims });
+                    return RedirectToRoute("usuario-anuncio-cadastrar", new
+                    {
+                        alertType = "error",
+                        alertMessage = apiResponse?.Message ?? "Erro ao cadastrar produto.",
+                        guid = userGuidFromClaims
+                    });
                 }
 
                 var produtoId = apiResponse.Data.Produto_ID;
 
-                // 2. Envia as imagens para api/Produto/upload-imagens vinculando ao produtoId
-                if (ProdutoImagens != null && ProdutoImagens.Length > 0)
+                // 5. Envia cada imagem para a API
+                foreach (var imagem in ProdutoImagens)
                 {
-                    using var formData = new MultipartFormDataContent();
-
-                    // Adicione o Produto_ID (se necessário)
-                    formData.Add(new StringContent(produtoId.ToString()), "Produto_ID");
-
-                    // Adicione a imagem (IFormFile) com o nome "Imagem"
-                    foreach (var imagem in ProdutoImagens)
+                    if (imagem != null && imagem.Length > 0)
                     {
-                        if (imagem != null && imagem.Length > 0)
+                        using var formData = new MultipartFormDataContent();
+
+                        formData.Add(new StringContent(produtoId.ToString()), "Produto_ID");
+
+                        var imageContent = new StreamContent(imagem.OpenReadStream());
+                        imageContent.Headers.ContentType = new MediaTypeHeaderValue(imagem.ContentType);
+
+                        formData.Add(imageContent, "Imagem", imagem.FileName);
+
+                        var uploadResponse = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/ProdutoImagem", formData);
+                        if (!uploadResponse.IsSuccessStatusCode)
                         {
-                            var imageContent = new StreamContent(imagem.OpenReadStream());
-                            imageContent.Headers.ContentType = new MediaTypeHeaderValue(imagem.ContentType);
-
-                            // OBS: O nome do campo DEVE ser "Imagem" para bater com o DTO
-                            formData.Add(imageContent, "Imagem", imagem.FileName);
+                            var uploadResponseBody = await uploadResponse.Content.ReadAsStringAsync();
+                            return RedirectToRoute("usuario-anuncio-cadastrar", new
+                            {
+                                alertType = "error",
+                                alertMessage = $"Erro ao enviar imagem: {uploadResponseBody}",
+                                guid = userGuidFromClaims
+                            });
                         }
-                    }
-
-
-                    var uploadResponse = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/ProdutoImagem", formData);
-                     responseBody = await uploadResponse.Content.ReadAsStringAsync();
-
-
-                    if (!uploadResponse.IsSuccessStatusCode)
-                    {
-                        var uploadError = await uploadResponse.Content.ReadAsStringAsync();
-                        return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = $"Erro ao enviar imagens: {uploadError}", guid = userGuidFromClaims });
                     }
                 }
 
-                // Se tudo OK, redireciona para dashboard
-                return RedirectToRoute("usuario-dashboard", new { alertType = "success", alertMessage = apiResponse.Message, guid = userGuidFromClaims });
+                // 6. Sucesso no cadastro
+                return RedirectToRoute("usuario-dashboard", new
+                {
+                    alertType = "success",
+                    alertMessage = apiResponse.Message,
+                    guid = userGuidFromClaims
+                });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro no cadastro do produto.");
-                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = "Erro inesperado no cadastro. Tente novamente.", guid = userGuidFromClaims });
+                _logger.LogError(ex, "Erro inesperado no cadastro do produto.");
+                return RedirectToRoute("usuario-anuncio-cadastrar", new
+                {
+                    alertType = "error",
+                    alertMessage = "Erro inesperado no cadastro. Tente novamente.",
+                    guid = userGuidFromClaims
+                });
             }
         }
-
 
         // Seu método GET para exibir a view de Gerenciar Anúncio (permanece o mesmo, ou adicione o parâmetro 'guid' se a rota espera)
         [RoleAuthorize("admin", "usuario")]

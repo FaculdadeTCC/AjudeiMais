@@ -103,6 +103,7 @@ namespace AjudeiMais.API.Services
                     produto = new Produto
                     {
                         Nome = model.Nome,
+                        Guid = Guid.NewGuid().ToString(),
                         Descricao = model.Descricao,
                         Condicao = model.Condicao,
                         Validade = model.Validade ?? null,
@@ -121,6 +122,7 @@ namespace AjudeiMais.API.Services
                 {
                     // ATUALIZAÇÃO
                     produto = await _produtoRepository.GetById((int)model.Produto_ID);
+
                     if (produto == null)
                     {
                         return new ApiResponse<ProdutoPostDto>
@@ -133,6 +135,7 @@ namespace AjudeiMais.API.Services
 
                     // Atualiza os campos apenas se novos valores forem fornecidos
                     produto.Nome = model.Nome ?? produto.Nome;
+                    produto.Guid = model.Guid ?? produto.Guid;
                     produto.Descricao = model.Descricao ?? produto.Descricao;
                     produto.Condicao = model.Condicao ?? produto.Condicao;
                     produto.Validade = model.Validade ?? produto.Validade;
@@ -179,92 +182,149 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        //        /// <summary>
-        //        /// Busca todos os produtos pertencentes a um usuário específico.
-        //        /// </summary>
-        //        /// <param name="id">ID do usuário.</param>
-        //        /// <returns>Uma coleção de produtos do usuário.</returns>
-        //        public async Task<IEnumerable<Produto>> GetByUsuarioId(int id)
+        /// <summary>
+        /// Busca todos os produtos pertencentes a um usuário específico.
+        /// </summary>
+        /// <param name="guid">GUID do usuário.</param>
+        /// <returns>ApiResponse contendo a coleção de produtos do usuário.</returns>
+        public async Task<ApiResponse<IEnumerable<Produto>>> GetProdutosByUsuarioGuid(string guid)
+        {
+            try
+            {
+                var produtos = await _produtoRepository.GetByUsuarioGuid(guid);
+
+                return new ApiResponse<IEnumerable<Produto>>
+                {
+                    Success = true,
+                    Message = "Produtos recuperados com sucesso.",
+                    Data = produtos
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<IEnumerable<Produto>>
+                {
+                    Success = false,
+                    Message = $"Erro ao recuperar produtos: {ex.Message}",
+                    Data = null
+                };
+            }
+        }
+
+
+        ///// <summary>
+        ///// Exclui logicamente um produto pelo seu ID.
+        ///// </summary>
+        //public async Task<ApiResponse<object>> Delete(int id)
+        //{
+        //    try
+        //    {
+        //        var produto = await getby(id);
+
+        //        if (produto == null)
         //        {
-        //            try
+        //            return new ApiResponse<object>
         //            {
-        //                return await _produtoRepository.GetByUsuarioId(id);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                _logger.LogError(ex, "Erro ao excluir o produto com ID {ProdutoId}", id);
-        //                throw new Exception("Erro ao excluir o produto.");
-        //            }
+        //                Success = false,
+        //                Type = "error",
+        //                Message = "Produto não encontrado."
+        //            };
         //        }
 
-        //        /// <summary>
-        //        /// Exclui logicamente um produto pelo seu ID.
-        //        /// </summary>
-        //        /// <param name="id">ID do produto a ser excluído.</param>
-        //        public async Task<ApiResponse<object>> Delete(int id)
+        //        produto.Habilitado = false;
+        //        produto.Excluido = true;
+        //        produto.DataUpdate = DateTime.Now;
+
+        //        await _produtoRepository.Delete(produto);
+
+        //        return new ApiResponse<object>
         //        {
-        //            try
-        //            {
-        //                var produto = await GetById(id);
-
-        //                if (produto == null)
-        //                {
-        //                    return new ApiResponse<object>
-        //                    {
-        //                        Success = false,
-        //                        Type = "error",
-        //                        Message = "Produto não encontrado."
-        //                    };
-        //                }
-
-        //                produto.Habilitado = false;
-        //                produto.Excluido = true;
-        //                produto.DataUpdate = DateTime.Now;
-
-        //                await _produtoRepository.Delete(produto);
-
-        //                return new ApiResponse<object>
-        //                {
-        //                    Success = true,
-        //                    Type = "success",
-        //                    Message = "Produto excluído com sucesso."
-        //                };
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                return new ApiResponse<object>
-        //                {
-        //                    Success = false,
-        //                    Type = "error",
-        //                    Message = $"Não foi possível excluir o produto. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
-        //                };
-        //            }
-        //        }
-
-        //        /// <summary>
-        //        /// Busca produtos próximos a uma determinada localização (latitude e longitude).
-        //        /// </summary>
-        //        /// <param name="lat">Latitude do ponto de referência.</param>
-        //        /// <param name="lng">Longitude do ponto de referência.</param>
-        //        /// <returns>Uma coleção de produtos próximos.</returns>
-        //        public async Task<IEnumerable<Produto>> GetProdutosProximos(double lat, double lng)
+        //            Success = true,
+        //            Type = "success",
+        //            Message = "Produto excluído com sucesso."
+        //        };
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return new ApiResponse<object>
         //        {
-        //            var todosUsuarios = await _usuarioRepository.GetItens();
-        //            var raioBuscaKm = 30;
-        //            var produtosProximos = new List<Produto>();
+        //            Success = false,
+        //            Type = "error",
+        //            Message = $"Não foi possível excluir o produto. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+        //        };
+        //    }
+        //}
 
-        //            var usuariosProximos = todosUsuarios
-        //                .Where(u => !string.IsNullOrEmpty(u.Latitude) && !string.IsNullOrEmpty(u.Longitude) && u.Produtos != null && u.Produtos.Any(p => !p.Excluido))
-        //                .Where(u => Helpers.CalcularDistancia(lat, lng, double.Parse(u.Latitude, CultureInfo.InvariantCulture), double.Parse(u.Longitude, CultureInfo.InvariantCulture)) <= raioBuscaKm)
-        //                .ToList();
+        /// <summary>
+        /// Busca produtos próximos a uma determinada localização (latitude e longitude).
+        /// </summary>
+        /// <param name="lat">Latitude do ponto de referência.</param>
+        /// <param name="lng">Longitude do ponto de referência.</param>
+        /// <returns>Uma coleção de produtos próximos.</returns>
+        public async Task<ApiResponse<IEnumerable<ProdutoGetDTO>>> GetProdutosProximos(double lat, double lng)
+        {
+            var todosUsuarios = await _usuarioRepository.GetItens();
+            var raioBuscaKm = 69;
+            var produtosProximos = new List<Produto>();
 
-        //            foreach (var usuario in usuariosProximos)
-        //            {
-        //                var produtosDoUsuario = await _produtoRepository.GetByUsuarioId(usuario.Usuario_ID);
-        //                produtosProximos.AddRange(produtosDoUsuario.Where(p => !p.Excluido)); // Garante que apenas produtos não excluídos sejam adicionados
-        //            }
+            var usuariosProximos = todosUsuarios
+                .Where(u => (!string.IsNullOrEmpty(u.Latitude) && !string.IsNullOrEmpty(u.Longitude)))
+                .Where(u => Helpers.CalcularDistancia(lat, lng, double.Parse(u.Latitude, CultureInfo.InvariantCulture), double.Parse(u.Longitude, CultureInfo.InvariantCulture)) <= raioBuscaKm)
+                .ToList();
+                
 
-        //            return produtosProximos;
-        //        }
+            foreach (var usuario in usuariosProximos)
+            {
+                var produtosDoUsuario = await _produtoRepository.GetByUsuarioGuid(usuario.GUID);
+                produtosProximos.AddRange(produtosDoUsuario.Where(p => p.Excluido != true));
+            }
+
+            var produtosDto = produtosProximos.Select(p => new ProdutoGetDTO
+            {
+                Produto_ID = p.Produto_ID,
+                Guid = p.Guid,
+                Nome = p.Nome,
+                Descricao = p.Descricao,
+                Condicao = p.Condicao,
+                Validade = p.Validade,
+                Quantidade = p.Quantidade,
+                Peso = p.Peso,
+                Disponivel = p.Disponivel,
+                Habilitado = p.Habilitado,
+                Excluido = p.Excluido,
+                DataCriacao = p.DataCriacao,
+                DataUpdate = p.DataUpdate,
+                UnidadeMedida = p.UnidadeMedida,
+                ProdutoImagens = p.ProdutoImagens,
+                Usuario = new UsuarioResumoDTO
+
+                {
+                    NomeCompleto = p.Usuario.NomeCompleto ?? "",
+                    Email = p.Usuario.Email ?? "",
+                    GUID = p.Usuario.GUID ?? "",
+                    Cidade = p.Usuario.Cidade ?? "",
+                    Estado = p.Usuario.Estado ?? "",
+                    FotoDePerfil = p.Usuario.FotoDePerfil ?? "",
+                    Telefone = p.Usuario.Telefone ?? "",
+                    TelefoneFixo = p.Usuario.TelefoneFixo ?? "",
+
+                },
+                CategoriaProduto = new CategoriaProdutoDTO
+                {
+                    CategoriaProduto_ID = p.CategoriaProduto.CategoriaProduto_ID,
+                    Nome = p.CategoriaProduto.Nome ?? "",
+                    Icone = p.CategoriaProduto.Icone ?? "",
+                }
+            });
+
+
+            return new ApiResponse<IEnumerable<ProdutoGetDTO>>
+            {
+                Success = true,
+                Data = produtosDto,
+                Message = "Produtos próximos encontrados com sucesso."
+            };
+        }
+
     }
 }

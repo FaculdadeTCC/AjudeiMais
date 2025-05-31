@@ -57,17 +57,17 @@
 						{
 							<tr data-search-term="@categoria.Nome.ToLower()" data-category-id="@categoria.CategoriaProduto_ID">
 								<td>
-									<p class="mb-0">Cad.: @categoria.DataCadastro.ToString("dd/MM/yyyy HH:mm")</p>
+									<p class="mb-0">Cad.: @categoria.DataCadastro.Value.ToString("dd/MM/yyyy HH:mm")</p>
 									@if (categoria.DataUpdate != DateTime.MinValue)
 									{
-										<small class="text-muted">Atual.: @categoria.DataUpdate.ToString("dd/MM/yyyy HH:mm")</small>
+										<small class="text-muted">Atual.: @categoria.DataUpdate.Value.ToString("dd/MM/yyyy HH:mm")</small>
 									}
 								</td>
 								<td>@categoria.Nome</td>
 								<td><i class="@categoria.Icone fa-lg text-secondary"></i></td>
 								<td>
-									<span class="badge" style="@(categoria.Habilitado ? "background-color: var(--color-success)" : "background-color: var(--color-danger)");">
-										@(categoria.Habilitado ? "Ativo" : "Inativo")
+									<span class="badge" style="@((bool)categoria.Habilitado ? "background-color: var(--color-success)" : "background-color: var(--color-danger)");">
+										@((bool)categoria.Habilitado ? "Ativo" : "Inativo")
 									</span>
 								</td>
 								<td class="text-center">
