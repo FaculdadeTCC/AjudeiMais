@@ -13,6 +13,47 @@ namespace AjudeiMais.Ecommerce.Tools
     /// </summary>
     public static class Assistant
     {
+
+        public static string ToTempoAtras(this DateTime dataHora)
+        {
+            // Calcula a diferença de tempo entre agora e a dataHora fornecida
+            TimeSpan tempoDesdeCriacao = DateTime.Now - dataHora;
+            string tempoFormatado = "";
+
+            // Verifica a duração e formata a string adequadamente
+            if (tempoDesdeCriacao.TotalSeconds < 60)
+            {
+                tempoFormatado = "agora mesmo";
+            }
+            else if (tempoDesdeCriacao.TotalMinutes < 60)
+            {
+                int minutos = (int)tempoDesdeCriacao.TotalMinutes;
+                tempoFormatado = $"há {minutos} minuto{(minutos == 1 ? "" : "s")}";
+            }
+            else if (tempoDesdeCriacao.TotalHours < 24)
+            {
+                int horas = (int)tempoDesdeCriacao.TotalHours;
+                tempoFormatado = $"há {horas} hora{(horas == 1 ? "" : "s")}";
+            }
+            else if (tempoDesdeCriacao.TotalDays < 30) // Consideramos até 30 dias como "dias atrás"
+            {
+                int dias = (int)tempoDesdeCriacao.TotalDays;
+                tempoFormatado = $"há {dias} dia{(dias == 1 ? "" : "s")}";
+            }
+            else if (tempoDesdeCriacao.TotalDays < 365) // Até 365 dias (aproximadamente um ano)
+            {
+                int meses = (int)(tempoDesdeCriacao.TotalDays / 30); // Aproximação de meses
+                tempoFormatado = $"há {meses} mês{(meses == 1 ? "" : "es")}";
+            }
+            else
+            {
+                // Para itens muito antigos, exibe a data completa
+                tempoFormatado = $"em {dataHora.ToString("dd/MM/yyyy")}";
+            }
+
+            return tempoFormatado;
+        }
+
         public static string ServerURL()
         {
             // This URL should ideally be loaded from configuration (e.g., appsettings.json)

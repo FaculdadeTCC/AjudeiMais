@@ -1,12 +1,14 @@
 ﻿using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
-namespace AjudeiMais.API.Models
+namespace AjudeiMais.API.DTO
 {
-    public class ProdutoDto
+    public class ProdutoGetDTO
     {
         public int Produto_ID { get; set; }
+        public string Guid { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string? Condicao { get; set; }
@@ -17,9 +19,12 @@ namespace AjudeiMais.API.Models
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
-        public DateTime? DataUpdate { get; set; }
-        public List<IFormFile> Imagens { get; set; } = new List<IFormFile>();
-        public int Usuario_ID { get; set; }
-        public int CategoriaProduto_ID { get; set; }
+        public DateTime DataUpdate { get; set; }
+        public string UnidadeMedida { get; set; }
+
+        public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
+        public UsuarioResumoDTO Usuario { get; set; }
+        public CategoriaProdutoDTO CategoriaProduto { get; set; }
+
     }
 }

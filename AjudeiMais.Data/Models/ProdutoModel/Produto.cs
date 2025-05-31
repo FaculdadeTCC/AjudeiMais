@@ -13,6 +13,7 @@ namespace AjudeiMais.Data.Models.ProdutoModel
     {
         [Key]
         public int Produto_ID { get; set; }
+        public string Guid { get; set; }
         public string Nome { get; set; }
         public string Descricao { get; set; }
         public string? Condicao { get; set; }
@@ -24,6 +25,7 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataUpdate { get; set; }
+        public string UnidadeMedida { get; set; }
 
         public ICollection<ProdutoImagem> ProdutoImagens { get; set; } = new List<ProdutoImagem>();
 

@@ -29,8 +29,8 @@ namespace AjudeiMais.API.Controllers
         //{
         //    try
         //    {
-        //        var produtos = await _service.GetAll();
-        //        return Ok(produtos);
+        //        //var produtos = await _service.GetAll();
+        //        return Ok();
         //    }
         //    catch (Exception ex)
         //    {
@@ -47,8 +47,8 @@ namespace AjudeiMais.API.Controllers
         //{
         //    try
         //    {
-        //        var produtosAtivos = await _service.GetItens();
-        //        return Ok(produtosAtivos);
+        //        //var produtosAtivos = await _service.GetItens();
+        //        return Ok();
         //    }
         //    catch (Exception ex)
         //    {
@@ -62,50 +62,28 @@ namespace AjudeiMais.API.Controllers
         /// <param name="model">Dados do produto.</param>
         /// <returns>Produto criado ou atualizado.</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromForm] ProdutoDto model)
+        public async Task<IActionResult> SaveOrUpdate([FromBody] ProdutoPostDto model)
         {
-            if (!ModelState.IsValid)
-            {
-                // Extrai as mensagens de erro do ModelState
-                var errors = ModelState.Values
-                                       .SelectMany(v => v.Errors)
-                                       .Select(e => e.ErrorMessage)
-                                       .ToList();
-
-                return BadRequest(new ApiResponse<object>
-                {
-                    Success = false,
-                    Type = "error",
-                    Message = "Erro de validação nos dados enviados.",
-                    Data = errors
-                });
-            }
-
             try
             {
-                var result = await _service.SaveOrUpdate(model, model.Imagens);
+                var result = await _service.SaveOrUpdate(model, null); // imagens virão depois
 
-                if (result.Success) // Se a operação no serviço foi um sucesso
-                {
-                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
-                }
+                if (result.Success)
+                    return Ok(result);
                 else
-                {
                     return BadRequest(result);
-                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var errorResponse = new ApiResponse<object>
+                return StatusCode(500, new ApiResponse<object>
                 {
                     Success = false,
                     Type = "error",
-                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
-                };
-
-                return StatusCode(500, errorResponse);
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
             }
         }
+
 
         ///// <summary>
         ///// Exclui logicamente um produto pelo ID.
@@ -163,43 +141,60 @@ namespace AjudeiMais.API.Controllers
         //    }
         //}
 
-        ///// <summary>
-        ///// Retorna todos os produtos pertencentes a um usuário.
-        ///// </summary>
-        ///// <param name="usuarioId">ID do usuário.</param>
-        ///// <returns>Lista de produtos do usuário.</returns>
-        //[HttpGet("usuario/{usuarioId}")]
-        //public async Task<IActionResult> GetProdutosByUsuarioId(int usuarioId)
-        //{
-        //    try
-        //    {
-        //        var produtos = await _service.GetByUsuarioId(usuarioId);
-        //        return Ok(produtos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        /// <summary>
+        /// Retorna todos os produtos pertencentes a um usuário.
+        /// </summary>
+        /// <returns>Lista de produtos do usuário.</returns>
+        [HttpGet("usuario/{guid}")]
+        public async Task<IActionResult> GetProdutosByUsuarioGuid(string guid)
+        {
+            try
+            {
+                var result = await _service.GetProdutosByUsuarioGuid(guid);
 
-        ///// <summary>
-        ///// Retorna os produtos (anúncios) próximos a uma localização (latitude e longitude).
-        ///// </summary>
-        ///// <param name="lat">Latitude do ponto de referência.</param>
-        ///// <param name="lng">Longitude do ponto de referência.</param>
-        ///// <returns>Lista de produtos próximos.</returns>
-        //[HttpGet("proximos")]
-        //public async Task<IActionResult> GetProdutosProximos(double lat, double lng)
-        //{
-        //    try
-        //    {
-        //        var produtosProximos = await _service.GetProdutosProximos(lat, lng);
-        //        return Ok(produtosProximos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
+
+        /// <summary>
+        /// Retorna os produtos (anúncios) próximos a uma localização (latitude e longitude).
+        /// </summary>
+        /// <param name="lat">Latitude do ponto de referência.</param>
+        /// <param name="lng">Longitude do ponto de referência.</param>
+        /// <returns>Lista de produtos próximos.</returns>
+        [HttpGet("proximos")]
+        public async Task<IActionResult> GetProdutosProximos(double lat, double lng)
+        {
+            try
+            {
+                var result = await _service.GetProdutosProximos(lat, lng);
+
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
     }
 }

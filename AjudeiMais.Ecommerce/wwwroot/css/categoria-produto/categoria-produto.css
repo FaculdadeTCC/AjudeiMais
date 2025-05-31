@@ -40,6 +40,7 @@ main {
     }
 
     .header-section .btn-outline-light {
+        background-color: var(--color-accent-dark);
         color: var(--color-gray-100);
         border-color: var(--color-gray-100);
         transition: all 0.3s ease;

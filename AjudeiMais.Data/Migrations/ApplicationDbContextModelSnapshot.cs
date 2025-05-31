@@ -437,6 +437,10 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Guid")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
@@ -449,6 +453,10 @@ namespace AjudeiMais.Data.Migrations
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
+
+                    b.Property<string>("UnidadeMedida")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Usuario_ID")
                         .HasColumnType("int");
@@ -482,6 +490,9 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<string>("Imagem")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPrincipal")
+                        .HasColumnType("bit");
 
                     b.Property<int>("Produto_ID")
                         .HasColumnType("int");

@@ -12,6 +12,7 @@ namespace AjudeiMais.Data.Models.ProdutoModel
         public string Imagem { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
+        public bool IsPrincipal { get; set; }
 
         [ForeignKey("Produto")]
         public int Produto_ID { get; set; }
