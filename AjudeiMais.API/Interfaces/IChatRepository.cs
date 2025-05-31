@@ -5,6 +5,8 @@ namespace AjudeiMais.API.Interfaces
 {
     public interface IChatRepository : IGenericRepository<Chat>
     {
-        Task<IEnumerable<MensagemChat>> GetMensagensByChatId(int chatId);
-    }
+		Task<Chat> ObterOuCriarChatAsync(int usuarioId, int instituicaoId);
+		Task<List<MensagemChat>> ObterMensagensPorChatAsync(int chatId);
+		Task<MensagemChat> EnviarMensagemAsync(MensagemChat mensagem);
+	}
 }

@@ -5,12 +5,12 @@ using AjudeiMais.API.DTO; // Certifique-se de que o ApiResponse esteja neste nam
 using AjudeiMais.API.Tools;
 namespace AjudeiMais.API.Services
 {
-    public class CategoriaService
+    public class CategoriaInstituicaoService
     {
-        private readonly CategoriaRepository _categoriaRepository;
-        private readonly ILogger<CategoriaService> _logger;
+        private readonly CategoriaInstituicaoRepository _categoriaRepository;
+        private readonly ILogger<CategoriaInstituicaoService> _logger;
 
-        public CategoriaService(CategoriaRepository categoriaRepository, ILogger<CategoriaService> logger)
+        public CategoriaInstituicaoService(CategoriaInstituicaoRepository categoriaRepository, ILogger<CategoriaInstituicaoService> logger)
         {
             _categoriaRepository = categoriaRepository;
             _logger = logger;
@@ -97,7 +97,7 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<Categoria>> SaveOrUpdate(CategoriaDTO model)
+        public async Task<ApiResponse<Categoria>> SaveOrUpdate(CategoriaInstituicaoDTO model)
         {
             try
             {
@@ -105,19 +105,15 @@ namespace AjudeiMais.API.Services
                 // Para manter o exemplo conciso, estou assumindo que CategoriaDTO tem as mesmas propriedades de Categoria
                 // E que a lógica de "atualizar" vs "salvar" é tratada no repositório ou com uma verificação de ID.
 
-                
-                model.GUID ??= Guid.NewGuid().ToString();
-                var pasta = new[] { "images", "profile", "instituicao", model.GUID };
-                string pathIcone = await Helpers.SalvarImagemComoWebpAsync(model.Icone, pasta);
-
                 var categoria = new Categoria
                 {
                     Categoria_ID = model.Categoria_ID,
                     Nome = model.Nome,
-                    Icone = pathIcone,
+                    Icone = model.Icone,
                     Habilitado = model.Habilitado,
-                    Excluido = false
-                    // Mapeie outras propriedades conforme necessário
+                    Excluido = false,
+                    DataCriacao = DateTime.Now,
+                    DataUpdate = DateTime.Now,
                 };
 
                 // Exemplo de lógica para verificar se a categoria já existe (opcional, dependendo da sua regra de negócio)

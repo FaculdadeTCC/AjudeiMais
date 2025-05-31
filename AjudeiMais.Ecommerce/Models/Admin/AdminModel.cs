@@ -1,4 +1,5 @@
-﻿using AjudeiMais.Ecommerce.Models.Usuario;
+﻿using AjudeiMais.Ecommerce.Models.Instituicao;
+using AjudeiMais.Ecommerce.Models.Usuario;
 
 namespace AjudeiMais.Ecommerce.Models.Admin
 {

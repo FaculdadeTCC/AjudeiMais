@@ -1,113 +1,99 @@
-﻿//using AjudeiMais.API.Services;
+﻿//using AjudeiMais.API.DTO;
+//using AjudeiMais.API.Services;
 //using AjudeiMais.Data.Models.ChatModel;
 //using Microsoft.AspNetCore.Mvc;
 
 //namespace AjudeiMais.API.Controllers
 //{
-//    [ApiController]
-//    [Route("api/[controller]")]
-//    public class ChatController : ControllerBase
-//    {
-//        private readonly ChatService _chatService;
-//        private readonly ILogger<ChatController> _logger;
+//[ApiController]
+//[Route("api/[controller]")]
+//public class ChatController : ControllerBase
+//{
+//	private readonly ChatService _service;
 
-//        public ChatController(ChatService chatService, ILogger<ChatController> logger)
-//        {
-//            _chatService = chatService;
-//            _logger = logger;
-//        }
+//	public ChatController(ChatService service)
+//	{
+//		_service = service;
+//	}
 
-//        [HttpGet]
-//        public async Task<ActionResult<IEnumerable<Chat>>> GetAll()
-//        {
-//            try
-//            {
-//                var chats = await _chatService.GetAll();
-//                return Ok(chats);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, "Erro ao listar todos os chats.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
+//	[HttpPost("iniciar")]
+//	public async Task<IActionResult> IniciarChat([FromBody] IniciarChatDTO dto)
+//	{
+//		try
+//		{
+//			var chat = await _service.IniciarOuObterChatAsync(dto);
+//			return Ok(new ApiResponse<Chat>
+//			{
+//				Success = true,
+//				Type = "success",
+//				Message = "Chat iniciado com sucesso",
+//				Data = chat
+//			});
+//		}
+//		catch (Exception ex)
+//		{
+//			return BadRequest(new ApiResponse<Chat>
+//			{
+//				Success = false,
+//				Type = "error",
+//				Message = "Erro ao iniciar o chat",
+//				Errors = new List<string> { ex.Message }
+//			});
+//		}
+//	}
 
-//        [HttpGet("{id}")]
-//        public async Task<ActionResult<Chat>> GetById(int id)
-//        {
-//            try
-//            {
-//                var chat = await _chatService.GetById(id);
-//                if (chat == null)
-//                    return NotFound();
+//	[HttpPost("mensagem")]
+//	public async Task<IActionResult> EnviarMensagem([FromBody] EnviarMensagemDTO dto)
+//	{
+//		try
+//		{
+//			var mensagem = await _service.EnviarMensagemAsync(dto);
+//			return Ok(new ApiResponse<MensagemChat>
+//			{
+//				Success = true,
+//				Type = "success",
+//				Message = "Mensagem enviada com sucesso",
+//				Data = mensagem
+//			});
+//		}
+//		catch (Exception ex)
+//		{
+//			return BadRequest(new ApiResponse<MensagemChat>
+//			{
+//				Success = false,
+//				Type = "error",
+//				Message = "Erro ao enviar a mensagem",
+//				Errors = new List<string> { ex.Message }
+//			});
+//		}
+//	}
 
-//                return Ok(chat);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, $"Erro ao buscar chat com ID {id}.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
+//	[HttpGet("{chatId}/mensagens")]
+//	public async Task<IActionResult> ObterMensagens(int chatId)
+//	{
+//		try
+//		{
+//			var mensagens = await _service.ObterMensagensAsync(chatId);
+//			return Ok(new ApiResponse<List<MensagemChat>>
+//			{
+//				Success = true,
+//				Type = "success",
+//				Message = "Mensagens obtidas com sucesso",
+//				Data = mensagens
+//			});
+//		}
+//		catch (Exception ex)
+//		{
+//			return BadRequest(new ApiResponse<List<MensagemChat>>
+//			{
+//				Success = false,
+//				Type = "error",
+//				Message = "Erro ao obter as mensagens",
+//				Errors = new List<string> { ex.Message }
+//			});
+//		}
+//	}
+//}
+	
 
-//        [HttpGet("ativos")]
-//        public async Task<ActionResult<IEnumerable<Chat>>> GetItens()
-//        {
-//            try
-//            {
-//                var chats = await _chatService.GetItens();
-//                return Ok(chats);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, "Erro ao buscar chats ativos.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
-
-//        [HttpPost]
-//        public async Task<ActionResult> Save([FromBody] Chat model)
-//        {
-//            try
-//            {
-//                await _chatService.SaveOrUpdate(model);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, "Erro ao salvar ou atualizar chat.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
-
-//        [HttpDelete("{id}")]
-//        public async Task<ActionResult> Delete(int id)
-//        {
-//            try
-//            {
-//                await _chatService.Delete(id);
-//                return Ok();
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, $"Erro ao deletar chat com ID {id}.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
-
-//        [HttpGet("{chatId}/mensagens")]
-//        public async Task<ActionResult<IEnumerable<MensagemChat>>> GetMensagensByChatId(int chatId)
-//        {
-//            try
-//            {
-//                var mensagens = await _chatService.GetMensagensByChatId(chatId);
-//                return Ok(mensagens);
-//            }
-//            catch (Exception ex)
-//            {
-//                _logger.LogError(ex, $"Erro ao buscar mensagens do chat ID {chatId}.");
-//                return StatusCode(500, ex.Message);
-//            }
-//        }
-//    }
 //}

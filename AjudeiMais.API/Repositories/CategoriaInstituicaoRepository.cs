@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace AjudeiMais.API.Repositories
 {
-    public class CategoriaRepository : IGenericRepository<Categoria>
+    public class CategoriaInstituicaoRepository : IGenericRepository<Categoria>
     {
         private readonly ApplicationDbContext _context;
 
-        public CategoriaRepository(ApplicationDbContext context)
+        public CategoriaInstituicaoRepository(ApplicationDbContext context)
         {
             _context = context;
         }

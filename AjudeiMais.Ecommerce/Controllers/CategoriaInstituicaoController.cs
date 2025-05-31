@@ -125,33 +125,34 @@ namespace AjudeiMais.Ecommerce.Controllers
         /// </summary>
         /// <param name="model">Objeto com os dados da categoria a serem adicionados.</param>
         /// <returns>Redireciona para a página de listagem de categorias com mensagem de sucesso ou erro.</returns>
+        /// 
         [RoleAuthorize("admin")]
         [HttpPost]
         public async Task<IActionResult> Adicionar(CategoriaModel model)
         {
-            // Validação de modelo no lado do cliente (opcional, mas boa prática)
-            // if (!ModelState.IsValid)
-            // {
-            //     TempData["alertType"] = "error";
-            //     TempData["alertMessage"] = "Dados inválidos. Por favor, verifique os campos.";
-            //     return View(model);
-            // }
+            //Validação de modelo no lado do cliente(opcional, mas boa prática)
+             if (!ModelState.IsValid)
+             {
+                TempData["alertType"] = "error";
+                TempData["alertMessage"] = "Dados inválidos. Por favor, verifique os campos.";
+                return View(model);
+             }
 
             try
             {
-                // Converte CategoriaModel para CategoriaDTO para enviar à API
-                var categoriaDto = new CategoriaDTO // Use o namespace completo do DTO da API
+                //Converte CategoriaModel para CategoriaDTO para enviar à API
+                var categoriaDto = new CategoriaModel// Use o namespace completo do DTO da API
                 {
-                    categoria_ID = model.Categoria_ID, // Será 0 para nova categoria
-                    nome = model.Nome,
-                    habilitado = model.Habilitado,
-                    excluido = model.Excluido,
-                    icone = model.Icone // Se o ícone for uma string (URL ou classe CSS)
+                    Categoria_ID = model.Categoria_ID, // Será 0 para nova categoria
+                    Nome = model.Nome,
+                    Habilitado = model.Habilitado,
+                    Icone = model.Icone // Se o ícone for uma string (URL ou classe CSS)
                     // Não há propriedade para IFormFile aqui, se o ícone for upload, a lógica abaixo precisa mudar.
                 };
 
-                // No seu Controller da API, o SaveOrUpdate espera JSON com [FromBody]
+                //No seu Controller da API, o SaveOrUpdate espera JSON com[FromBody]
                 // Portanto, precisamos enviar um JSON, não MultipartFormDataContent
+
                 var jsonContent = new StringContent(
                     JsonSerializer.Serialize(categoriaDto, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     Encoding.UTF8,
@@ -224,13 +225,12 @@ namespace AjudeiMais.Ecommerce.Controllers
             try
             {
                 // Converte CategoriaModel para CategoriaDTO para enviar à API
-                var categoriaDto = new CategoriaDTO
-                {
-                    categoria_ID = model.Categoria_ID,
-                    nome = model.Nome,
-                    habilitado = model.Habilitado,
-                    excluido = model.Excluido,
-                    icone = model.Icone
+                var categoriaDto = new CategoriaModel
+				{
+                    Categoria_ID = model.Categoria_ID,
+                    Nome = model.Nome,
+                    Habilitado = model.Habilitado,
+                    Icone = model.Icone
                 };
 
                 var jsonContent = new StringContent(

@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using AjudeiMais.Data.Models.InstituicaoModel;
+using System.ComponentModel.DataAnnotations;
 
-namespace AjudeiMais.Data.Models.InstituicaoModel
+namespace AjudeiMais.API.DTO
 {
-    public class Categoria
+    public class CategoriaInstituicaoDTO
     {
-        [Key]
 		public int Categoria_ID { get; set; }
 		public string Nome { get; set; }
 		public bool Habilitado { get; set; }

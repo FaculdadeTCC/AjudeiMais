@@ -8,11 +8,11 @@ namespace AjudeiMais.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoriaController : ControllerBase
+    public class CategoriaInstituicaoController : ControllerBase
     {
-        private readonly CategoriaService _categoriaService;
+        private readonly CategoriaInstituicaoService _categoriaService;
 
-        public CategoriaController(CategoriaService categoriaService)
+        public CategoriaInstituicaoController(CategoriaInstituicaoService categoriaService)
         {
             _categoriaService = categoriaService;
         }
@@ -92,7 +92,7 @@ namespace AjudeiMais.API.Controllers
 
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> SaveOrUpdate(CategoriaDTO model)
+        public async Task<IActionResult> SaveOrUpdate(CategoriaInstituicaoDTO model)
         {
             try
             {
