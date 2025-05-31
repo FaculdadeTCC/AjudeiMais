@@ -4,7 +4,8 @@
     {
         public int ProdutoImagem_ID { get; set; }
         public IFormFile Imagem { get; set; }
-        public int ProdutoId { get; set; }
+        public int Produto_ID { get; set; }
+        public bool IsPrincipal { get; set; }
     }
 
 }

@@ -20,41 +20,41 @@ namespace AjudeiMais.API.Controllers
             _usuarioService = usuarioService;
         }
 
-        ///// <summary>
-        ///// Retorna todos os produtos.
-        ///// </summary>
-        ///// <returns>Lista de produtos.</returns>
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllProdutos()
-        //{
-        //    try
-        //    {
-        //        var produtos = await _service.GetAll();
-        //        return Ok(produtos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        /// <summary>
+        /// Retorna todos os produtos.
+        /// </summary>
+        /// <returns>Lista de produtos.</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetAllProdutos()
+        {
+            try
+            {
+                //var produtos = await _service.GetAll();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
-        ///// <summary>
-        ///// Retorna todos os produtos ativos (habilitados e não excluídos).
-        ///// </summary>
-        ///// <returns>Lista de produtos ativos.</returns>
-        //[HttpGet("ativos")]
-        //public async Task<IActionResult> GetProdutosAtivos()
-        //{
-        //    try
-        //    {
-        //        var produtosAtivos = await _service.GetItens();
-        //        return Ok(produtosAtivos);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+        /// <summary>
+        /// Retorna todos os produtos ativos (habilitados e não excluídos).
+        /// </summary>
+        /// <returns>Lista de produtos ativos.</returns>
+        [HttpGet("ativos")]
+        public async Task<IActionResult> GetProdutosAtivos()
+        {
+            try
+            {
+                //var produtosAtivos = await _service.GetItens();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         /// <summary>
         /// Cria ou atualiza um produto.
@@ -62,50 +62,28 @@ namespace AjudeiMais.API.Controllers
         /// <param name="model">Dados do produto.</param>
         /// <returns>Produto criado ou atualizado.</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromForm] ProdutoDto model)
+        public async Task<IActionResult> SaveOrUpdate([FromBody] ProdutoPostDto model)
         {
-            if (!ModelState.IsValid)
-            {
-                // Extrai as mensagens de erro do ModelState
-                var errors = ModelState.Values
-                                       .SelectMany(v => v.Errors)
-                                       .Select(e => e.ErrorMessage)
-                                       .ToList();
-
-                return BadRequest(new ApiResponse<object>
-                {
-                    Success = false,
-                    Type = "error",
-                    Message = "Erro de validação nos dados enviados.",
-                    Data = errors
-                });
-            }
-
             try
             {
-                var result = await _service.SaveOrUpdate(model, model.Imagens);
+                var result = await _service.SaveOrUpdate(model, null); // imagens virão depois
 
-                if (result.Success) // Se a operação no serviço foi um sucesso
-                {
-                    return Ok(result); // Retorna 200 OK com a mensagem de sucesso
-                }
+                if (result.Success)
+                    return Ok(result);
                 else
-                {
                     return BadRequest(result);
-                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var errorResponse = new ApiResponse<object>
+                return StatusCode(500, new ApiResponse<object>
                 {
                     Success = false,
                     Type = "error",
-                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
-                };
-
-                return StatusCode(500, errorResponse);
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
             }
         }
+
 
         ///// <summary>
         ///// Exclui logicamente um produto pelo ID.

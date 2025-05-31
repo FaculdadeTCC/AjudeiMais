@@ -1,7 +1,11 @@
-﻿@{
+﻿@model AjudeiMais.Ecommerce.Models.Usuario.UsuarioIndex
+
+@{
     ViewData["Title"] = "Painel de Controle";
 }
-
+@{
+	await Html.RenderPartialAsync("_Alertas");
+}
 <style>
     /* Botão "Anunciar Item" */
     .announce-button-container {
@@ -404,7 +408,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Merriweather:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
 
 
-<div class="container mt-5">
+<div class="mt-5 container">
     <section class="announce-button-container">
         <a href="#" class="announce-button">
             <i class="fas fa-plus-circle"></i>

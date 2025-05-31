@@ -1,4 +1,5 @@
-﻿using AjudeiMais.API.Models;
+﻿using AjudeiMais.API.DTO;
+using AjudeiMais.API.Models;
 using AjudeiMais.API.Repositories;
 using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.ProdutoModel;
@@ -78,15 +79,24 @@ namespace AjudeiMais.API.Services
         }
 
 
-        public async Task SaveOrUpdate(ProdutoImagemUploadDto dto)
+        public async Task<ApiResponse<ProdutoImagem>> SaveOrUpdate(ProdutoImagemUploadDto dto)
         {
             ProdutoImagem entidade;
+            bool isNovo = false;
 
             if (dto.ProdutoImagem_ID > 0)
             {
                 entidade = await _produtoImagemRepository.GetById(dto.ProdutoImagem_ID);
+
                 if (entidade == null)
-                    throw new Exception("ProdutoImagem não encontrada");
+                {
+                    return new ApiResponse<ProdutoImagem>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Produto não encontrado para associar a imagem."
+                    };
+                }
             }
             else
             {
@@ -94,21 +104,59 @@ namespace AjudeiMais.API.Services
                 {
                     Habilitado = true,
                     Excluido = false,
-                    Produto_ID = dto.ProdutoId
+                    Produto_ID = dto.Produto_ID
                 };
+                isNovo = true;
             }
 
             if (dto.Imagem != null && dto.Imagem.Length > 0)
             {
                 var caminho = await Helpers.SalvarImagemComoWebpAsync(
                     dto.Imagem,
-                    new[] { "images", "products", dto.ProdutoId.ToString() }
+                    new[] { "images", "products", dto.Produto_ID.ToString() }
                 );
 
                 entidade.Imagem = caminho;
-            }
 
-            await _produtoImagemRepository.SaveOrUpdate(entidade);
+                await _produtoImagemRepository.SaveOrUpdate(entidade);
+
+                var retorno = new ProdutoImagem
+                {
+                    ProdutoImagem_ID = entidade.ProdutoImagem_ID,
+                    Produto_ID = entidade.Produto_ID,
+                    Imagem = caminho,
+                    IsPrincipal = entidade.IsPrincipal
+                };
+
+                return new ApiResponse<ProdutoImagem>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = isNovo ? "Imagem cadastrada com sucesso." : "Imagem atualizada com sucesso.",
+                    Data = retorno
+                };
+            }
+            else
+            {
+                // Sem nova imagem, apenas salva alterações (se houver)
+                await _produtoImagemRepository.SaveOrUpdate(entidade);
+
+                var retorno = new ProdutoImagem
+                {
+                    ProdutoImagem_ID = entidade.ProdutoImagem_ID,
+                    Produto_ID = entidade.Produto_ID,
+                    Imagem = entidade.Imagem,
+                    IsPrincipal = entidade.IsPrincipal
+                };
+
+                return new ApiResponse<ProdutoImagem>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = isNovo ? "Imagem cadastrada com sucesso." : "Imagem atualizada com sucesso.",
+                    Data = retorno
+                };
+            }
         }
     }
 }

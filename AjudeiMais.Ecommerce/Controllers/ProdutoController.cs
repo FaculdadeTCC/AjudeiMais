@@ -7,6 +7,8 @@ using AjudeiMais.Ecommerce.Models.Produto;
 using System.Threading.Tasks;
 using AjudeiMais.Ecommerce.Models.Usuario;
 using System.Text.Json;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -35,116 +37,108 @@ namespace AjudeiMais.Ecommerce.Controllers
 
         [RoleAuthorize("admin", "usuario")]
         [HttpPost]
-        public async Task<IActionResult> Cadastro(ProdutoModel model, IFormFile[] Imagens)
+        public async Task<IActionResult> Cadastro(ProdutoModel model, IFormFile[] ProdutoImagens)
         {
-            // --- 1. Validação de Autenticação e Autorização do Usuário Logado ---
-            string loggedInUserGuid = string.Empty;
-            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
-
-            if (unauthorizedResult != null)
-            {
-                return unauthorizedResult; // Redireciona para login ou home
-            }
-
+            // Validação de autenticação
             var userGuidFromClaims = User.FindFirst("GUID")?.Value;
-
             if (string.IsNullOrEmpty(userGuidFromClaims))
             {
-                _logger.LogWarning("GUID do usuário não encontrado nos claims durante o cadastro de produto.");
-                // Redireciona para a página de login se o GUID não for encontrado
-                return RedirectToRoute("login", new { alertType = "error", alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Por favor, faça login novamente." });
+                return RedirectToRoute("login", new { alertType = "error", alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente." });
             }
-            if (model.Usuario == null)
-            {
-                model.Usuario = new UsuarioPerfilModel();
-            }
-            model.Usuario.GUID = userGuidFromClaims;
 
-            // --- 2. Validação do Modelo (Campos Obrigatórios da View) ---
+            model.Usuario_GUID = userGuidFromClaims;
+
+            // Validação do modelo
             if (!ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-                var errorMessage = "Por favor, corrija os erros no formulário: " + string.Join(" ", errors);
-
-                return RedirectToRoute("produto-cadastro", new { alertType = "error", alertMessage = errorMessage, guid = userGuidFromClaims });
+                var erros = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                string mensagemErro = "Corrija os erros no formulário: " + string.Join(" ", erros);
+                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = mensagemErro, guid = userGuidFromClaims });
             }
 
-            if (Imagens == null || Imagens.Length == 0 || Imagens[0] == null || Imagens[0].Length == 0)
+            if (ProdutoImagens == null || ProdutoImagens.Length == 0 || ProdutoImagens[0] == null || ProdutoImagens[0].Length == 0)
             {
-                return RedirectToRoute("produto-cadastro", new { alertType = "error", alertMessage = "A imagem principal do anúncio é obrigatória.", guid = userGuidFromClaims });
+                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = "A imagem principal do produto é obrigatória.", guid = userGuidFromClaims });
             }
 
-            // --- 3. Envio dos Dados para a API ---
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
-                using (var formData = new MultipartFormDataContent())
-                {
-                    formData.AddObjectAsFormFields(model);
+                // 1. Envia o produto via JSON (POST api/Produto)
+                var jsonContent = new StringContent(
+                    JsonSerializer.Serialize(model),
+                    Encoding.UTF8,
+                    "application/json"
+                );
 
-                    for (int i = 0; i < Imagens.Length; i++)
+                var json = JsonSerializer.Serialize(model);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/Produto", content);
+
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorMessage = await response.Content.ReadAsStringAsync();
+                    return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = $"Erro ao cadastrar produto: {errorMessage}", guid = userGuidFromClaims });
+                }
+
+                // Lê a resposta para extrair o produtoId retornado
+                var responseContent = await response.Content.ReadAsStringAsync();
+                var apiResponse = JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoResponse>>(responseContent,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (apiResponse == null || !apiResponse.Success)
+                {
+                    return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = apiResponse?.Message ?? "Erro ao cadastrar produto.", guid = userGuidFromClaims });
+                }
+
+                var produtoId = apiResponse.Data.Produto_ID;
+
+                // 2. Envia as imagens para api/Produto/upload-imagens vinculando ao produtoId
+                if (ProdutoImagens != null && ProdutoImagens.Length > 0)
+                {
+                    using var formData = new MultipartFormDataContent();
+
+                    // Adicione o Produto_ID (se necessário)
+                    formData.Add(new StringContent(produtoId.ToString()), "Produto_ID");
+
+                    // Adicione a imagem (IFormFile) com o nome "Imagem"
+                    foreach (var imagem in ProdutoImagens)
                     {
-                        var imagem = Imagens[i];
                         if (imagem != null && imagem.Length > 0)
                         {
-                            var fileContent = new StreamContent(imagem.OpenReadStream());
-                            fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imagem.ContentType);
+                            var imageContent = new StreamContent(imagem.OpenReadStream());
+                            imageContent.Headers.ContentType = new MediaTypeHeaderValue(imagem.ContentType);
 
-                            // O nome "Imagens" deve corresponder ao parâmetro na sua API.
-                            // A API deve inferir a imagem principal pela ordem (primeira imagem = IsAtivo).
-                            formData.Add(fileContent, "Imagens", imagem.FileName);
+                            // OBS: O nome do campo DEVE ser "Imagem" para bater com o DTO
+                            formData.Add(imageContent, "Imagem", imagem.FileName);
                         }
                     }
 
-                    var response = await httpClient.PostAsync($"{BASE_URL}/api/produto", formData);
 
-                    var apiResponseContent = await response.Content.ReadAsStringAsync();
-                    ApiHelper.ApiResponse<ProdutoModel> apiResponse = null;
+                    var uploadResponse = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/ProdutoImagem", formData);
+                     responseBody = await uploadResponse.Content.ReadAsStringAsync();
 
-                    // Tenta desserializar a resposta da API
-                    try
-                    {
-                        apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoModel>>(
-                            apiResponseContent,
-                            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
-                        );
-                    }
-                    catch (JsonException jsonEx)
-                    {
-                        _logger.LogError(jsonEx, "Erro ao desserializar resposta da API de cadastro de produto: {ApiResponseContent}", apiResponseContent);
-                        return RedirectToRoute("produto-cadastro", new { alertType = "error", alertMessage = "Ocorreu um erro no formato da resposta da API. Contacte o suporte.", guid = userGuidFromClaims });
-                    }
 
-                    // --- 4. Verificação da Resposta da API ---
-                    if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                    if (!uploadResponse.IsSuccessStatusCode)
                     {
-                        // Sucesso: Redireciona com a mensagem de sucesso da API
-                        return RedirectToRoute("produto-lista-usuario", new { alertType = apiResponse.Type, alertMessage = apiResponse.Message, guid = userGuidFromClaims });
-                    }
-                    else
-                    {
-                        // API retornou erro ou não sucesso
-                        string alertType = apiResponse?.Type ?? "error";
-                        string alertMessage = apiResponse?.Message ?? "Não foi possível processar o cadastro do anúncio. Tente novamente.";
-
-                        _logger.LogError("API retornou erro ao cadastrar produto. Status: {StatusCode}, Message: {Message}", response.StatusCode, alertMessage);
-                        return RedirectToRoute("produto-cadastro", new { alertType = alertType, alertMessage = alertMessage, guid = userGuidFromClaims });
+                        var uploadError = await uploadResponse.Content.ReadAsStringAsync();
+                        return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = $"Erro ao enviar imagens: {uploadError}", guid = userGuidFromClaims });
                     }
                 }
-            }
-            catch (HttpRequestException ex)
-            {
-                // Erros de rede
-                return RedirectToRoute("produto-cadastro", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com o suporte.", guid = userGuidFromClaims });
+
+                // Se tudo OK, redireciona para dashboard
+                return RedirectToRoute("usuario-dashboard", new { alertType = "success", alertMessage = apiResponse.Message, guid = userGuidFromClaims });
             }
             catch (Exception ex)
             {
-                // Qualquer outro erro inesperado
-                _logger.LogError(ex, "Ocorreu um erro inesperado durante o processamento do cadastro do anúncio.");
-                return RedirectToRoute("produto-cadastro", new { alertType = "error", alertMessage = $"Ocorreu um erro inesperado durante o cadastro. Por favor, tente novamente.", guid = userGuidFromClaims });
+                _logger.LogError(ex, "Erro no cadastro do produto.");
+                return RedirectToRoute("usuario-anuncio-cadastrar", new { alertType = "error", alertMessage = "Erro inesperado no cadastro. Tente novamente.", guid = userGuidFromClaims });
             }
         }
+
 
         // Seu método GET para exibir a view de Gerenciar Anúncio (permanece o mesmo, ou adicione o parâmetro 'guid' se a rota espera)
         [RoleAuthorize("admin", "usuario")]
@@ -159,10 +153,6 @@ namespace AjudeiMais.Ecommerce.Controllers
                 return unauthorizedResult;
             }
 
-            // Você pode usar o 'guid' recebido da rota para carregar dados, se este for um cenário de edição.
-            // Para um novo cadastro, 'guid' pode ser ignorado ou representar o ID do usuário (como em 'produto-cadastro/{guid}').
-            // Se o 'guid' for o ID do usuário logado, você pode fazer uma verificação.
-
             // Inicialize o modelo para a view
             var model = new ProdutoModel();
             // Carregue as categorias para o dropdown
@@ -170,12 +160,8 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             model.Categorias = response.Data;
 
-            // Se o modelo precisar do GUID do usuário logado para exibição inicial, atribua-o aqui.
-            if (model.Usuario == null)
-            {
-                model.Usuario = new UsuarioPerfilModel();
-            }
-            model.Usuario.GUID = loggedInUserGuid; // Atribua o GUID obtido de HandleUnauthorizedAccess
+
+            model.Usuario_GUID = loggedInUserGuid; // Atribua o GUID obtido de HandleUnauthorizedAccess
 
             return View(model);
         }

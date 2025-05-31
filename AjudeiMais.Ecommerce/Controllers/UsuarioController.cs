@@ -57,7 +57,6 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
             else
             {
-                _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
         }

@@ -80,39 +80,50 @@ namespace AjudeiMais.API.Services
         //                throw new Exception("Erro ao buscar produtos.");
         //            }
         //        }
-        public async Task<ApiResponse<ProdutoDto>> SaveOrUpdate(ProdutoDto model, List<IFormFile> imagens)
+        public async Task<ApiResponse<ProdutoPostDto>> SaveOrUpdate(ProdutoPostDto model, List<IFormFile> imagens)
         {
             try
             {
                 Produto produto;
 
-                if (model.Produto_ID == 0) // Lógica para CRIAÇÃO de um novo produto
+                var usuario = await _usuarioRepository.GetByGUID(model.Usuario_GUID);
+                if (usuario == null)
                 {
+                    return new ApiResponse<ProdutoPostDto>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Usuário não encontrado para associar ao produto."
+                    };
+                }
+
+                if (model.Produto_ID == 0 || model.Produto_ID == null)
+                {
+                    // CRIAÇÃO
                     produto = new Produto
                     {
-                        // Mapeia propriedades do DTO para a nova entidade Produto
                         Nome = model.Nome,
                         Descricao = model.Descricao,
                         Condicao = model.Condicao,
-                        Validade = model.Validade,
+                        Validade = model.Validade ?? null,
                         Quantidade = model.Quantidade,
                         Peso = model.Peso,
-                        Disponivel = model.Disponivel,
-                        Usuario_ID = model.Usuario_ID,
-                        CategoriaProduto_ID = model.CategoriaProduto_ID,
+                        Disponivel = true,
+                        UnidadeMedida = model.UnidadeMedida,
+                        Usuario_ID = usuario.Usuario_ID,
+                        CategoriaProduto_ID = model.CategoriaProduto_ID ?? 0,
                         DataCriacao = DateTime.Now,
                         Habilitado = true,
                         Excluido = false
                     };
                 }
-                else // Lógica para ATUALIZAÇÃO de um produto existente
+                else
                 {
-                    // Tenta carregar o produto existente do repositório
-                    produto = await _produtoRepository.GetById(model.Produto_ID);
-
+                    // ATUALIZAÇÃO
+                    produto = await _produtoRepository.GetById((int)model.Produto_ID);
                     if (produto == null)
                     {
-                        return new ApiResponse<ProdutoDto>
+                        return new ApiResponse<ProdutoPostDto>
                         {
                             Success = false,
                             Type = "error",
@@ -120,39 +131,25 @@ namespace AjudeiMais.API.Services
                         };
                     }
 
-                    // Atualiza as propriedades do produto existente com base no DTO
-                    produto.Nome = model.Nome;
-                    produto.Descricao = model.Descricao;
-                    produto.Condicao = model.Condicao;
-                    produto.Validade = model.Validade;
-                    produto.Quantidade = model.Quantidade;
-                    produto.Peso = model.Peso;
-                    produto.Disponivel = model.Disponivel;
-                    // produto.Usuario_ID = model.Usuario_ID;
-                    // produto.CategoriaProduto_ID = model.CategoriaProduto_ID;
-                    produto.DataUpdate = DateTime.Now; // Define DataUpdate apenas na atualização
-                    produto.Habilitado = model.Habilitado;
-                    produto.Excluido = model.Excluido;
+                    // Atualiza os campos apenas se novos valores forem fornecidos
+                    produto.Nome = model.Nome ?? produto.Nome;
+                    produto.Descricao = model.Descricao ?? produto.Descricao;
+                    produto.Condicao = model.Condicao ?? produto.Condicao;
+                    produto.Validade = model.Validade ?? produto.Validade;
+                    produto.Quantidade = model.Quantidade != null ? model.Quantidade : produto.Quantidade;
+                    produto.Peso = model.Peso != null ? model.Peso : produto.Peso;
+                    produto.Disponivel = model.Disponivel ?? produto.Disponivel;
+                    produto.UnidadeMedida = model.UnidadeMedida ?? produto.UnidadeMedida;
+                    produto.Usuario_ID = usuario.Usuario_ID;
+                    produto.CategoriaProduto_ID = model.CategoriaProduto_ID ?? produto.CategoriaProduto_ID;
+                    produto.DataUpdate = DateTime.Now;
                 }
 
-                // Salva ou atualiza o produto no banco de dados
+                // Salva ou atualiza no banco
                 await _produtoRepository.SaveOrUpdate(produto);
 
-                // Após salvar/atualizar, o produto.Produto_ID deve estar preenchido (se for criação)
-                // ou já ter seu valor (se for atualização).
-                // Agora salva as imagens associadas ao produto salvo
-                foreach (var imagem in imagens)
-                {
-                    var dto = new ProdutoImagemUploadDto
-                    {
-                        ProdutoId = produto.Produto_ID,
-                        Imagem = imagem
-                    };
 
-                    await _produtoImagemService.SaveOrUpdate(dto);
-                }
-
-                ProdutoDto produtoRetorno = new ProdutoDto
+                var retorno = new ProdutoPostDto
                 {
                     Produto_ID = produto.Produto_ID,
                     CategoriaProduto_ID = produto.CategoriaProduto_ID,
@@ -161,23 +158,23 @@ namespace AjudeiMais.API.Services
                     DataUpdate = produto.DataUpdate
                 };
 
-                return new ApiResponse<ProdutoDto>
+                return new ApiResponse<ProdutoPostDto>
                 {
                     Success = true,
                     Type = "success",
                     Message = (model.Produto_ID == 0) ? "Produto cadastrado com sucesso." : "Produto atualizado com sucesso.",
-                    Data = produtoRetorno
+                    Data = retorno
                 };
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao salvar ou atualizar o produto.");
 
-                return new ApiResponse<ProdutoDto>
+                return new ApiResponse<ProdutoPostDto>
                 {
                     Success = false,
                     Type = "error",
-                    Message = "Ocorreu um erro inesperado ao salvar ou atualizar o produto. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                    Message = "Ocorreu um erro ao processar sua solicitação. Tente novamente mais tarde ou entre em contato com o suporte."
                 };
             }
         }

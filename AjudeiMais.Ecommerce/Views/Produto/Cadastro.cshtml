@@ -13,68 +13,65 @@
 }
 
 <section class="container" style="margin-top: 6rem !important">
-	<form id="formAnuncio" asp-action="Cadastro" asp-controller="Produto" method="post" enctype="multipart/form-data" novalidate>
+	<form id="formAnuncio" asp-action="Cadastro" asp-controller="Produto" method="post" enctype="multipart/form-data">
 		<ul class="nav nav-tabs mb-4" id="formTabs" role="tablist">
 			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="tab-info-basicas" type="button" role="tab"
-						aria-controls="etapa-info-basicas" aria-selected="true">
+				<button class="nav-link active" id="tab-info-basicas" data-bs-toggle="tab" data-bs-target="#etapa-info-basicas" type="button" role="tab" aria-controls="etapa-info-basicas" aria-selected="true">
 					Informações Básicas
 				</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tab-especificacoes" type="button" role="tab"
-						aria-controls="etapa-especificacoes" aria-selected="false" disabled>
+				<button class="nav-link" id="tab-especificacoes" data-bs-toggle="tab" data-bs-target="#etapa-especificacoes" type="button" role="tab" aria-controls="etapa-especificacoes" aria-selected="false" disabled>
 					Especificações do Item
 				</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tab-imagens" type="button" role="tab"
-						aria-controls="etapa-imagens" aria-selected="false" disabled>
+				<button class="nav-link" id="tab-imagens" data-bs-toggle="tab" data-bs-target="#etapa-imagens" type="button" role="tab" aria-controls="etapa-imagens" aria-selected="false" disabled>
 					Imagens do Item
 				</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tab-publicacao" type="button" role="tab"
-						aria-controls="etapa-publicacao" aria-selected="false" disabled>
+				<button class="nav-link" id="tab-publicacao" data-bs-toggle="tab" data-bs-target="#etapa-publicacao" type="button" role="tab" aria-controls="etapa-publicacao" aria-selected="false" disabled>
 					Publicação
 				</button>
 			</li>
 		</ul>
 
-
 		<div class="tab-content" id="formTabsContent">
 			<div class="tab-pane fade show active" id="etapa-info-basicas" role="tabpanel" aria-labelledby="tab-info-basicas">
-				<input type="hidden" name="Usuario_GUID" value="@Model.Usuario.GUID" />
 
 				<h4>Informações Essenciais</h4>
 				<hr class="mb-3" />
 				<div class="row g-3 mb-4">
 					<div class="col-md-6">
-						<label for="Nome" class="form-label">Nome do Produto <span>*</span></label>
-						<input type="text" id="Nome" name="Nome" class="form-control" placeholder="Ex: Camiseta"
-							   required />
+						<label asp-for="Nome" class="form-label">Nome do Produto <span>*</span></label>
+						<input asp-for="Nome" class="form-control" placeholder="Ex: Camiseta" />
+						<span asp-validation-for="Nome" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-6">
-						<label for="Categoria" class="form-label">Categoria <span>*</span></label>
-						<select id="Categoria" name="CategoriaProduto_ID" class="form-select" required>
+						<label asp-for="CategoriaProduto_ID" class="form-label">Categoria <span>*</span></label>
+						<select asp-for="CategoriaProduto_ID" class="form-select">
 							<option value="">Selecione</option>
 							@foreach (var categoria in Model.Categorias)
 							{
 								<option value="@categoria.CategoriaProduto_ID">@categoria.Nome</option>
 							}
 						</select>
+						<span asp-validation-for="CategoriaProduto_ID" class="text-danger"></span>
 					</div>
+					<input type="hidden" asp-for="Usuario_GUID" value="@User.FindFirst("GUID")?.Value" />
 
 					<div class="col-md-12">
-						<label for="DescricaoEditor" class="form-label">Descrição <span>*</span></label>
+						<label asp-for="Descricao" class="form-label">Descrição <span>*</span></label>
 						<div id="DescricaoEditor" style="height: 300px;"></div>
-						<input type="hidden" id="Descricao" name="Descricao" value="@Model.Descricao" />
+						<input type="hidden" asp-for="Descricao" />
+						<span asp-validation-for="Descricao" class="text-danger"></span>
 					</div>
 				</div>
 
 				<div class="mt-4 text-end">
-					<button type="button" class="btn btn-primary" onclick="irParaTab(1)">Próximo</button>
+					<button type="button" class="btn btn-primary" onclick="navegarParaAba(1)">Próximo</button>
 				</div>
 			</div>
 
@@ -83,8 +80,8 @@
 				<hr class="mb-3" />
 				<div class="row g-3 mb-4">
 					<div class="col-md-6">
-						<label for="Condicao" class="form-label">Condição <span>*</span></label>
-						<select id="Condicao" name="Condicao" class="form-select" required>
+						<label asp-for="Condicao" class="form-label">Condição <span>*</span></label>
+						<select asp-for="Condicao" class="form-select">
 							<option value="">Selecione</option>
 							<option>Novo</option>
 							<option>Usado – Impecável</option>
@@ -92,23 +89,25 @@
 							<option>Usado – Regular</option>
 							<option>Usado – Danificado</option>
 						</select>
+						<span asp-validation-for="Condicao" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-6">
-						<label for="Validade" class="form-label">Data de Validade (se aplicável)</label>
-						<input type="date" id="Validade" name="Validade" class="form-control" />
+						<label asp-for="Validade" class="form-label">Data de Validade (se aplicável)</label>
+						<input asp-for="Validade" class="form-control" />
 						<small class="form-text text-muted">Apenas para alimentos ou produtos com prazo de validade.</small>
+						<span asp-validation-for="Validade" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-4">
-						<label for="Quantidade" class="form-label">Quantidade Disponível <span>*</span></label>
-						<input type="number" id="Quantidade" name="Quantidade" min="1" class="form-control"
-							   required />
+						<label asp-for="Quantidade" class="form-label">Quantidade Disponível <span>*</span></label>
+						<input asp-for="Quantidade" min="1" class="form-control" />
+						<span asp-validation-for="Quantidade" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-4">
-						<label for="UnidadeMedida" class="form-label">Unidade de Medida <span>*</span></label>
-						<select id="UnidadeMedida" name="UnidadeMedida" class="form-select" required>
+						<label asp-for="UnidadeMedida" class="form-label">Unidade de Medida <span>*</span></label>
+						<select asp-for="UnidadeMedida" class="form-select">
 							<option value="">Selecione</option>
 							<option>Unidade(s)</option>
 							<option>Litro(s)</option>
@@ -119,18 +118,20 @@
 							<option>Conjunto(s)</option>
 							<option>Outro</option>
 						</select>
+						<span asp-validation-for="UnidadeMedida" class="text-danger"></span>
 					</div>
 
 					<div class="col-md-4">
-						<label for="Peso" class="form-label">Peso por Unidade (kg) <small class="text-muted">(aprox.)</small></label>
-						<input type="number" step="0.01" id="Peso" name="Peso" min="0" class="form-control" placeholder="Ex: 0.5 para 500g" />
+						<label asp-for="Peso" class="form-label">Peso por Unidade (kg) <small class="text-muted">(aprox.)</small></label>
+						<input asp-for="Peso" step="0.01" min="0" class="form-control" placeholder="Ex: 0.5 para 500g" />
+						<span asp-validation-for="Peso" class="text-danger"></span>
 						<small class="form-text text-muted">Deixe 0 se o peso não for relevante ou se for uma unidade fixa.</small>
 					</div>
 				</div>
 
 				<div class="d-flex justify-content-between mt-4">
-					<button type="button" class="btn btn-secondary" onclick="irParaTab(0)">Voltar</button>
-					<button type="button" class="btn btn-primary" onclick="irParaTab(2)">Próximo</button>
+					<button type="button" class="btn btn-secondary" onclick="navegarParaAba(0)">Voltar</button>
+					<button type="button" class="btn btn-primary" onclick="navegarParaAba(2)">Próximo</button>
 				</div>
 			</div>
 
@@ -138,30 +139,24 @@
 				<h4>Imagens do Anúncio</h4>
 				<hr class="mb-3" />
 
-				<div id="imageUploadFieldsContainer">
-					<div class="mb-3 image-upload-item" id="imageUploadItem-0">
-						<label for="ImagemPrincipal" class="form-label">Imagem Principal <span>*</span></label>
-						<input type="file" id="ImagemPrincipal" name="Imagens[]"
-							   class="form-control image-input" accept="image/*" required onchange="previewImage(event, 'previewImage-0')" data-image-index="0" />
-						<small class="form-text text-muted">Esta será a imagem de destaque do seu anúncio.</small>
-						<div class="mb-3 mt-2 text-center">
-							<img id="previewImage-0" src="#" alt="Pré-visualização"
-								 class="img-fluid d-none rounded border" style="max-height: 200px; object-fit: contain;" />
+				<div class="col-md-12">
+					<label class="form-label required-field mb-2">Fotos de Exibição</label>
+					<label for="fotosInput" class="file-upload d-block">
+						<input name="ProdutoImagens"  type="file" class="d-none" id="fotosInput" accept=".jpg,.jpeg,.png" multiple />
+						<div id="fileUploadContent">
+							<i class="bi bi-cloud-arrow-up"></i>
+							<p class="mb-0">Clique ou arraste suas fotos aqui</p>
+							<small class="text-muted">(A primeira imagem será considerada a principal. Tamanho máximo: 5MB por imagem)</small>
 						</div>
-					</div>
+						<div id="previewContainer" class="mt-3 d-flex gap-2 flex-wrap"></div>
+						<button type="button" id="removeImagesButton" class="btn btn-sm btn-danger mt-2 d-none">Remover Todas as Imagens</button>
+						<span class="text-danger"></span>
+					</label>
 				</div>
-
-				<div class="mb-4 text-center">
-					<button type="button" class="btn btn-outline-secondary" onclick="addImagemUploadField()">
-						<i class="fas fa-plus-circle"></i> Adicionar Outra Imagem
-					</button>
-					<small class="form-text text-muted d-block mt-2">Você pode adicionar múltiplas imagens para o seu anúncio.</small>
-				</div>
-
 
 				<div class="d-flex justify-content-between mt-4">
-					<button type="button" class="btn btn-secondary" onclick="irParaTab(1)">Voltar</button>
-					<button type="button" class="btn btn-primary" onclick="irParaTab(3)">Próximo</button>
+					<button type="button" class="btn btn-secondary" onclick="navegarParaAba(1)">Voltar</button>
+					<button type="button" class="btn btn-primary" onclick="navegarParaAba(3)">Próximo</button>
 				</div>
 			</div>
 
@@ -181,7 +176,7 @@
 				</div>
 
 				<div class="d-flex justify-content-between mt-4">
-					<button type="button" class="btn btn-secondary" onclick="irParaTab(2)">Voltar</button>
+					<button type="button" class="btn btn-secondary" onclick="navegarParaAba(2)">Voltar</button>
 					<button type="submit" class="btn btn-success">Salvar Anúncio</button>
 				</div>
 			</div>
@@ -193,208 +188,12 @@
 	<link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
 	<script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
+	<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 	<script src="~/js/quill-editor.js" asp-append-version="true"></script>
+	<script src="~/js/paginas/cadastro-produto/form-tabs.js" asp-append-version="true"></script>
 
-	<script>
-		// Variável global para rastrear o número de campos de upload de imagem
-		let imageUploadCount = 1; // Começa com 1 para a imagem principal
-
-		// Função para adicionar um novo campo de upload de imagem
-		function addImagemUploadField() {
-			const container = document.getElementById('imageUploadFieldsContainer');
-			const newIndex = imageUploadCount++; // Incrementa antes de usar para o novo ID
-
-			const div = document.createElement('div');
-			div.classList.add('mb-3', 'image-upload-item');
-			div.id = `imageUploadItem-${newIndex}`;
-			div.innerHTML = `
-				<label for="Imagens_${newIndex}_" class="form-label">Imagem Adicional #${newIndex}</label>
-				<div class="input-group">
-					<input type="file" id="Imagens_${newIndex}_" name="Imagens[]"
-						class="form-control image-input" accept="image/*" onchange="previewImage(event, 'previewImage-${newIndex}')" data-image-index="${newIndex}" />
-					<button class="btn btn-outline-danger" type="button" onclick="removeImagemUploadField(${newIndex})">
-						<i class="fas fa-trash-alt"></i> Remover
-					</button>
-				</div>
-				<div class="mb-3 mt-2 text-center">
-					<img id="previewImage-${newIndex}" src="#" alt="Pré-visualização"
-						class="img-fluid d-none rounded border" style="max-height: 200px; object-fit: contain;" />
-				</div>
-			`;
-			container.appendChild(div);
-		}
-
-		// Função para remover um campo de upload de imagem
-		function removeImagemUploadField(index) {
-			const itemToRemove = document.getElementById(`imageUploadItem-${index}`);
-			if (itemToRemove) {
-				itemToRemove.remove();
-			}
-		}
-
-		// Função universal para pré-visualização de imagens
-		function previewImage(event, previewId) {
-			const file = event.target.files[0];
-			const preview = document.getElementById(previewId);
-			if (file) {
-				const reader = new FileReader();
-				reader.onload = e => {
-					preview.src = e.target.result;
-					preview.classList.remove('d-none');
-				};
-				reader.readAsDataURL(file);
-			} else {
-				preview.classList.add('d-none');
-				preview.src = "#";
-			}
-		}
-
-		// Função para controle das abas (TABs) e validação
-		function irParaTab(index) {
-			const form = document.getElementById("formAnuncio");
-			const tabContents = ['etapa-info-basicas', 'etapa-especificacoes', 'etapa-imagens', 'etapa-publicacao'];
-			const tabButtons = ['tab-info-basicas', 'tab-especificacoes', 'tab-imagens', 'tab-publicacao'];
-
-			let isValid = true;
-
-			// Validação da etapa atual antes de avançar
-			if (index === 1) {
-				const nome = document.getElementById('Nome');
-				const categoria = document.getElementById('Categoria');
-
-				if (getQuillContentAsText() === '') {
-					alert("Por favor, preencha a descrição do item.");
-					isValid = false;
-				}
-
-				const camposInfoBasicas = [nome, categoria];
-				for(let i = 0; i < camposInfoBasicas.length; i++) {
-					if (!camposInfoBasicas[i].checkValidity()) {
-						camposInfoBasicas[i].reportValidity();
-						isValid = false;
-						break;
-					}
-				}
-
-				if (!isValid) return;
-
-				document.getElementById('tab-especificacoes').disabled = false;
-
-			} else if (index === 2) {
-				const condicao = document.getElementById('Condicao');
-				const quantidade = document.getElementById('Quantidade');
-				const unidadeMedida = document.getElementById('UnidadeMedida');
-
-				const camposEspecificacoes = [condicao, quantidade, unidadeMedida];
-				for(let i = 0; i < camposEspecificacoes.length; i++) {
-					if (!camposEspecificacoes[i].checkValidity()) {
-						camposEspecificacoes[i].reportValidity();
-						isValid = false;
-						break;
-					}
-				}
-
-				if (!isValid) return;
-
-				document.getElementById('tab-imagens').disabled = false;
-
-			} else if (index === 3) {
-				// Validação para múltiplos uploads: Pelo menos uma imagem deve ser selecionada
-				const imageInputs = document.querySelectorAll('.image-input');
-				let hasImage = false;
-				imageInputs.forEach(input => {
-					if (input.files && input.files.length > 0) {
-						hasImage = true;
-					}
-				});
-
-				if (!hasImage) {
-					alert("Pelo menos uma imagem é obrigatória para o seu anúncio.");
-					isValid = false;
-				}
-
-				if (!isValid) return;
-
-				document.getElementById('tab-publicacao').disabled = false;
-
-				atualizarResumoAnuncio();
-			}
-
-			tabContents.forEach(id => document.getElementById(id).classList.remove('show', 'active'));
-			tabButtons.forEach(id => document.getElementById(id).classList.remove('active'));
-
-			document.getElementById(tabContents[index]).classList.add('show', 'active');
-			document.getElementById(tabButtons[index]).classList.add('active');
-		}
-
-		// Impede clique direto nas abas desabilitadas
-		document.querySelectorAll('.nav-link').forEach(tab => {
-			tab.addEventListener('click', e => {
-				if (tab.disabled) {
-					e.preventDefault();
-				} else {
-					const index = Array.from(e.target.parentNode.parentNode.children).indexOf(e.target.parentNode);
-					irParaTab(index);
-				}
-			});
-		});
-
-		// Função para atualizar o resumo na aba de Publicação
-		function atualizarResumoAnuncio() {
-			document.getElementById('resumoNome').textContent = document.getElementById('Nome').value;
-			document.getElementById('resumoCategoria').textContent = document.getElementById('Categoria').options[document.getElementById('Categoria').selectedIndex].text;
-			document.getElementById('resumoCondicao').textContent = document.getElementById('Condicao').value;
-			document.getElementById('resumoQuantidade').textContent = document.getElementById('Quantidade').value;
-			document.getElementById('resumoUnidadeMedida').textContent = document.getElementById('UnidadeMedida').value;
-
-			// Atualiza o status das imagens no resumo
-			const imageInputs = document.querySelectorAll('.image-input');
-			let selectedImageCount = 0;
-			imageInputs.forEach(input => {
-				if (input.files && input.files.length > 0) {
-					selectedImageCount++;
-				}
-			});
-			document.getElementById('resumoImagemStatus').textContent = `${selectedImageCount} imagem(ns) selecionada(s)`;
-
-			document.getElementById('resumoDescricao').innerHTML = getQuillContentAsHTML();
-		}
-
-
-		// Lógica a ser executada quando o DOM estiver completamente carregado
-		document.addEventListener('DOMContentLoaded', function() {
-			initializeQuill(
-				'DescricaoEditor',
-				'Descricao',
-				function(quillInstance) {
-					const quillEditorContent = quillInstance.getText().trim();
-					if (quillEditorContent === '') {
-						alert("A descrição é obrigatória.");
-						irParaTab(0);
-						return false;
-					}
-					// Validação para múltiplos uploads na submissão final do formulário
-					const imageInputs = document.querySelectorAll('.image-input');
-					let hasImage = false;
-					imageInputs.forEach(input => {
-						if (input.files && input.files.length > 0) {
-							hasImage = true;
-						}
-					});
-
-					if (!hasImage) {
-						alert("Pelo menos uma imagem é obrigatória para o seu anúncio.");
-						irParaTab(2);
-						return false;
-					}
-					return true;
-				}
-			);
-
-			irParaTab(0);
-			document.getElementById('tab-especificacoes').disabled = true;
-			document.getElementById('tab-imagens').disabled = true;
-			document.getElementById('tab-publicacao').disabled = true;
-		});
-	</script>
+	
 }
