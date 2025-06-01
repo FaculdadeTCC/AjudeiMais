@@ -201,6 +201,37 @@ app.MapControllerRoute(
 
 
 #endregion
+
+#region CATEGORIA INSTITUIÇÃO
+// Rotas de categoria de instituição
+
+app.MapControllerRoute(
+	name: "categoria-instituicao-index",
+	pattern: "categoria-instituicao",
+	defaults: new { controller = "CategoriaInstituicao", action = "Index" }
+);
+
+app.MapControllerRoute(
+	name: "categoria-instituicao-cadastrar",
+	pattern: "categoria-instituicao/cadastrar",
+	defaults: new { controller = "CategoriaInstituicao", action = "Adicionar" }
+);
+
+app.MapControllerRoute(
+	name: "categoria-instituicao-editar",
+	pattern: "categoria-instituicao/editar/{id}",
+	defaults: new { controller = "CategoriaInstituicao", action = "AlterarDados" }
+);
+
+app.MapControllerRoute(
+	name: "categoria-instituicao-excluir",
+	pattern: "categoria-instituicao/excluir/{id}",
+	defaults: new { controller = "CategoriaInstituicao", action = "Excluir" }
+);
+#endregion
+
+
+
 app.MapControllerRoute(
     name: "home",
     pattern: "home",

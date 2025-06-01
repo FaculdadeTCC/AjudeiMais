@@ -91,7 +91,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             if (unauthorizedResult != null)
             {
-                return unauthorizedResult; // Redireciona para login ou home
+                return unauthorizedResult; // Redireciona para login ou 66
             }
 
             // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)

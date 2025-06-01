@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using AjudeiMais.Ecommerce.Models.Home;
 using AjudeiMais.Ecommerce.Tools;
+using System.Text.Json;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -88,7 +89,29 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
-    }
+
+		private async Task<(double? lat, double? lng)> ObterLatLngPorCepAsync(string cep)
+		{
+			var apiKey = "SUA_CHAVE_API_GOOGLE_MAPS";
+			var url = $"https://maps.googleapis.com/maps/api/geocode/json?address={cep}&key={apiKey}";
+
+			var httpClient = _httpClientFactory.CreateClient();
+			var response = await httpClient.GetAsync(url);
+			if (!response.IsSuccessStatusCode) return (null, null);
+
+			var content = await response.Content.ReadAsStringAsync();
+			var json = JsonDocument.Parse(content);
+
+			var results = json.RootElement.GetProperty("results");
+			if (results.GetArrayLength() == 0) return (null, null);
+
+			var location = results[0].GetProperty("geometry").GetProperty("location");
+			var lat = location.GetProperty("lat").GetDouble();
+			var lng = location.GetProperty("lng").GetDouble();
+
+			return (lat, lng);
+		}
+	}
 
 }
 

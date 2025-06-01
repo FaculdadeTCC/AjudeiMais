@@ -542,7 +542,7 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #region Instituicao API Calls
 
-        public static async Task<(List<InstituicaoModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
+        public static async Task<(List<InstituicaoPerfilModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
            IHttpClientFactory httpClientFactory)
         {
             try
@@ -556,7 +556,7 @@ namespace AjudeiMais.Ecommerce.Tools
                 if (response.IsSuccessStatusCode)
                 {
                     // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
-                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoModel>>(
+                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoPerfilModel>>(
                         content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     return (instituicoes, null);

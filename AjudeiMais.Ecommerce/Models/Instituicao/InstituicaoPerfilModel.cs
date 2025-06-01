@@ -9,12 +9,12 @@
         public string FotoPerfil { get; set; }
         public string Email { get; set; }
         public string Senha { get; set; }
-        public string ConfirmarSenha { get; set; }
+        public string? ConfirmarSenha { get; set; }
         public string? GUID { get; set; }
         public string? Role { get; set; }
         public string? Avaliacao { get; set; }
 
-        public List<EnderecoModel> Enderecos { get; set; }
+        public List<EnderecoModel>? Enderecos { get; set; }
         public List<InstituicaoImagemModel>? FotosUrl { get; set; } = new();
     }
 }

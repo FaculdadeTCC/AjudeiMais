@@ -93,13 +93,44 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<IEnumerable<Instituicao>> GetItens()
+        public async Task<IEnumerable<InstituicaoGetDTO>> GetItens()
         {
             try
             {
-                return await _instituicaoRepository.GetItens();
+                var instituicoes = await _instituicaoRepository.GetItens();
 
-            }
+                var instituicaoDTO = instituicoes.Select(instituicao => new InstituicaoGetDTO
+                {
+                    GUID = instituicao.GUID,
+                    Nome = instituicao.Nome,
+                    Descricao = instituicao.Descricao,
+                    Telefone = instituicao.Telefone,
+                    Email = instituicao.Email,
+                    FotoPerfil = instituicao.FotoPerfil,
+                    Documento = instituicao.Documento,
+                    Role = instituicao.Role,
+                    Enderecos = instituicao.Enderecos.Select(e => new EnderecoDTO
+                    {
+                        Endereco_ID = e.Endereco_ID,
+                        CEP = e.CEP,
+                        Rua = e.Rua,
+                        Numero = e.Numero,
+                        Complemento = e.Complemento,
+                        Bairro = e.Bairro,
+                        Cidade = e.Cidade,
+                        Estado = e.Estado
+
+                    }).ToList(),
+
+                    FotosUrl = instituicao.instituicaoImagems.Select(img => new InstituicaoImagemDTO
+                    {
+                        InsituicaoImagem_ID = img.InsituicaoImagem_ID,
+                        CaminhoImagem = img.CaminhoImagem
+                    }).ToList()
+                }).ToList();
+
+				return instituicaoDTO;
+			}
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao buscar todas as instituições ativas");

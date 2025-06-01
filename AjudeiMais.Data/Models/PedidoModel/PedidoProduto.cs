@@ -12,18 +12,15 @@ namespace AjudeiMais.Data.Models.PedidoProdutoModel
 {
     public class PedidoProduto
     {
-        [Key]
-        public int PedidoProduto_ID { get; set; }
+		[Key]
+		public int PedidoProduto_ID { get; set; }
 
-        public bool Habilitado { get; set; }
-        public bool Excluido { get; set; }
+		public int Pedido_ID { get; set; }
+		public Pedido Pedido { get; set; }
 
-        [ForeignKey("Produto")]
-        public int Produto_ID { get; set; }
-        public Produto Produto { get; set; }
+		public int Produto_ID { get; set; }
+		public Produto Produto { get; set; }
 
-        [ForeignKey("Pedido")]
-        public int Pedido_ID { get; set; }
-        public Pedido Pedido { get; set; }
-    }
+		public int Quantidade { get; set; }
+	}
 }

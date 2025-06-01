@@ -117,16 +117,28 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpGet]
         public IActionResult Adicionar()
         {
-            return View();
+            return PartialView();
         }
+		[RoleAuthorize("admin")]
+		[HttpGet]
+		public IActionResult AlterarDados()
+		{
+			return PartialView();
+		}
+		[RoleAuthorize("admin")]
+		[HttpGet]
+		public IActionResult Excluir()
+		{
+			return PartialView();
+		}
 
-        /// <summary>
-        /// Adiciona uma nova categoria via API.
-        /// </summary>
-        /// <param name="model">Objeto com os dados da categoria a serem adicionados.</param>
-        /// <returns>Redireciona para a página de listagem de categorias com mensagem de sucesso ou erro.</returns>
-        /// 
-        [RoleAuthorize("admin")]
+		/// <summary>
+		/// Adiciona uma nova categoria via API.
+		/// </summary>
+		/// <param name="model">Objeto com os dados da categoria a serem adicionados.</param>
+		/// <returns>Redireciona para a página de listagem de categorias com mensagem de sucesso ou erro.</returns>
+		/// 
+		[RoleAuthorize("admin")]
         [HttpPost]
         public async Task<IActionResult> Adicionar(CategoriaModel model)
         {

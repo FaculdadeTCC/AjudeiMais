@@ -2,7 +2,7 @@
 
 namespace AjudeiMais.Data.Models.InstituicaoModel
 {
-    public class Categoria
+    public class CategoriaInstituicao
     {
         [Key]
 		public int Categoria_ID { get; set; }

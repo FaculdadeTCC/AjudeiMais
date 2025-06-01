@@ -30,13 +30,12 @@ namespace AjudeiMais.Data.Context
         public DbSet<PedidoProduto> PedidoProduto { get; set; }
         //Instituição
         public DbSet<Instituicao> Instituicao { get; set; }
-        public DbSet<InstituicaoCategoria> InstituicaoCategoria { get; set; }
         public DbSet<InstituicaoImagem> InstituicaoImagem { get; set; }
-        public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<CategoriaInstituicao> CategoriaInstituicao { get; set; }
         public DbSet<Endereco> Endereco { get; set; }
         //Chat
-        public DbSet<MensagemChat> MensagemChat { get; set; }
-        public DbSet<Chat> Chat { get; set; }
+        //public DbSet<MensagemChat> MensagemChat { get; set; }
+        //public DbSet<Chat> Chat { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

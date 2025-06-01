@@ -91,7 +91,6 @@ namespace AjudeiMais.API.Controllers
         }
 
         [HttpPost]
-        [Consumes("multipart/form-data")]
         public async Task<IActionResult> SaveOrUpdate(CategoriaInstituicaoDTO model)
         {
             try
