@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AjudeiMais.Data.Models.AvaliacaoModel;
 using AjudeiMais.Data.Models.ChatModel;
 using AjudeiMais.Data.Models.InstituicaoModel;
 using AjudeiMais.Data.Models.PedidoModel;
@@ -37,6 +38,7 @@ namespace AjudeiMais.Data.Context
         //Chat
         public DbSet<MensagemChat> MensagemChat { get; set; }
         public DbSet<Chat> Chat { get; set; }
+        public DbSet<Avaliacao> Avaliacao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

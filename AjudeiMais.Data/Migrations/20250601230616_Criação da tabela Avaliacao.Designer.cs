@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601230616_Criação da tabela Avaliacao")]
+    partial class CriaçãodatabelaAvaliacao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,48 +24,6 @@ namespace AjudeiMais.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AjudeiMais.Data.Models.AvaliacaoModel.Avaliacao", b =>
-                {
-                    b.Property<int>("Avaliacao_ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Avaliacao_ID"));
-
-                    b.Property<string>("Comentario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("DataAvaliacao")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("Excluido")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Habilitado")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Instituicao_ID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Nota")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Tipo")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Usuario_ID")
-                        .HasColumnType("int");
-
-                    b.HasKey("Avaliacao_ID");
-
-                    b.HasIndex("Instituicao_ID");
-
-                    b.HasIndex("Usuario_ID");
-
-                    b.ToTable("Avaliacao");
-                });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
                 {
@@ -628,25 +589,6 @@ namespace AjudeiMais.Data.Migrations
                     b.HasKey("Usuario_ID");
 
                     b.ToTable("Usuario");
-                });
-
-            modelBuilder.Entity("AjudeiMais.Data.Models.AvaliacaoModel.Avaliacao", b =>
-                {
-                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
-                        .WithMany()
-                        .HasForeignKey("Instituicao_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("Usuario_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Instituicao");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>

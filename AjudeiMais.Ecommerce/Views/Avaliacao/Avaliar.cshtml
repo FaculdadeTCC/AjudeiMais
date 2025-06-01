@@ -1,0 +1,75 @@
+﻿@model AjudeiMais.Ecommerce.Models.Avaliacao.AvaliacaoModel // Ensure this matches your DTO/Model for posting
+
+<div class="modal fade" id="avaliarInstituicaoModal" tabindex="-1" aria-labelledby="avaliarInstituicaoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="avaliarInstituicaoModalLabel">Avaliar Instituição</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="formAvaliacao" asp-action="SalvarAvaliacao" asp-controller="Avaliacao" method="post">
+                <div class="modal-body">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    @* Nota (Rating) Field *@
+                    <div class="mb-3">
+                        <label asp-for="Nota" class="form-label">Sua Nota (1-5)</label>
+                        <input asp-for="Nota" type="number" class="form-control" min="1" max="5" placeholder="Digite uma nota de 1 a 5" required />
+                        <span asp-validation-for="Nota" class="text-danger"></span>
+                    </div>
+
+                    @* Comentário (Comment) Field *@
+                    <div class="mb-3">
+                        <label asp-for="Comentario" class="form-label">Comentário</label>
+                        <textarea asp-for="Comentario" class="form-control" rows="3" placeholder="Deixe seu comentário sobre a instituição"></textarea>
+                        <span asp-validation-for="Comentario" class="text-danger"></span>
+                    </div>
+
+                    @* Hidden Fields for User Role (Usuario) *@
+                    <input type="hidden" asp-for="Usuario_ID" id="inputUsuarioId" />
+                    <input type="hidden" asp-for="Instituicao_ID" id="inputInstituicaoId" />
+                    <input type="hidden" asp-for="Tipo" value="@((int)AjudeiMais.Ecommerce.Models.Avaliacao.TipoAvaliacao.UsuarioParaInstituicao)" />
+                    <input type="hidden" asp-for="Habilitado" value="false" /> @* Habilitado sempre como false para revisão *@
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Enviar Avaliação</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    // JavaScript para preencher os IDs quando o modal for aberto
+    $('#avaliarInstituicaoModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Botão que acionou o modal
+
+        // Exemplo: Pegar o ID do usuário logado (pode vir de uma sessão, cookie, etc.)
+        // Substitua 'SUA_LOGICA_PARA_OBTER_USUARIO_ID' pela forma real de obter o ID do usuário logado
+        var usuarioId = SUA_LOGICA_PARA_OBTER_USUARIO_ID; // Ex: @User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
+        if (usuarioId) {
+            $('#inputUsuarioId').val(usuarioId);
+        } else {
+            // Lidar com o caso de usuário não logado ou ID não encontrado
+            console.error("ID do usuário não encontrado para a avaliação.");
+        }
+
+
+        // Exemplo: Pegar o ID da instituição (pode vir de um atributo data-instituicao-id no botão)
+        var instituicaoId = button.data('instituicao-id'); // Certifique-se de que o botão tem data-instituicao-id="X"
+        if (instituicaoId) {
+            $('#inputInstituicaoId').val(instituicaoId);
+        } else {
+            // Lidar com o caso de ID da instituição não encontrado
+            console.error("ID da instituição não encontrado para a avaliação.");
+        }
+    });
+</script>
