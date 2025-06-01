@@ -27,7 +27,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             _logger = logger;
         }
 
-        [RoleAuthorize("usuario", "admin")]
+        [RoleAuthorize("admin", "usuario")]
         public async Task<IActionResult> Index(string guid)
         {
             string loggedInUserGuid;
@@ -72,7 +72,41 @@ namespace AjudeiMais.Ecommerce.Controllers
                 // O GUID para este redirecionamento deve ser o do usuário logado.
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
-        }[RoleAuthorize("usuario", "admin")]
+        }
+        [RoleAuthorize("admin", "usuario")]
+        public async Task<IActionResult> Imagens(string guid)
+        {
+            string loggedInUserGuid;
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            var (produto, errorMessage) = await ApiHelper.GetProdutoByGuidAsync(
+                          _httpClientFactory, guid);
+
+            ProdutoEditarModel model = new ProdutoEditarModel();
+
+            model = produto;
+
+
+            if (model.Nome == null)
+            {
+                // 6. Sucesso no cadastro
+                return RedirectToRoute("anuncios", new
+                {
+                    alertType = "error",
+                    alertMessage = errorMessage,
+                    guid = loggedInUserGuid
+                });
+            }
+
+
+            return View(model);
+        }
+
         [RoleAuthorize("admin", "usuario")]
         public async Task<IActionResult> Editar(string guid)
         {
@@ -119,7 +153,6 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             return View(model);
         }
-
 
         [RoleAuthorize("admin", "usuario")]
         [HttpPost]
@@ -380,7 +413,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
             else
             {
-                produto.Categorias = null; 
+                produto.Categorias = null;
                 errorMessage = apiResponse.Message;
             }
 
@@ -400,5 +433,240 @@ namespace AjudeiMais.Ecommerce.Controllers
             return View(model);
         }
 
+        //[RoleAuthorize("admin", "usuario")]
+        //[HttpPost]
+        //public async Task<IActionResult> AdicionarImagens(ProdutoModel model, ProdutoImagemModel[] ProdutoImagens)
+        //{
+        //    var userGuidFromClaims = User.FindFirst("GUID")?.Value;
+        //    if (string.IsNullOrEmpty(userGuidFromClaims))
+        //    {
+        //        return RedirectToRoute("login", new
+        //        {
+        //            alertType = "error",
+        //            alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente."
+        //        });
+        //    }
+
+        //    if (model == null || model.Produto_ID == 0)
+        //    {
+        //        return RedirectToRoute("anuncios", new
+        //        {
+        //            alertType = "error",
+        //            alertMessage = "ID do produto não fornecido para adicionar imagens."
+        //        });
+        //    }
+
+        //    if (ProdutoImagens == null || ProdutoImagens.Length == 0 || ProdutoImagens.All(f => f == null || f.Length == 0))
+        //    {
+        //        return RedirectToRoute("usuario-anuncio-editar", new
+        //        {
+        //            alertType = "warning",
+        //            alertMessage = "Nenhuma nova imagem foi selecionada para envio.",
+        //            guid = model.Produto_ID
+        //        });
+        //    }
+
+        //    int produtoId = (int)model.Produto_ID;
+
+        //    try
+        //    {
+        //        var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+        //        foreach (var imagem in ProdutoImagens)
+        //        {
+        //            if (imagem != null && imagem.Length > 0)
+        //            {
+        //                using var formData = new MultipartFormDataContent();
+        //                formData.Add(new StringContent(produtoId.ToString()), "guidString");
+
+        //                var imageContent = new StreamContent(imagem.OpenReadStream());
+        //                imageContent.Headers.ContentType = new MediaTypeHeaderValue(imagem.ContentType);
+        //                formData.Add(imageContent, "Imagem", imagem.FileName);
+
+        //                var uploadResponse = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/ProdutoImagem", formData);
+
+        //                if (!uploadResponse.IsSuccessStatusCode)
+        //                {
+        //                    var uploadResponseBody = await uploadResponse.Content.ReadAsStringAsync();
+        //                    _logger.LogError($"Erro ao enviar imagem para o produto {produtoId}: {uploadResponseBody}");
+        //                    return RedirectToRoute("usuario-anuncio-editar", new
+        //                    {
+        //                        alertType = "error",
+        //                        alertMessage = $"Erro ao enviar imagem '{imagem.FileName}': {uploadResponseBody}",
+        //                        guid = produtoId
+        //                    });
+        //                }
+        //            }
+        //        }
+
+        //        return RedirectToRoute("usuario-anuncio-editar", new
+        //        {
+        //            alertType = "success",
+        //            alertMessage = "Novas imagens enviadas com sucesso!",
+        //            guid = produtoId
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, $"Erro inesperado ao adicionar imagens para o produto {produtoId}.");
+        //        return RedirectToRoute("usuario-anuncio-editar", new
+        //        {
+        //            alertType = "error",
+        //            alertMessage = "Erro inesperado ao enviar novas imagens. Tente novamente.",
+        //            guid = produtoId
+        //        });
+        //    }
+        //}
+
+        [RoleAuthorize("admin", "usuario")]
+        [HttpPost]
+        public async Task<IActionResult> SalvarAlteracoesImagens(List<ProdutoImagemModel> imagens, string guid)
+        {
+            var userGuidFromClaims = User.FindFirst("GUID")?.Value;
+            if (string.IsNullOrEmpty(userGuidFromClaims))
+            {
+                return RedirectToRoute("login", new
+                {
+                    alertType = "error",
+                    alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente."
+                });
+            }
+
+            if (imagens == null || imagens.Count == 0)
+            {
+                return RedirectToRoute("anuncio-imagem-editar", new
+                {
+                    alertType = "error",
+                    alertMessage = "Não há nenhuma imagem para atualização.",
+                    guid = guid
+                });
+            }
+
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+                var url = $"{Tools.Assistant.ServerURL()}api/ProdutoImagem";
+
+                foreach (var imagem in imagens)
+                {
+                    using var formData = new MultipartFormDataContent();
+
+                    // Adiciona os campos do objeto como campos do form
+                    Assistant.AddObjectAsFormFields(formData, imagem);
+
+                    var response = await httpClient.PutAsync(url, formData);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var errorMsg = await response.Content.ReadAsStringAsync();
+                        _logger.LogWarning("Erro ao atualizar imagem ID {ImagemId}: {Erro}", imagem.ProdutoImagem_ID, errorMsg);
+
+                        return RedirectToRoute("anuncio-imagem-editar", new
+                        {
+                            alertType = "error",
+                            alertMessage = "Falha ao salvar alterações em uma das imagens. Tente novamente.",
+                            guid = guid
+                        });
+                    } 
+                }
+
+                return RedirectToRoute("anuncio-imagem-editar", new
+                {
+                    alertType = "success",
+                    alertMessage = "Alterações nas imagens salvas com sucesso!",
+                    guid = guid
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro inesperado ao salvar alterações nas imagens do produto.");
+                return RedirectToRoute("anuncio-imagem-editar", new
+                {
+                    alertType = "error",
+                    alertMessage = "Erro inesperado ao salvar alterações nas imagens. Tente novamente.",
+                    guid = guid
+                });
+            }
+        }
+
+
+        [RoleAuthorize("admin", "usuario")]
+        [HttpPost]
+        public async Task<IActionResult> AdicionarImagens(IFormFile[] ProdutoImagens, string guid, int produtoId)
+        {
+            var userGuidFromClaims = User.FindFirst("GUID")?.Value;
+            if (string.IsNullOrEmpty(userGuidFromClaims))
+            {
+                return RedirectToRoute("login", new
+                {
+                    alertType = "error",
+                    alertMessage = "Sua sessão expirou ou não foi possível identificar o usuário. Faça login novamente."
+                });
+            }
+
+            // Validação obrigatória da imagem principal
+            if (ProdutoImagens == null || ProdutoImagens.Length == 0 || ProdutoImagens[0] == null || ProdutoImagens[0].Length == 0)
+            {
+                return RedirectToRoute("usuario-anuncio-cadastrar", new
+                {
+                    alertType = "error",
+                    alertMessage = "A imagem principal do produto é obrigatória.",
+                    guid = guid
+                });
+            }
+
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                foreach (var imagem in ProdutoImagens)
+                {
+                    if (imagem != null && imagem.Length > 0)
+                    {
+                        using var formData = new MultipartFormDataContent();
+
+                        formData.Add(new StringContent(produtoId.ToString()), "Produto_ID");
+
+                        var imageContent = new StreamContent(imagem.OpenReadStream());
+                        imageContent.Headers.ContentType = new MediaTypeHeaderValue(imagem.ContentType);
+
+                        formData.Add(imageContent, "Imagem", imagem.FileName);
+
+                        var uploadResponse = await httpClient.PostAsync($"{Tools.Assistant.ServerURL()}api/ProdutoImagem", formData);
+
+                        if (!uploadResponse.IsSuccessStatusCode)
+                        {
+                            var uploadResponseBody = await uploadResponse.Content.ReadAsStringAsync();
+
+                            return RedirectToRoute("usuario-anuncio-cadastrar", new
+                            {
+                                alertType = "error",
+                                alertMessage = $"Erro ao enviar imagem: {uploadResponseBody}",
+                                guid = guid
+                            });
+                        }
+                    }
+                }
+
+                // Sucesso no envio de todas as imagens
+                return RedirectToRoute("anuncios", new
+                {
+                    alertType = "success",
+                    alertMessage = "Imagens enviadas com sucesso!",
+                    guid = userGuidFromClaims
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Erro inesperado ao enviar imagens para o produto {produtoId}");
+
+                return RedirectToRoute("usuario-anuncio-cadastrar", new
+                {
+                    alertType = "error",
+                    alertMessage = "Erro inesperado no envio das imagens. Tente novamente.",
+                    guid = guid
+                });
+            }
+        }
     }
 }

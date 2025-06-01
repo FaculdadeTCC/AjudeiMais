@@ -49,6 +49,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
     public class ProdutoEditarModel
     {
         public int? Produto_ID { get; set; }
+        public string Guid { get; set; }
 
         public string Usuario_GUID { get; set; }
         public int? Usuario_ID { get; set; }
@@ -86,6 +87,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public decimal Peso { get; set; }
         public List<ProdutoImagemModel>? ProdutoImagens { get; set; }
         public UsuarioPerfilModel Usuario { get; set; }
+        public List<IFormFile> NovasImagensUpload { get; set; }
     }
     public class ProdutoViewModel
     {

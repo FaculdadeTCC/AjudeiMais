@@ -1,44 +1,218 @@
-﻿@{
-    ViewData["Title"] = "Adicionar Imagens";
+﻿@model AjudeiMais.Ecommerce.Models.Produto.ProdutoEditarModel
+@using AjudeiMais.Ecommerce.Tools
+
+@{
+	ViewData["Title"] = "Editar Imagens do Anúncio";
 }
 
-<section class="mx-auto mt-10 max-w-4xl rounded-2xl bg-white p-8 shadow-lg ring-1 ring-gray-200">
-    <h2 class="mb-6 text-2xl font-bold text-gray-800">Adicionar Imagens ao Anúncio</h2>
+@section Styles {
+	<link rel="stylesheet" href="~/css/produto/imagens.css" asp-append-version="true" />
+}
 
-    <form asp-action="SalvarImagens" method="post" enctype="multipart/form-data" class="space-y-6">
-        <!-- Upload de Múltiplas Imagens -->
-        <div>
-            <label class="mb-1 block font-medium text-gray-700">Selecionar Imagens</label>
-            <input type="file" id="imagens" name="Imagens" multiple accept="image/*" class="w-full rounded-lg border border-gray-300 px-4 py-2 focus:border-primary focus:ring-1 focus:ring-primary" onchange="previewMultiplasImagens(event)" required />
-            <div id="previewContainer" class="mt-4 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                <!-- Previews das imagens aparecerão aqui -->
-            </div>
-        </div>
+@{
+	// This partial view should contain your alert/notification display logic
+	await Html.RenderPartialAsync("_Alertas");
+}
 
-        <!-- Botão de salvar -->
-        <div class="flex justify-end">
-            <button type="submit" class="rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-blue-700">
-                Salvar Imagens
-            </button>
-        </div>
-    </form>
-</section>
+<h1>Editar Imagens do Produto: @Model.Nome</h1>
 
-<script>
-    function previewMultiplasImagens(event) {
-        const files = event.target.files;
-        const container = document.getElementById('previewContainer');
-        container.innerHTML = '';
+<hr />
 
-        for (let i = 0; i < files.length; i++) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.className = 'w-full h-40 object-cover rounded-md border border-gray-300';
-                container.appendChild(img);
-            }
-            reader.readAsDataURL(files[i]);
-        }
-    }
-</script>
+<h2>Imagens Atuais:</h2>
+
+<form asp-action="SalvarAlteracoesImagens" asp-controller="Produto" method="post">
+	<input type="hidden" name="produtoId" value="@Model.Produto_ID" />
+
+	<div class="row">
+		@if (Model.ProdutoImagens != null && Model.ProdutoImagens.Any())
+		{
+			for (int i = 0; i < Model.ProdutoImagens.Count; i++)
+			{
+				var imagem = Model.ProdutoImagens[i];
+				<div class="col-md-3 mb-3 imagem-card" data-imagemid="@imagem.ProdutoImagem_ID">
+					<div class="card">
+						<img src="@Assistant.ServerURL()@imagem.Imagem" class="card-img-top" alt="Imagem do Produto" />
+						<div class="card-body text-center">
+							<input type="hidden" name="guid" value="@Model.Guid.ToString()" />
+							<input type="hidden" name="imagens[@i].Imagem" value="@imagem.Imagem" />
+							<input type="hidden" name="imagens[@i].Produto_ID" value="@imagem.Produto_ID" />
+							<input type="hidden" name="imagens[@i].ProdutoImagem_ID" value="@imagem.ProdutoImagem_ID" />
+							<input type="hidden" name="imagens[@i].IsPrincipal" class="is-principal-input" data-imagemid="@imagem.ProdutoImagem_ID" value="@(imagem.IsPrincipal ? "true" : "false")" />
+							<input type="hidden" name="imagens[@i].Habilitado" class="habilitado-input" data-imagemid="@imagem.ProdutoImagem_ID" value="true" />
+							<input type="hidden" name="imagens[@i].Excluido" class="excluido-input" data-imagemid="@imagem.ProdutoImagem_ID" value="false" />
+
+							<button type="button" class="btn btn-info btn-sm set-principal-btn" data-imagemid="@imagem.ProdutoImagem_ID">
+								@(imagem.IsPrincipal ? "Principal" : "Definir como Principal")
+							</button>
+
+							<button type="button" class="btn btn-danger btn-sm remover-btn mt-2" data-imagemid="@imagem.ProdutoImagem_ID">
+								Remover
+							</button>
+						</div>
+					</div>
+				</div>
+			}
+		}
+		else
+		{
+			<p>Este produto ainda não possui imagens.</p>
+		}
+	</div>
+
+	<div class="form-group mt-3">
+		<button type="submit" class="btn btn-primary">Salvar Alterações</button>
+	</div>
+</form>
+
+<hr />
+
+<h2>Adicionar Novas Imagens:</h2>
+<form asp-action="AdicionarImagens" asp-controller="Produto" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="produtoId" value="@Model.Produto_ID" />
+	<input type="hidden" name="guid" value="@Model.Guid.ToString()" />
+
+	<label for="fotosInput" class="file-upload">
+		<input name="ProdutoImagens" type="file" class="d-none" id="fotosInput" accept=".jpg,.jpeg,.png" multiple />
+		<div id="fileUploadContent">
+			<i class="bi bi-cloud-arrow-up"></i>
+			<p>Clique ou arraste suas fotos aqui</p>
+			<small>(A primeira imagem será considerada a principal. Tamanho máximo: 5MB por imagem)</small>
+		</div>
+	</label>
+
+	<div id="previewContainer" class="row mt-3"></div>
+
+
+	<div class="form-group mt-3">
+		<button type="submit" class="btn btn-primary">Enviar Novas Imagens</button>
+		<a asp-action="Details" asp-controller="Produto" asp-route-id="@Model.Produto_ID" class="btn btn-secondary">Voltar ao Produto</a>
+	</div>
+</form>
+
+
+@section Scripts {
+	<script>
+		const fotosInput = document.getElementById('fotosInput');
+		const fileUploadContent = document.getElementById('fileUploadContent');
+		const previewContainer = document.getElementById('previewContainer');
+		const dropArea = fileUploadContent.parentElement;
+
+		// Estilização visual do arrastar
+		['dragenter', 'dragover'].forEach(eventName => {
+			dropArea.addEventListener(eventName, (e) => {
+				e.preventDefault();
+				dropArea.classList.add('dragover');
+			});
+		});
+
+		['dragleave', 'drop'].forEach(eventName => {
+			dropArea.addEventListener(eventName, (e) => {
+				e.preventDefault();
+				dropArea.classList.remove('dragover');
+			});
+		});
+
+		// Captura os arquivos arrastados
+		dropArea.addEventListener('drop', (e) => {
+			const files = e.dataTransfer.files;
+			if (files.length > 0) {
+				fotosInput.files = files; // Associa os arquivos ao input
+				mostrarPreview(files);
+			}
+		});
+
+		// Clique manual no conteúdo para abrir input
+		fileUploadContent.addEventListener('click', () => {
+			fotosInput.click();
+		});
+
+		// Atualização ao selecionar pelo botão
+		fotosInput.addEventListener('change', () => {
+			mostrarPreview(fotosInput.files);
+		});
+
+		// Função para mostrar as miniaturas
+		function mostrarPreview(files) {
+			previewContainer.innerHTML = ''; // limpa anterior
+			Array.from(files).forEach(file => {
+				if (file.type.startsWith('image/')) {
+					const reader = new FileReader();
+					reader.onload = (e) => {
+						const col = document.createElement('div');
+						col.className = 'col-md-3 mb-3';
+						col.innerHTML = `
+							<div class="card shadow-sm">
+								<img src="${e.target.result}" class="card-img-top" style="height: 150px; object-fit: cover;" />
+							</div>
+						`;
+						previewContainer.appendChild(col);
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+		}
+	</script>
+
+	<script>
+		// Marcar uma imagem como principal
+		document.querySelectorAll('.set-principal-btn').forEach(btn => {
+			btn.addEventListener('click', () => {
+				const imagemId = btn.getAttribute('data-imagemid');
+
+				// Atualiza todos inputs hidden para "false"
+				document.querySelectorAll('.is-principal-input').forEach(input => {
+					input.value = 'false';
+				});
+
+				// Atualiza o input hidden correspondente para "true"
+				const inputToSet = document.querySelector(`.is-principal-input[data-imagemid="${imagemId}"]`);
+				if (inputToSet) {
+					inputToSet.value = 'true';
+				}
+
+				// Atualiza os botões da UI
+				document.querySelectorAll('.set-principal-btn').forEach(button => {
+					if (button.getAttribute('data-imagemid') === imagemId) {
+						button.textContent = "Principal";
+						button.classList.remove('btn-info');
+						button.classList.add('btn-success');
+					} else {
+						button.textContent = "Definir como Principal";
+						button.classList.remove('btn-success');
+						button.classList.add('btn-info');
+					}
+				});
+			});
+		});
+
+		// Remover imagem (marcar excluido, desabilitar e esconder)
+		document.querySelectorAll('.remover-btn').forEach(btn => {
+			btn.addEventListener('click', () => {
+				const imagemId = btn.getAttribute('data-imagemid');
+
+				// Marca inputs correspondentes
+				const habilitadoInput = document.querySelector(`.habilitado-input[data-imagemid="${imagemId}"]`);
+				const excluidoInput = document.querySelector(`.excluido-input[data-imagemid="${imagemId}"]`);
+				const principalInput = document.querySelector(`.is-principal-input[data-imagemid="${imagemId}"]`);
+
+				if(habilitadoInput) habilitadoInput.value = "false";
+				if(excluidoInput) excluidoInput.value = "true";
+				if(principalInput) principalInput.value = "false";
+
+				// Esconde o card da imagem
+				const card = document.querySelector(`.imagem-card[data-imagemid="${imagemId}"]`);
+				if(card) card.style.display = "none";
+
+				// Opcional: se a imagem removida era principal, remover status principal da UI (botão)
+				// e talvez deixar nenhum marcado como principal ou você pode forçar escolher outra
+				// Aqui só atualizo os botões para refletir que não tem principal selecionado na imagem removida
+				const btnPrincipal = document.querySelector(`.set-principal-btn[data-imagemid="${imagemId}"]`);
+				if(btnPrincipal){
+					btnPrincipal.textContent = "Definir como Principal";
+					btnPrincipal.classList.remove('btn-success');
+					btnPrincipal.classList.add('btn-info');
+				}
+			});
+		});
+	</script>
+}

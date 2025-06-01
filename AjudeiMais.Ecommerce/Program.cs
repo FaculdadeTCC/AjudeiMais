@@ -188,6 +188,18 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
+    name: "anuncio-excluir-imagem",
+    pattern: "usuario/{guid}/anuncio",
+    defaults: new { controller = "Produto", action = "ExcluirImagem" }
+);
+
+app.MapControllerRoute(
+    name: "anuncio-imagem-editar",
+    pattern: "anuncio/{guid}/imagens",
+    defaults: new { controller = "Produto", action = "Imagens" }
+);
+
+app.MapControllerRoute(
     name: "anuncio-detalhe",
     pattern: "anuncio/{guid}",
     defaults: new { controller = "Produto", action = "Detalhe" }

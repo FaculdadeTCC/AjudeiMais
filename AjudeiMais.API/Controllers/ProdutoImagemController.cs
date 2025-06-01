@@ -66,6 +66,29 @@ namespace AjudeiMais.API.Controllers
                     Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
                 });
             }
+        }  
+        
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] ProdutoImagem model)
+        {
+            try
+            {
+                var result = await _service.Update(model);
+
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
         }
 
 

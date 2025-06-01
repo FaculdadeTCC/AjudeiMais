@@ -35,10 +35,16 @@ namespace AjudeiMais.API.Repositories
         public async Task<Produto> GetByGuid(string guid)
         {
             var produto = await _context.Produto
-                .Include(p => p.Usuario)
-                .Include(p => p.CategoriaProduto)
-                .Include(p => p.ProdutoImagens)
-                .FirstOrDefaultAsync(p => p.Guid == guid && p.Excluido != true);
+              .Where(p => !p.Excluido &&
+                          p.Guid == guid &&
+                          !p.Usuario.Excluido &&
+                          !p.CategoriaProduto.Excluido &&
+                          p.ProdutoImagens.Any(pi => !pi.Excluido))
+              .Include(p => p.Usuario)
+              .Include(p => p.CategoriaProduto)
+              .Include(p => p.ProdutoImagens.Where(pi => !pi.Excluido))
+              .FirstOrDefaultAsync();
+
 
             return produto;
         }
