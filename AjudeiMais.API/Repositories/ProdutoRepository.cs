@@ -32,6 +32,18 @@ namespace AjudeiMais.API.Repositories
             return produto;
         }
 
+        public async Task<Produto> GetByGuid(string guid)
+        {
+            var produto = await _context.Produto
+                .Include(p => p.Usuario)
+                .Include(p => p.CategoriaProduto)
+                .Include(p => p.ProdutoImagens)
+                .FirstOrDefaultAsync(p => p.Guid == guid && p.Excluido != true);
+
+            return produto;
+        }
+
+
         /// <summary>
         /// Obtém todos os produtos.
         /// </summary>

@@ -1,0 +1,39 @@
+﻿@* Views/Produto/_DeletarProduto.cshtml (ou Views/Shared/_DeletarProduto.cshtml) *@
+
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<form class="modal-content" asp-controller="Produto" asp-action="Excluir" method="post">
+			<div class="modal-body">
+				<p>Tem certeza de que deseja excluir este anúncio?</p>
+				<p class="text-danger"><b>Esta ação não pode ser desfeita.</b> Ao confirmar, o anúncio será removido permanentemente.</p>
+				<input type="hidden" value="" name="guid" id="productIdToDelete" />
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+				<button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Sim, Excluir Anúncio</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        document.addEventListener('click', function(event) {
+            if (event.target.closest('.delete-product-btn')) {
+                const deleteButton = event.target.closest('.delete-product-btn');
+                const guid = deleteButton.dataset.guid; // Access data-product-id attribute
+
+                // Get the hidden input field by its ID
+                const productIdToDeleteInput = document.getElementById('productIdToDelete');
+
+                // Check if the input element exists before trying to set its value
+                if (productIdToDeleteInput) {
+                    productIdToDeleteInput.value = guid; // Set the value
+                } else {
+                    console.error("Hidden input with ID 'productIdToDelete' not found!");
+                }
+            }
+        });
+    });
+</script>

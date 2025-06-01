@@ -266,7 +266,7 @@
 
 						<div class="mb-4">
 							<label class="form-label">Fotos Atuais</label>
-							<div class="d-flex flex-wrap gap-3" id="currentPhotosContainer">
+							<div class="d-flex gap-3 flex-wrap" id="currentPhotosContainer">
 								@if (Model.FotosUrl != null && Model.FotosUrl.Any())
 								{
 									foreach (var foto in Model.FotosUrl)
@@ -290,7 +290,7 @@
 							<label for="NovasFotos" class="form-label">Adicionar Novas Fotos</label>
 							<input type="file" name="Fotos" id="NovasFotos" class="form-control" accept=".jpg,.jpeg,.png" multiple />
 							<small class="form-text text-muted">Você pode selecionar várias imagens. (Tamanho máximo por imagem: 5MB)</small>
-							<div class="mt-3 d-flex flex-wrap gap-3" id="newPhotosPreview">
+							<div class="mt-3 d-flex gap-3 flex-wrap" id="newPhotosPreview">
 							</div>
 						</div>
 

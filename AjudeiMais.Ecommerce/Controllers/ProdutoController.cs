@@ -9,19 +9,22 @@ using AjudeiMais.Ecommerce.Models.Usuario;
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Reflection; // Remova se não estiver usando
+using AjudeiMais.Ecommerce.Models.CategoriaProduto;
+using Microsoft.Extensions.Logging; // Certifique-se de que este using existe
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
     public class ProdutoController : Controller
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly ILogger<ProdutoController> _logger;
+        private readonly ILogger<ProdutoController> _logger; // Tornar obrigatório
 
         string BASE_URL = Assistant.ServerURL();
-        public ProdutoController(IHttpClientFactory httpClientFactory, ILogger<ProdutoController> logger = null)
+        public ProdutoController(IHttpClientFactory httpClientFactory, ILogger<ProdutoController> logger) // Logger deve ser obrigatório aqui
         {
             _httpClientFactory = httpClientFactory;
-            _logger = logger; // Atribui o logger, se injetado
+            _logger = logger;
         }
 
         [RoleAuthorize("usuario", "admin")]
@@ -42,7 +45,17 @@ namespace AjudeiMais.Ecommerce.Controllers
                 return profileAccessResult;
             }
 
-            var (produtos, errorMessage) = await ApiHelper.ListAllAnunciosAtivosByGuidAsync(_httpClientFactory, guid);
+            var (produtos, errorMessage) = await ApiHelper.ListAllAnunciosAtivosByGuidAsync(
+                           _httpClientFactory, guid);
+
+            // Adicione a lógica para passar mensagens de alerta para a view Index
+            // Estes são os parâmetros que você passa no RedirectToRoute do método Excluir
+            if (TempData.ContainsKey("AlertType") && TempData.ContainsKey("AlertMessage"))
+            {
+                ViewBag.AlertType = TempData["AlertType"];
+                ViewBag.AlertMessage = TempData["AlertMessage"];
+            }
+
 
             if (produtos != null)
             {
@@ -55,14 +68,58 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
             else
             {
+                // Se a listagem falhar, redirecione para o perfil com a mensagem de erro.
+                // O GUID para este redirecionamento deve ser o do usuário logado.
                 return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
             }
+        }[RoleAuthorize("usuario", "admin")]
+        [RoleAuthorize("admin", "usuario")]
+        public async Task<IActionResult> Editar(string guid)
+        {
+            string loggedInUserGuid;
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            var (produto, errorMessage) = await ApiHelper.GetProdutoByGuidAsync(
+                          _httpClientFactory, guid);
+
+            ProdutoEditarModel model = new ProdutoEditarModel();
+
+            model = produto;
+
+            var apiResponse = await ApiHelper.ListAllCategoriasProdutoAtivosAsync(_httpClientFactory);
+
+            if (apiResponse.Success)
+            {
+                produto.Categorias = apiResponse.Data;
+                errorMessage = null;
+            }
+            else
+            {
+                produto.Categorias = null;
+                errorMessage = apiResponse.Message;
+            }
+
+
+            if (model.Nome == null)
+            {
+                // 6. Sucesso no cadastro
+                return RedirectToRoute("anuncios", new
+                {
+                    alertType = "error",
+                    alertMessage = errorMessage,
+                    guid = loggedInUserGuid
+                });
+            }
+
+
+            return View(model);
         }
 
-        public IActionResult Detalhe()
-        {
-            return View();
-        }
 
         [RoleAuthorize("admin", "usuario")]
         [HttpPost]
@@ -175,7 +232,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                 }
 
                 // 6. Sucesso no cadastro
-                return RedirectToRoute("usuario-dashboard", new
+                return RedirectToRoute("anuncios", new
                 {
                     alertType = "success",
                     alertMessage = apiResponse.Message,
@@ -184,7 +241,6 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro inesperado no cadastro do produto.");
                 return RedirectToRoute("usuario-anuncio-cadastrar", new
                 {
                     alertType = "error",
@@ -194,12 +250,10 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
         }
 
-        // Seu método GET para exibir a view de Gerenciar Anúncio (permanece o mesmo, ou adicione o parâmetro 'guid' se a rota espera)
         [RoleAuthorize("admin", "usuario")]
         [HttpGet]
-        public async Task<IActionResult> Cadastro([FromRoute] Guid guid) // Adicione [FromRoute] se a rota espera 'guid' aqui
+        public async Task<IActionResult> Cadastro([FromRoute] Guid guid)
         {
-            // Lógica para obter o GUID do usuário logado, se necessário
             string loggedInUserGuid;
             var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
             if (unauthorizedResult != null)
@@ -207,31 +261,144 @@ namespace AjudeiMais.Ecommerce.Controllers
                 return unauthorizedResult;
             }
 
-            // Inicialize o modelo para a view
             var model = new ProdutoModel();
-            // Carregue as categorias para o dropdown
             var response = await ApiHelper.ListAllCategoriasProdutoAtivosAsync(_httpClientFactory);
 
             model.Categorias = response.Data;
-
-
-            model.Usuario_GUID = loggedInUserGuid; // Atribua o GUID obtido de HandleUnauthorizedAccess
+            model.Usuario_GUID = loggedInUserGuid;
 
             return View(model);
         }
 
         [RoleAuthorize("admin", "usuario")]
-
-        public IActionResult Imagens()
+        public IActionResult _DeletarProduto()
         {
-            return View();
+            return PartialView();
         }
 
         [RoleAuthorize("admin", "usuario")]
-
-        public IActionResult Editar()
+        [HttpPost]
+        public async Task<IActionResult> Excluir(string guid)
         {
-            return View();
+            // O GUID do usuário logado é necessário para o redirecionamento
+            var loggedInUserGuid = User.FindFirst("GUID")?.Value;
+            if (string.IsNullOrEmpty(loggedInUserGuid))
+            {
+                // Se não conseguir o GUID do usuário logado, redirecione para o login
+                return RedirectToRoute("login", new { alertType = "error", alertMessage = "Sua sessão expirou. Faça login novamente." });
+            }
+
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                // Você está tentando excluir o PRODUTO_ID (passado como 'guid' do formulário)
+                // O nome do parâmetro no formulário é 'Produto_ID', mas aqui você está usando 'guid'.
+                // O Model Binding do ASP.NET Core tentará mapear 'Produto_ID' do formulário para 'guid' do método.
+                // Embora funcione, é mais claro se o nome do parâmetro no método for o mesmo do formulário (Produto_ID).
+                // Mas, como está, funciona para o binding.
+                var response = await httpClient.DeleteAsync($"{BASE_URL}api/Produto/{guid}"); // Assumindo que 'guid' é o ID do produto
+
+                var apiResponseContent = await response.Content.ReadAsStringAsync();
+                ApiHelper.ApiResponse<ProdutoModel> apiResponse = null;
+
+                try
+                {
+                    apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoModel>>(
+                        apiResponseContent,
+                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                    );
+                }
+                catch (System.Text.Json.JsonException jsonEx)
+                {
+                    _logger.LogError(jsonEx, "Erro ao desserializar resposta da API na exclusão do produto.");
+                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
+                    TempData["AlertType"] = "error";
+                    TempData["AlertMessage"] = "Ocorreu um erro no formato da resposta da API. Contacte o suporte.";
+                    return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
+                }
+
+                if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                {
+                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
+                    TempData["AlertType"] = apiResponse.Type;
+                    TempData["AlertMessage"] = apiResponse.Message;
+                    // Redireciona para a página de listagem de anúncios, passando o GUID do usuário logado
+                    return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
+                }
+                else
+                {
+                    string alertType = apiResponse?.Type ?? "error";
+                    string alertMessage = apiResponse?.Message ?? "Não foi possível processar a requisição de exclusão. Tente novamente.";
+                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
+                    TempData["AlertType"] = alertType;
+                    TempData["AlertMessage"] = alertMessage;
+                    return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, "Erro de requisição HTTP na exclusão do produto.");
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = $"Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com a nossa equipe.";
+                return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro inesperado na exclusão do produto.");
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = $"Ocorreu um erro inesperado durante a exclusão.";
+                return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
+            }
         }
+
+
+        [RoleAuthorize("admin", "usuario")]
+        public async Task<IActionResult> Detalhe(string guid)
+        {
+            string loggedInUserGuid;
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            var (produto, errorMessage) = await ApiHelper.GetProdutoByGuidAsync(
+                          _httpClientFactory, guid);
+
+            ProdutoEditarModel model = new ProdutoEditarModel();
+
+            model = produto;
+
+            var apiResponse = await ApiHelper.ListAllCategoriasProdutoAtivosAsync(_httpClientFactory);
+
+            if (apiResponse.Success)
+            {
+                produto.Categorias = apiResponse.Data;
+                errorMessage = null;
+            }
+            else
+            {
+                produto.Categorias = null; 
+                errorMessage = apiResponse.Message;
+            }
+
+
+            if (model.Nome == null)
+            {
+                // 6. Sucesso no cadastro
+                return RedirectToRoute("anuncios", new
+                {
+                    alertType = "error",
+                    alertMessage = errorMessage,
+                    guid = loggedInUserGuid
+                });
+            }
+
+
+            return View(model);
+        }
+
     }
 }

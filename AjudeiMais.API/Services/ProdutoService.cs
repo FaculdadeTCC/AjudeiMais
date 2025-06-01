@@ -193,11 +193,31 @@ namespace AjudeiMais.API.Services
             {
                 var produtos = await _produtoRepository.GetByUsuarioGuid(guid);
 
+
+                var produtosReturn = produtos.Select(p => new Produto
+                {
+                    Produto_ID = p.Produto_ID,
+                    Guid = p.Guid,
+                    Nome = p.Nome,
+                    Descricao = p.Descricao,
+                    Condicao = p.Condicao,
+                    Validade = p.Validade,
+                    Quantidade = p.Quantidade,
+                    Peso = p.Peso,
+                    Disponivel = p.Disponivel,
+                    Habilitado = p.Habilitado,
+                    Excluido = p.Excluido,
+                    DataCriacao = p.DataCriacao,
+                    DataUpdate = p.DataUpdate,
+                    UnidadeMedida = p.UnidadeMedida,
+                    ProdutoImagens = p.ProdutoImagens,
+                });
+
                 return new ApiResponse<IEnumerable<Produto>>
                 {
                     Success = true,
                     Message = "Produtos recuperados com sucesso.",
-                    Data = produtos
+                    Data = produtosReturn
                 };
             }
             catch (Exception ex)
@@ -210,50 +230,83 @@ namespace AjudeiMais.API.Services
                 };
             }
         }
+        public async Task<ApiResponse<Produto>> GetByGuid(string guid)
+        {
+            try
+            {
+                var produto = await _produtoRepository.GetByGuid(guid);
 
+                if (produto != null)
+                {
+                    return new ApiResponse<Produto>
+                    {
+                        Success = true,
+                        Message = "Produto recuperado com sucesso.",
+                        Data = produto
+                    };
+                } else
+                {
+                    return new ApiResponse<Produto>
+                    {
+                        Success = false,
+                        Message = $"O Guid informado não corresponde a nenhum produto",
+                        Data = null
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<Produto>
+                {
+                    Success = false,
+                    Message = $"Erro ao recuperar produtos: {ex.Message}",
+                    Data = null
+                };
+            }
+        }
 
-        ///// <summary>
-        ///// Exclui logicamente um produto pelo seu ID.
-        ///// </summary>
-        //public async Task<ApiResponse<object>> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        var produto = await getby(id);
+        /// <summary>
+        /// Exclui logicamente um produto pelo seu GUID.
+        /// </summary>
+        public async Task<ApiResponse<object>> Delete(string guid)
+        {
+            try
+            {
+                var produto = await _produtoRepository.GetByGuid(guid);
 
-        //        if (produto == null)
-        //        {
-        //            return new ApiResponse<object>
-        //            {
-        //                Success = false,
-        //                Type = "error",
-        //                Message = "Produto não encontrado."
-        //            };
-        //        }
+                if (produto == null)
+                {
+                    return new ApiResponse<object>
+                    {
+                        Success = false,
+                        Type = "error",
+                        Message = "Produto não encontrado."
+                    };
+                }
 
-        //        produto.Habilitado = false;
-        //        produto.Excluido = true;
-        //        produto.DataUpdate = DateTime.Now;
+                produto.Habilitado = false;
+                produto.Excluido = true;
+                produto.DataUpdate = DateTime.Now;
 
-        //        await _produtoRepository.Delete(produto);
+                await _produtoRepository.Delete(produto);
 
-        //        return new ApiResponse<object>
-        //        {
-        //            Success = true,
-        //            Type = "success",
-        //            Message = "Produto excluído com sucesso."
-        //        };
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return new ApiResponse<object>
-        //        {
-        //            Success = false,
-        //            Type = "error",
-        //            Message = $"Não foi possível excluir o produto. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
-        //        };
-        //    }
-        //}
+                return new ApiResponse<object>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Produto excluído com sucesso."
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = $"Não foi possível excluir o produto. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
+                };
+            }
+        }
 
         /// <summary>
         /// Busca produtos próximos a uma determinada localização (latitude e longitude).
@@ -271,7 +324,7 @@ namespace AjudeiMais.API.Services
                 .Where(u => (!string.IsNullOrEmpty(u.Latitude) && !string.IsNullOrEmpty(u.Longitude)))
                 .Where(u => Helpers.CalcularDistancia(lat, lng, double.Parse(u.Latitude, CultureInfo.InvariantCulture), double.Parse(u.Longitude, CultureInfo.InvariantCulture)) <= raioBuscaKm)
                 .ToList();
-                
+
 
             foreach (var usuario in usuariosProximos)
             {

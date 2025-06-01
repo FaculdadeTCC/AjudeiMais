@@ -108,7 +108,7 @@
     margin: 0 auto;
     padding: var(--spacing-xl);
     display: grid;
-    grid-template-columns: 1fr 350px;
+/*    grid-template-columns: 1fr 350px;*/
     gap: var(--spacing-xl);
     min-height: calc(100vh - 120px);
 }
