@@ -207,6 +207,146 @@ namespace AjudeiMais.Ecommerce.Tools
             }
         }
 
+        /// <summary>
+        /// Busca um produto pelo seu GUID na API.
+        /// </summary>
+        /// <param name="httpClientFactory">Factory para criar instâncias de HttpClient.</param>
+        /// <param name="guid">O GUID do produto a ser buscado.</param>
+        /// <returns>
+        /// Uma tupla contendo o ProdutoEditarModel se encontrado, ou uma mensagem de erro.
+        /// </returns>
+        public static async Task<(ProdutoEditarModel? Produto, string? ErrorMessage)> GetProdutoByGuidAsync(
+            IHttpClientFactory httpClientFactory, string guid)
+        {
+            // 1. Validação inicial do GUID
+            if (string.IsNullOrEmpty(guid))
+            {
+                return (null, "GUID do produto não fornecido.");
+            }
+
+            try
+            {
+                // 2. Criação do HttpClient usando a factory (melhor prática)
+                var httpClient = httpClientFactory.CreateClient("ApiAjudeiMais");
+                // Opcional: Definir um timeout específico para esta requisição, se necessário.
+                // httpClient.Timeout = TimeSpan.FromSeconds(30);
+
+                // 3. Executa a requisição GET para a API
+                var response = await httpClient.GetAsync($"{BASE_URL}api/Produto/{guid.ToString()}");
+
+                // 4. Lê o conteúdo da resposta como string, independentemente do status HTTP.
+                // Isso é feito aqui para que o conteúdo esteja disponível para depuração
+                // e para diferentes cenários de erro (sucesso com corpo vazio, erro com detalhes no corpo).
+                string content = string.Empty;
+                if (response.Content != null)
+                {
+                    content = await response.Content.ReadAsStringAsync();
+                }
+
+                // 5. Verifica se a requisição HTTP foi bem-sucedida (status 2xx)
+                if (response.IsSuccessStatusCode)
+                {
+                    // 5.1. Se o status é de sucesso, mas o conteúdo está vazio ou em branco
+                    if (string.IsNullOrWhiteSpace(content))
+                    {
+                        return (null, "Resposta da API vazia ou sem conteúdo JSON para um status de sucesso.");
+                    }
+
+                    // 5.2. Tenta desserializar a resposta para um ApiResponse
+                    ApiResponse<ProdutoEditarModel>? apiResponse = null;
+                    try
+                    {
+                        apiResponse = JsonSerializer.Deserialize<ApiResponse<ProdutoEditarModel>>(
+                            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (JsonException jsonEx)
+                    {
+                        // Loga o erro de desserialização JSON para depuração.
+                        // Isso acontece se o JSON retornado for malformado ou não corresponder ao ApiResponse.
+                        Console.WriteLine($"[ERRO] Desserialização JSON para ApiResponse falhou: {jsonEx.Message}. Conteúdo recebido: '{content}'");
+                        return (null, $"Erro ao processar a resposta da API (formato JSON inválido). Detalhes: {jsonEx.Message}");
+                    }
+
+                    // 5.3. Verifica o status 'Success' dentro do ApiResponse
+                    if (apiResponse != null && apiResponse.Success)
+                    {
+                        return (apiResponse.Data, null); // Retorna o produto e nenhum erro
+                    }
+                    else
+                    {
+                        // A API retornou sucesso HTTP (ex: 200 OK), mas a propriedade 'Success' dentro do JSON é 'false'.
+                        // Isso é um erro de lógica de negócio da API.
+                        string errorMsg = apiResponse?.Message ?? "Erro desconhecido da API ao buscar produtos.";
+                        return (null, errorMsg);
+                    }
+                }
+                else // 6. A requisição HTTP NÃO foi bem-sucedida (status 4xx ou 5xx)
+                {
+                    ProblemDetails? problemDetails = null;
+
+                    // 6.1. Tenta desserializar o conteúdo como ProblemDetails (padrão para erros de API)
+                    if (!string.IsNullOrWhiteSpace(content))
+                    {
+                        try
+                        {
+                            problemDetails = JsonSerializer.Deserialize<ProblemDetails>(content,
+                                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                        }
+                        catch (JsonException jsonEx)
+                        {
+                            // Loga o erro de desserialização JSON para ProblemDetails.
+                            // Isso significa que o conteúdo do erro não era um ProblemDetails JSON válido.
+                            Console.WriteLine($"[AVISO] Desserialização JSON para ProblemDetails falhou: {jsonEx.Message}. Conteúdo recebido: '{content}'");
+                            // Continua, pois podemos usar o conteúdo bruto como mensagem de erro.
+                        }
+                    }
+
+                    // 6.2. Retorna a mensagem de erro com base no ProblemDetails ou conteúdo bruto
+                    if (problemDetails?.Title != null && problemDetails?.Detail != null)
+                    {
+                        return (null, $"{problemDetails.Title}: {problemDetails.Detail}");
+                    }
+                    else if (!string.IsNullOrEmpty(content))
+                    {
+                        // Se há conteúdo, mas não pôde ser desserializado como ProblemDetails,
+                        // usa o conteúdo bruto como mensagem de erro.
+                        return (null, $"Erro ao buscar produto: {content}");
+                    }
+                    else
+                    {
+                        // Fallback para status de erro HTTP sem conteúdo no corpo da resposta.
+                        return (null, $"Erro ao buscar produto. Status: {response.StatusCode} {response.ReasonPhrase}. Resposta vazia.");
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                // 7. Captura erros de rede ou conexão (HttpRequestException)
+                // Este é o erro 'Error while copying content to a stream.'
+                // Incluir o InnerException é CRUCIAL para depuração.
+                string errorMessage = $"Não foi possível conectar ao servidor da API. Verifique a conexão ou o status do servidor. Detalhes: {ex.Message}";
+                if (ex.InnerException != null)
+                {
+                    errorMessage += $" Causa raiz: {ex.InnerException.Message}";
+                }
+                Console.WriteLine($"[ERRO] HttpRequestException: {errorMessage}");
+                return (null, errorMessage);
+            }
+            catch (JsonException ex)
+            {
+                // 8. Captura qualquer outra exceção de JSON que possa ter escapado
+                // (menos provável com os blocos try-catch específicos acima, mas bom para robustez)
+                Console.WriteLine($"[ERRO] Erro de formato de dados inesperado (JSON): {ex.Message}");
+                return (null, $"Erro de formato de dados inesperado (JSON): {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                // 9. Captura qualquer outra exceção inesperada
+                Console.WriteLine($"[ERRO] Ocorreu um erro inesperado: {ex.Message}");
+                return (null, $"Ocorreu um erro inesperado: {ex.Message}");
+            }
+        }
+
         #endregion
 
           #region Categoria API Calls

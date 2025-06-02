@@ -47,6 +47,7 @@ builder.Services.Configure<FormOptions>(options =>
     options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
 });
 
+
 builder.Services.AddHttpClient();
 
 // Adiciona autenticação JWT
@@ -106,7 +107,12 @@ builder.Services.AddCors(options =>
 });
 
 // Adiciona os serviços ao container (Controllers)
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    });
+
 
 // Adiciona o Swagger para documentação da API
 builder.Services.AddEndpointsApiExplorer();

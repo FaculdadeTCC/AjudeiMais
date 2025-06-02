@@ -85,61 +85,62 @@ namespace AjudeiMais.API.Controllers
         }
 
 
-        ///// <summary>
-        ///// Exclui logicamente um produto pelo ID.
-        ///// </summary>
-        ///// <param name="id">ID do produto.</param>
-        ///// <returns>Ok se excluído com sucesso.</returns>
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    try
-        //    {
-        //        var result = await _service.Delete(id);
+        /// <summary>
+        /// Exclui logicamente um produto pelo ID.
+        /// </summary>
+        /// <param name="guid">GUID do produto.</param>
+        /// <returns>Ok se excluído com sucesso.</returns>
+        [HttpDelete("{guid}")]
+        public async Task<IActionResult> Delete(string guid)
+        {
+            try
+            {
+                var result = await _service.Delete(guid);
 
-        //        if (result.Success)
-        //        {
-        //            return Ok(result);
-        //        }
-        //        else
-        //        {
-        //            return BadRequest(result);
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        var errorResponse = new ApiResponse<object>
-        //        {
-        //            Success = false,
-        //            Type = "error",
-        //            Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
-        //        };
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return BadRequest(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                var errorResponse = new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                };
 
-        //        return StatusCode(500, errorResponse);
-        //    }
-        //}
+                return StatusCode(500, errorResponse);
+            }
+        }
 
-        ///// <summary>
-        ///// Retorna um produto pelo seu ID.
-        ///// </summary>
-        ///// <param name="id">ID do produto.</param>
-        ///// <returns>Produto correspondente.</returns>
-        //[HttpGet("{id}")]
-        //public async Task<IActionResult> GetById(int id)
-        //{
-        //    try
-        //    {
-        //        var produto = await _service.GetById(id);
-        //        if (produto == null)
-        //            return NotFound();
+        /// <summary>
+        /// Retorna um produto pelo seu ID.
+        /// </summary>
+        /// <param name="id">ID do produto.</param>
+        /// <returns>Produto correspondente.</returns>
+        [HttpGet("{guid}")]
+        public async Task<IActionResult> GetByGuid(string guid)
+        {
+            try
+            {
+                var result = await _service.GetByGuid(guid);
 
-        //        return Ok(produto);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+                if (result.Success)
+                    return Ok(result);
+                else
+                    return BadRequest();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
         /// <summary>
         /// Retorna todos os produtos pertencentes a um usuário.

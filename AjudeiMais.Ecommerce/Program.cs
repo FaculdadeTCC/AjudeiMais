@@ -72,12 +72,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-app.MapControllerRoute(
-    name: "usuario-anuncio-cadastrar",
-    pattern: "usuario/{guid}/anunciar",
-    defaults: new { controller = "Produto", action = "Cadastro" }
-);
-
 #region INSTITUIÇÃO
 // Rotas de instituição 
 
@@ -194,9 +188,39 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
-    name: "usuario-anuncio-cadastrar",
+    name: "anuncio-excluir-imagem",
+    pattern: "usuario/{guid}/anuncio",
+    defaults: new { controller = "Produto", action = "ExcluirImagem" }
+);
+
+app.MapControllerRoute(
+    name: "anuncio-imagem-editar",
+    pattern: "anuncio/{guid}/imagens",
+    defaults: new { controller = "Produto", action = "Imagens" }
+);
+
+app.MapControllerRoute(
+    name: "anuncio-detalhe",
     pattern: "anuncio/{guid}",
     defaults: new { controller = "Produto", action = "Detalhe" }
+);
+
+app.MapControllerRoute(
+    name: "anuncios",
+    pattern: "meus-anuncios/{guid}",
+    defaults: new { controller = "Produto", action = "Index" }
+);
+
+app.MapControllerRoute(
+    name: "anuncio-excluir",
+    pattern: "anuncio/excluir",
+    defaults: new { controller = "Produto", action = "Excluir" }
+);
+
+app.MapControllerRoute(
+    name: "anuncio-editar",
+    pattern: "anuncio/editar/{guid}",
+    defaults: new { controller = "Produto", action = "Editar" }
 );
 
 

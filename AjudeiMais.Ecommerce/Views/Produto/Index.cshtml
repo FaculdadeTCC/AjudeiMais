@@ -1,297 +1,246 @@
 ﻿@model AjudeiMais.Ecommerce.Models.Produto.ProdutoIndex
-
+@using AjudeiMais.Ecommerce.Tools
 @{
-    ViewData["Title"] = "Gerenciar Anúncio";
+	ViewData["Title"] = "Meus Anúncios";
 }
 
 @section Styles {
-    <style>
-        /* Specific styles for the "Gerenciar Anúncio" page */
-
-        body {
-            background-color: var(--color-bg); /* Use global background color */
-        }
-
-        .manage-ad-section {
-            max-width: 960px; /* Wider form for better layout on larger screens */
-            margin-top: var(--spacing-xxl); /* Adjust top margin */
-            margin-bottom: var(--spacing-xxl);
-            background-color: var(--color-surface);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg); /* More prominent shadow for the card */
-            border: 1px solid var(--color-gray-200);
-        }
-
-            .manage-ad-section h2 {
-                font-family: var(--font-family-heading);
-                font-weight: var(--font-weight-bold);
-                font-size: var(--font-size-3xl); /* Larger heading */
-                color: var(--color-primary-dark);
-                margin-bottom: var(--spacing-lg);
-                text-align: center;
-            }
-
-        .form-label {
-            font-family: var(--font-family-base);
-            font-weight: var(--font-weight-medium);
-            color: var(--color-gray-700);
-            margin-bottom: var(--spacing-xxs);
-            display: block; /* Ensure label is block for proper spacing */
-        }
-
-        .form-control-custom {
-            width: 100%;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border: 1px solid var(--color-gray-300);
-            border-radius: var(--radius-md); /* Slightly less rounded than global lg */
-            font-family: var(--font-family-base);
-            font-size: var(--font-size-md);
-            color: var(--color-gray-800);
-            background-color: var(--color-surface);
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-        }
-
-            .form-control-custom:focus {
-                border-color: var(--color-primary);
-                box-shadow: 0 0 0 0.25rem rgba(0, 33, 71, 0.25); /* Focus ring using primary color */
-                outline: none;
-            }
-
-        textarea.form-control-custom {
-            min-height: 120px; /* Sufficient height for description */
-            resize: vertical; /* Allow vertical resizing */
-        }
-
-        /* Image Upload Section */
-        .image-upload-container {
-            border: 2px dashed var(--color-gray-400);
-            border-radius: var(--radius-md);
-            padding: var(--spacing-md);
-            text-align: center;
-            cursor: pointer;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-
-            .image-upload-container:hover {
-                border-color: var(--color-primary);
-                background-color: var(--color-gray-100);
-            }
-
-            .image-upload-container input[type="file"] {
-                display: none; /* Hide default file input */
-            }
-
-            .image-upload-container .upload-placeholder {
-                color: var(--color-gray-600);
-                font-family: var(--font-family-base);
-                font-size: var(--font-size-md);
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                gap: var(--spacing-xs);
-            }
-
-                .image-upload-container .upload-placeholder i {
-                    font-size: var(--font-size-3xl);
-                    color: var(--color-gray-500);
-                }
-
-        .image-preview-wrapper {
-            margin-top: var(--spacing-md);
-            text-align: center; /* Center the image */
-        }
-
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px; /* Fixed height for consistent previews */
-            object-fit: contain; /* Ensure image fits without distortion */
-            border-radius: var(--radius-md);
-            border: 1px solid var(--color-gray-300);
-            box-shadow: var(--shadow-sm);
-        }
-
-        .add-more-images-btn {
-            background-color: var(--color-secondary); /* Use secondary color for this action */
-            color: var(--color-gray-100);
-            font-family: var(--font-family-accent);
-            font-weight: var(--font-weight-medium);
-            padding: var(--spacing-sm) var(--spacing-lg);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            transition: background-color 0.2s ease, transform 0.2s ease;
-            text-decoration: none; /* Remove underline from anchor */
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xxs);
-        }
-
-            .add-more-images-btn:hover {
-                background-color: var(--color-secondary-dark);
-                transform: translateY(-2px);
-                color: var(--color-gray-100); /* Keep text white on hover */
-            }
-
-            .add-more-images-btn i {
-                font-size: var(--font-size-md);
-            }
-
-        /* Submit Button */
-        .submit-button {
-            background-color: var(--color-accent);
-            border: none;
-            color: var(--color-gray-100);
-            font-family: var(--font-family-accent);
-            font-weight: var(--font-weight-bold);
-            padding: var(--spacing-md) var(--spacing-xl);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
-            cursor: pointer;
-            font-size: var(--font-size-lg); /* Slightly larger text for main action */
-        }
-
-            .submit-button:hover {
-                background-color: var(--color-accent-dark);
-                transform: translateY(-2px);
-                box-shadow: var(--shadow-lg);
-            }
-
-            .submit-button:active {
-                transform: translateY(0);
-                box-shadow: var(--shadow-sm);
-            }
-
-        /* Responsive adjustments */
-        @@media (max-width: 767px) {
-            .manage-ad-section
-
-        {
-            margin-top: var(--spacing-xl);
-            padding: var(--spacing-md);
-        }
-
-        .manage-ad-section h2 {
-            font-size: var(--font-size-xxl);
-        }
-
-        .grid-cols-1.md\:grid-cols-2 {
-            grid-template-columns: 1fr; /* Stack columns on small screens */
-        }
-
-        .add-more-images-btn {
-            width: 100%; /* Full width button on small screens */
-            justify-content: center; /* Center content */
-        }
-
-        .submit-button {
-            width: 100%; /* Full width button on small screens */
-        }
-
-        }
-    </style>
+	<link rel="stylesheet" href="~/css/produto/produto.css" asp-append-version="true" />
 }
 
-<section class="manage-ad-section mx-auto">
-    <h2>Gerenciar Anúncio</h2>
+@{
+	// This partial view should contain your alert/notification display logic
+	await Html.RenderPartialAsync("_Alertas");
+}
 
-    <form asp-action="SalvarAnuncio" method="post" enctype="multipart/form-data" class="space-y-6">
-        <div class="gap-6 grid grid-cols-1 md:grid-cols-2">
-            <div>
-                <label for="Nome" class="form-label">Nome do Produto</label>
-                <input type="text" id="Nome" name="Nome" class="form-control-custom" placeholder="Ex: Camiseta, Pacote de Arroz" required />
-            </div>
+<section class="container-fluid dashboard-container mt-5">
+	@* Adicionado a classe dashboard-container *@
+	<div id="modalEditCategoryContainer">
+	</div>
+	<div class="header-section">
+		@* Atualizado para header-section *@
+		<h2 class="h5 mb-0">
+			Meus Anúncios Publicados
+		</h2>
+		<a asp-action="Cadastro" asp-controller="Produto" class="btn btn-outline-light">
+			@* Usando o botão de categorias *@
+			<i class="fas fa-plus-circle me-2"></i> Publicar Novo Anúncio
+		</a>
+	</div>
 
-            <div>
-                <label for="Condicao" class="form-label">Condição</label>
-                <select id="Condicao" name="Condicao" class="form-control-custom">
-                    <option value="Novo">Novo</option>
-                    <option value="Usado - Bom">Usado - Bom</option>
-                    <option value="Usado - Regular">Usado - Regular</option>
-                    <option value="Usado - Ruim">Usado - Ruim</option> @* Added another option for clarity *@
-                </select>
-            </div>
+	<form onsubmit="return false;">
+		<div class="input-group shadow-sm">
+			<span class="input-group-text" id="search-addon">
+				<i class="fas fa-search text-gray-600"></i>
+			</span>
+			<input type="text" id="customSearchInput" class="form-control border-start-0" placeholder="Buscar anúncios..." aria-label="Buscar anúncios" aria-describedby="search-addon" />
+		</div>
+	</form>
 
-            <div>
-                <label for="Validade" class="form-label">Validade (se aplicável)</label>
-                <input type="date" id="Validade" name="Validade" class="form-control-custom" />
-            </div>
+	<div class="table-section table-responsive">
+		@* Atualizado para table-section *@
+		@if (Model.Anuncios != null && Model.Anuncios.Any())
+		{
+			<table id="productsTable" class="table-hover mb-0 table-striped table align-middle">
+				@* Ajustado para table-hover e mb-0 *@
+				<thead class="table-light">
+					@* Usando table-light para o fundo do cabeçalho da tabela *@
+					<tr>
+						<th scope="col">Imagem</th>
+						<th scope="col">Nome do Item</th>
+						<th scope="col">Categoria</th>
+						<th scope="col">Quantidade</th>
+						<th scope="col">Condição</th>
+						<th scope="col">Criado em</th>
+						<th scope="col" class="text-center">Ações</th>
+					</tr>
+				</thead>
+				<tbody id="productsTableBody">
+					@foreach (var produto in Model.Anuncios)
+					{
+						<tr data-search-term="@(produto.Nome.ToLower() + " " + produto.Quantidade + " " + produto.Condicao.ToLower())">
+							<td>
+								<img src="@(produto.ProdutoImagens != null && produto.ProdutoImagens.Any()
+										? $"{Assistant.ServerURL()}{produto.ProdutoImagens.FirstOrDefault().Imagem}"
+										: "/images/placeholder.jpg")"
+									 class="product-image-thumb"
+									 alt="Imagem do produto @produto.Nome">
+							</td>
+							<td>
+								<strong>@produto.Nome</strong>
+							</td>
+							<td>@produto.CategoriaProduto_ID</td>
+							<td>@produto.Quantidade @produto.UnidadeMedida</td>
+							<td>
+								@produto.Condicao
+								@produto.Guid
+							</td>
+							<td>
+								<p class="mb-0">Cad.: @produto.DataCriacao.Value.ToString("dd/MM/yyyy HH:mm")</p>
+								@if (produto.DataUpdate != DateTime.MinValue)
+								{
+									<small class="text-muted">Atual.: @produto.DataUpdate.Value.ToString("dd/MM/yyyy HH:mm")</small>
+								}
+							</td>
+							<td class="text-center">
+								<a href="@Url.RouteUrl("anuncio-imagem-editar", new { guid = produto.Guid })" class="btn btn-sm btn-dark edit-product-btn" title="Imagens do anúncio">
+									<i class="fa fa-image"></i>
+								</a>
+								<a href="@Url.RouteUrl("anuncio-editar", new { guid = produto.Guid })" class="btn btn-sm btn-primary edit-product-btn" title="Editar">
+									<i class="fa fa-pencil"></i>
+								</a>
+								<button type="button" class="btn btn-sm btn-danger delete-product-btn"
+										data-bs-toggle="modal" data-bs-target="#confirmDeleteModal"
+										data-guid="@produto.Guid.ToString()" title="Excluir">
+									<i class="fa fa-trash"></i>
+								</button>	
+							</td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		}
+		else
+		{
+			<div class="no-products-message">
+				<i class="fas fa-box-open icon"></i>
+				<p>Parece que você ainda não tem nenhum anúncio publicado. Vamos começar a ajudar quem mais precisa e fazer a diferença?</p>
+				<a asp-action="Cadastro" asp-controller="Produto" class="btn-primary-custom mt-4">
+					<i class="fas fa-plus-circle"></i> Publicar Meu Primeiro Anúncio
+				</a>
+			</div>
+		}
+	</div>
 
-            <div>
-                <label for="Quantidade" class="form-label">Quantidade</label>
-                <input type="number" id="Quantidade" name="Quantidade" min="1" class="form-control-custom" placeholder="Mínimo 1" required />
-            </div>
+	<div class="mt-2 text-center">
+		<span id="paginationSummary" class="text-muted" style="font-family: var(--font-family-base);"></span>
+	</div>
 
-            <div>
-                <label for="Peso" class="form-label">Peso (kg)</label>
-                <input type="number" step="0.1" id="Peso" name="Peso" min="0" class="form-control-custom" placeholder="Ex: 0.5 (para 500g)" required />
-            </div>
+	<div class="mt-4 d-flex justify-content-center">
+		<nav aria-label="Paginação de Anúncios">
+			<ul class="pagination" id="paginationControls">
+			</ul>
+		</nav>
+	</div>
 
-            <div>
-                <label for="Categoria" class="form-label">Categoria</label>
-                <select id="Categoria" name="Categoria" class="form-control-custom">
-                    <option value="Alimentos">Alimentos</option>
-                    <option value="Roupas">Roupas</option>
-                    <option value="Higiene">Higiene</option>
-                    <option value="Móveis">Móveis</option>
-                    <option value="Eletrônicos">Eletrônicos</option> @* Added common category *@
-                    <option value="Brinquedos">Brinquedos</option> @* Added common category *@
-                    <option value="Outros">Outros</option>
-                </select>
-            </div>
-        </div>
-
-        <div>
-            <label for="Descricao" class="form-label">Descrição</label>
-            <textarea id="Descricao" name="Descricao" rows="4" class="form-control-custom" placeholder="Forneça uma descrição detalhada do item para doação..." required></textarea>
-        </div>
-
-        <div>
-            <label class="form-label">Imagem Principal</label>
-            <div class="image-upload-container">
-                <label for="ImagemPrincipal" class="upload-placeholder">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Clique ou arraste e solte uma imagem aqui</span>
-                </label>
-                <input type="file" id="ImagemPrincipal" name="ImagemPrincipal" accept="image/*" onchange="previewImagemPrincipal(event)" required />
-            </div>
-            <div class="image-preview-wrapper">
-                <img id="previewImagem" src="#" alt="Pré-visualização da Imagem Principal" class="image-preview hidden" />
-            </div>
-            <div class="mt-4 text-center">
-                @* Center the button *@
-                <a href="/anuncio/imagens" class="add-more-images-btn">
-                    <i class="fas fa-plus-circle"></i> Adicionar Mais Imagens
-                </a>
-            </div>
-        </div>
-
-        <div class="mt-8 flex justify-center">
-            @* Centered button horizontally *@
-            <button type="submit" class="submit-button">
-                Salvar Anúncio
-            </button>
-        </div>
-    </form>
 </section>
 
-<script>
-    function previewImagemPrincipal(event) {
-        const file = event.target.files[0];
-        const preview = document.getElementById('previewImagem');
 
-        if (file) {
-            const reader = new FileReader();
+@await Html.PartialAsync("_DeletarProduto")
 
-            reader.onload = function (e) {
-                preview.src = e.target.result;
-                preview.classList.remove('hidden');
-            }
 
-            reader.readAsDataURL(file);
-        } else {
-            preview.src = "#";
-            preview.classList.add('hidden');
-        }
-    }
-</script>
+@section Scripts {
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRzSmL/C5LpTfGvR8Qy/n5/A2o+6t3/o7E=" crossorigin="anonymous"></script>
+
+	<script>
+		$(document).ready(function () {
+			const rowsPerPage = 10;
+			let currentPage = 1;
+			const $tableBody = $('#productsTableBody');
+			const $paginationControls = $('#paginationControls');
+			const $paginationSummary = $('#paginationSummary');
+			let $allRows = $tableBody.find('tr');
+
+			function displayRows(rows, page) {
+				const start = (page - 1) * rowsPerPage;
+				const end = start + rowsPerPage;
+				$tableBody.find('tr').hide();
+				rows.slice(start, end).show();
+			}
+
+			function setupPagination(filteredRows) {
+				const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+				$paginationControls.empty();
+
+				if (totalPages > 1) {
+					$paginationControls.append(`<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+						<a class="page-link" href="#" data-page="${currentPage - 1}" aria-label="Previous">
+							<span aria-hidden="true">&laquo;</span>
+						</a>
+					</li>`);
+
+					for (let i = 1; i <= totalPages; i++) {
+						$paginationControls.append(`<li class="page-item ${i === currentPage ? 'active' : ''}">
+							<a class="page-link" href="#" data-page="${i}">${i}</a>
+						</li>`);
+					}
+
+					$paginationControls.append(`<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+						<a class="page-link" href="#" data-page="${currentPage + 1}" aria-label="Next">
+							<span aria-hidden="true">&raquo;</span>
+						</a>
+					</li>`);
+				}
+
+				const startItem = (currentPage - 1) * rowsPerPage + 1;
+				const endItem = Math.min(currentPage * rowsPerPage, filteredRows.length);
+				$paginationSummary.text(`Mostrando ${startItem}-${endItem} de ${filteredRows.length} anúncios`);
+			}
+
+			function filterAndPaginate() {
+				const searchTerm = $('#customSearchInput').val().toLowerCase();
+				let filteredRows = $allRows.filter(function () {
+					const rowText = $(this).data('search-term');
+					return rowText.includes(searchTerm);
+				});
+
+				if (searchTerm === '') {
+					filteredRows = $allRows;
+				}
+
+				currentPage = 1;
+				displayRows(filteredRows, currentPage);
+				setupPagination(filteredRows);
+
+				if (filteredRows.length === 0 && searchTerm !== '') {
+					$('.no-products-message').show().html('<i class="fas fa-search-minus icon"></i><p>Nenhum anúncio corresponde à sua busca. Tente outro termo!</p>');
+					$('.card.rounded-xl').hide();
+					$('.pagination, #paginationSummary').hide(); // Esconde a paginação se não houver resultados da busca
+				} else if ($allRows.length === 0) {
+					$('.no-products-message').show();
+					$('.card.rounded-xl').hide();
+					$('.pagination, #paginationSummary').hide(); // Esconde a paginação se não houver produtos inicialmente
+				} else {
+					$('.no-products-message').hide();
+					$('.card.rounded-xl').show();
+					$('.pagination, #paginationSummary').show(); // Mostra a paginação se houver resultados
+				}
+			}
+
+			$paginationControls.on('click', '.page-link', function (e) {
+				e.preventDefault();
+				const newPage = parseInt($(this).data('page'));
+				const searchTerm = $('#customSearchInput').val().toLowerCase();
+				let filteredRows = $allRows.filter(function () {
+					const rowText = $(this).data('search-term');
+					return rowText.includes(searchTerm);
+				});
+				if (searchTerm === '') {
+					filteredRows = $allRows;
+				}
+
+				const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+
+				if (newPage > 0 && newPage <= totalPages) {
+					currentPage = newPage;
+					displayRows(filteredRows, currentPage);
+					setupPagination(filteredRows);
+				}
+			});
+
+			$('#customSearchInput').on('keyup', function () {
+				filterAndPaginate();
+			});
+
+			// Chamada inicial para exibir a primeira página e configurar a paginação
+			if ($allRows.length > 0) {
+				filterAndPaginate();
+			} else {
+				$('.card.rounded-xl').hide();
+				$('.no-products-message').show();
+				$('.pagination, #paginationSummary').hide(); // Esconde a paginação se não houver produtos inicialmente
+			}
+		});
+	</script>
+
+}

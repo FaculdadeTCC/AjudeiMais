@@ -1,0 +1,347 @@
+﻿
+
+/* --- Main Product Card Section --- */
+.product-display-card {
+    position: relative;
+    overflow: hidden;
+    padding: var(--spacing-md); /* Generous internal padding */
+    margin-top: 90px !important; /* Top margin for the card */
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 75rem; /* Equivalent to max-w-6xl (1200px) */
+    transform: translateY(0);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+
+/* --- Typography and Headings --- */
+h1 {
+    font-family: var(--font-family-heading);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary);
+    text-align: center;
+    margin-bottom: var(--spacing-xxl); /* More space below main title */
+    font-size: var(--font-size-4xl);
+}
+
+.product-title-accent {
+    background: linear-gradient( 90deg, var(--color-secondary-dark), var(--color-accent) );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
+    display: inline-block;
+    font-weight: var(--font-weight-bold);
+    font-size: var(--font-size-4xl);
+    transform: rotate(0deg);
+    transition: transform 0.3s ease-in-out;
+}
+
+    .product-title-accent:hover {
+        transform: rotate(1deg) scale(1.01);
+    }
+
+p {
+    color: var(--color-gray-700);
+    font-family: var(--font-family-base);
+    font-size: var(--font-size-md);
+}
+
+.font-semibold { /* Tailwind 'font-semibold' class, now using custom styles */
+    color: var(--color-primary-dark);
+    font-weight: var(--font-weight-bold);
+    font-family: var(--font-family-accent);
+    font-size: var(--font-size-lg);
+}
+
+/* --- Two-Column Layout for Content --- */
+.product-content-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Default to single column on small screens */
+    gap: var(--spacing-xxl); /* Generous gap between sections */
+    margin-bottom: var(--spacing-xxl);
+}
+
+@media (min-width: 768px) { /* md breakpoint for Tailwind */
+    .product-content-grid {
+        grid-template-columns: repeat(2, 1fr); /* Two columns on larger screens */
+    }
+}
+
+.product-info-container {
+    padding: var(--spacing-md); /* Add some padding around info blocks */
+    background-color: var(--color-gray-100); /* Slightly off-white background for info */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.space-y-4 > div {
+    margin-bottom: var(--spacing-lg);
+}
+
+    .space-y-4 > div:last-child {
+        margin-bottom: 0;
+    }
+
+/* --- Image Carousel (Splide.js) Enhancements --- */
+.product-carousel-container {
+    display: flex; /* Use flex to center Splide if needed */
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-gray-100); /* Background for the carousel area */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: var(--spacing-md);
+}
+
+.splide {
+    width: 100%;
+    max-width: 100%; /* Ensure Splide doesn't overflow its container */
+}
+
+.splide__slide a { /* For Fancybox clickable area */
+    display: block;
+    width: 100%;
+    height: 100%; /* Ensure the link covers the image */
+    overflow: hidden; /* Hide overflow from border-radius */
+    border-radius: var(--radius-md); /* Match images */
+}
+
+.splide__slide img {
+    width: 100%;
+    height: 350px; /* Fixed height for carousel images */
+    object-fit: cover; /* **Ensures images cover the area** */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    cursor: pointer; /* Indicate clickability for Fancybox */
+}
+
+    .splide__slide img:hover {
+        transform: scale(1.01);
+        box-shadow: var(--shadow-lg);
+    }
+
+/* Splide navigation arrows */
+.splide__arrow {
+    background-color: var(--color-primary-light);
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.2s ease;
+}
+
+    .splide__arrow svg {
+        fill: var(--color-gray-100);
+    }
+
+    .splide__arrow:hover {
+        background-color: var(--color-primary);
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+/* Splide pagination dots */
+.splide__pagination__page {
+    background-color: var(--color-gray-400);
+    opacity: 0.7;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .splide__pagination__page.is-active {
+        background-color: var(--color-secondary);
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+/* --- Status Badges --- */
+.status-badge {
+    display: inline-block;
+    padding: var(--spacing-xxs) var(--spacing-sm);
+    font-weight: var(--font-weight-bold);
+    border-radius: 9999px; /* Fully rounded pill shape */
+    box-shadow: var(--shadow-sm);
+    font-family: var(--font-family-accent);
+    font-size: var(--font-size-sm); /* Smaller text for badges */
+}
+
+.status-available {
+    background-color: color-mix(in srgb, var(--color-success) 15%, white);
+    color: var(--color-success);
+}
+
+.status-reserved {
+    background-color: color-mix(in srgb, var(--color-warning) 15%, white);
+    color: var(--color-warning);
+}
+
+.status-unknown {
+    background-color: var(--color-gray-200);
+    color: var(--color-gray-700);
+}
+
+/* --- Doador (Donor) Profile --- */
+.donor-info {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-sm); /* Space from label */
+}
+
+    .donor-info img {
+        height: 100px; /* 2.5rem */
+        width: 100px;
+        background: linear-gradient(90deg, var(--color-secondary-dark), var(--color-accent));
+        border-radius: 50%;
+        object-fit: contain;
+        border: 1px solid var(--color-gray-300);
+        box-shadow: var(--shadow-sm);
+    }
+
+.donor-details p:first-child {
+    font-family: var(--font-family-accent); /* Use Quicksand for donor name */
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
+}
+
+.donor-details p:last-child {
+    font-size: var(--font-size-sm);
+    color: var(--color-gray-600);
+}
+
+/* --- Action Buttons --- */
+.product-actions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-xxl);
+}
+
+@media (min-width: 640px) { /* sm breakpoint for Tailwind */
+    .product-actions {
+        flex-direction: row;
+    }
+}
+
+.button-primary,
+.button-secondary {
+    display: inline-flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-md);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-family: var(--font-family-accent);
+    font-weight: var(--font-weight-bold);
+    transition: all 0.3s ease-in-out;
+    text-decoration: none; /* Remove underline from links */
+    white-space: nowrap; /* Prevent text wrapping on buttons */
+}
+
+@media (min-width: 640px) { /* sm breakpoint for Tailwind */
+    .button-primary,
+    .button-secondary {
+        width: auto; /* Buttons go back to auto width on larger screens */
+    }
+}
+
+.button-primary {
+    background-color: var(--color-accent);
+    color: var(--color-gray-100);
+    box-shadow: 0 6px 15px color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+
+    .button-primary:hover {
+        background-color: var(--color-accent-dark);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 10px 20px color-mix(in srgb, var(--color-accent) 50%, transparent);
+    }
+
+    .button-primary:active {
+        transform: translateY(0);
+        box-shadow: 0 3px 8px color-mix(in srgb, var(--color-accent) 20%, transparent);
+    }
+
+.button-secondary {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-gray-400);
+    color: var(--color-primary-dark);
+    box-shadow: var(--shadow-sm);
+}
+
+    .button-secondary:hover {
+        background-color: var(--color-gray-200);
+        border-color: var(--color-primary-light);
+        color: var(--color-primary);
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: var(--shadow-md);
+    }
+
+    .button-secondary:active {
+        transform: translateY(0);
+        box-shadow: var(--shadow-sm);
+    }
+
+/* --- Accessibility & UX Improvements --- */
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 4px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 0 0 1px var(--color-focus);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 767px) { /* Adjustments for screens smaller than md breakpoint */
+    .product-display-card {
+        padding: var(--spacing-xl);
+        margin-top: var(--spacing-lg); /* Reduce top margin on smaller screens */
+    }
+
+    h1 {
+        font-size: var(--font-size-3xl);
+        margin-bottom: var(--spacing-xl);
+    }
+
+    .product-title-accent {
+        font-size: var(--font-size-3xl);
+    }
+
+    .splide__slide img {
+        height: 250px; /* Smaller height for carousel on mobile */
+    }
+
+    .product-content-grid {
+        gap: var(--spacing-lg);
+    }
+
+    .product-info-container {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (max-width: 480px) { /* Further adjustments for very small screens */
+    .product-display-card {
+        padding: var(--spacing-lg);
+    }
+
+    h1 {
+        font-size: var(--font-size-xxl);
+    }
+
+    .product-title-accent {
+        font-size: var(--font-size-xxl);
+    }
+
+    .splide__slide img {
+        height: 200px;
+    }
+
+    .product-actions {
+        gap: var(--spacing-md);
+    }
+}

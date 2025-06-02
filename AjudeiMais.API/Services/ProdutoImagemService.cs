@@ -212,6 +212,42 @@ namespace AjudeiMais.API.Services
                 };
             }
         }
+
+        public async Task<ApiResponse<ProdutoImagem>> Update(ProdutoImagem dto)
+        {
+            if (dto.ProdutoImagem_ID > 0)
+            {
+                try
+                {
+                    await _produtoImagemRepository.SaveOrUpdate(dto);
+
+                    return new ApiResponse<ProdutoImagem>
+                    {
+                        Success = true,
+                        Type = "success",
+                        Message = "Imagem atualizada com sucesso.",
+                    };
+                }
+                catch
+                {
+                    return new ApiResponse<ProdutoImagem>
+                    {
+                        Success = true,
+                        Type = "success",
+                        Message = "Erro ao atualizar imagem. Tente novamente.",
+                    };
+                }
+            }
+            else
+            {
+                return new ApiResponse<ProdutoImagem>
+                {
+                    Success = true,
+                    Type = "success",
+                    Message = "Erro ao atualizar imagem. Tente novamente.",
+                };
+            }
+        }
     }
 }
 

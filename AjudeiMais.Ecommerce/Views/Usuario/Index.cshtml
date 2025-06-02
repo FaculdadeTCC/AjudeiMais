@@ -4,6 +4,8 @@
 @{
 	ViewBag.Title = "Meu Dashboard";
 	bool temAnuncio = Model.Anuncios != null ? true : false;
+
+	var userGuidLogado = User.FindFirst("GUID")?.Value;
 }
 
 
@@ -55,10 +57,10 @@
 					</div>
 				}
 			}
-			<div class="metric-card">
-				<h3 id="count-conversas">5</h3>
-				<p>Conversas Ativas</p>
-			</div>
+			@* <div class="metric-card"> *@
+			@* 	<h3 id="count-conversas">5</h3> *@
+			@* 	<p>Conversas Ativas</p> *@
+			@* </div> *@
 			<div class="metric-card">
 				<h3 id="count-instituicoes">15</h3>
 				<p>Instituições Próximas</p>
@@ -66,10 +68,10 @@
 		</section>
 
 		<!-- Seções de Conteúdo -->
-		<button type="button" class="metric-btn">
-			<span>Ver Mais</span>
+		<a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado}) " class="metric-btn">
+			<span>Meus anúncios</span>
 			<i class="fas fa-arrow-right"></i>
-		</button>
+		</a>
 
 		@if (temAnuncio)
 		{
@@ -94,7 +96,7 @@
 								// Tenta usar o título do item para o texto alternativo, senão usa o padrão
 								altText = !string.IsNullOrEmpty(item.Nome) ? item.Nome : "Imagem do Produto";
 
-								<div class="ad-item">
+								<a href="@Url.RouteUrl("anuncio-detalhe", new { guid = @item.Guid })" style="text-decoration: none !important" class="ad-item">
 									<div class="ad-image">
 										<img src="@imageUrl" height="60" width="60" alt="Imagem do Produto" />
 									</div>
@@ -103,7 +105,7 @@
 										<p>Publicado há @Assistant.ToTempoAtras((DateTime)item.DataCriacao)</p>
 									</div>
 									<span class="ad-status status-active">Ativo</span>
-								</div>
+								</a>
 							}
 							else
 							{
@@ -194,74 +196,74 @@
 	</main>
 
 	<!-- Sidebar de Chat -->
-	<aside class="chat-sidebar">
-		<div class="chat-header">
-			<i class="fas fa-comment-dots"></i>
-			<h3>Conversas Ativas</h3>
-		</div>
-		<div class="chat-contacts" id="chatContacts">
-			<div class="contact-item active">
-				<div class="contact-avatar">
-					<i class="fas fa-user"></i>
-				</div>
-				<div class="contact-info">
-					<h4>Maria Silva</h4>
-					<p>Interessada no livro de matemática</p>
-					<small>2 min atrás</small>
-				</div>
-				<div class="contact-status">
-					<span class="unread-count">2</span>
-				</div>
-			</div>
+	@* <aside class="chat-sidebar"> *@
+	@* 	<div class="chat-header"> *@
+	@* 		<i class="fas fa-comment-dots"></i> *@
+	@* 		<h3>Conversas Ativas</h3> *@
+	@* 	</div> *@
+	@* 	<div class="chat-contacts" id="chatContacts"> *@
+	@* 		<div class="contact-item active"> *@
+	@* 			<div class="contact-avatar"> *@
+	@* 				<i class="fas fa-user"></i> *@
+	@* 			</div> *@
+	@* 			<div class="contact-info"> *@
+	@* 				<h4>Maria Silva</h4> *@
+	@* 				<p>Interessada no livro de matemática</p> *@
+	@* 				<small>2 min atrás</small> *@
+	@* 			</div> *@
+	@* 			<div class="contact-status"> *@
+	@* 				<span class="unread-count">2</span> *@
+	@* 			</div> *@
+	@* 		</div> *@
 
-			<div class="contact-item">
-				<div class="contact-avatar">
-					<i class="fas fa-user"></i>
-				</div>
-				<div class="contact-info">
-					<h4>João Santos</h4>
-					<p>Quer os brinquedos educativos</p>
-					<small>1 hora atrás</small>
-				</div>
-			</div>
+	@* 		<div class="contact-item"> *@
+	@* 			<div class="contact-avatar"> *@
+	@* 				<i class="fas fa-user"></i> *@
+	@* 			</div> *@
+	@* 			<div class="contact-info"> *@
+	@* 				<h4>João Santos</h4> *@
+	@* 				<p>Quer os brinquedos educativos</p> *@
+	@* 				<small>1 hora atrás</small> *@
+	@* 			</div> *@
+	@* 		</div> *@
 
-			<div class="contact-item">
-				<div class="contact-avatar">
-					<i class="fas fa-user"></i>
-				</div>
-				<div class="contact-info">
-					<h4>Ana Costa</h4>
-					<p>Perguntou sobre as roupas</p>
-					<small>3 horas atrás</small>
-				</div>
-				<div class="contact-status">
-					<span class="unread-count">1</span>
-				</div>
-			</div>
+	@* 		<div class="contact-item"> *@
+	@* 			<div class="contact-avatar"> *@
+	@* 				<i class="fas fa-user"></i> *@
+	@* 			</div> *@
+	@* 			<div class="contact-info"> *@
+	@* 				<h4>Ana Costa</h4> *@
+	@* 				<p>Perguntou sobre as roupas</p> *@
+	@* 				<small>3 horas atrás</small> *@
+	@* 			</div> *@
+	@* 			<div class="contact-status"> *@
+	@* 				<span class="unread-count">1</span> *@
+	@* 			</div> *@
+	@* 		</div> *@
 
-			<div class="contact-item">
-				<div class="contact-avatar">
-					<i class="fas fa-building"></i>
-				</div>
-				<div class="contact-info">
-					<h4>Escola Municipal</h4>
-					<p>Agradeceu pela doação do notebook</p>
-					<small>1 dia atrás</small>
-				</div>
-			</div>
+	@* 		<div class="contact-item"> *@
+	@* 			<div class="contact-avatar"> *@
+	@* 				<i class="fas fa-building"></i> *@
+	@* 			</div> *@
+	@* 			<div class="contact-info"> *@
+	@* 				<h4>Escola Municipal</h4> *@
+	@* 				<p>Agradeceu pela doação do notebook</p> *@
+	@* 				<small>1 dia atrás</small> *@
+	@* 			</div> *@
+	@* 		</div> *@
 
-			<div class="contact-item">
-				<div class="contact-avatar">
-					<i class="fas fa-heart"></i>
-				</div>
-				<div class="contact-info">
-					<h4>Casa de Apoio</h4>
-					<p>Confirmou retirada dos utensílios</p>
-					<small>2 dias atrás</small>
-				</div>
-			</div>
-		</div>
-	</aside>
+	@* 		<div class="contact-item"> *@
+	@* 			<div class="contact-avatar"> *@
+	@* 				<i class="fas fa-heart"></i> *@
+	@* 			</div> *@
+	@* 			<div class="contact-info"> *@
+	@* 				<h4>Casa de Apoio</h4> *@
+	@* 				<p>Confirmou retirada dos utensílios</p> *@
+	@* 				<small>2 dias atrás</small> *@
+	@* 			</div> *@
+	@* 		</div> *@
+	@* 	</div> *@
+	@* </aside> *@
 </div>
 
 <script>
