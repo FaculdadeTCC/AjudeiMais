@@ -2,6 +2,7 @@
 using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.PedidoModel;
 using Microsoft.AspNetCore.Mvc;
+using System;
 
 namespace AjudeiMais.API.Controllers
 {
@@ -22,14 +23,11 @@ namespace AjudeiMais.API.Controllers
 			try
 			{
 				var response = await _pedidoService.GetAllAsync();
-				return Ok(new ApiResponse<object>
-				{
-					Success = true,
-					Type = "success",
-					Message = "Pedidos recuperados com sucesso.",
-					Data = response
-				});
-			}
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
+            }
 			catch
 			{
 				return StatusCode(500, new ApiResponse<object>
@@ -44,29 +42,75 @@ namespace AjudeiMais.API.Controllers
 		[HttpGet("Ativos")]
 		public async Task<IActionResult> GetItens()
 		{
-			try
-			{
-				var response = await _pedidoService.GetItensAsync();
-				return Ok(new ApiResponse<object>
-				{
-					Success = true,
-					Type = "success",
-					Message = "Pedidos recuperados com sucesso.",
-					Data = response
-				});
-			}
-			catch
-			{
-				return StatusCode(500, new ApiResponse<object>
-				{
-					Success = false,
-					Type = "error",
-					Message = "Erro interno ao buscar pedidos."
-				});
-			}
-		}
+            try
+            {
+                var response = await _pedidoService.GetItensAsync();
 
-		[HttpGet("{id}")]
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
+
+
+        [HttpGet("PedidosInstituicao/{{GUID}}")]
+        public async Task<IActionResult> GetByInstituicaoGUID(string GUID)
+        {
+            try
+            {
+                var response = await _pedidoService.GetPedidosInstituicaoAsync(GUID);
+
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
+
+
+        [HttpGet("PedidosUsuario/{GUID}")]
+        public async Task<IActionResult> GetByUsuarioGUID(string GUID)
+        {
+            try
+            {
+                var response = await _pedidoService.GetPedidosUsuarioAsync(GUID);
+
+                if (response.Success)
+                    return Ok(response);
+                else
+                    return BadRequest(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new ApiResponse<object>
+                {
+                    Success = false,
+                    Type = "error",
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                });
+            }
+        }
+
+        [HttpGet("{id}")]
 		public async Task<IActionResult> GetById(int id)
 		{
 			try
@@ -234,5 +278,7 @@ namespace AjudeiMais.API.Controllers
 				});
 			}
 		}
+
+
 	}
 }

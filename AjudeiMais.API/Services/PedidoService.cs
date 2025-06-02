@@ -6,6 +6,7 @@ using AjudeiMais.Data.Models.PedidoProdutoModel;
 using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.IO;
 using System.Security.Claims;
@@ -42,41 +43,65 @@ namespace AjudeiMais.API.Services
 				};
 			}
 
-			var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
-			{
-				Pedido_ID = pedido.Pedido_ID,
-				Pedido_GUID = pedido.GUID,
-				Usuario_GUID = pedido.Usuario?.GUID,
-				Instituicao_GUID = pedido.Instituicao?.GUID,
+            var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
+            {
+                Pedido_ID = pedido.Pedido_ID,
+                Pedido_GUID = pedido.GUID,
+                Usuario = new UsuarioResumoDTO
+                {
+                    NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+                    Email = pedido.Produto.Usuario.Email,
+                    GUID = pedido.Produto.Usuario.GUID,
+                    Cidade = pedido.Produto.Usuario.Cidade,
+                    Estado = pedido.Produto.Usuario.Estado,
+                    FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+                    Telefone = pedido.Produto.Usuario.Telefone,
+                    TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+                },
+                Instituicao = new InstituicaoGetDTO
+                {
+                    Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+                    Nome = pedido.Instituicao.Nome,
+                    Descricao = pedido.Instituicao.Descricao,
+                    Documento = pedido.Instituicao.Documento,
+                    FotoPerfil = pedido.Instituicao.FotoPerfil,
+                    Email = pedido.Instituicao.Email,
+                    Senha = pedido.Instituicao.Senha,
+                    Telefone = pedido.Instituicao.Telefone,
+                    GUID = pedido.Instituicao.GUID,
+                    Role = pedido.Instituicao.Role
+                },
 
-				UsuarioContato = pedido.Usuario?.Telefone,
-				InstituicaoContato = pedido.Instituicao?.Telefone,
 
-				UsuarioEmail = pedido.Usuario?.Email,
-				InstituicaoEmail = pedido.Instituicao?.Email,
+                Produto = new ProdutoGetDTO
+                {
+                    Produto_ID = pedido.Produto.Produto_ID,
+                    Guid = pedido.Produto.Guid,
+                    Nome = pedido.Produto.Nome,
+                    Descricao = pedido.Produto.Descricao,
+                    Condicao = pedido.Produto.Condicao,
+                    Validade = pedido.Produto.Validade,
+                    Quantidade = pedido.Produto.Quantidade,
+                    Peso = pedido.Produto.Peso,
+                    Disponivel = pedido.Produto.Disponivel,
+                    Habilitado = pedido.Produto.Habilitado,
+                    Excluido = pedido.Produto.Excluido,
+                    DataCriacao = pedido.Produto.DataCriacao,
+                    DataUpdate = pedido.Produto.DataUpdate,
+                    UnidadeMedida = pedido.Produto.UnidadeMedida,
 
-				Produto = new ProdutoGetDTO
-				{
-					Produto_ID = pedido.Produto.Produto_ID,
-					Guid = pedido.Produto.Guid,
-					Nome = pedido.Produto.Nome,
-					Descricao = pedido.Produto.Descricao,
-					Condicao = pedido.Produto.Condicao,
-					Validade = pedido.Produto.Validade,
-					Quantidade = pedido.Produto.Quantidade,
-					Peso = pedido.Produto.Peso,
-					Disponivel = pedido.Produto.Disponivel,
-					Habilitado = pedido.Produto.Habilitado,
-					Excluido = pedido.Produto.Excluido,
-					DataCriacao = pedido.Produto.DataCriacao,
-					DataUpdate = pedido.Produto.DataUpdate,
-					UnidadeMedida = pedido.Produto.UnidadeMedida,
+                    ProdutoImagens = pedido.Produto.ProdutoImagens,
+                    CategoriaProduto = new CategoriaProdutoDTO
+                    {
+                        CategoriaProduto_ID = pedido.Produto.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = pedido.Produto.CategoriaProduto.Nome,
+                        Icone = pedido.Produto.CategoriaProduto.Icone,
+                        Habilitado = pedido.Produto.CategoriaProduto.Habilitado
+                    }
+                }
+            }).ToList(); 
 
-					ProdutoImagens = pedido.Produto.ProdutoImagens
-				}
-			}).ToList();
-
-			return new ApiResponse<List<GetPedidoDTO>>
+            return new ApiResponse<List<GetPedidoDTO>>
 			{
 				Success = true,
 				Message = "Pedidos encontrados com sucesso",
@@ -84,7 +109,167 @@ namespace AjudeiMais.API.Services
 			};
 		}
 
-		public async Task<ApiResponse<List<GetPedidoDTO>>> GetItensAsync()
+        public async Task<ApiResponse<List<GetPedidoDTO>>> GetPedidosInstituicaoAsync(string GUID)
+        {
+            var pedidos = await _pedidoRepository.GetPedidosInstituicaoAsync(GUID);
+
+            if (pedidos == null)
+            {
+                return new ApiResponse<List<GetPedidoDTO>>
+                {
+                    Success = false,
+                    Message = "Pedidos não encontrado",
+                    Type = "NotFound"
+                };
+            }
+
+            var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
+            {
+                Pedido_ID = pedido.Pedido_ID,
+                Pedido_GUID = pedido.GUID,
+                Usuario = new UsuarioResumoDTO
+                {
+                    NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+                    Email = pedido.Produto.Usuario.Email,
+                    GUID = pedido.Produto.Usuario.GUID,
+                    Cidade = pedido.Produto.Usuario.Cidade,
+                    Estado = pedido.Produto.Usuario.Estado,
+                    FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+                    Telefone = pedido.Produto.Usuario.Telefone,
+                    TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+                },
+                Instituicao = new InstituicaoGetDTO
+                {
+                    Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+                    Nome = pedido.Instituicao.Nome,
+                    Descricao = pedido.Instituicao.Descricao,
+                    Documento = pedido.Instituicao.Documento,
+                    FotoPerfil = pedido.Instituicao.FotoPerfil,
+                    Email = pedido.Instituicao.Email,
+                    Senha = pedido.Instituicao.Senha,
+                    Telefone = pedido.Instituicao.Telefone,
+                    GUID = pedido.Instituicao.GUID,
+                    Role = pedido.Instituicao.Role
+                },
+
+
+                Produto = new ProdutoGetDTO
+                {
+                    Produto_ID = pedido.Produto.Produto_ID,
+                    Guid = pedido.Produto.Guid,
+                    Nome = pedido.Produto.Nome,
+                    Descricao = pedido.Produto.Descricao,
+                    Condicao = pedido.Produto.Condicao,
+                    Validade = pedido.Produto.Validade,
+                    Quantidade = pedido.Produto.Quantidade,
+                    Peso = pedido.Produto.Peso,
+                    Disponivel = pedido.Produto.Disponivel,
+                    Habilitado = pedido.Produto.Habilitado,
+                    Excluido = pedido.Produto.Excluido,
+                    DataCriacao = pedido.Produto.DataCriacao,
+                    DataUpdate = pedido.Produto.DataUpdate,
+                    UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+                    ProdutoImagens = pedido.Produto.ProdutoImagens,
+                    CategoriaProduto = new CategoriaProdutoDTO
+                    {
+                        CategoriaProduto_ID = pedido.Produto.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = pedido.Produto.CategoriaProduto.Nome,
+                        Icone = pedido.Produto.CategoriaProduto.Icone,
+                        Habilitado = pedido.Produto.CategoriaProduto.Habilitado
+                    }
+                }
+            }).ToList();
+
+            return new ApiResponse<List<GetPedidoDTO>>
+            {
+                Success = true,
+                Message = "Pedidos encontrados com sucesso",
+                Data = pedidosDTO
+            };
+        }
+
+        public async Task<ApiResponse<List<GetPedidoDTO>>> GetPedidosUsuarioAsync(string GUID)
+        {
+            var pedidos = await _pedidoRepository.GetPedidosUsuarioAsync(GUID);
+
+            if (pedidos == null)
+            {
+                return new ApiResponse<List<GetPedidoDTO>>
+                {
+                    Success = false,
+                    Message = "Pedidos não encontrado",
+                    Type = "NotFound"
+                };
+            }
+
+            var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
+            {
+                Pedido_ID = pedido.Pedido_ID,
+                Pedido_GUID = pedido.GUID,
+                Usuario = new UsuarioResumoDTO
+                {
+                    NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+                    Email = pedido.Produto.Usuario.Email,
+                    GUID = pedido.Produto.Usuario.GUID,
+                    Cidade = pedido.Produto.Usuario.Cidade,
+                    Estado = pedido.Produto.Usuario.Estado,
+                    FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+                    Telefone = pedido.Produto.Usuario.Telefone,
+                    TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+                },
+                Instituicao = new InstituicaoGetDTO
+                {
+                    Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+                    Nome = pedido.Instituicao.Nome,
+                    Descricao = pedido.Instituicao.Descricao,
+                    Documento = pedido.Instituicao.Documento,
+                    FotoPerfil = pedido.Instituicao.FotoPerfil,
+                    Email = pedido.Instituicao.Email,
+                    Senha = pedido.Instituicao.Senha,
+                    Telefone = pedido.Instituicao.Telefone,
+                    GUID = pedido.Instituicao.GUID,
+                    Role = pedido.Instituicao.Role
+                },
+
+
+                Produto = new ProdutoGetDTO
+                {
+                    Produto_ID = pedido.Produto.Produto_ID,
+                    Guid = pedido.Produto.Guid,
+                    Nome = pedido.Produto.Nome,
+                    Descricao = pedido.Produto.Descricao,
+                    Condicao = pedido.Produto.Condicao,
+                    Validade = pedido.Produto.Validade,
+                    Quantidade = pedido.Produto.Quantidade,
+                    Peso = pedido.Produto.Peso,
+                    Disponivel = pedido.Produto.Disponivel,
+                    Habilitado = pedido.Produto.Habilitado,
+                    Excluido = pedido.Produto.Excluido,
+                    DataCriacao = pedido.Produto.DataCriacao,
+                    DataUpdate = pedido.Produto.DataUpdate,
+                    UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+                    ProdutoImagens = pedido.Produto.ProdutoImagens,
+                    CategoriaProduto = new CategoriaProdutoDTO
+                    {
+                        CategoriaProduto_ID = pedido.Produto.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = pedido.Produto.CategoriaProduto.Nome,
+                        Icone = pedido.Produto.CategoriaProduto.Icone,
+                        Habilitado = pedido.Produto.CategoriaProduto.Habilitado
+                    }
+                }
+            }).ToList();
+
+            return new ApiResponse<List<GetPedidoDTO>>
+            {
+                Success = true,
+                Message = "Pedidos encontrados com sucesso",
+                Data = pedidosDTO
+            };
+        }
+
+        public async Task<ApiResponse<List<GetPedidoDTO>>> GetItensAsync()
 		{
 			var pedidos = await _pedidoRepository.GetAllAsync();
 
@@ -99,38 +284,57 @@ namespace AjudeiMais.API.Services
 			}
 
 			var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
-			{
-				Pedido_ID = pedido.Pedido_ID,
-				Pedido_GUID = pedido.GUID,
-				Usuario_GUID = pedido.Usuario?.GUID,
-				Instituicao_GUID = pedido.Instituicao?.GUID,
+            {
+                Pedido_ID = pedido.Pedido_ID,
+                Pedido_GUID = pedido.GUID,
+				Status = pedido.Status,
+                Usuario = new UsuarioResumoDTO
+                {
+                    NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+                    Email = pedido.Produto.Usuario.Email,
+                    GUID = pedido.Produto.Usuario.GUID,
+                    Cidade = pedido.Produto.Usuario.Cidade,
+                    Estado = pedido.Produto.Usuario.Estado,
+                    FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+                    Telefone = pedido.Produto.Usuario.Telefone,
+                    TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+                },
+                Instituicao = new InstituicaoGetDTO
+                {
+                    Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+                    Nome = pedido.Instituicao.Nome,
+                    Descricao = pedido.Instituicao.Descricao,
+                    Documento = pedido.Instituicao.Documento,
+                    FotoPerfil = pedido.Instituicao.FotoPerfil,
+                    Email = pedido.Instituicao.Email,
+                    Senha = pedido.Instituicao.Senha,
+                    Telefone = pedido.Instituicao.Telefone,
+                    GUID = pedido.Instituicao.GUID,
+                    Role = pedido.Instituicao.Role
+                },
 
-				UsuarioContato = pedido.Usuario?.Telefone,
-				InstituicaoContato = pedido.Instituicao?.Telefone,
 
-				UsuarioEmail = pedido.Usuario?.Email,
-				InstituicaoEmail = pedido.Instituicao?.Email,
+                Produto = new ProdutoGetDTO
+                {
+                    Produto_ID = pedido.Produto.Produto_ID,
+                    Guid = pedido.Produto.Guid,
+                    Nome = pedido.Produto.Nome,
+                    Descricao = pedido.Produto.Descricao,
+                    Condicao = pedido.Produto.Condicao,
+                    Validade = pedido.Produto.Validade,
+                    Quantidade = pedido.Produto.Quantidade,
+                    Peso = pedido.Produto.Peso,
+                    Disponivel = pedido.Produto.Disponivel,
+                    Habilitado = pedido.Produto.Habilitado,
+                    Excluido = pedido.Produto.Excluido,
+                    DataCriacao = pedido.Produto.DataCriacao,
+                    DataUpdate = pedido.Produto.DataUpdate,
+                    UnidadeMedida = pedido.Produto.UnidadeMedida,
 
-				Produto = new ProdutoGetDTO
-				{
-					Produto_ID = pedido.Produto.Produto_ID,
-					Guid = pedido.Produto.Guid,
-					Nome = pedido.Produto.Nome,
-					Descricao = pedido.Produto.Descricao,
-					Condicao = pedido.Produto.Condicao,
-					Validade = pedido.Produto.Validade,
-					Quantidade = pedido.Produto.Quantidade,
-					Peso = pedido.Produto.Peso,
-					Disponivel = pedido.Produto.Disponivel,
-					Habilitado = pedido.Produto.Habilitado,
-					Excluido = pedido.Produto.Excluido,
-					DataCriacao = pedido.Produto.DataCriacao,
-					DataUpdate = pedido.Produto.DataUpdate,
-					UnidadeMedida = pedido.Produto.UnidadeMedida,
+                    ProdutoImagens = pedido.Produto.ProdutoImagens,
 
-					ProdutoImagens = pedido.Produto.ProdutoImagens
-				}
-			}).ToList();
+                }
+            }).ToList();
 
 			return new ApiResponse<List<GetPedidoDTO>>
 			{
@@ -154,41 +358,65 @@ namespace AjudeiMais.API.Services
 				};
 			}
 
-			var pedidoDTO = new GetPedidoDTO
-			{
-				Pedido_ID = pedido.Pedido_ID,
-				Pedido_GUID = pedido.GUID,
-				Usuario_GUID = pedido.Usuario?.GUID,
-				Instituicao_GUID = pedido.Instituicao?.GUID,
+            var pedidoDTO = new GetPedidoDTO
+            {
+                Pedido_ID = pedido.Pedido_ID,
+                Pedido_GUID = pedido.GUID,
+                Usuario = new UsuarioResumoDTO
+                {
+                    NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+                    Email = pedido.Produto.Usuario.Email,
+                    GUID = pedido.Produto.Usuario.GUID,
+                    Cidade = pedido.Produto.Usuario.Cidade,
+                    Estado = pedido.Produto.Usuario.Estado,
+                    FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+                    Telefone = pedido.Produto.Usuario.Telefone,
+                    TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+                },
+                Instituicao = new InstituicaoGetDTO
+                {
+                    Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+                    Nome = pedido.Instituicao.Nome,
+                    Descricao = pedido.Instituicao.Descricao,
+                    Documento = pedido.Instituicao.Documento,
+                    FotoPerfil = pedido.Instituicao.FotoPerfil,
+                    Email = pedido.Instituicao.Email,
+                    Senha = pedido.Instituicao.Senha,
+                    Telefone = pedido.Instituicao.Telefone,
+                    GUID = pedido.Instituicao.GUID,
+                    Role = pedido.Instituicao.Role
+                },
 
-				UsuarioContato = pedido.Usuario?.Telefone,
-				InstituicaoContato = pedido.Instituicao?.Telefone,
 
-				UsuarioEmail = pedido.Usuario?.Email,
-				InstituicaoEmail = pedido.Instituicao?.Email,
+                Produto = new ProdutoGetDTO
+                {
+                    Produto_ID = pedido.Produto.Produto_ID,
+                    Guid = pedido.Produto.Guid,
+                    Nome = pedido.Produto.Nome,
+                    Descricao = pedido.Produto.Descricao,
+                    Condicao = pedido.Produto.Condicao,
+                    Validade = pedido.Produto.Validade,
+                    Quantidade = pedido.Produto.Quantidade,
+                    Peso = pedido.Produto.Peso,
+                    Disponivel = pedido.Produto.Disponivel,
+                    Habilitado = pedido.Produto.Habilitado,
+                    Excluido = pedido.Produto.Excluido,
+                    DataCriacao = pedido.Produto.DataCriacao,
+                    DataUpdate = pedido.Produto.DataUpdate,
+                    UnidadeMedida = pedido.Produto.UnidadeMedida,
 
-				Produto = new ProdutoGetDTO
-				{
-					Produto_ID = pedido.Produto.Produto_ID,
-					Guid = pedido.Produto.Guid,
-					Nome = pedido.Produto.Nome,
-					Descricao = pedido.Produto.Descricao,
-					Condicao = pedido.Produto.Condicao,
-					Validade = pedido.Produto.Validade,
-					Quantidade = pedido.Produto.Quantidade,
-					Peso = pedido.Produto.Peso,
-					Disponivel = pedido.Produto.Disponivel,
-					Habilitado = pedido.Produto.Habilitado,
-					Excluido = pedido.Produto.Excluido,
-					DataCriacao = pedido.Produto.DataCriacao,
-					DataUpdate = pedido.Produto.DataUpdate,
-					UnidadeMedida = pedido.Produto.UnidadeMedida,
+                    ProdutoImagens = pedido.Produto.ProdutoImagens,
+                    CategoriaProduto = new CategoriaProdutoDTO
+                    {
+                        CategoriaProduto_ID = pedido.Produto.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = pedido.Produto.CategoriaProduto.Nome,
+                        Icone = pedido.Produto.CategoriaProduto.Icone,
+                        Habilitado = pedido.Produto.CategoriaProduto.Habilitado
+                    }
+                }
+            };
 
-					ProdutoImagens = pedido.Produto.ProdutoImagens
-				}
-			};
-
-			return new ApiResponse<GetPedidoDTO>
+            return new ApiResponse<GetPedidoDTO>
 			{
 				Success = true,
 				Message = "Pedido encontrado com sucesso",
@@ -215,16 +443,33 @@ namespace AjudeiMais.API.Services
 			{
 				Pedido_ID = pedido.Pedido_ID,
 				Pedido_GUID = pedido.GUID,
-				Usuario_GUID = pedido.Usuario?.GUID,
-				Instituicao_GUID = pedido.Instituicao?.GUID,
+                Usuario = new UsuarioResumoDTO
+				{
+					NomeCompleto = pedido.Produto.Usuario.NomeCompleto,
+					Email = pedido.Produto.Usuario.Email,
+					GUID = pedido.Produto.Usuario.GUID,
+					Cidade = pedido.Produto.Usuario.Cidade,
+					Estado = pedido.Produto.Usuario.Estado,
+					FotoDePerfil = pedido.Produto.Usuario.FotoDePerfil,
+					Telefone = pedido.Produto.Usuario.Telefone,
+					TelefoneFixo = pedido.Produto.Usuario.TelefoneFixo
+				},
+                Instituicao = new InstituicaoGetDTO
+				{
+					Instituicao_ID = pedido.Instituicao.Instituicao_ID,
+					Nome = pedido.Instituicao.Nome,
+					Descricao = pedido.Instituicao.Descricao,
+					Documento = pedido.Instituicao.Documento,
+					FotoPerfil = pedido.Instituicao.FotoPerfil,
+					Email = pedido.Instituicao.Email,
+					Senha = pedido.Instituicao.Senha,
+					Telefone = pedido.Instituicao.Telefone,
+					GUID = pedido.Instituicao.GUID,
+					Role = pedido.Instituicao.Role
+				},
 
-				UsuarioContato = pedido.Usuario?.Telefone,
-				InstituicaoContato = pedido.Instituicao?.Telefone,
 
-				UsuarioEmail = pedido.Usuario?.Email,
-				InstituicaoEmail = pedido.Instituicao?.Email,
-
-				Produto = new ProdutoGetDTO
+                Produto = new ProdutoGetDTO
 				{
 					Produto_ID = pedido.Produto.Produto_ID,
 					Guid = pedido.Produto.Guid,
@@ -241,8 +486,15 @@ namespace AjudeiMais.API.Services
 					DataUpdate = pedido.Produto.DataUpdate,
 					UnidadeMedida = pedido.Produto.UnidadeMedida,
 
-					ProdutoImagens = pedido.Produto.ProdutoImagens
-				}
+					ProdutoImagens = pedido.Produto.ProdutoImagens,
+                    CategoriaProduto = new CategoriaProdutoDTO
+                    {
+                        CategoriaProduto_ID = pedido.Produto.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = pedido.Produto.CategoriaProduto.Nome,
+                        Icone = pedido.Produto.CategoriaProduto.Icone,
+                        Habilitado = pedido.Produto.CategoriaProduto.Habilitado
+                    }
+                }
 			};
 
 			return new ApiResponse<GetPedidoDTO>
@@ -288,8 +540,9 @@ namespace AjudeiMais.API.Services
 					};
 				}
 
-					if (dto.Pedido_ID == 0 || dto.Pedido_ID ==  null)
+				if (dto.Pedido_ID == 0 || dto.Pedido_ID ==  null)
 				{
+
 					var pedido = new Pedido
 					{
 						Status = "Pendente",
@@ -312,10 +565,25 @@ namespace AjudeiMais.API.Services
 				}
 				else
 				{
-					var pedido = new Pedido
+					string status = "";
+
+					if (dto.StatusUsuario == "ok" && dto.StatusInstituicao == "ok")
+					{
+						status = "ok";
+					}
+                    if (dto.StatusInstituicao == "cancelado")
+                    {
+                        status = "cancelado";
+                    }
+					else
+					{
+                        status = "pendente";
+					}
+
+                    var pedido = new Pedido
 					{
 						Pedido_ID = dto.Pedido_ID,
-						Status = "Pendente",
+						Status = status,
 						GUID = Guid.NewGuid().ToString(),
 						UsuarioContato = usuario.Telefone,
 						InstituicaoContato = instituicao.Telefone,

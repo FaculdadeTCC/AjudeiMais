@@ -14,8 +14,8 @@ namespace AjudeiMais.API.DTO
         public string Telefone { get; set; }
         public string? GUID { get; set; }
         public string Role { get; set; }
-        public List<EnderecoDTO> Enderecos { get; set; }
+        public List<EnderecoDTO>? Enderecos { get; set; }
 
-        public List<InstituicaoImagemDTO> FotosUrl { get; set; }
+        public List<InstituicaoImagemDTO>? FotosUrl { get; set; }
     }
 }

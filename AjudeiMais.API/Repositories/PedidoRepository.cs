@@ -32,7 +32,25 @@ namespace AjudeiMais.API.Repositories
 				.ToListAsync();
 		}
 
-		public async Task<Pedido?> GetByIdAsync(int id)
+        public async Task<List<Pedido>> GetPedidosInstituicaoAsync(string GUID)
+        {
+            return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Instituicao.GUID == GUID)
+                .Include(p => p.Instituicao)
+                .Include(p => p.Usuario)
+                .Include(p => p.Produto)
+                .ToListAsync();
+        }
+
+        public async Task<List<Pedido>> GetPedidosUsuarioAsync(string GUID)
+        {
+            return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Usuario.GUID == GUID)
+                .Include(p => p.Instituicao)
+                .Include(p => p.Usuario)
+                .Include(p => p.Produto)
+                .ToListAsync();
+        }
+
+        public async Task<Pedido?> GetByIdAsync(int id)
 		{
 			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
 				.Include(p => p.Instituicao)
