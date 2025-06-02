@@ -1,49 +1,98 @@
-﻿@{
-    ViewData["Title"] = "Detalhes do Pedido";
-}
+﻿@*
+    Partial View: _DetalhesPedido.cshtml
+    Esta partial view contém o HTML para o modal de detalhes do pedido.
+    Ela é projetada para ser carregada dinamicamente ou incluída na página principal.
+*@
 
-<section class="mx-auto mt-10 max-w-5xl rounded-2xl bg-white p-6 shadow-lg ring-1 ring-gray-200">
-    <h2 class="mb-6 text-2xl font-bold text-gray-800">Detalhes do Pedido</h2>
-
-    <div class="grid grid-cols-1 gap-6">
-        <div class="rounded-lg bg-white p-4 shadow-md">
-            <h3 class="text-lg font-semibold text-gray-800">Número do Pedido: #12345</h3>
-            <p class="text-sm text-gray-600">Status: <span class="font-semibold text-green-500">Concluído</span></p>
-        </div>
-
-        <!-- Detalhes do Produto -->
-        <div class="flex flex-col gap-4 rounded-lg bg-white p-4 shadow-md sm:flex-row sm:items-center">
-            <div class="h-32 w-full max-w-[130px] overflow-hidden rounded-lg sm:h-32">
-                <img src="https://placehold.co/300x300?text=Roupas+Infantis" alt="Imagem do Produto" class="h-full w-full object-cover" />
+<div class="modal fade" id="detalhesPedidoModal" tabindex="-1" aria-labelledby="detalhesPedidoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content rounded-3 shadow-lg">
+            <div class="modal-header bg-light border-bottom-0 pb-0">
+                <h5 class="modal-title fw-bold" id="detalhesPedidoModalLabel">Detalhes do Pedido</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
             </div>
-            <div class="flex-1">
-                <h3 class="text-lg font-semibold text-gray-800">Roupas Infantis</h3>
-                <p class="text-sm text-gray-600">Categoria: Vestuário</p>
-                <p class="text-sm text-gray-600">Quantidade: 5 unidades</p>
+            <div class="modal-body pt-2">
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h5 card-title mb-2">Número do Pedido: #<span id="modal-pedido-numero" class="text-primary"></span></h3>
+                        <p class="card-text text-muted">Status: <span id="modal-pedido-status" class="fw-semibold text-success"></span></p>
+                    </div>
+                </div>
+
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4 d-flex flex-column flex-sm-row align-items-center">
+                        <div class="flex-shrink-0 me-sm-4 mb-3 mb-sm-0">
+                            <img id="modal-produto-imagem" src="https://placehold.co/300x300?text=Produto" alt="Imagem do Produto"
+                                 class="img-fluid rounded" style="max-height: 130px; max-width: 130px; object-fit: cover;" />
+                        </div>
+                        <div class="flex-grow-1 text-center text-sm-start">
+                            <h4 class="h5 card-title" id="modal-produto-nome">Nome do Produto</h4>
+                            <p class="card-text text-muted mb-1">Categoria: <span id="modal-produto-categoria"></span></p>
+                            <p class="card-text text-muted">Quantidade: <span id="modal-produto-quantidade"></span> unidades</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="h6 card-title mb-3 fw-bold">Dados do Usuário</h5>
+                        <p class="card-text text-muted mb-1">Nome: <span id="modal-usuario-nome"></span></p>
+                        <p class="card-text text-muted mb-1">E-mail: <span id="modal-usuario-email"></span></p>
+                        <p class="card-text text-muted">Telefone: <span id="modal-usuario-telefone"></span></p>
+                    </div>
+                </div>
+
+                <div class="card mb-4 border-0 shadow-sm">
+                    <div class="card-body p-4">
+                        <h5 class="h6 card-title mb-3 fw-bold">Dados da Instituição</h5>
+                        <p class="card-text text-muted mb-1">Nome: <span id="modal-instituicao-nome"></span></p>
+                        <p class="card-text text-muted mb-1">Localização: <span id="modal-instituicao-localizacao"></span></p>
+                        <p class="card-text text-muted">Contato: <span id="modal-instituicao-contato"></span></p>
+                    </div>
+                </div>
             </div>
-        </div>
-
-        <!-- Dados do Usuário -->
-        <div class="rounded-lg bg-white p-4 shadow-md">
-            <h3 class="text-lg font-semibold text-gray-800">Dados do Usuário</h3>
-            <p class="text-sm text-gray-600">Nome: João Silva</p>
-            <p class="text-sm text-gray-600">E-mail: joaodoe@gmail.com</p>
-            <p class="text-sm text-gray-600">Telefone: (19) 99999-8888</p>
-        </div>
-
-        <!-- Dados da Instituição -->
-        <div class="rounded-lg bg-white p-4 shadow-md">
-            <h3 class="text-lg font-semibold text-gray-800">Dados da Instituição</h3>
-            <p class="text-sm text-gray-600">Nome: Instituição Esperança</p>
-            <p class="text-sm text-gray-600">Localização: Campinas, SP</p>
-            <p class="text-sm text-gray-600">Contato: contato@esperanca.org</p>
-        </div>
-
-        <!-- Ações -->
-        <div class="flex justify-end">
-            <button class="rounded-lg bg-primary px-6 py-2 text-white transition hover:bg-blue-700">
-                Finalizar Pedido
-            </button>
+            <div class="modal-footer border-top-0 pt-0 d-flex justify-content-end">
+                <button type="button" class="btn btn-secondary rounded-pill px-4" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary rounded-pill px-4">Finalizar Pedido</button>
+            </div>
         </div>
     </div>
-</section>
+</div>
+
+<script>
+    // Inicializa o modal Bootstrap
+    const detalhesPedidoModal = new bootstrap.Modal(document.getElementById('detalhesPedidoModal'));
+    function exibirDetalhesPedido(data) {
+        // Preenche os elementos do modal com os dados
+        document.getElementById('modal-pedido-numero').textContent = data.pedidoNumero;
+        document.getElementById('modal-pedido-status').textContent = data.status;
+        // Altera a cor do status baseado no valor
+        const statusElement = document.getElementById('modal-pedido-status');
+        if (data.status === 'Concluído') {
+            statusElement.classList.remove('text-warning', 'text-danger');
+            statusElement.classList.add('text-success');
+        } else if (data.status === 'Pendente') {
+            statusElement.classList.remove('text-success', 'text-danger');
+            statusElement.classList.add('text-warning');
+        } else {
+            statusElement.classList.remove('text-success', 'text-warning');
+            statusElement.classList.add('text-danger'); // Para outros status como "Cancelado"
+        }
+
+        document.getElementById('modal-produto-imagem').src = data.produtoImagemUrl;
+        document.getElementById('modal-produto-nome').textContent = data.produtoNome;
+        document.getElementById('modal-produto-categoria').textContent = data.produtoCategoria;
+        document.getElementById('modal-produto-quantidade').textContent = data.produtoQuantidade;
+
+        document.getElementById('modal-usuario-nome').textContent = data.usuarioNome;
+        document.getElementById('modal-usuario-email').textContent = data.usuarioEmail;
+        document.getElementById('modal-usuario-telefone').textContent = data.usuarioTelefone;
+
+        document.getElementById('modal-instituicao-nome').textContent = data.instituicaoNome;
+        document.getElementById('modal-instituicao-localizacao').textContent = data.instituicaoLocalizacao;
+        document.getElementById('modal-instituicao-contato').textContent = data.instituicaoContato;
+
+        // Exibe o modal
+        detalhesPedidoModal.show();
+    }
+</script>
