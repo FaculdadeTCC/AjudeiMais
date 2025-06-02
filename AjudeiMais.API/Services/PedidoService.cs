@@ -5,6 +5,8 @@ using AjudeiMais.Data.Models.PedidoModel;
 using AjudeiMais.Data.Models.PedidoProdutoModel;
 using AjudeiMais.Data.Models.ProdutoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
+using Microsoft.AspNetCore.DataProtection;
+using System;
 using System.IO;
 using System.Security.Claims;
 
@@ -26,24 +28,125 @@ namespace AjudeiMais.API.Services
 
 		}
 
-		public async Task<ApiResponse<List<Pedido>>> GetAllAsync()
+		public async Task<ApiResponse<List<GetPedidoDTO>>> GetAllAsync()
 		{
 			var pedidos = await _pedidoRepository.GetAllAsync();
-			return new ApiResponse<List<Pedido>>
+
+			if (pedidos == null)
+			{
+				return new ApiResponse<List<GetPedidoDTO>>
+				{
+					Success = false,
+					Message = "Pedidos não encontrado",
+					Type = "NotFound"
+				};
+			}
+
+			var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
+			{
+				Pedido_ID = pedido.Pedido_ID,
+				Pedido_GUID = pedido.GUID,
+				Usuario_GUID = pedido.Usuario?.GUID,
+				Instituicao_GUID = pedido.Instituicao?.GUID,
+
+				UsuarioContato = pedido.Usuario?.Telefone,
+				InstituicaoContato = pedido.Instituicao?.Telefone,
+
+				UsuarioEmail = pedido.Usuario?.Email,
+				InstituicaoEmail = pedido.Instituicao?.Email,
+
+				Produto = new ProdutoGetDTO
+				{
+					Produto_ID = pedido.Produto.Produto_ID,
+					Guid = pedido.Produto.Guid,
+					Nome = pedido.Produto.Nome,
+					Descricao = pedido.Produto.Descricao,
+					Condicao = pedido.Produto.Condicao,
+					Validade = pedido.Produto.Validade,
+					Quantidade = pedido.Produto.Quantidade,
+					Peso = pedido.Produto.Peso,
+					Disponivel = pedido.Produto.Disponivel,
+					Habilitado = pedido.Produto.Habilitado,
+					Excluido = pedido.Produto.Excluido,
+					DataCriacao = pedido.Produto.DataCriacao,
+					DataUpdate = pedido.Produto.DataUpdate,
+					UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+					ProdutoImagens = pedido.Produto.ProdutoImagens
+				}
+			}).ToList();
+
+			return new ApiResponse<List<GetPedidoDTO>>
 			{
 				Success = true,
 				Message = "Pedidos encontrados com sucesso",
-				Data = pedidos
+				Data = pedidosDTO
 			};
 		}
 
-		public async Task<ApiResponse<Pedido>> GetByIdAsync(int id)
+		public async Task<ApiResponse<List<GetPedidoDTO>>> GetItensAsync()
+		{
+			var pedidos = await _pedidoRepository.GetAllAsync();
+
+			if (pedidos == null)
+			{
+				return new ApiResponse<List<GetPedidoDTO>>
+				{
+					Success = false,
+					Message = "Pedidos não encontrado",
+					Type = "NotFound"
+				};
+			}
+
+			var pedidosDTO = pedidos.Select(pedido => new GetPedidoDTO
+			{
+				Pedido_ID = pedido.Pedido_ID,
+				Pedido_GUID = pedido.GUID,
+				Usuario_GUID = pedido.Usuario?.GUID,
+				Instituicao_GUID = pedido.Instituicao?.GUID,
+
+				UsuarioContato = pedido.Usuario?.Telefone,
+				InstituicaoContato = pedido.Instituicao?.Telefone,
+
+				UsuarioEmail = pedido.Usuario?.Email,
+				InstituicaoEmail = pedido.Instituicao?.Email,
+
+				Produto = new ProdutoGetDTO
+				{
+					Produto_ID = pedido.Produto.Produto_ID,
+					Guid = pedido.Produto.Guid,
+					Nome = pedido.Produto.Nome,
+					Descricao = pedido.Produto.Descricao,
+					Condicao = pedido.Produto.Condicao,
+					Validade = pedido.Produto.Validade,
+					Quantidade = pedido.Produto.Quantidade,
+					Peso = pedido.Produto.Peso,
+					Disponivel = pedido.Produto.Disponivel,
+					Habilitado = pedido.Produto.Habilitado,
+					Excluido = pedido.Produto.Excluido,
+					DataCriacao = pedido.Produto.DataCriacao,
+					DataUpdate = pedido.Produto.DataUpdate,
+					UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+					ProdutoImagens = pedido.Produto.ProdutoImagens
+				}
+			}).ToList();
+
+			return new ApiResponse<List<GetPedidoDTO>>
+			{
+				Success = true,
+				Message = "Pedidos encontrados com sucesso",
+				Data = pedidosDTO
+			};
+		}
+
+		public async Task<ApiResponse<GetPedidoDTO>> GetByIdAsync(int id)
 		{
 			var pedido = await _pedidoRepository.GetByIdAsync(id);
 
 			if (pedido == null)
 			{
-				return new ApiResponse<Pedido>
+				return new ApiResponse<GetPedidoDTO>
 				{
 					Success = false,
 					Message = "Pedido não encontrado",
@@ -51,21 +154,56 @@ namespace AjudeiMais.API.Services
 				};
 			}
 
-			return new ApiResponse<Pedido>
+			var pedidoDTO = new GetPedidoDTO
+			{
+				Pedido_ID = pedido.Pedido_ID,
+				Pedido_GUID = pedido.GUID,
+				Usuario_GUID = pedido.Usuario?.GUID,
+				Instituicao_GUID = pedido.Instituicao?.GUID,
+
+				UsuarioContato = pedido.Usuario?.Telefone,
+				InstituicaoContato = pedido.Instituicao?.Telefone,
+
+				UsuarioEmail = pedido.Usuario?.Email,
+				InstituicaoEmail = pedido.Instituicao?.Email,
+
+				Produto = new ProdutoGetDTO
+				{
+					Produto_ID = pedido.Produto.Produto_ID,
+					Guid = pedido.Produto.Guid,
+					Nome = pedido.Produto.Nome,
+					Descricao = pedido.Produto.Descricao,
+					Condicao = pedido.Produto.Condicao,
+					Validade = pedido.Produto.Validade,
+					Quantidade = pedido.Produto.Quantidade,
+					Peso = pedido.Produto.Peso,
+					Disponivel = pedido.Produto.Disponivel,
+					Habilitado = pedido.Produto.Habilitado,
+					Excluido = pedido.Produto.Excluido,
+					DataCriacao = pedido.Produto.DataCriacao,
+					DataUpdate = pedido.Produto.DataUpdate,
+					UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+					ProdutoImagens = pedido.Produto.ProdutoImagens
+				}
+			};
+
+			return new ApiResponse<GetPedidoDTO>
 			{
 				Success = true,
 				Message = "Pedido encontrado com sucesso",
-				Data = pedido
+				Data = pedidoDTO
 			};
 		}
 
-		public async Task<ApiResponse<Pedido>> GetByGUIDAsync(string GUID)
+
+		public async Task<ApiResponse<GetPedidoDTO>> GetByGUIDAsync(string GUID)
 		{
 			var pedido = await _pedidoRepository.GetByGUIDAsync(GUID);
 
 			if (pedido == null)
 			{
-				return new ApiResponse<Pedido>
+				return new ApiResponse<GetPedidoDTO>
 				{
 					Success = false,
 					Message = "Pedido não encontrado",
@@ -73,19 +211,54 @@ namespace AjudeiMais.API.Services
 				};
 			}
 
-			return new ApiResponse<Pedido>
+			var pedidoDTO = new GetPedidoDTO
+			{
+				Pedido_ID = pedido.Pedido_ID,
+				Pedido_GUID = pedido.GUID,
+				Usuario_GUID = pedido.Usuario?.GUID,
+				Instituicao_GUID = pedido.Instituicao?.GUID,
+
+				UsuarioContato = pedido.Usuario?.Telefone,
+				InstituicaoContato = pedido.Instituicao?.Telefone,
+
+				UsuarioEmail = pedido.Usuario?.Email,
+				InstituicaoEmail = pedido.Instituicao?.Email,
+
+				Produto = new ProdutoGetDTO
+				{
+					Produto_ID = pedido.Produto.Produto_ID,
+					Guid = pedido.Produto.Guid,
+					Nome = pedido.Produto.Nome,
+					Descricao = pedido.Produto.Descricao,
+					Condicao = pedido.Produto.Condicao,
+					Validade = pedido.Produto.Validade,
+					Quantidade = pedido.Produto.Quantidade,
+					Peso = pedido.Produto.Peso,
+					Disponivel = pedido.Produto.Disponivel,
+					Habilitado = pedido.Produto.Habilitado,
+					Excluido = pedido.Produto.Excluido,
+					DataCriacao = pedido.Produto.DataCriacao,
+					DataUpdate = pedido.Produto.DataUpdate,
+					UnidadeMedida = pedido.Produto.UnidadeMedida,
+
+					ProdutoImagens = pedido.Produto.ProdutoImagens
+				}
+			};
+
+			return new ApiResponse<GetPedidoDTO>
 			{
 				Success = true,
 				Message = "Pedido encontrado com sucesso",
-				Data = pedido
+				Data = pedidoDTO
 			};
 		}
 
-		public async Task<ApiResponse<string>> SaveOrUpdate(CriarPedidoDTO dto)
+
+		public async Task<ApiResponse<string>> SaveOrUpdate(PedidoDTO dto)
 		{
 			try
 			{
-				var instituicao = _instituicaoRepository.GetByGUID(dto.Instituicao_GUID);
+				var instituicao = await _instituicaoRepository.GetByGUID(dto.Instituicao_GUID);
 				if (instituicao == null)
 				{
 					return new ApiResponse<string>
@@ -95,7 +268,7 @@ namespace AjudeiMais.API.Services
 					};
 				}
 
-				var usuario = _usuariosRepository.GetByGUID(dto.Usuario_GUID);
+				var usuario = await  _usuariosRepository.GetByGUID(dto.Usuario_GUID);
 				if (usuario == null)
 				{
 					return new ApiResponse<string>
@@ -105,8 +278,8 @@ namespace AjudeiMais.API.Services
 					};
 				}
 
-				var produto = _produtoRepository.GetById(dto.Produto_ID);
-				if (usuario == null)
+				var produto = await  _produtoRepository.GetById(dto.Produto_ID);
+				if (produto == null)
 				{
 					return new ApiResponse<string>
 					{
@@ -114,86 +287,60 @@ namespace AjudeiMais.API.Services
 						Message = "Produto não encontrado"
 					};
 				}
-				var pedido = new Pedido
+
+					if (dto.Pedido_ID == 0 || dto.Pedido_ID ==  null)
 				{
-					Habilitado = true,
-					Excluido = false,
-					Status = "Pendente",
-					GUID = Guid.NewGuid().ToString(),
-					DataCriacao = DateTime.UtcNow,
-					DataUpdate = DateTime.UtcNow,
-					Instituicao  = new Instituicao
+					var pedido = new Pedido
 					{
-						GUID = instituicao.Result.GUID,
-						Nome = instituicao.Result.Nome,
-						Descricao = instituicao.Result.Descricao,
-						Telefone = instituicao.Result.Telefone,
-						Email = instituicao.Result.Email,
-						FotoPerfil = instituicao.Result.FotoPerfil,
-						Documento = instituicao.Result.Documento,
-						Role = instituicao.Result.Role
-					},
-					Usuario = new Usuario
+						Status = "Pendente",
+						GUID = Guid.NewGuid().ToString(),
+						DataCriacao = DateTime.UtcNow,
+						DataUpdate = DateTime.UtcNow,
+						Habilitado = true,
+						Excluido = false,
+						UsuarioContato = usuario.Telefone,
+						InstituicaoContato = instituicao.Telefone,
+						UsuarioEmail = usuario.Email,
+						InstituicaoEmail = instituicao.Email,
+
+						// Relacionamentos corretos
+						Instituicao_ID = instituicao.Instituicao_ID,
+						Usuario_ID = usuario.Usuario_ID,
+						Produto_ID = produto.Produto_ID
+					};
+					await _pedidoRepository.AddAsync(pedido);
+				}
+				else
+				{
+					var pedido = new Pedido
 					{
-						Usuario_ID = usuario.Result.Usuario_ID,
-						NomeCompleto = usuario.Result.NomeCompleto,
-						Documento = usuario.Result.Documento,
-						Email = usuario.Result.Email,
-						Senha = usuario.Result.Senha,
-						GUID = usuario.Result.GUID,
-						Role = usuario.Result.Role,
-						CEP = usuario.Result.CEP,
-						Rua = usuario.Result.Rua,
-						Numero = usuario.Result.Numero,
-						Complemento = usuario.Result.Complemento ?? "",
-						Bairro = usuario.Result.Bairro,
-						Cidade = usuario.Result.Cidade,
-						Estado = usuario.Result.Estado,
-						FotoDePerfil = usuario.Result.FotoDePerfil,
-						Telefone = usuario.Result.Telefone ?? "",
-						TelefoneFixo = usuario.Result.TelefoneFixo ?? "",
-						Latitude = usuario.Result.Latitude ?? "",
-						Longitude = usuario.Result.Longitude ?? "",
-						Habilitado = usuario.Result.Habilitado,
-						Excluido = usuario.Result.Excluido,
-						DataCriacao = usuario.Result.DataCriacao,
-						DataUpdate = usuario.Result.DataUpdate,
-						Produtos = usuario.Result.Produtos,
-					},
-					Produto = new Produto
-					{
-						Produto_ID = produto.Result.Produto_ID,
-						Guid = produto.Result.Guid,
-						Nome = produto.Result.Nome,
-						Descricao = produto.Result.Descricao,
-						Condicao = produto.Result.Condicao,
-						Validade = produto.Result.Validade,
-						Quantidade = produto.Result.Quantidade,
-						Peso = produto.Result.Peso,
-						Disponivel = produto.Result.Disponivel,
-						Habilitado = produto.Result.Habilitado,
-						Excluido = produto.Result.Excluido,
-						DataCriacao = produto.Result.DataCriacao,
-						DataUpdate = produto.Result.DataUpdate,
-						UnidadeMedida = produto.Result.UnidadeMedida,
-						Usuario_ID = produto.Result.Usuario_ID,
-						CategoriaProduto_ID = produto.Result.CategoriaProduto_ID,
-						Usuario = null, // você pode mapear isso se quiser, como fez com o usuário principal
-						CategoriaProduto = null, // idem, se quiser incluir o nome da categoria, etc.
-						ProdutoImagens = produto.Result.ProdutoImagens
-					}
-					
+						Pedido_ID = dto.Pedido_ID,
+						Status = "Pendente",
+						GUID = Guid.NewGuid().ToString(),
+						UsuarioContato = usuario.Telefone,
+						InstituicaoContato = instituicao.Telefone,
+						UsuarioEmail = usuario.Email,
+						InstituicaoEmail = instituicao.Email,
+						DataCriacao = DateTime.UtcNow,
+						DataUpdate = DateTime.UtcNow,
+						Habilitado = true,
+						Excluido = false,
 
+						// Relacionamentos corretos
+						Instituicao_ID = instituicao.Instituicao_ID,
+						Usuario_ID = usuario.Usuario_ID,
+						Produto_ID = produto.Produto_ID
+					};
 
+					await _pedidoRepository.UpdateAsync(pedido);
+				}
 
-				};
-
-				await _pedidoRepository.AddAsync(pedido);
 
 				return new ApiResponse<string>
 				{
 					Success = true,
 					Message = "Pedido criado com sucesso"
+
 				};
 			}
 			catch
@@ -237,7 +384,7 @@ namespace AjudeiMais.API.Services
 		}
 
 		public async Task<ApiResponse<string>> DeleteAsync(int id)
-		{
+		{	
 			var pedido = await _pedidoRepository.GetByIdAsync(id);
 
 			if (pedido == null)
@@ -249,6 +396,10 @@ namespace AjudeiMais.API.Services
 					Type = "NotFound"
 				};
 			}
+
+			pedido.Habilitado = false;
+			pedido.Excluido = true;
+			pedido.DataUpdate = DateTime.Now;
 
 			await _pedidoRepository.DeleteAsync(pedido);
 

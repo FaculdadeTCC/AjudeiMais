@@ -23,9 +23,18 @@ namespace AjudeiMais.API.Repositories
 				.ToListAsync();
 		}
 
+		public async Task<List<Pedido>> GetItensAsync()
+		{
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
+				.Include(p => p.Instituicao)
+				.Include(p => p.Usuario)
+				.Include(p => p.Produto)
+				.ToListAsync();
+		}
+
 		public async Task<Pedido?> GetByIdAsync(int id)
 		{
-			return await _context.Pedido
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
 				.Include(p => p.Instituicao)
 				.Include(p => p.Usuario)
 				.Include(p => p.Produto)
@@ -34,7 +43,7 @@ namespace AjudeiMais.API.Repositories
 
 		public async Task<Pedido?> GetByGUIDAsync(string GUID)
 		{
-			return await _context.Pedido
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
 				.Include(p => p.Instituicao)
 				.Include(p => p.Usuario)
 				.Include(p => p.Produto)
@@ -53,9 +62,10 @@ namespace AjudeiMais.API.Repositories
 			await _context.SaveChangesAsync();
 		}
 
+		// Delete logico
 		public async Task DeleteAsync(Pedido pedido)
 		{
-			_context.Pedido.Remove(pedido);
+			_context.Pedido.Update(pedido);
 			await _context.SaveChangesAsync();
 		}
 	}

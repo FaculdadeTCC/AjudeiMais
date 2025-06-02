@@ -46,7 +46,22 @@ namespace AjudeiMais.Data.Context
                 .WithMany()
                 .HasForeignKey(c => c.Instituicao_ID)
                 .OnDelete(DeleteBehavior.Restrict);  // Impede a exclusão se houver registros dependentes
-        }
 
-    }
+			modelBuilder.Entity<Pedido>()
+	            .HasOne(p => p.Usuario)
+	            .WithMany()
+	            .HasForeignKey(p => p.Usuario_ID);
+
+			modelBuilder.Entity<Pedido>()
+				.HasOne(p => p.Instituicao)
+				.WithMany()
+				.HasForeignKey(p => p.Instituicao_ID);
+
+			modelBuilder.Entity<Pedido>()
+				.HasOne(p => p.Produto)
+				.WithMany()
+				.HasForeignKey(p => p.Produto_ID);
+		}
+
+	}
 }

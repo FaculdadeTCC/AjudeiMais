@@ -41,6 +41,31 @@ namespace AjudeiMais.API.Controllers
 			}
 		}
 
+		[HttpGet("Ativos")]
+		public async Task<IActionResult> GetItens()
+		{
+			try
+			{
+				var response = await _pedidoService.GetItensAsync();
+				return Ok(new ApiResponse<object>
+				{
+					Success = true,
+					Type = "success",
+					Message = "Pedidos recuperados com sucesso.",
+					Data = response
+				});
+			}
+			catch
+			{
+				return StatusCode(500, new ApiResponse<object>
+				{
+					Success = false,
+					Type = "error",
+					Message = "Erro interno ao buscar pedidos."
+				});
+			}
+		}
+
 		[HttpGet("{id}")]
 		public async Task<IActionResult> GetById(int id)
 		{
@@ -78,7 +103,7 @@ namespace AjudeiMais.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] CriarPedidoDTO pedido)
+		public async Task<IActionResult> Create([FromBody] PedidoDTO pedido)
 		{
 			if (!ModelState.IsValid)
 			{
