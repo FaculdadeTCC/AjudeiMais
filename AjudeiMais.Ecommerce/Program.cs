@@ -31,6 +31,8 @@ builder.Services.AddHttpClient("ApiAjudeiMais", client =>
     client.BaseAddress = new Uri("http://localhost:5168/");
 });
 
+builder.Services.AddHttpContextAccessor();
+
 builder.Services.AddSession();
 
 //

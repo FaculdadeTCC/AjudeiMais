@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = Model.Nome;
+    var usuarioGuid = Model.Usuario?.GUID ?? "";
 }
 
 @section Styles {
@@ -127,13 +128,26 @@
     </div>
 
     <div class="product-actions">
-        <a href="" class="button-primary">
-            Solicitar (AQUI VAI PRA PEDIDO)
-        </a>
 
         <a href="/anuncios" class="button-secondary">
             Voltar para Anúncios
         </a>
+
+        @if (User.IsInRole("instituicao"))
+        {
+            @using (Html.BeginForm("CriarPedido", "Pedido", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.Produto_ID)
+                @Html.Hidden("Usuario_GUID", usuarioGuid)
+                @Html.Hidden("StatusUsuario", "pendente")
+                @Html.Hidden("StatusInstituicao", "pendente")
+
+                <button type="submit" class="button-primary">
+                    Solicitar
+                </button>
+            }
+        }
+
     </div>
 </section>
 

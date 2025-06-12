@@ -1,6 +1,7 @@
-﻿using AjudeiMais.API.DTO;
+﻿	using AjudeiMais.API.DTO;
 using AjudeiMais.API.Services;
 using AjudeiMais.Data.Models.PedidoModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 
@@ -63,7 +64,7 @@ namespace AjudeiMais.API.Controllers
         }
 
 
-        [HttpGet("PedidosInstituicao/{{GUID}}")]
+        [HttpGet("PedidosInstituicao/{GUID}")]
         public async Task<IActionResult> GetByInstituicaoGUID(string GUID)
         {
             try
@@ -147,7 +148,8 @@ namespace AjudeiMais.API.Controllers
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] PedidoDTO pedido)
+        [Authorize]
+        public async Task<IActionResult> Create([FromBody] PedidoDTO pedido)
 		{
 			if (!ModelState.IsValid)
 			{
@@ -162,9 +164,11 @@ namespace AjudeiMais.API.Controllers
 				});
 			}
 
-			try
+            string instituicaoGUID = User.FindFirst("guid")?.Value;
+
+            try
 			{
-				var response = await _pedidoService.SaveOrUpdate(pedido);
+				var response = await _pedidoService.SaveOrUpdate(pedido, instituicaoGUID);
 				return Created("", new ApiResponse<object>
 				{
 					Success = true,
@@ -185,7 +189,8 @@ namespace AjudeiMais.API.Controllers
 		}
 
 		[HttpPut("{id}")]
-		public async Task<IActionResult> Update(int id, [FromBody] Pedido pedido)
+        [Authorize]
+        public async Task<IActionResult> Update(int id, [FromBody] Pedido pedido)
 		{
 			if (id != pedido.Pedido_ID)
 			{
@@ -245,7 +250,8 @@ namespace AjudeiMais.API.Controllers
 		}
 
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int id)
+        [Authorize]
+        public async Task<IActionResult> Delete(int id)
 		{
 			try
 			{

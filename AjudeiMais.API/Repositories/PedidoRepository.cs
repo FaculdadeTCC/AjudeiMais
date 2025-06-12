@@ -17,55 +17,67 @@ namespace AjudeiMais.API.Repositories
 		public async Task<List<Pedido>> GetAllAsync()
 		{
 			return await _context.Pedido
-				.Include(p => p.Instituicao)
-				.Include(p => p.Usuario)
-				.Include(p => p.Produto)
-				.ToListAsync();
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+                .Include(p => p.Instituicao)
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.Usuario)
+                .ToListAsync();
 		}
 
 		public async Task<List<Pedido>> GetItensAsync()
 		{
 			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
-				.Include(p => p.Instituicao)
-				.Include(p => p.Usuario)
-				.Include(p => p.Produto)
-				.ToListAsync();
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+                .Include(p => p.Instituicao)
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.Usuario)
+                .ToListAsync();
 		}
 
         public async Task<List<Pedido>> GetPedidosInstituicaoAsync(string GUID)
         {
             return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Instituicao.GUID == GUID)
-                .Include(p => p.Instituicao)
-                .Include(p => p.Usuario)
-                .Include(p => p.Produto)
-                .ToListAsync();
+				.Include(p => p.Produto)
+					.ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+				.Include(p => p.Instituicao)
+				.Include(p => p.Produto)
+					.ThenInclude(prod => prod.Usuario)
+				.ToListAsync();
         }
 
         public async Task<List<Pedido>> GetPedidosUsuarioAsync(string GUID)
         {
             return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Usuario.GUID == GUID)
-                .Include(p => p.Instituicao)
-                .Include(p => p.Usuario)
                 .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+                .Include(p => p.Instituicao)
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.Usuario)
                 .ToListAsync();
         }
 
         public async Task<Pedido?> GetByIdAsync(int id)
 		{
 			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
-				.Include(p => p.Instituicao)
-				.Include(p => p.Usuario)
-				.Include(p => p.Produto)
-				.FirstOrDefaultAsync(p => p.Pedido_ID == id);
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+                .Include(p => p.Instituicao)
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.Usuario)
+                .FirstOrDefaultAsync(p => p.Pedido_ID == id);
 		}
 
 		public async Task<Pedido?> GetByGUIDAsync(string GUID)
 		{
 			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
-				.Include(p => p.Instituicao)
-				.Include(p => p.Usuario)
-				.Include(p => p.Produto)
-				.FirstOrDefaultAsync(p => p.GUID == GUID);
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+                .Include(p => p.Instituicao)
+                .Include(p => p.Produto)
+                    .ThenInclude(prod => prod.Usuario)
+                .FirstOrDefaultAsync(p => p.GUID == GUID);
 		}
 
 		public async Task AddAsync(Pedido pedido)

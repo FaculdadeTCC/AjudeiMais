@@ -151,19 +151,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();  // Habilita o Swagger no ambiente de desenvolvimento
     app.UseSwaggerUI(); // Interface do Swagger
 }
-
+// ORDEM CORRETA:
+app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Habilita o CORS antes do middleware de roteamento
-app.UseCors("AllowAll");
-
 app.UseStaticFiles();
-
-// Redirecionamento de HTTPS
-app.UseHttpsRedirection();
-
-// Mapeia os controllers (inclusive o UsuarioController)
 app.MapControllers();
 
 app.Run();  // Inicia a aplicação

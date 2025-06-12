@@ -386,7 +386,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         }
 
 
-        [RoleAuthorize("admin", "usuario")]
+        [RoleAuthorize("admin", "usuario", "instituicao")]
         public async Task<IActionResult> Detalhe(string guid)
         {
             string loggedInUserGuid;

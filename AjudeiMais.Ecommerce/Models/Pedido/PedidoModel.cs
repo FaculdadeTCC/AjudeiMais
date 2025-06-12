@@ -10,7 +10,7 @@ namespace AjudeiMais.Ecommerce.Models.Pedido
 
         public string Usuario_GUID { get; set; }
         public string Instituicao_GUID { get; set; }
-        public string StatusUSuario {  get; set; }
+        public string StatusUsuario {  get; set; }
         public string StatusInstituicao {  get; set; }
         public int Produto_ID { get; set; }
     }

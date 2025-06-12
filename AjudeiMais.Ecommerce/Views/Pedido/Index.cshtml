@@ -129,11 +129,10 @@
     <div class="mb-4">
         <label for="orderStatusFilter" class="form-label fw-bold">Filtrar por Status:</label>
         <select class="form-select" id="orderStatusFilter">
-            <option value="todos">Todos os Pedidos</option>
-            <option value="ativo" selected>Ativos</option>
             <option value="pendente">Pendentes</option>
-            <option value="concluído">Concluídos</option>
+            <option value="concluído">Confirmados</option>
             <option value="cancelado">Cancelados</option>
+            <option value="todos">Todos os Pedidos</option>
         </select>
     </div>
 
@@ -170,14 +169,7 @@
                                 <p class="card-text text-muted mb-2">
                                     <small>
                                         <i class="fas fa-info-circle me-1"></i> Status:
-                                        @{
-                                            string statusClass = "";
-                                            if (pedido.Status?.ToLower() == "concluído") { statusClass = "status-concluido"; }
-                                            else if (pedido.Status?.ToLower() == "pendente") { statusClass = "status-pendente"; }
-                                            else if (pedido.Status?.ToLower() == "cancelado") { statusClass = "status-cancelado"; }
-                                            else { statusClass = "status-pendente"; } // Default or custom for other statuses
-                                        }
-                                        <span class="status-badge @statusClass">@pedido.Status</span>
+                                        <span class="status-badge">@pedido.Status</span>
                                     </small>
                                 </p>
                                 <p class="card-text text-muted mb-0">
