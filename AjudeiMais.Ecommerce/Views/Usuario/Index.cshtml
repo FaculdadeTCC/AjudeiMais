@@ -2,365 +2,256 @@
 @using AjudeiMais.Ecommerce.Tools
 
 @{
-	ViewBag.Title = "Meu Dashboard";
-	bool temAnuncio = Model.Anuncios != null ? true : false;
-
-	var userGuidLogado = User.FindFirst("GUID")?.Value;
+    ViewBag.Title = "Meu Dashboard";
+    bool temAnuncio = Model.Anuncios != null && Model.Anuncios.Any();
+    var userGuidLogado = User.FindFirst("GUID")?.Value;
 }
-
 
 @section Styles {
-	<link rel="stylesheet" href="~/css/usuario/usuario-index.css" asp-append-version="true" />
+	<link rel="stylesheet" href="~/css/usuario/dashboard.css" asp-append-version="true" />
 }
 
-<!-- Header -->
-<header class="header">
-	<div class="header-content">
-		<h1>Painel de Controle</h1>
-		<div class="user-info">
-			<span>Bem-vindo, <strong>João Silva</strong></span>
-			<div class="user-avatar">
-				<i class="fas fa-user"></i>
-			</div>
-		</div>
-	</div>
-</header>
+<div class="dashboard-wrapper">
+    <header class="dashboard-header">
+        <div class="header-content container">
+            <div class="header-text">
+                <h1>Painel de Controle</h1>
+                <span>Bem-vindo de volta, <strong>@User.Identity.Name</strong>!</span>
+            </div>
+            <a style="text-decoration: none" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})" class="user-avatar-circle">
+                <i class="fas fa-user-circle"></i>
+            </a>
+        </div>
+    </header>
 
-<!-- Dashboard Container -->
-<div class="dashboard-container">
-	<!-- Conteúdo Principal -->
-	<main class="main-content">
-		<!-- Botão de Anunciar -->
-		<section class="announce-section">
-			<a href="#" class="announce-button">
-				<i class="fas fa-plus-circle"></i>
-				Anunciar Novo Item
-			</a>
-		</section>
+    <main class="dashboard-main-content container">
 
-		<!-- Métricas -->
-		<section class="metrics-section">
-			@if (temAnuncio)
-			{
-				if (Model.Anuncios.Any())
-				{
-					<div class="metric-card">
-						<h3 id="count-anunciados">@Model.Anuncios.Count()</h3>
-						<p>Itens Anunciados</p>
-					</div>
-				}
-				if (Model.Anuncios.Any(a => a.Disponivel == false))
-				{
-					<div class="metric-card">
-						<h3 id="count-doados">8</h3>
-						<p>Itens Doados</p>
-					</div>
-				}
-			}
-			@* <div class="metric-card"> *@
-			@* 	<h3 id="count-conversas">5</h3> *@
-			@* 	<p>Conversas Ativas</p> *@
-			@* </div> *@
-			<div class="metric-card">
-				<h3 id="count-instituicoes">15</h3>
-				<p>Instituições Próximas</p>
-			</div>
-		</section>
 
-		<!-- Seções de Conteúdo -->
-		<a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado}) " class="metric-btn">
-			<span>Meus anúncios</span>
-			<i class="fas fa-arrow-right"></i>
-		</a>
+        <section class="section-cta-announce">
+            <a href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado })" class="btn-primary-gradient animate-pulse">
+                <i class="fas fa-plus-circle me-3"></i> Anunciar Novo Item
+            </a>
+        </section>
 
-		@if (temAnuncio)
-		{
-			<div class="content-sections">
-				<!-- Anúncios Ativos -->
-				<div class="section-card">
-					<div class="section-header">
-						<i class="fas fa-bullhorn"></i>
-						<h3>Anúncios Ativos</h3>
-					</div>
-					<div class="active-ads">
-						@foreach (var item in Model.Anuncios)
-						{
-							string imageUrl = "";
-							string altText = "Imagem do Produto"; // Texto alternativo padrão
+        @if (temAnuncio)
+        {
+            <section class="dashboard-section section-active-ads">
+                <div class="section-header">
+                    <i class="fas fa-bullhorn section-icon"></i>
+                    <h2>Meus Anúncios Recentes</h2>
+                </div>
+                <div class="ads-grid">
+                    @foreach (var item in Model.Anuncios.Take(3)) // Showing up to 3 recent ads
+                    {
+                        var imageUrl = item.ProdutoImagens?.FirstOrDefault()?.Imagem != null ? Assistant.ServerURL() + item.ProdutoImagens.First().Imagem : null;
+                        <a href="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Guid })" class="ad-card">
+                            <div class="ad-card-image">
+                                @if (imageUrl != null)
+                                {
+                                    <img src="@imageUrl" alt="Imagem de @item.Nome" class="img-fluid" />
+                                }
+                                else
+                                {
+                                    <i class="fas fa-box-open fa-3x text-muted"></i>
+                                }
+                            </div>
+                            <div class="ad-card-details">
+                                <h5 class="ad-card-title">@item.Nome</h5>
+                                <p class="ad-card-date"><small>Publicado há @Assistant.ToTempoAtras((DateTime)item.DataCriacao)</small></p>
+                                <span class="ad-card-status @((bool)item.Disponivel ? "status-active" : "status-inactive")">@((bool)item.Disponivel ? "Ativo" : "Inativo")</span>
+                            </div>
+                        </a>
+                    }
+                </div>
+                @if (Model.Anuncios.Count() > 3)
+                {
+                    <div class="text-center mt-4">
+                        <a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado })" class="btn btn-outline-primary btn-sm-custom">
+                            Ver Todos os Anúncios <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                }
+            </section>
 
-							// Verifica se a lista de imagens existe e se tem pelo menos uma imagem
-							if (item.ProdutoImagens != null && item.ProdutoImagens.Any())
-							{
-								// Se houver imagens, usa a primeira
-								imageUrl = Assistant.ServerURL() + item.ProdutoImagens.FirstOrDefault().Imagem;
-								// Tenta usar o título do item para o texto alternativo, senão usa o padrão
-								altText = !string.IsNullOrEmpty(item.Nome) ? item.Nome : "Imagem do Produto";
+            <div class="row g-4 mt-4">
+                <div class="col-md-6">
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <i class="fas fa-comments section-icon"></i>
+                            <h2>Conversas Recentes</h2>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action contact-item animated-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-user-circle fa-2x me-3 text-secondary-light"></i>
+                                        <div>
+                                            <h5 class="mb-1">Maria Oliveira</h5>
+                                            <small class="text-muted">Interessada na sua doação de livros.</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">2</span>
+                                </div>
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action contact-item animated-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-building fa-2x me-3 text-accent-dark"></i>
+                                        <div>
+                                            <h5 class="mb-1">ONG Amor ao Próximo</h5>
+                                            <small class="text-muted">Agradecemos pela doação do material escolar!</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-link text-primary btn-sm-custom">Ver todas as conversas <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </section>
+                </div>
+                <div class="col-md-6">
+                    <section class="dashboard-section">
+                        <div class="section-header">
+                            <i class="fas fa-box-check section-icon"></i>
+                            <h2>Itens Doados Recentemente</h2>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <div class="list-group-item donated-item animated-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-laptop fa-2x me-3 text-info"></i>
+                                        <div>
+                                            <h5 class="mb-1">Notebook Usado</h5>
+                                            <small class="text-muted">Doado para estudante universitário.</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success rounded-pill">Concluído</span>
+                                </div>
+                            </div>
+                            <div class="list-group-item donated-item animated-item">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <i class="fas fa-tshirt fa-2x me-3 text-warning"></i>
+                                        <div>
+                                            <h5 class="mb-1">Roupas Infantis</h5>
+                                            <small class="text-muted">Entregues a abrigo local.</small>
+                                        </div>
+                                    </div>
+                                    <span class="badge bg-success rounded-pill">Concluído</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-3">
+                            <a href="#" class="btn btn-link text-primary btn-sm-custom">Ver histórico completo <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </section>
+                </div>
+            </div>
 
-								<a href="@Url.RouteUrl("anuncio-detalhe", new { guid = @item.Guid })" style="text-decoration: none !important" class="ad-item">
-									<div class="ad-image">
-										<img src="@imageUrl" height="60" width="60" alt="Imagem do Produto" />
-									</div>
-									<div class="ad-details">
-										<h4>@item.Nome</h4>
-										<p>Publicado há @Assistant.ToTempoAtras((DateTime)item.DataCriacao)</p>
-									</div>
-									<span class="ad-status status-active">Ativo</span>
-								</a>
-							}
-							else
-							{
-								<div class="ad-item">
-									<div class="ad-image">
-										<i class="fa fa-box"></i>
-									</div>
-									<div class="ad-details">
-										<h4>@item.Nome</h4>
-										<p>Publicado há @Assistant.ToTempoAtras((DateTime)item.DataCriacao)</p>
-									</div>
-									<span class="ad-status status-active">Ativo</span>
-								</div>
-							}
-							<div class="ad-item">
-								<div class="ad-image">
-									<i class="fa fa-box"></i>
-								</div>
-								<div class="ad-details">
-									<h4>@item.Nome</h4>
-									<p>Publicado há @Assistant.ToTempoAtras((DateTime)item.DataCriacao)</p>
-								</div>
-								<span class="ad-status @((bool)item.Disponivel ? "status-active" : "")">@((bool)item.Disponivel ? "Ativo" : "Inativo")</span>
-							</div>
-						}
-					</div>
-				</div> <!-- Itens Doados --> <div class=:"section-card">
-					<div class="section-header">
-						<i class="fas fa-heart"></i>
-						<h3>Itens Doados</h3>
-					</div>
-					<div class="donated-items">
-						<div class="ad-item">
-							<div class="ad-image">
-								<i class="fas fa-laptop"></i>
-							</div>
-							<div class="ad-details">
-								<h4>Notebook Dell</h4>
-								<p>Doado para Escola Municipal</p>
-							</div>
-							<span class="ad-status status-donated">Doado</span>
-						</div>
-						<div class="ad-item">
-							<div class="ad-image">
-								<i class="fas fa-utensils"></i>
-							</div>
-							<div class="ad-details">
-								<h4>Utensílios de Cozinha</h4>
-								<p>Doado para Casa de Apoio</p>
-							</div>
-							<span class="ad-status status-donated">Doado</span>
-						</div>
-						<div class="ad-item">
-							<div class="ad-image">
-								<i class="fas fa-chair"></i>
-							</div>
-							<div class="ad-details">
-								<h4>Móveis de Escritório</h4>
-								<p>Doado para ONG Esperança</p>
-							</div>
-							<span class="ad-status status-donated">Doado</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		}
-		<!-- Mapa de Instituições -->
-		<div class="section-card">
-			<div class="section-header">
-				<i class="fas fa-map-marker-alt"></i>
-				<h3>Instituições Próximas</h3>
-			</div>
-			<div class="institutions-map">
-				<div class="map-placeholder">
-					<i class="fas fa-map"></i>
-					<p>Mapa interativo das instituições próximas</p>
-					<small>Clique para ver localização detalhada</small>
-				</div>
-				<div class="institution-markers">
-					<div class="marker" style="top: 20%; left: 25%;"></div>
-					<div class="marker" style="top: 40%; left: 60%;"></div>
-					<div class="marker" style="top: 65%; left: 30%;"></div>
-					<div class="marker" style="top: 75%; left: 70%;"></div>
-					<div class="marker" style="top: 35%; left: 80%;"></div>
-				</div>
-			</div>
-		</div>
-	</main>
+        }
+        else
+        {
+            <section class="empty-state-section text-center">
+                <div class="empty-state-card">
+                    <i class="fas fa-seedling empty-state-icon mb-4 animate-fade-in"></i>
+                    <h2 class="empty-state-title animate-slide-up">Sua jornada de solidariedade começa aqui!</h2>
+                    <p class="empty-state-text animate-fade-in delay-1">Parece que você ainda não tem nenhum item anunciado. Que tal transformar o que não usa em esperança para alguém?</p>
+                    <p class="empty-state-text animate-fade-in delay-2">Seja a mudança que o mundo precisa. Pequenos gestos geram grandes impactos!</p>
+                    <a href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado })" class="btn-primary-gradient btn-lg mt-4 animate-bounce-in">
+                        <i class="fas fa-plus-circle me-3"></i> Anunciar Meu Primeiro Item!
+                    </a>
+                </div>
+            </section>
+        }
 
-	<!-- Sidebar de Chat -->
-	@* <aside class="chat-sidebar"> *@
-	@* 	<div class="chat-header"> *@
-	@* 		<i class="fas fa-comment-dots"></i> *@
-	@* 		<h3>Conversas Ativas</h3> *@
-	@* 	</div> *@
-	@* 	<div class="chat-contacts" id="chatContacts"> *@
-	@* 		<div class="contact-item active"> *@
-	@* 			<div class="contact-avatar"> *@
-	@* 				<i class="fas fa-user"></i> *@
-	@* 			</div> *@
-	@* 			<div class="contact-info"> *@
-	@* 				<h4>Maria Silva</h4> *@
-	@* 				<p>Interessada no livro de matemática</p> *@
-	@* 				<small>2 min atrás</small> *@
-	@* 			</div> *@
-	@* 			<div class="contact-status"> *@
-	@* 				<span class="unread-count">2</span> *@
-	@* 			</div> *@
-	@* 		</div> *@
-
-	@* 		<div class="contact-item"> *@
-	@* 			<div class="contact-avatar"> *@
-	@* 				<i class="fas fa-user"></i> *@
-	@* 			</div> *@
-	@* 			<div class="contact-info"> *@
-	@* 				<h4>João Santos</h4> *@
-	@* 				<p>Quer os brinquedos educativos</p> *@
-	@* 				<small>1 hora atrás</small> *@
-	@* 			</div> *@
-	@* 		</div> *@
-
-	@* 		<div class="contact-item"> *@
-	@* 			<div class="contact-avatar"> *@
-	@* 				<i class="fas fa-user"></i> *@
-	@* 			</div> *@
-	@* 			<div class="contact-info"> *@
-	@* 				<h4>Ana Costa</h4> *@
-	@* 				<p>Perguntou sobre as roupas</p> *@
-	@* 				<small>3 horas atrás</small> *@
-	@* 			</div> *@
-	@* 			<div class="contact-status"> *@
-	@* 				<span class="unread-count">1</span> *@
-	@* 			</div> *@
-	@* 		</div> *@
-
-	@* 		<div class="contact-item"> *@
-	@* 			<div class="contact-avatar"> *@
-	@* 				<i class="fas fa-building"></i> *@
-	@* 			</div> *@
-	@* 			<div class="contact-info"> *@
-	@* 				<h4>Escola Municipal</h4> *@
-	@* 				<p>Agradeceu pela doação do notebook</p> *@
-	@* 				<small>1 dia atrás</small> *@
-	@* 			</div> *@
-	@* 		</div> *@
-
-	@* 		<div class="contact-item"> *@
-	@* 			<div class="contact-avatar"> *@
-	@* 				<i class="fas fa-heart"></i> *@
-	@* 			</div> *@
-	@* 			<div class="contact-info"> *@
-	@* 				<h4>Casa de Apoio</h4> *@
-	@* 				<p>Confirmou retirada dos utensílios</p> *@
-	@* 				<small>2 dias atrás</small> *@
-	@* 			</div> *@
-	@* 		</div> *@
-	@* 	</div> *@
-	@* </aside> *@
+    </main>
 </div>
 
-<script>
-	document.addEventListener('DOMContentLoaded', () => {
-		// Animação de valores para as métricas
-		// Os valores iniciais são agora lidos diretamente do DOM, preenchidos pela sua Model.
-		const stats = {
-			anunciados: parseInt(document.getElementById('count-anunciados')?.textContent) || 0,
-			doados: parseInt(document.getElementById('count-doados')?.textContent) || 0,
-			conversas: parseInt(document.getElementById('count-conversas')?.textContent) || 0,
-			instituicoes: parseInt(document.getElementById('count-instituicoes')?.textContent) || 0
-		};
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const stats = {
+                anunciados: parseInt(document.getElementById('count-anunciados')?.textContent) || 0,
+                doados: parseInt(document.getElementById('count-doados')?.textContent) || 0,
+                conversas: parseInt(document.getElementById('count-conversas')?.textContent) || 0,
+                instituicoes: parseInt(document.getElementById('count-instituicoes')?.textContent) || 0
+            };
 
-		function animateValue(id, end, duration = 1500) {
-			const el = document.getElementById(id);
-			if (!el) return;
+            function animateValue(id, end, duration = 1500) {
+                const el = document.getElementById(id);
+                if (!el) return;
 
-			let start = 0; // A animação sempre começa do zero para um efeito de contagem ascendente
-			const startTime = performance.now();
-			const easeOutCubic = t => 1 - Math.pow(1 - t, 3); // Função de easing para suavizar a animação
+                let start = 0;
+                const startTime = performance.now();
+                const easeOutCubic = t => 1 - Math.pow(1 - t, 3);
 
-			function step(timestamp) {
-				const progress = (timestamp - startTime) / duration;
-				const easedProgress = easeOutCubic(Math.min(progress, 1)); // Garante que o progresso não exceda 1
-				const value = Math.floor(easedProgress * end);
-				el.textContent = value; // Atualiza o texto do elemento
+                function step(timestamp) {
+                    const progress = (timestamp - startTime) / duration;
+                    const easedProgress = easeOutCubic(Math.min(progress, 1));
+                    const value = Math.floor(easedProgress * end);
+                    el.textContent = value;
 
-				if (progress < 1) {
-					requestAnimationFrame(step); // Continua a animação
-				} else {
-					el.textContent = end; // Garante que o valor final seja o exato 'end'
-				}
-			}
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        el.textContent = end;
+                    }
+                }
+                requestAnimationFrame(step);
+            }
 
-			requestAnimationFrame(step); // Inicia a animação
-		}
+            // Animate metric cards visibility and count
+            document.querySelectorAll('.metric-card').forEach((card, i) => {
+                const h3Id = card.querySelector('h3').id;
+                let targetValue = 0;
 
-		// Fade-in sequencial dos cards de métricas e inicia a animação dos valores
-		// Esta parte garante que cada card apareça e seu número anime em sequência.
-		document.querySelectorAll('.metric-card').forEach((card, i) => {
-			const id = card.querySelector('h3').id; // Obtém o ID do <h3> dentro do card
-			let targetValue = 0;
+                if (h3Id === 'count-anunciados') {
+                    targetValue = stats.anunciados;
+                } else if (h3Id === 'count-doados') {
+                    targetValue = stats.doados;
+                } else if (h3Id === 'count-conversas') {
+                    targetValue = stats.conversas;
+                } else if (h3Id === 'count-instituicoes') {
+                    targetValue = stats.instituicoes;
+                }
 
-			// Define o valor alvo correto com base no ID do card
-			if (id === 'count-anunciados') {
-				targetValue = stats.anunciados;
-			} else if (id === 'count-doados') {
-				targetValue = stats.doados;
-			} else if (id === 'count-conversas') {
-				targetValue = stats.conversas;
-			} else if (id === 'count-instituicoes') {
-				targetValue = stats.instituicoes;
-			}
+                setTimeout(() => {
+                    card.classList.add('visible'); // Trigger CSS fade-in and slide-up
+                    animateValue(h3Id, targetValue, 1800); // Start number animation
+                }, i * 150 + 200); // Staggered delay
+            });
 
-			// Define um atraso para cada card
-			setTimeout(() => {
-				card.classList.add('visible'); // Adiciona classe para o efeito de fade-in (via CSS)
-				animateValue(id, targetValue, 1500); // Inicia a animação do valor
-			}, i * 150 + 200); // Atraso sequencial para cada card e animação
-		});
+            // Animate empty state elements on load
+            const emptyStateIcon = document.querySelector('.empty-state-icon');
+            const emptyStateTitle = document.querySelector('.empty-state-title');
+            const emptyStateTexts = document.querySelectorAll('.empty-state-text');
+            const emptyStateButton = document.querySelector('.empty-state-section .btn-primary-gradient');
 
-		// Chat de contatos interativo
-		const chatContacts = document.getElementById('chatContacts');
+            if (emptyStateIcon) {
+                setTimeout(() => emptyStateIcon.classList.add('animate-fade-in'), 100);
+                setTimeout(() => emptyStateTitle.classList.add('animate-slide-up'), 300);
+                emptyStateTexts.forEach((text, i) => {
+                    setTimeout(() => text.classList.add('animate-fade-in'), 500 + (i * 200));
+                });
+                setTimeout(() => emptyStateButton.classList.add('animate-bounce-in'), 900);
+            }
 
-		// Verifica se o elemento chatContacts existe antes de adicionar o event listener
-		if (chatContacts) {
-			chatContacts.addEventListener('click', (e) => {
-				const contactItem = e.target.closest('.contact-item');
-				if (contactItem) {
-					// Remove a classe 'active' de todos os contatos
-					document.querySelectorAll('.contact-item').forEach(item => {
-						item.classList.remove('active');
-					});
 
-					// Adiciona a classe 'active' ao contato clicado
-					contactItem.classList.add('active');
-
-					// Remove o badge de mensagens não lidas, se existir
-					const unreadBadge = contactItem.querySelector('.unread-count');
-					if (unreadBadge) {
-						unreadBadge.remove();
-					}
-
-					// Ação para abrir a conversa específica
-					const contactName = contactItem.querySelector('h4').textContent;
-					console.log(`Abrindo conversa com: ${contactName}`);
-					// Em uma implementação real, você carregaria as mensagens desta conversa aqui.
-				}
-			});
-		}
-
-		// Interação com o mapa (placeholder)
-		const institutionsMap = document.querySelector('.institutions-map');
-		if (institutionsMap) {
-			institutionsMap.addEventListener('click', () => {
-				alert('Aqui seria integrado um mapa interativo (Google Maps, Leaflet, etc.) mostrando as instituições próximas.');
-			});
-		}
-	});
-</script>
+            // Simple click listener for contact items (can be expanded for chat functionality)
+            document.querySelectorAll('.contact-item').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    document.querySelectorAll('.contact-item').forEach(li => li.classList.remove('active'));
+                    this.classList.add('active');
+                    const unreadBadge = this.querySelector('.badge');
+                    if (unreadBadge) {
+                        unreadBadge.remove(); // Remove unread badge on click
+                    }
+                    console.log('Opened conversation with:', this.querySelector('h5').textContent);
+                    // Here you'd typically navigate to a chat page or load chat messages
+                });
+            });
+        });
+    </script>
+}

@@ -19,65 +19,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/css/splide.min.css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
-
-    <style>
-        /* Variáveis de tema para Sidebar */
-        :root {
-            --sidebar-bg: #002147;
-            --sidebar-text: #ffffff;
-            --sidebar-hover: #1a1f3a;
-            --sidebar-active-bg: #1f2748;
-            --sidebar-width: 240px;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: var(--sidebar-width);
-            background-color: var(--sidebar-bg);
-            overflow-y: auto;
-            z-index: 1000;
-        }
-
-            .sidebar .sidebar-header {
-                padding: 1rem;
-                display: flex;
-                align-items: center;
-            }
-
-            .sidebar .nav-link {
-                color: var(--sidebar-text);
-                padding: 0.75rem 1rem;
-                transition: background-color 0.2s;
-            }
-
-                .sidebar .nav-link:hover {
-                    background-color: var(--sidebar-hover);
-                }
-
-                .sidebar .nav-link.active {
-                    background-color: var(--sidebar-active-bg);
-                    font-weight: 600;
-                }
-
-        .content-with-sidebar {
-            margin-left: var(--sidebar-width);
-            transition: margin-left 0.2s;
-        }
-
-        @@media (max-width: 768px) {
-            .sidebar {
-                width: 0;
-                overflow: hidden;
-            }
-
-            .content-with-sidebar {
-                margin-left: 0;
-            }
-        }
-    </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 
@@ -129,7 +70,7 @@
     else
     {
         <header>
-            <nav id="mainNav" class="navbar navbar-expand-md sticky-top shadow-sm">
+            <nav id="mainNav" class="navbar navbar-expand-md shadow-sm">
                 <div class="container">
                     <a class="navbar-brand d-flex align-items-center gap-2" href="#">
                         <img src="~/img/brand/logo_icon.png" alt="Ajudei+" width="40" height="40" />
@@ -139,85 +80,59 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="navbar-collapse collapse" id="navbarMain">
+                    <div class="navbar-collapse collapse" id="navbarMain" >
                         @if (User.Identity.IsAuthenticated)
                         {
-                            var userGuidLogado = User.FindFirst("GUID")?.Value; /* Added null check */
+                            var userGuidLogado = User.FindFirst("GUID")?.Value;
 
-                            <li class="nav-item d-flex align-items-center">
-                                @* Added d-flex and align-items-center for consistency *@
-                                <a class="btn btn-action-logged-in" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
-                                    <i class="fas fa-plus-circle"></i> Anunciar Item
-                                </a>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user me-2"></i> @User.Identity.Name
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
-                                            <i class="fas fa-chart-line"></i> Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
-                                            <i class="fas fa-user-circle"></i> Meu Perfil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
-                                            <i class="fas fa-edit"></i> Editar Dados
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-                                            <i class="fas fa-sign-out-alt"></i> Sair
-                                        </a>
-                                        <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-md-center">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user me-2"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
+                                                <i class="fas fa-chart-line"></i> Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
+                                                <i class="fas fa-user-circle"></i> Meu Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
+                                                <i class="fas fa-edit"></i> Editar Dados
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                <i class="fas fa-sign-out-alt"></i> Sair
+                                            </a>
+                                            <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                @Html.AntiForgeryToken()
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
                         }
                         else
                         {
-                            <li class="nav-item position-relative search-form-wrapper">
-                                <form class="d-flex" role="search">
-                                    <input class="form-control" type="search" placeholder="Buscar itens…" aria-label="Buscar itens" />
-                                    <span class="input-group-text">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </form>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Categorias
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
-                                    <li><a class="dropdown-item" href="#">Roupas</a></li>
-                                    <li><a class="dropdown-item" href="#">Alimentos</a></li>
-                                    <li><a class="dropdown-item" href="#">Brinquedos</a></li>
-                                    <li><a class="dropdown-item" href="#">Outros</a></li>
-                                </ul>
-                            </li>
-
-                            <li class="nav-item"><a class="nav-link" href="#">Sobre</a></li>
-
-                            <li class="nav-item">
-                                <a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">
-                                    <i class="fa fa-user me-2"></i> Entrar
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light rounded-pill px-4 ms-md-2" asp-controller="Doacao" asp-action="Cadastrar">
-                                    Doar Agora
-                                </a>
-                            </li>
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-md-center">
+                                <li class="nav-item me-2">
+                                    <a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">
+                                        <i class="fa fa-user me-2"></i> Entrar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-light rounded-pill px-4" asp-controller="Doacao" asp-action="Cadastrar">
+                                        Doar Agora
+                                    </a>
+                                </li>
+                            </ul>
                         }
                     </div>
                 </div>

@@ -1,4 +1,5 @@
 ﻿@model LoginViewModel
+
 @{
     ViewData["Title"] = "Login";
     Layout = "_Layout";
@@ -28,22 +29,18 @@
             </div>
         }
 
-        <!-- Login with Google -->
-        <button type="button" class="btn-google">
-            <i class="fab fa-google me-2"></i> Entrar com Google
-        </button>
-
-        <div class="divider"><span>ou</span></div>
-
         <!-- Toggle Tipo de Usuário -->
         <div class="user-type-toggle">
-            <input type="radio" id="tipoDoador" name="UserType" value="usuario" checked>
+            <input type="radio" id="tipoDoador" name="UserTypeSelector" value="1" checked>
             <label for="tipoDoador">Sou Doador</label>
-            <input type="radio" id="tipoInstituicao" name="UserType" value="instituicao">
+
+            <input type="radio" id="tipoInstituicao" name="UserTypeSelector" value="2">
             <label for="tipoInstituicao">Sou Instituição</label>
         </div>
 
         <form method="post" asp-controller="Login" asp-action="Login">
+            <input asp-for="UserType" id="UserType" hidden />
+
             <div class="mb-4">
                 <label asp-for="Email" class="form-label">E-mail <span class="text-danger">*</span></label>
                 <input asp-for="Email" type="email" class="form-control" required />
@@ -55,10 +52,10 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <div class="form-check">
+                @* <div class="form-check">
                     <input class="form-check-input" id="lembrarCheck" />
                     <label class="form-check-label" for="lembrarCheck">Lembrar de mim</label>
-                </div>
+                </div> *@
                 <a href="#" class="text-decoration-none">Esqueci minha senha</a>
             </div>
 
@@ -71,3 +68,23 @@
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const radios = document.querySelectorAll('input[name="UserTypeSelector"]');
+            const hiddenInput = document.getElementById('UserType');
+
+            radios.forEach(radio => {
+                radio.addEventListener('change', function () {
+                    hiddenInput.value = this.value;
+                });
+
+                // Inicializa o valor no carregamento
+                if (radio.checked) {
+                    hiddenInput.value = radio.value;
+                }
+            });
+        });
+    </script>
+}

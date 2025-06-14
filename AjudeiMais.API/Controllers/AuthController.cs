@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
     private readonly InstituicaoService _instituicaoService;
     private readonly IConfiguration _config;
 
-    public AuthController(UsuarioService usuarioService, InstituicaoService instituicaoService ,IConfiguration config)
+    public AuthController(UsuarioService usuarioService, InstituicaoService instituicaoService, IConfiguration config)
     {
         _usuarioService = usuarioService;
         _instituicaoService = instituicaoService;
@@ -28,31 +28,37 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login([FromBody] LoginDTO model)
     {
         // Tenta logar como usuário
-        var usuario = await _usuarioService.Login(model.Email, model.Senha);
-        if (usuario != null)
+        if (model.UserType == 1)
         {
-            var token = GenerateJwtToken(usuario);
-            return Ok(new
-            {
-                token,
-                role = usuario.Role,
-                id = usuario.Usuario_ID.ToString(),
-                GUID = usuario.GUID
-            });
-        }
 
-        // Tenta logar como instituição
-        var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
-        if (instituicao != null)
-        {
-            var token = GenerateJwtToken(instituicao);
-            return Ok(new
+            var usuario = await _usuarioService.Login(model.Email, model.Senha);
+            if (usuario != null)
             {
-                token,
-                role = instituicao.Role,
-                id = instituicao.Instituicao_ID.ToString(),
-                GUID = instituicao.GUID
-            });
+                var token = GenerateJwtToken(usuario);
+                return Ok(new
+                {
+                    token,
+                    role = usuario.Role,
+                    id = usuario.Usuario_ID.ToString(),
+                    GUID = usuario.GUID
+                });
+            }
+        }
+        else
+        {
+            // Tenta logar como instituição
+            var instituicao = await _instituicaoService.Login(model.Email, model.Senha);
+            if (instituicao != null)
+            {
+                var token = GenerateJwtToken(instituicao);
+                return Ok(new
+                {
+                    token,
+                    role = instituicao.Role,
+                    id = instituicao.Instituicao_ID.ToString(),
+                    GUID = instituicao.GUID
+                });
+            }
         }
 
         return Unauthorized("Email ou senha inválidos.");

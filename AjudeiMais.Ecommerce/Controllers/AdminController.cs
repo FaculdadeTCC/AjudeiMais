@@ -19,6 +19,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             _httpClientFactory = httpClientFactory;
             _logger = logger;
         }
+
         [RoleAuthorize("admin")]
         public async Task<IActionResult> IndexAsync()
         {
@@ -27,61 +28,68 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             string errorMessage = null;
 
+            // --- Fetching Users ---
             try
             {
-                var (apiResponse, errorMsg) = await ApiHelper.ListAllUsuariosAtivosAsync(_httpClientFactory);
+                var (apiResponseUsuarios, errorMsgUsuarios) = await ApiHelper.ListAllUsuariosAtivosAsync(_httpClientFactory);
 
-                if (apiResponse != null) // If apiResponse (which is List<CategoriaDtoGet>) is not null, it means data was returned.
+                if (apiResponseUsuarios != null)
                 {
-                    usuarios = apiResponse; // Assign the directly returned list
+                    usuarios = apiResponseUsuarios;
                 }
                 else
                 {
-                    errorMessage = errorMsg ?? "Erro desconhecido ao carregar categorias.";
-
-                    return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
-
-                }
-            }
-            catch (Exception ex)
-            {
-                errorMessage = "Ocorreu um erro inesperado ao carregar as categorias. Tente novamente mais tarde.";
-
-                return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
-
-            }
-
-            try
-            {
-                var (apiResponse, errorMsg) = await ApiHelper.ListAllInstituicoesAtivosAsync(_httpClientFactory);
-
-                if (apiResponse != null) // If apiResponse (which is List<CategoriaDtoGet>) is not null, it means data was returned.
-                {
-                    // No need for apiResponse.Success or apiResponse.Data, as apiResponse IS the data.
-                    instituicoes = apiResponse; // Assign the directly returned list
-                }
-                else
-                {
-                    errorMessage = errorMsg ?? "Erro desconhecido ao carregar categorias.";
-
+                    // Log the error for debugging purposes
+                    _logger.LogError("Failed to load active users: {ErrorMsg}", errorMsgUsuarios ?? "Unknown error.");
+                    errorMessage = errorMsgUsuarios ?? "Ocorreu um erro ao carregar os usuários. Tente novamente mais tarde.";
                     return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
                 }
             }
             catch (Exception ex)
             {
-                errorMessage = "Ocorreu um erro inesperado ao carregar as categorias. Tente novamente mais tarde.";
-
+                // Log the exception details
+                _logger.LogError(ex, "An unexpected error occurred while fetching active users.");
+                errorMessage = "Ocorreu um erro inesperado ao carregar os usuários. Tente novamente mais tarde.";
                 return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
-
             }
 
-            AdminModel model = new AdminModel();
+            // --- Fetching Institutions ---
+            try
+            {
+                var (apiResponseInstituicoes, errorMsgInstituicoes) = await ApiHelper.ListAllInstituicoesAtivosAsync(_httpClientFactory);
 
-            model.Usuarios = usuarios;
-            model.Instituicoes = instituicoes;
+                // **Validation for Instituicoes: Check if apiResponseInstituicoes is null**
+                if (apiResponseInstituicoes != null)
+                {
+                    instituicoes = apiResponseInstituicoes;
+                }
+                else
+                {
+                    // Log the error for debugging purposes
+                    _logger.LogError("Failed to load active institutions: {ErrorMsg}", errorMsgInstituicoes ?? "Unknown error.");
+                    errorMessage = errorMsgInstituicoes ?? "Ocorreu um erro ao carregar as instituições. Tente novamente mais tarde.";
+                    // Instead of redirecting and losing user data, maybe display a partial error or allow the page to load
+                    // with an empty list for institutions if users loaded successfully.
+                    // For now, I'll keep the redirect as per your previous pattern, but with a more specific message.
+                    return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception details
+                _logger.LogError(ex, "An unexpected error occurred while fetching active institutions.");
+                errorMessage = "Ocorreu um erro inesperado ao carregar as instituições. Tente novamente mais tarde.";
+                return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
+            }
+
+            // --- Prepare and Return Model ---
+            AdminModel model = new AdminModel
+            {
+                Usuarios = usuarios,
+                Instituicoes = instituicoes
+            };
 
             return View(model);
-
         }
     }
 }

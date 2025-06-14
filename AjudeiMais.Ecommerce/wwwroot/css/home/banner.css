@@ -4,7 +4,6 @@ body {
 }
 
 .hero {
-    margin-top: -40px;
     position: relative;
     width: 100%;
     min-height: 85vh;
