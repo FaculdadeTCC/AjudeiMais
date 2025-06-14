@@ -682,8 +682,8 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #region Instituicao API Calls
 
-        public static async Task<(List<InstituicaoModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
-           IHttpClientFactory httpClientFactory)
+        public static async Task<(List<InstituicaoResponseModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
+      IHttpClientFactory httpClientFactory)
         {
             try
             {
@@ -695,11 +695,13 @@ namespace AjudeiMais.Ecommerce.Tools
 
                 if (response.IsSuccessStatusCode)
                 {
-                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
-                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoModel>>(
+                    var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<InstituicaoResponseModel>>>(
                         content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    return (instituicoes, null);
+                    if (apiResponse != null && apiResponse.Data != null)
+                        return (apiResponse.Data, null);
+                    else
+                        return (null, "A resposta da API veio vazia ou inválida.");
                 }
                 else
                 {
@@ -725,20 +727,18 @@ namespace AjudeiMais.Ecommerce.Tools
             }
             catch (HttpRequestException httpEx)
             {
-                // Erros de rede ou conexão
                 return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
             }
             catch (JsonException jsonEx)
             {
-                // Erros de desserialização JSON
                 return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar instituições: {jsonEx.Message}.");
             }
             catch (Exception ex)
             {
-                // Quaisquer outros erros inesperados
                 return (null, $"Ocorreu um erro inesperado ao listar instituições: {ex.Message}");
             }
         }
+
 
         public static async Task<(InstituicaoPerfilModel? instituicao, string? ErrorMessage)> GetInsituicaoByGuidAsync(IHttpClientFactory httpClientFactory, string guid)
         {
