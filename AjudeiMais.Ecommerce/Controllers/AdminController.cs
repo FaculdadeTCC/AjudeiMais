@@ -24,7 +24,7 @@ namespace AjudeiMais.Ecommerce.Controllers
         public async Task<IActionResult> IndexAsync()
         {
             List<UsuarioPerfilModel> usuarios = new List<UsuarioPerfilModel>();
-            List<InstituicaoResponseModel> instituicoes = new List<InstituicaoResponseModel>();
+            List<InstituicaoPerfilModel> instituicoes = new List<InstituicaoPerfilModel>();
 
             string errorMessage = null;
 

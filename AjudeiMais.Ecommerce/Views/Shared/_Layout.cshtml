@@ -81,7 +81,7 @@
                     </button>
 
                     <div class="navbar-collapse collapse" id="navbarMain" >
-                        @if (User.Identity.IsAuthenticated)
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("usuario"))
                         {
                             var userGuidLogado = User.FindFirst("GUID")?.Value;
 
@@ -119,8 +119,44 @@
                                 </li>
                             </ul>
                         }
-                        else
+                        else if(User.Identity.IsAuthenticated && User.IsInRole("instituicao"))
                         {
+                            var userGuidLogado = User.FindFirst("GUID")?.Value;
+
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-md-center">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user me-2"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard", new {guid = userGuidLogado})">
+                                                <i class="fas fa-chart-line"></i> Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
+                                                <i class="fas fa-user-circle"></i> Meu Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">
+                                                <i class="fas fa-edit"></i> Editar Dados
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                <i class="fas fa-sign-out-alt"></i> Sair
+                                            </a>
+                                            <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                @Html.AntiForgeryToken()
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            } else{
                             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-md-center">
                                 <li class="nav-item me-2">
                                     <a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">

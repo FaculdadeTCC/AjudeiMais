@@ -6,6 +6,6 @@ namespace AjudeiMais.Ecommerce.Models.Admin
     public class AdminModel
     {
         public IEnumerable<UsuarioPerfilModel> Usuarios { get; set; }
-        public IEnumerable<InstituicaoResponseModel> Instituicoes { get; set; }
+        public IEnumerable<InstituicaoPerfilModel> Instituicoes { get; set; }
     }
 }
