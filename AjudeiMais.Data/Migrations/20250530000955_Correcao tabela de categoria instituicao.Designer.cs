@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250530000955_Correcao tabela de categoria instituicao")]
+    partial class Correcaotabeladecategoriainstituicao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,82 @@ namespace AjudeiMais.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.CategoriaInstituicao", b =>
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
+                {
+                    b.Property<int>("Chat_ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Chat_ID"));
+
+                    b.Property<DateTime>("DataAbertura")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Excluido")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Habilitado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Instituicao_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Usuario_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Chat_ID");
+
+                    b.HasIndex("Instituicao_ID");
+
+                    b.HasIndex("Usuario_ID");
+
+                    b.ToTable("Chat");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.MensagemChat", b =>
+                {
+                    b.Property<int>("MensagemChat_ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MensagemChat_ID"));
+
+                    b.Property<int>("Chat_ID")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("Excluido")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("GUID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Habilitado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Mensagem")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Remetente_ID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("TipoRemetente")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MensagemChat_ID");
+
+                    b.HasIndex("Chat_ID");
+
+                    b.ToTable("MensagemChat");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Categoria", b =>
                 {
                     b.Property<int>("Categoria_ID")
                         .ValueGeneratedOnAdd()
@@ -55,7 +133,7 @@ namespace AjudeiMais.Data.Migrations
 
                     b.HasKey("Categoria_ID");
 
-                    b.ToTable("CategoriaInstituicao");
+                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Endereco", b =>
@@ -249,49 +327,23 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
-                    b.Property<string>("GUID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
-
-                    b.Property<string>("InstituicaoContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InstituicaoEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Produto_ID")
-                        .HasColumnType("int");
+                    b.Property<string>("NumeroPedido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UsuarioContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsuarioEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Usuario_ID")
-                        .HasColumnType("int");
-
                     b.HasKey("Pedido_ID");
 
                     b.HasIndex("Instituicao_ID");
-
-                    b.HasIndex("Produto_ID");
-
-                    b.HasIndex("Usuario_ID");
 
                     b.ToTable("Pedido");
                 });
@@ -304,26 +356,23 @@ namespace AjudeiMais.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PedidoProduto_ID"));
 
-                    b.Property<int>("Pedido_ID")
-                        .HasColumnType("int");
+                    b.Property<bool>("Excluido")
+                        .HasColumnType("bit");
 
-                    b.Property<int>("Pedido_ID1")
+                    b.Property<bool>("Habilitado")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Pedido_ID")
                         .HasColumnType("int");
 
                     b.Property<int>("Produto_ID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Produto_ID1")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Quantidade")
-                        .HasColumnType("int");
-
                     b.HasKey("PedidoProduto_ID");
 
-                    b.HasIndex("Pedido_ID1");
+                    b.HasIndex("Pedido_ID");
 
-                    b.HasIndex("Produto_ID1");
+                    b.HasIndex("Produto_ID");
 
                     b.ToTable("PedidoProduto");
                 });
@@ -391,10 +440,6 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Guid")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
@@ -407,10 +452,6 @@ namespace AjudeiMais.Data.Migrations
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
-
-                    b.Property<string>("UnidadeMedida")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Usuario_ID")
                         .HasColumnType("int");
@@ -444,9 +485,6 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<string>("Imagem")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsPrincipal")
-                        .HasColumnType("bit");
 
                     b.Property<int>("Produto_ID")
                         .HasColumnType("int");
@@ -548,6 +586,36 @@ namespace AjudeiMais.Data.Migrations
                     b.ToTable("Usuario");
                 });
 
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
+                {
+                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
+                        .WithMany()
+                        .HasForeignKey("Instituicao_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("Usuario_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Instituicao");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.MensagemChat", b =>
+                {
+                    b.HasOne("AjudeiMais.Data.Models.ChatModel.Chat", "Chat")
+                        .WithMany("MensagemChats")
+                        .HasForeignKey("Chat_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chat");
+                });
+
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Endereco", b =>
                 {
                     b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
@@ -561,7 +629,7 @@ namespace AjudeiMais.Data.Migrations
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.InstituicaoCategoria", b =>
                 {
-                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.CategoriaInstituicao", "Categoria")
+                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("Categoria_ID1");
 
@@ -599,36 +667,20 @@ namespace AjudeiMais.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AjudeiMais.Data.Models.ProdutoModel.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("Produto_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("Usuario_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Instituicao");
-
-                    b.Navigation("Produto");
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.PedidoProdutoModel.PedidoProduto", b =>
                 {
                     b.HasOne("AjudeiMais.Data.Models.PedidoModel.Pedido", "Pedido")
                         .WithMany()
-                        .HasForeignKey("Pedido_ID1")
+                        .HasForeignKey("Pedido_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AjudeiMais.Data.Models.ProdutoModel.Produto", "Produto")
                         .WithMany()
-                        .HasForeignKey("Produto_ID1")
+                        .HasForeignKey("Produto_ID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -665,6 +717,11 @@ namespace AjudeiMais.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Produto");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.ChatModel.Chat", b =>
+                {
+                    b.Navigation("MensagemChats");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", b =>

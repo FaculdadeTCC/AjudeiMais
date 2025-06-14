@@ -157,5 +157,9 @@ namespace AjudeiMais.Ecommerce.Tools
                 actualType == typeof(DateTimeOffset) ||
                 actualType == typeof(TimeSpan);
         }
-    }
+
+
+
+
+	}
 }

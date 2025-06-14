@@ -21,7 +21,7 @@ namespace AjudeiMais.Data.Models.ChatModel
 
         [ForeignKey("Chat")]
         public int Chat_ID { get; set; }
-        public Chat Chat { get; set; }
+        //public Chat Chat { get; set; }
 
 
     }

@@ -30,13 +30,12 @@ namespace AjudeiMais.Data.Context
         public DbSet<PedidoProduto> PedidoProduto { get; set; }
         //Instituição
         public DbSet<Instituicao> Instituicao { get; set; }
-        public DbSet<InstituicaoCategoria> InstituicaoCategoria { get; set; }
         public DbSet<InstituicaoImagem> InstituicaoImagem { get; set; }
-        public DbSet<Categoria> Categoria { get; set; }
+        public DbSet<CategoriaInstituicao> CategoriaInstituicao { get; set; }
         public DbSet<Endereco> Endereco { get; set; }
         //Chat
-        public DbSet<MensagemChat> MensagemChat { get; set; }
-        public DbSet<Chat> Chat { get; set; }
+        //public DbSet<MensagemChat> MensagemChat { get; set; }
+        //public DbSet<Chat> Chat { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -47,7 +46,22 @@ namespace AjudeiMais.Data.Context
                 .WithMany()
                 .HasForeignKey(c => c.Instituicao_ID)
                 .OnDelete(DeleteBehavior.Restrict);  // Impede a exclusão se houver registros dependentes
-        }
 
-    }
+			modelBuilder.Entity<Pedido>()
+	            .HasOne(p => p.Usuario)
+	            .WithMany()
+	            .HasForeignKey(p => p.Usuario_ID);
+
+			modelBuilder.Entity<Pedido>()
+				.HasOne(p => p.Instituicao)
+				.WithMany()
+				.HasForeignKey(p => p.Instituicao_ID);
+
+			modelBuilder.Entity<Pedido>()
+				.HasOne(p => p.Produto)
+				.WithMany()
+				.HasForeignKey(p => p.Produto_ID);
+		}
+
+	}
 }

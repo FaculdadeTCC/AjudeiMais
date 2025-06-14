@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250601120756_Renomear tabela categoria como categoriaInstituicao")]
+    partial class RenomeartabelacategoriacomocategoriaInstituicao
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,42 +259,35 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
 
-                    b.Property<string>("InstituicaoContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InstituicaoEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");
 
+                    b.Property<int>("Instituicao_ID1")
+                        .HasColumnType("int");
+
                     b.Property<int>("Produto_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Produto_ID1")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UsuarioContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UsuarioEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("Usuario_ID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Usuario_ID1")
                         .HasColumnType("int");
 
                     b.HasKey("Pedido_ID");
 
-                    b.HasIndex("Instituicao_ID");
+                    b.HasIndex("Instituicao_ID1");
 
-                    b.HasIndex("Produto_ID");
+                    b.HasIndex("Produto_ID1");
 
-                    b.HasIndex("Usuario_ID");
+                    b.HasIndex("Usuario_ID1");
 
                     b.ToTable("Pedido");
                 });
@@ -595,19 +591,19 @@ namespace AjudeiMais.Data.Migrations
                 {
                     b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Instituicao", "Instituicao")
                         .WithMany()
-                        .HasForeignKey("Instituicao_ID")
+                        .HasForeignKey("Instituicao_ID1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AjudeiMais.Data.Models.ProdutoModel.Produto", "Produto")
                         .WithMany()
-                        .HasForeignKey("Produto_ID")
+                        .HasForeignKey("Produto_ID1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("Usuario_ID")
+                        .HasForeignKey("Usuario_ID1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

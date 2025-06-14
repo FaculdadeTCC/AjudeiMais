@@ -14,6 +14,6 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public Instituicao? Instituicao { get; set; }
 
         public int Categoria_ID { get; set; }
-        public Categoria? Categoria { get; set; }
+        public CategoriaInstituicao? Categoria { get; set; }
     }
 }

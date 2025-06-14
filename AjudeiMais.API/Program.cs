@@ -13,7 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Registra o ApplicationDbContext com a string de conexão
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionDev-Danilo")));
 
 // Registra os outros serviços no container de dependências (DI)
 builder.Services.AddScoped<UsuarioService>();
@@ -22,6 +22,8 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<ProdutoRepository>();
 builder.Services.AddScoped<ProdutoImagemService>();
 builder.Services.AddScoped<ProdutoImagemRepository>();
+builder.Services.AddScoped<PedidoService>();
+builder.Services.AddScoped<PedidoRepository>();
 builder.Services.AddScoped<CategoriaProdutoService>();
 builder.Services.AddScoped<CategoriaProdutoRepository>();
 builder.Services.AddScoped<InstituicaoService>();
@@ -32,8 +34,8 @@ builder.Services.AddScoped<EnderecoRepository>();
 //builder.Services.AddScoped<InstituicaoCategoriaRepository>();
 builder.Services.AddScoped<InstituicaoImagemService>();
 builder.Services.AddScoped<InstituicaoImagemRepository>();
-builder.Services.AddScoped<CategoriaService>();
-builder.Services.AddScoped<CategoriaRepository>();
+builder.Services.AddScoped<CategoriaInstituicaoService>();
+builder.Services.AddScoped<CategoriaInstituicaoRepository>();
 //builder.Services.AddScoped<ChatRepository>();
 //builder.Services.AddScoped<ChatService>();
 //builder.Services.AddScoped<MensagemChatRepository>();
@@ -149,19 +151,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();  // Habilita o Swagger no ambiente de desenvolvimento
     app.UseSwaggerUI(); // Interface do Swagger
 }
-
+// ORDEM CORRETA:
+app.UseRouting();
+app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Habilita o CORS antes do middleware de roteamento
-app.UseCors("AllowAll");
-
 app.UseStaticFiles();
-
-// Redirecionamento de HTTPS
-app.UseHttpsRedirection();
-
-// Mapeia os controllers (inclusive o UsuarioController)
 app.MapControllers();
 
 app.Run();  // Inicia a aplicação

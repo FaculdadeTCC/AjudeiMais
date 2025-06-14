@@ -61,23 +61,11 @@ namespace AjudeiMais.API.Controllers
             try
             {
                 var instituicoes = await _instituicaoService.GetItens();
-                return Ok(new ApiResponse<object>
-                {
-                    Success = true,
-                    Type = "Sucesso",
-                    Message = "Instituições ativas carregadas.",
-                    Data = instituicoes
-                });
+                return Ok(instituicoes);
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new ApiResponse<object>
-                {
-                    Success = false,
-                    Type = "Erro",
-                    Message = "Erro ao carregar instituições ativas.",
-                    Errors = new List<string> { ex.Message }
-                });
+                return StatusCode(500, ex.Message);
             }
         }
 

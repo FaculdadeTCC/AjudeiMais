@@ -9,7 +9,10 @@ using Microsoft.AspNetCore.Mvc; // Para ProblemDetails
 using AjudeiMais.Ecommerce.Models.Usuario;
 using AjudeiMais.Ecommerce.Models.Instituicao;
 using AjudeiMais.Ecommerce.Models.CategoriaProduto;
-using AjudeiMais.Ecommerce.Models.Produto; // Para CategoriaModel e InstituicaoPerfilModel
+using AjudeiMais.Ecommerce.Models.Produto;
+using AjudeiMais.Ecommerce.Models.Pedido;
+using System.Net.Http.Headers;
+using System.Text; // Para CategoriaModel e InstituicaoPerfilModel
 
 namespace AjudeiMais.Ecommerce.Tools
 {
@@ -348,7 +351,7 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #endregion
 
-        #region Categoria API Calls
+          #region Categoria API Calls
 
         public static async Task<(List<CategoriaDtoGet>? categorias, string? errorMessage)> ListAllCategoriasAsync(
             IHttpClientFactory httpClientFactory)
@@ -682,8 +685,8 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #region Instituicao API Calls
 
-        public static async Task<(List<InstituicaoResponseModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
-      IHttpClientFactory httpClientFactory)
+        public static async Task<(List<InstituicaoPerfilModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
+           IHttpClientFactory httpClientFactory)
         {
             try
             {
@@ -695,13 +698,11 @@ namespace AjudeiMais.Ecommerce.Tools
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<InstituicaoResponseModel>>>(
+                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
+                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoPerfilModel>>(
                         content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (apiResponse != null && apiResponse.Data != null)
-                        return (apiResponse.Data, null);
-                    else
-                        return (null, "A resposta da API veio vazia ou inválida.");
+                    return (instituicoes, null);
                 }
                 else
                 {
@@ -727,18 +728,20 @@ namespace AjudeiMais.Ecommerce.Tools
             }
             catch (HttpRequestException httpEx)
             {
+                // Erros de rede ou conexão
                 return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
             }
             catch (JsonException jsonEx)
             {
+                // Erros de desserialização JSON
                 return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar instituições: {jsonEx.Message}.");
             }
             catch (Exception ex)
             {
+                // Quaisquer outros erros inesperados
                 return (null, $"Ocorreu um erro inesperado ao listar instituições: {ex.Message}");
             }
         }
-
 
         public static async Task<(InstituicaoPerfilModel? instituicao, string? ErrorMessage)> GetInsituicaoByGuidAsync(IHttpClientFactory httpClientFactory, string guid)
         {
@@ -799,6 +802,178 @@ namespace AjudeiMais.Ecommerce.Tools
                 return (null, $"Ocorreu um erro inesperado: {ex.Message}");
             }
         }
+
+        #endregion
+
+        #region PEDIDO API Calls
+        public static async Task<(List<GetPedidoModel>? pedidos, string? errorMessage)> ListAllPedidosAtivosAsync(IHttpClientFactory httpClientFactory)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient("ApiAjudeiMais");
+                string requestUri = $"{BASE_URL}api/Pedido/Ativos";
+
+                var response = await client.GetAsync(requestUri);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
+                    var resposta = JsonSerializer.Deserialize<ApiResponse<List<GetPedidoModel>>>(
+                        content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    var pedidos = resposta.Data;
+                    return (pedidos, null);
+                }
+                else
+                {
+                    // Erro HTTP (4xx, 5xx)
+                    ProblemDetails? problemDetails = null;
+                    try
+                    {
+                        problemDetails = JsonSerializer.Deserialize<ProblemDetails>(
+                            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (JsonException)
+                    {
+                        // Não é um ProblemDetails, usa o conteúdo bruto como mensagem de erro
+                    }
+
+                    string errorMsg = problemDetails?.Detail ?? problemDetails?.Title ?? content;
+                    if (string.IsNullOrWhiteSpace(errorMsg))
+                    {
+                        errorMsg = $"Erro ao listar pedidos: {response.ReasonPhrase} (Status: {response.StatusCode})";
+                    }
+                    return (null, errorMsg);
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Erros de rede ou conexão
+                return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
+            }
+            catch (JsonException jsonEx)
+            {
+                // Erros de desserialização JSON
+                return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar pedidos: {jsonEx.Message}.");
+            }
+            catch (Exception ex)
+            {
+                // Quaisquer outros erros inesperados
+                return (null, $"Ocorreu um erro inesperado ao listar pedidos: {ex.Message}");
+            }
+        }
+
+        public static async Task<(List<GetPedidoModel>? pedidos, string? errorMessage)> ListAllPedidosAtivosInstiuicaoAsync(IHttpClientFactory httpClientFactory, string GUID)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient("ApiAjudeiMais");
+                string requestUri = $"{BASE_URL}api/Pedido/PedidosInstituicao/{GUID}";
+
+                var response = await client.GetAsync(requestUri);
+                var content = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
+                    var resposta = JsonSerializer.Deserialize<ApiResponse<List<GetPedidoModel>>>(
+                        content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                    var pedidos = resposta.Data;
+                    return (pedidos, null);
+                }
+                else
+                {
+                    // Erro HTTP (4xx, 5xx)
+                    ProblemDetails? problemDetails = null;
+                    try
+                    {
+                        problemDetails = JsonSerializer.Deserialize<ProblemDetails>(
+                            content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    }
+                    catch (JsonException)
+                    {
+                        // Não é um ProblemDetails, usa o conteúdo bruto como mensagem de erro
+                    }
+
+                    string errorMsg = problemDetails?.Detail ?? problemDetails?.Title ?? content;
+                    if (string.IsNullOrWhiteSpace(errorMsg))
+                    {
+                        errorMsg = $"Erro ao listar pedidos: {response.ReasonPhrase} (Status: {response.StatusCode})";
+                    }
+                    return (null, errorMsg);
+                }
+            }
+            catch (HttpRequestException httpEx)
+            {
+                // Erros de rede ou conexão
+                return (null, $"Não foi possível conectar ao servidor da API: {httpEx.Message}. Verifique se a API está online.");
+            }
+            catch (JsonException jsonEx)
+            {
+                // Erros de desserialização JSON
+                return (null, $"Erro de processamento da resposta da API (JSON inválido) ao listar pedidos: {jsonEx.Message}.");
+            }
+            catch (Exception ex)
+            {
+                // Quaisquer outros erros inesperados
+                return (null, $"Ocorreu um erro inesperado ao listar pedidos: {ex.Message}");
+            }
+        }
+
+
+        public static async Task<(ApiResponse<PedidoModel>?, string?)> CriarPedidoAsync(PedidoModel pedido, IHttpClientFactory _httpClientFactory, IHttpContextAccessor _httpContextAccessor)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                // 🧠 Recupera o token da Session
+                var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken"); // Note o "t" minúsculo
+
+                if (string.IsNullOrEmpty(token))
+                    return (null, "Token de autenticação não encontrado.");
+
+                // 🔐 Adiciona o token JWT no cabeçalho Authorization
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                string requestUri = $"{BASE_URL}api/Pedido";
+
+                var json = JsonSerializer.Serialize(pedido);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(requestUri, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<PedidoModel>>(responseBody,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (response.IsSuccessStatusCode && apiResponse is not null)
+                {
+                    return (apiResponse, null);
+                }
+
+                string errorMsg = apiResponse?.Message ?? "Erro desconhecido ao criar pedido.";
+                return (apiResponse, errorMsg);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (null, $"Erro de conexão com a API: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                return (null, $"Erro ao processar resposta da API (JSON): {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return (null, $"Erro inesperado ao criar pedido: {ex.Message}");
+            }
+        }
+
+
+
+
 
         #endregion
     }

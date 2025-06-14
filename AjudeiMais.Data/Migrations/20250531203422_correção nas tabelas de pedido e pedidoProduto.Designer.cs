@@ -4,6 +4,7 @@ using AjudeiMais.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AjudeiMais.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250531203422_correção nas tabelas de pedido e pedidoProduto")]
+    partial class correçãonastabelasdepedidoepedidoProduto
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace AjudeiMais.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.CategoriaInstituicao", b =>
+            modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Categoria", b =>
                 {
                     b.Property<int>("Categoria_ID")
                         .ValueGeneratedOnAdd()
@@ -55,7 +58,7 @@ namespace AjudeiMais.Data.Migrations
 
                     b.HasKey("Categoria_ID");
 
-                    b.ToTable("CategoriaInstituicao");
+                    b.ToTable("Categoria");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.Endereco", b =>
@@ -249,49 +252,31 @@ namespace AjudeiMais.Data.Migrations
                     b.Property<bool>("Excluido")
                         .HasColumnType("bit");
 
-                    b.Property<string>("GUID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<bool>("Habilitado")
                         .HasColumnType("bit");
-
-                    b.Property<string>("InstituicaoContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("InstituicaoEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Instituicao_ID")
                         .HasColumnType("int");
 
-                    b.Property<int>("Produto_ID")
-                        .HasColumnType("int");
+                    b.Property<string>("NumeroPedido")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UsuarioContato")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("Usuario_ID")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("UsuarioEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Usuario_ID")
+                    b.Property<int>("Usuario_ID1")
                         .HasColumnType("int");
 
                     b.HasKey("Pedido_ID");
 
                     b.HasIndex("Instituicao_ID");
 
-                    b.HasIndex("Produto_ID");
-
-                    b.HasIndex("Usuario_ID");
+                    b.HasIndex("Usuario_ID1");
 
                     b.ToTable("Pedido");
                 });
@@ -561,7 +546,7 @@ namespace AjudeiMais.Data.Migrations
 
             modelBuilder.Entity("AjudeiMais.Data.Models.InstituicaoModel.InstituicaoCategoria", b =>
                 {
-                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.CategoriaInstituicao", "Categoria")
+                    b.HasOne("AjudeiMais.Data.Models.InstituicaoModel.Categoria", "Categoria")
                         .WithMany()
                         .HasForeignKey("Categoria_ID1");
 
@@ -599,21 +584,13 @@ namespace AjudeiMais.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("AjudeiMais.Data.Models.ProdutoModel.Produto", "Produto")
-                        .WithMany()
-                        .HasForeignKey("Produto_ID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("AjudeiMais.Data.Models.UsuarioModel.Usuario", "Usuario")
                         .WithMany()
-                        .HasForeignKey("Usuario_ID")
+                        .HasForeignKey("Usuario_ID1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Instituicao");
-
-                    b.Navigation("Produto");
 
                     b.Navigation("Usuario");
                 });
@@ -621,7 +598,7 @@ namespace AjudeiMais.Data.Migrations
             modelBuilder.Entity("AjudeiMais.Data.Models.PedidoProdutoModel.PedidoProduto", b =>
                 {
                     b.HasOne("AjudeiMais.Data.Models.PedidoModel.Pedido", "Pedido")
-                        .WithMany()
+                        .WithMany("Produtos")
                         .HasForeignKey("Pedido_ID1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -674,6 +651,11 @@ namespace AjudeiMais.Data.Migrations
                     b.Navigation("InstituicaoCategorias");
 
                     b.Navigation("instituicaoImagems");
+                });
+
+            modelBuilder.Entity("AjudeiMais.Data.Models.PedidoModel.Pedido", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 
             modelBuilder.Entity("AjudeiMais.Data.Models.ProdutoModel.Produto", b =>

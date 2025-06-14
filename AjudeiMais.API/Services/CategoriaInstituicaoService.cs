@@ -5,32 +5,32 @@ using AjudeiMais.API.DTO; // Certifique-se de que o ApiResponse esteja neste nam
 using AjudeiMais.API.Tools;
 namespace AjudeiMais.API.Services
 {
-    public class CategoriaService
+    public class CategoriaInstituicaoService
     {
-        private readonly CategoriaRepository _categoriaRepository;
-        private readonly ILogger<CategoriaService> _logger;
+        private readonly CategoriaInstituicaoRepository _categoriaRepository;
+        private readonly ILogger<CategoriaInstituicaoService> _logger;
 
-        public CategoriaService(CategoriaRepository categoriaRepository, ILogger<CategoriaService> logger)
+        public CategoriaInstituicaoService(CategoriaInstituicaoRepository categoriaRepository, ILogger<CategoriaInstituicaoService> logger)
         {
             _categoriaRepository = categoriaRepository;
             _logger = logger;
         }
 
-        public async Task<ApiResponse<Categoria>> GetById(int id)
+        public async Task<ApiResponse<CategoriaInstituicao>> GetById(int id)
         {
             try
             {
                 var categoria = await _categoriaRepository.GetById(id);
                 if (categoria == null)
                 {
-                    return new ApiResponse<Categoria>
+                    return new ApiResponse<CategoriaInstituicao>
                     {
                         Success = false,
                         Type = "error",
                         Message = "Categoria não encontrada."
                     };
                 }
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = true,
                     Type = "success",
@@ -40,7 +40,7 @@ namespace AjudeiMais.API.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao buscar categoria por ID: {CategoriaId}", id);
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = false,
                     Type = "error",
@@ -49,12 +49,12 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<IEnumerable<Categoria>>> GetAll()
+        public async Task<ApiResponse<IEnumerable<CategoriaInstituicao>>> GetAll()
         {
             try
             {
                 var categorias = await _categoriaRepository.GetAll();
-                return new ApiResponse<IEnumerable<Categoria>>
+                return new ApiResponse<IEnumerable<CategoriaInstituicao>>
                 {
                     Success = true,
                     Type = "success",
@@ -64,7 +64,7 @@ namespace AjudeiMais.API.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao buscar todas as categorias");
-                return new ApiResponse<IEnumerable<Categoria>>
+                return new ApiResponse<IEnumerable<CategoriaInstituicao>>
                 {
                     Success = false,
                     Type = "error",
@@ -73,12 +73,12 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<IEnumerable<Categoria>>> GetItens()
+        public async Task<ApiResponse<IEnumerable<CategoriaInstituicao>>> GetItens()
         {
             try
             {
                 var categoriasAtivas = await _categoriaRepository.GetItens();
-                return new ApiResponse<IEnumerable<Categoria>>
+                return new ApiResponse<IEnumerable<CategoriaInstituicao>>
                 {
                     Success = true,
                     Type = "success",
@@ -88,7 +88,7 @@ namespace AjudeiMais.API.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao buscar categorias ativas");
-                return new ApiResponse<IEnumerable<Categoria>>
+                return new ApiResponse<IEnumerable<CategoriaInstituicao>>
                 {
                     Success = false,
                     Type = "error",
@@ -97,7 +97,7 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<Categoria>> SaveOrUpdate(CategoriaDTO model)
+        public async Task<ApiResponse<CategoriaInstituicao>> SaveOrUpdate(CategoriaInstituicaoDTO model)
         {
             try
             {
@@ -105,19 +105,15 @@ namespace AjudeiMais.API.Services
                 // Para manter o exemplo conciso, estou assumindo que CategoriaDTO tem as mesmas propriedades de Categoria
                 // E que a lógica de "atualizar" vs "salvar" é tratada no repositório ou com uma verificação de ID.
 
-                
-                model.GUID ??= Guid.NewGuid().ToString();
-                var pasta = new[] { "images", "profile", "instituicao", model.GUID };
-                string pathIcone = await Helpers.SalvarImagemComoWebpAsync(model.Icone, pasta);
-
-                var categoria = new Categoria
+                var categoria = new CategoriaInstituicao
                 {
                     Categoria_ID = model.Categoria_ID,
                     Nome = model.Nome,
-                    Icone = pathIcone,
+                    Icone = model.Icone,
                     Habilitado = model.Habilitado,
-                    Excluido = false
-                    // Mapeie outras propriedades conforme necessário
+                    Excluido = false,
+                    DataCriacao = DateTime.Now,
+                    DataUpdate = DateTime.Now,
                 };
 
                 // Exemplo de lógica para verificar se a categoria já existe (opcional, dependendo da sua regra de negócio)
@@ -125,7 +121,7 @@ namespace AjudeiMais.API.Services
                 var existingCategory = await _categoriaRepository.GetByName(model.Nome);
                 if (existingCategory != null && existingCategory.Categoria_ID != model.Categoria_ID)
                 {
-                    return new ApiResponse<Categoria>
+                    return new ApiResponse<CategoriaInstituicao>
                     {
                         Success = false,
                         Type = "error",
@@ -138,7 +134,7 @@ namespace AjudeiMais.API.Services
 
                 string message = model.Categoria_ID > 0 ? "Categoria atualizada com sucesso." : "Categoria cadastrada com sucesso.";
 
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = true,
                     Type = "success",
@@ -149,7 +145,7 @@ namespace AjudeiMais.API.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao salvar ou atualizar categoria");
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = false,
                     Type = "error",
@@ -158,14 +154,14 @@ namespace AjudeiMais.API.Services
             }
         }
 
-        public async Task<ApiResponse<Categoria>> Delete(int id)
+        public async Task<ApiResponse<CategoriaInstituicao>> Delete(int id)
         {
             try
             {
                 var categoria = await _categoriaRepository.GetById(id);
                 if (categoria == null)
                 {
-                    return new ApiResponse<Categoria>
+                    return new ApiResponse<CategoriaInstituicao>
                     {
                         Success = false,
                         Type = "error",
@@ -180,7 +176,7 @@ namespace AjudeiMais.API.Services
 
                 await _categoriaRepository.Delete(categoria); // Ou um método específico para exclusão lógica
 
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = true,
                     Type = "success",
@@ -190,7 +186,7 @@ namespace AjudeiMais.API.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro ao excluir categoria com ID: {CategoriaId}", id);
-                return new ApiResponse<Categoria>
+                return new ApiResponse<CategoriaInstituicao>
                 {
                     Success = false,
                     Type = "error",
