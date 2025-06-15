@@ -3,7 +3,7 @@
 
 @{
     ViewData["Title"] = Model.Nome;
-    var usuarioGuid = Model.Usuario?.GUID ?? "";
+    var userGuidLogado = Model.Usuario?.GUID ?? "";
 }
 
 @section Styles {
@@ -138,7 +138,7 @@
     </div>
 
     <div class="product-actions">
-        <a href="/anuncios" class="button-secondary">
+        <a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado })" class="button-secondary">
             Voltar para Anúncios
         </a>
 
@@ -147,7 +147,7 @@
             @using (Html.BeginForm("CriarPedido", "Pedido", FormMethod.Post))
             {
                 @Html.HiddenFor(model => model.Produto_ID)
-                @Html.Hidden("Usuario_GUID", usuarioGuid)
+                @Html.Hidden("Usuario_GUID", userGuidLogado)
                 @Html.Hidden("StatusUsuario", "pendente")
                 @Html.Hidden("StatusInstituicao", "pendente")
 

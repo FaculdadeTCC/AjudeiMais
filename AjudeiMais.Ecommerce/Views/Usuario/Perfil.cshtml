@@ -2,190 +2,190 @@
 @using AjudeiMais.Ecommerce.Tools
 
 @{
-	ViewBag.Title = "Meu Perfil";
+    ViewBag.Title = "Meu Perfil";
 
-	var userGuidLogado = User.FindFirst("GUID").Value;
+    var userGuidLogado = User.FindFirst("GUID").Value;
 
-	bool isMeuPerfil = userGuidLogado.ToString() == Model.GUID;
+    bool isMeuPerfil = userGuidLogado.ToString() == Model.GUID;
 
-	ViewData["Title"] = isMeuPerfil
-		? "Meu Perfil - " + Model.NomeCompleto
-		: Model.NomeCompleto + " - Perfil";
+    ViewData["Title"] = isMeuPerfil
+        ? "Meu Perfil - " + Model.NomeCompleto
+        : Model.NomeCompleto + " - Perfil";
 }
 
 
 @section Styles {
-	<link rel="stylesheet" href="~/css/usuario/usuario-perfil.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/usuario/usuario-perfil.css" asp-append-version="true" />
 }
 
 @{
-	await Html.RenderPartialAsync("_Alertas");
+    await Html.RenderPartialAsync("_Alertas");
 }
+
+<style>
+    .quick-action-btn {
+        background: white;
+        border: none;
+        color: #444;
+        padding: 6px 10px;
+        border-radius: 8px;
+        transition: transform 0.2s ease;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+        .quick-action-btn:hover {
+            transform: scale(1.1) rotate(5deg);
+            color: #0077ff;
+        }
+
+</style>
 <section class="hero-profile">
-	<div class="py-5 container">
-		<div class="row align-items-center">
-			<!-- Avatar e Badge -->
-			<div class="col-md-auto mb-4 mb-md-0 text-center">
-				<div class="profile-avatar mx-auto">
-					<img src="@Assistant.ServerURL()@Model.FotoDePerfil" alt="@Model.NomeCompleto">
-					<div class="verified-badge">
-						<i class="fas fa-check fa-sm"></i>
-					</div>
-				</div>
-			</div>
+    <div class="py-5 container">
+        <div class="row align-items-center">
+            <!-- Avatar e Badge -->
+            <div class="col-md-auto mb-4 mb-md-0 text-center">
+                <div class="profile-avatar mx-auto">
+                    <img src="@Assistant.ServerURL()@Model.FotoDePerfil" alt="@Model.NomeCompleto">
+                    <div class="verified-badge">
+                        <i class="fas fa-check fa-sm"></i>
+                    </div>
+                </div>
+            </div>
 
-			<!-- Informações do Perfil -->
-			<div class="col-md">
-				<div class="profile-info">
-					<h1 class="fade-in">@Model.NomeCompleto</h1>
-					<div class="profile-location fade-in">
-						<i class="fas fa-map-marker-alt me-2"></i>
-						@Model.Cidade, @Model.Estado
-					</div>
+            <!-- Informações do Perfil -->
+            <div class="col-md">
+                <div class="profile-info">
+                    <h1 class="fade-in">@Model.NomeCompleto</h1>
+                    <div class="profile-location fade-in">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        @Model.Cidade, @Model.Estado
+                    </div>
 
-					<!-- Rating com Glass Effect -->
-					<div class="rating-display fade-in">
-						<div class="stars">
-							<i class="fas fa-star star"></i>
-							<i class="fas fa-star star"></i>
-							<i class="fas fa-star star"></i>
-							<i class="fas fa-star star"></i>
-							<i class="fas fa-star-half-alt star"></i>
-						</div>
-						<span class="text-white fw-bold">4.5 de 5</span>
-						<span class="text-white-50 ms-2">(127 avaliações)</span>
-					</div>
-
-					@if (!isMeuPerfil)
-					{
-						<button class="cta-button interactive-element">
-							<i class="fas fa-comment-dots me-2"></i>
-							Iniciar Conversa
-						</button>
-					}
-				</div>
-			</div>
-		</div>
-	</div>
+                    @if (!isMeuPerfil)
+                    {
+                        <button class="cta-button interactive-element">
+                            <i class="fas fa-comment-dots me-2"></i>
+                            Iniciar Conversa
+                        </button>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
 <!-- SEÇÃO PRINCIPAL DE PRODUTOS -->
 <div class="container">
-	@if (Model.Produtos != null && Model.Produtos.Any())
-	{
-		<section class="products-section slide-up">
-			<!-- Header da Seção -->
-			<div class="section-header">
-				<h2 class="section-title">
-					<i class="fas fa-heart me-3 text-danger"></i>
-					Produtos Disponíveis para Doação
-				</h2>
-				<p class="section-subtitle">
-					Descubra itens incríveis que João está compartilhando com a comunidade.
-					Cada doação é uma oportunidade de fazer a diferença!
-				</p>
-			</div>
+    @if (Model.Produtos != null && Model.Produtos.Any())
+    {
 
-			<!-- Filtros Inteligentes -->
-			<div class="smart-filters">
-				<span class="text-muted me-3"><i class="fas fa-filter me-2"></i>Filtrar por:</span>
-				<button class="filter-chip active">Todos</button>
-				<button class="filter-chip">Disponíveis</button>
-				<button class="filter-chip">Doados</button>
-				<button class="filter-chip">Roupas</button>
-				<button class="filter-chip">Eletrônicos</button>
-				<button class="filter-chip">Livros</button>
-			</div>
+        <section class="products-section slide-up">
+            <!-- Header da Seção -->
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-heart me-3 text-danger"></i>
+                    Produtos Disponíveis para Doação
+                </h2>
+            </div>
 
-			<!-- Grid de Produtos -->
-			<div class="row g-4 mb-5">
-				<!-- Produto 1 - Disponível -->
-				<div class="col-lg-3 col-md-4 col-sm-6">
-					<div class="product-card interactive-element">
-						<div class="product-image-container">
-							<img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400&h=300&fit=crop" class="product-image" alt="Tênis Nike">
-							<div class="status-badge status-available">
-								<i class="fas fa-check-circle me-1"></i>Disponível
-							</div>
-							<div class="quick-actions">
-								<button class="quick-action-btn" title="Favoritar">
-									<i class="fas fa-heart"></i>
-								</button>
-								<button class="quick-action-btn" title="Compartilhar">
-									<i class="fas fa-share-alt"></i>
-								</button>
-							</div>
-						</div>
-						<div class="product-content">
-							<div class="product-category">Calçados</div>
-							<h3 class="product-title">Tênis Nike Air Max</h3>
-							<div class="product-meta">
-								<div class="meta-item">
-									<i class="fas fa-boxes meta-icon"></i>
-									<span>1 unidade</span>
-								</div>
-								<div class="meta-item">
-									<i class="fas fa-map-marker-alt meta-icon"></i>
-									<span>São Paulo, SP</span>
-								</div>
-								<div class="meta-item">
-									<i class="fas fa-clock meta-icon"></i>
-									<span>Há 5 dias</span>
-								</div>
-							</div>
-							<button class="product-cta">
-								<i class="fas fa-hand-holding-heart me-2"></i>
-								Solicitar Item
-							</button>
-						</div>
-					</div>
-				</div>
-			</div>
+            <!-- Filtros Inteligentes -->
+            <div class="smart-filters">
+                <span class="text-muted me-3"><i class="fas fa-filter me-2"></i>Filtrar por:</span>
+                <button class="filter-chip active">Todos</button>
+                <button class="filter-chip">Disponíveis</button>
+                <button class="filter-chip">Doados</button>
+                <button class="filter-chip">Roupas</button>
+                <button class="filter-chip">Eletrônicos</button>
+                <button class="filter-chip">Livros</button>
+            </div>
 
-			<!-- Paginação Moderna -->
-			<nav class="modern-pagination" aria-label="Navegação de produtos">
-				<button class="page-btn" aria-label="Página anterior">
-					<i class="fas fa-chevron-left"></i>
-				</button>
-				<button class="page-btn active">1</button>
-				<button class="page-btn">2</button>
-				<button class="page-btn">3</button>
-				<span class="page-btn">...</span>
-				<button class="page-btn">8</button>
-				<button class="page-btn" aria-label="Próxima página">
-					<i class="fas fa-chevron-right"></i>
-				</button>
-			</nav>
-		</section>
-	}
+            <!-- Grid de Produtos -->
+            <div class="row g-4 mb-5" id="product-list">
+                @foreach (var item in Model.Produtos)
+                {
+                    <div class="col-lg-3 col-md-4 col-sm-6 product-card-wrapper">
+                        <div class="product-card interactive-element">
+                            <div class="product-image-container">
+                                <img src="@((item.Imagens?.FirstOrDefault() != null) ? Assistant.ServerURL() + item.Imagens.FirstOrDefault() : "https://via.placeholder.com/400x300")" class="product-image" alt="@item.Nome" />
 
-	<!-- SEÇÃO DE ESTATÍSTICAS -->
-	<section class="statistics-section slide-up">
-		<div class="row g-4 mb-5">
-			<div class="col-md-3 col-sm-6">
-				<div class="stat-card text-center">
-					<div class="stat-icon">
-						<i class="fas fa-gift"></i>
-					</div>
-					<div class="stat-number">@(Model.Produtos != null ? Model.Produtos.Count() : 0)</div>
-					<div class="stat-label">Itens Doados</div>
-				</div>
-			</div>
-			@if (Model.DataCriacao != null)
-			{
-				<div class="col-md-3 col-sm-6">
-					<div class="stat-card text-center">
-						<div class="stat-icon">
-							<i class="fas fa-calendar-check"></i>
-						</div>
-						<div class="stat-number">@Assistant.CalcularTempoAtivo((DateTime)Model.DataCriacao)</div>
-						<div class="stat-label">Tempo de Atividade</div>
-					</div>
-				</div>
-			}
+                                <!-- Badge de status -->
+                                <div class="status-badge status-@((bool)item.Disponivel ? "available" : "unavailable")">
+                                    <i class="fas @((bool)item.Disponivel ? "fa-check-circle" : "fa-times-circle") me-1"></i>
+                                    @((bool)item.Disponivel ? "Disponível" : "Indisponível")
+                                </div>
 
-			@* <div class="col-md-3 col-sm-6">
+                                <!-- Compartilhar -->
+                                <div class="quick-actions">
+                                    <div class="a2a_kit a2a_default_style"
+                                         data-a2a-url="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Usuario_GUID })"
+                                         data-a2a-title="@item.Nome">
+                                        <a class="a2a_dd quick-action-btn" title="Compartilhar">
+                                            <i class="fas fa-share-alt"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="product-content">
+                                <div class="product-category">
+                                    @item.Categorias?.FirstOrDefault(c => c.CategoriaProduto_ID == item.CategoriaProduto_ID)?.Nome
+                                </div>
+                                <h3 class="product-title">@item.Nome</h3>
+                                <div class="product-meta">
+                                    <div class="meta-item">
+                                        <i class="fas fa-boxes meta-icon"></i>
+                                        <span>@item.Quantidade unidade(s)</span>
+                                    </div>
+                                    <div class="meta-item">
+                                        <i class="fas fa-clock meta-icon"></i>
+                                        <span>@Assistant.CalcularTempoAtivo((DateTime)item.DataCriacao)</span>
+                                    </div>
+                                </div>
+                                <button class="product-cta">
+                                    <i class="fas fa-hand-holding-heart me-2"></i>
+                                    Solicitar Item
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Paginação com jQuery -->
+            <nav class="modern-pagination text-center" aria-label="Paginação">
+                <ul class="pagination justify-content-center" id="pagination"></ul>
+            </nav>
+        </section>
+    }
+
+    <!-- SEÇÃO DE ESTATÍSTICAS -->
+    <section class="statistics-section slide-up">
+        <div class="row g-4 mb-5">
+            <div class="col-md-3 col-sm-6">
+                <div class="stat-card text-center">
+                    <div class="stat-icon">
+                        <i class="fas fa-gift"></i>
+                    </div>
+                    <div class="stat-number">@(Model.Produtos != null ? Model.Produtos.Count() : 0)</div>
+                    <div class="stat-label">Itens Doados</div>
+                </div>
+            </div>
+            @if (Model.DataCriacao != null)
+            {
+                <div class="col-md-3 col-sm-6">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="stat-number">@Assistant.CalcularTempoAtivo((DateTime)Model.DataCriacao)</div>
+                        <div class="stat-label">Tempo de Atividade</div>
+                    </div>
+                </div>
+            }
+
+            @* <div class="col-md-3 col-sm-6">
 				<div class="stat-card text-center">
 					<div class="stat-icon">
 						<i class="fas fa-heart"></i>
@@ -194,212 +194,138 @@
 					<div class="stat-label">Avaliações</div>
 				</div>
 			</div> *@
-		</div>
-	</section>
-
-	<!-- SEÇÃO DE DEPOIMENTOS -->
-	<section class="testimonials-section slide-up mb-5">
-		<div class="section-header">
-			<h2 class="section-title">
-				<i class="fas fa-quote-left me-3 text-warning"></i>
-				O que dizem sobre João
-			</h2>
-		</div>
-
-		<div class="row g-4">
-			<div class="col-md-4">
-				<div class="testimonial-card">
-					<div class="testimonial-content">
-						"João é uma pessoa incrível! Me ajudou muito quando mais precisei. Recomendo de olhos fechados!"
-					</div>
-					<div class="testimonial-author">
-						<img src="https://images.unsplash.com/photo-1494790108755-2616b612b593?w=50&h=50&fit=crop&crop=face" alt="Maria Santos">
-						<div>
-							<div class="author-name">Maria Santos</div>
-							<div class="author-rating">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-4">
-				<div class="testimonial-card">
-					<div class="testimonial-content">
-						"Pessoa de confiança e muito generosa. A doação chegou em perfeito estado e muito rápido!"
-					</div>
-					<div class="testimonial-author">
-						<img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=50&h=50&fit=crop&crop=face" alt="Carlos Lima">
-						<div>
-							<div class="author-name">Carlos Lima</div>
-							<div class="author-rating">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-4">
-				<div class="testimonial-card">
-					<div class="testimonial-content">
-						"Excelente comunicação e muito prestativo. Fez toda a diferença na minha situação!"
-					</div>
-					<div class="testimonial-author">
-						<img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=50&h=50&fit=crop&crop=face" alt="Ana Costa">
-						<div>
-							<div class="author-name">Ana Costa</div>
-							<div class="author-rating">
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="fas fa-star"></i>
-								<i class="far fa-star"></i>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
+        </div>
+    </section>
 </div>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
 <script>
-	// Inicialização de tooltips
-	const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-	const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-		return new bootstrap.Tooltip(tooltipTriggerEl);
-	});
+    // Inicialização de tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
 
-	// Sistema de filtros inteligentes
-	const filterChips = document.querySelectorAll('.filter-chip');
-	const productCards = document.querySelectorAll('.product-card');
+    // Sistema de filtros inteligentes
+    const filterChips = document.querySelectorAll('.filter-chip');
+    const productCards = document.querySelectorAll('.product-card');
 
-	filterChips.forEach(chip => {
-		chip.addEventListener('click', function() {
-			// Remove active de todos os chips
-			filterChips.forEach(c => c.classList.remove('active'));
-			// Adiciona active ao chip clicado
-			this.classList.add('active');
+    filterChips.forEach(chip => {
+        chip.addEventListener('click', function() {
+            // Remove active de todos os chips
+            filterChips.forEach(c => c.classList.remove('active'));
+            // Adiciona active ao chip clicado
+            this.classList.add('active');
 
-			const filter = this.textContent.toLowerCase();
+            const filter = this.textContent.toLowerCase();
 
-			// Anima os cards
-			productCards.forEach(card => {
-				card.style.transition = 'all 0.3s ease';
-				if (filter === 'todos') {
-					card.style.display = 'block';
-					card.style.opacity = '1';
-					card.style.transform = 'scale(1)';
-				} else {
-					// Aqui você implementaria a lógica de filtro baseada nos dados
-					card.style.opacity = '0.3';
-					card.style.transform = 'scale(0.95)';
+            // Anima os cards
+            productCards.forEach(card => {
+                card.style.transition = 'all 0.3s ease';
+                if (filter === 'todos') {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                } else {
+                    // Aqui você implementaria a lógica de filtro baseada nos dados
+                    card.style.opacity = '0.3';
+                    card.style.transform = 'scale(0.95)';
 
-					setTimeout(() => {
-						if (filter !== 'todos') {
-							// Simula filtro - em produção, usaria dados reais
-							if (Math.random() > 0.5) {
-								card.style.display = 'none';
-							}
-						}
-					}, 150);
-				}
-			});
+                    setTimeout(() => {
+                        if (filter !== 'todos') {
+                            // Simula filtro - em produção, usaria dados reais
+                            if (Math.random() > 0.5) {
+                                card.style.display = 'none';
+                            }
+                        }
+                    }, 150);
+                }
+            });
 
-			// Reexibe todos os cards após um tempo
-			if (filter === 'todos') {
-				setTimeout(() => {
-					productCards.forEach(card => {
-						card.style.display = 'block';
-						card.style.opacity = '1';
-						card.style.transform = 'scale(1)';
-					});
-				}, 100);
-			}
-		});
-	});
+            // Reexibe todos os cards após um tempo
+            if (filter === 'todos') {
+                setTimeout(() => {
+                    productCards.forEach(card => {
+                        card.style.display = 'block';
+                        card.style.opacity = '1';
+                        card.style.transform = 'scale(1)';
+                    });
+                }, 100);
+            }
+        });
+    });
 
-	// Animação de entrada dos elementos
-	const observerOptions = {
-		threshold: 0.1,
-		rootMargin: '0px 0px -50px 0px'
-	};
+    // Animação de entrada dos elementos
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
 
-	const observer = new IntersectionObserver((entries) => {
-		entries.forEach(entry => {
-			if (entry.isIntersecting) {
-				entry.target.style.opacity = '1';
-				entry.target.style.transform = 'translateY(0)';
-			}
-		});
-	}, observerOptions);
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
 
-	// Observa elementos para animação
-	document.querySelectorAll('.slide-up').forEach(el => {
-		el.style.opacity = '0';
-		el.style.transform = 'translateY(30px)';
-		el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-		observer.observe(el);
-	});
+    // Observa elementos para animação
+    document.querySelectorAll('.slide-up').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
 
-	// Efeito de hover nos quick action buttons
-	document.querySelectorAll('.quick-action-btn').forEach(btn => {
-		btn.addEventListener('mouseenter', function() {
-			this.style.transform = 'scale(1.1) rotate(5deg)';
-		});
+    // Efeito de hover nos quick action buttons
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+        btn.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
 
-		btn.addEventListener('mouseleave', function() {
-			this.style.transform = 'scale(1) rotate(0deg)';
-		});
-	});
+        btn.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+    });
 
-	// Animação de clique nos botões interativos
-	document.querySelectorAll('.interactive-element').forEach(element => {
-		element.addEventListener('mousedown', function() {
-			this.style.transform = 'scale(0.98)';
-		});
+    // Animação de clique nos botões interativos
+    document.querySelectorAll('.interactive-element').forEach(element => {
+        element.addEventListener('mousedown', function() {
+            this.style.transform = 'scale(0.98)';
+        });
 
-		element.addEventListener('mouseup', function() {
-			this.style.transform = 'scale(1)';
-		});
+        element.addEventListener('mouseup', function() {
+            this.style.transform = 'scale(1)';
+        });
 
-		element.addEventListener('mouseleave', function() {
-			this.style.transform = 'scale(1)';
-		});
-	});
+        element.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    });
 
-	// Sistema de favoritos
-	document.querySelectorAll('.quick-action-btn').forEach(btn => {
-		if (btn.querySelector('.fa-heart')) {
-			btn.addEventListener('click', function(e) {
-				e.stopPropagation();
-				const icon = this.querySelector('i');
+    // Sistema de favoritos
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+        if (btn.querySelector('.fa-heart')) {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const icon = this.querySelector('i');
 
-				if (icon.classList.contains('fas')) {
-					icon.classList.remove('fas');
-					icon.classList.add('far');
-					this.style.color = 'var(--color-gray-700)';
-				} else {
-					icon.classList.remove('far');
-					icon.classList.add('fas');
-					this.style.color = '#ef4444';
+                if (icon.classList.contains('fas')) {
+                    icon.classList.remove('fas');
+                    icon.classList.add('far');
+                    this.style.color = 'var(--color-gray-700)';
+                } else {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                    this.style.color = '#ef4444';
 
-					// Animação de coração
-					this.style.animation = 'pulse 0.3s ease';
-					setTimeout(() => {
-						this.style.animation = '';
-					}, 300);
-				}
-			});
-		}
-	});
+                    // Animação de coração
+                    this.style.animation = 'pulse 0.3s ease';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 300);
+                }
+            });
+        }
+    });
 </script>
