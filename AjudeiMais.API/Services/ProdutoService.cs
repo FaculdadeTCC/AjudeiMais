@@ -317,7 +317,7 @@ namespace AjudeiMais.API.Services
         public async Task<ApiResponse<IEnumerable<ProdutoGetDTO>>> GetProdutosProximos(double lat, double lng)
         {
             var todosUsuarios = await _usuarioRepository.GetItens();
-            var raioBuscaKm = 69;
+            var raioBuscaKm = 70;
             var produtosProximos = new List<Produto>();
 
             var usuariosProximos = todosUsuarios

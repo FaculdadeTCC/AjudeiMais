@@ -2,7 +2,7 @@
 {
     public class UsuarioEnderecoDTO
     {
-        public int Usuario_ID { get; set; }
+        public int? Usuario_ID { get; set; }
         public string? GUID { get; set; }
         public string CEP { get; set; }
         public string Rua { get; set; }

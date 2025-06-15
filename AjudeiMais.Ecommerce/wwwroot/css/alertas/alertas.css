@@ -45,6 +45,12 @@
     color: var(--color-success); /* Texto verde */
 }
 
+.alert-custom-warning {
+    background-color: #fff8e1; /* Amarelo bem claro */
+    border: 1px solid #ffecb3; /* Borda amarelo claro */
+    color: #f9a825; /* Texto amarelo escuro (âmbar forte) */
+}
+
 /* Estilos para o botão de fechar (comum a ambos) */
 .alert-custom .btn-close {
     position: absolute;

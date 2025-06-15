@@ -15,6 +15,11 @@
         alertClass += " alert-custom-success";
         alertIcon = "<i class=\"fas fa-check-circle me-2\"></i>";
     }
+    else if (alertType == "warning")
+    {
+        alertClass += " alert-custom-warning";
+        alertIcon = "<i class=\"fas fa-warning me-2\"></i>";
+    }
 
     <div class="@alertClass" role="alert">
         @Html.Raw(alertIcon) @alertMessage

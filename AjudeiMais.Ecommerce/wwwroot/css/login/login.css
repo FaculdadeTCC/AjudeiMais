@@ -1,8 +1,8 @@
 ﻿.login-container {
+margin-top: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
     background-color: var(--color-bg);
     padding: var(--spacing-xl);
 }

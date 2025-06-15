@@ -259,7 +259,7 @@ namespace AjudeiMais.API.Services
         {
             try
             {
-                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+                var usuarioExistente = await _usuarioRepository.GetByGUID(dadosAtualizados.GUID);
 
                 if (usuarioExistente == null)
                 {
@@ -325,7 +325,7 @@ namespace AjudeiMais.API.Services
         {
             try
             {
-                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+                var usuarioExistente = await _usuarioRepository.GetByGUID(dadosAtualizados.GUID);
 
                 if (usuarioExistente == null)
                 {
@@ -380,7 +380,7 @@ namespace AjudeiMais.API.Services
         {
             try
             {
-                var usuarioExistente = await _usuarioRepository.GetById(dadosAtualizados.Usuario_ID);
+                var usuarioExistente = await _usuarioRepository.GetByGUID(dadosAtualizados.GUID);
 
                 if (usuarioExistente == null)
                 {
@@ -430,7 +430,7 @@ namespace AjudeiMais.API.Services
 
         public async Task<ApiResponse<Usuario>> VerificarSenha(UsuarioExcluirContaDTO usuario)
         {
-            var usuarioExistente = await GetById(usuario.Usuario_ID);
+            var usuarioExistente = await GetByGUID(usuario.GUID);
 
             if (usuarioExistente == null)
             {

@@ -7,20 +7,14 @@
 }
 
 @section Styles {
-    <link rel="stylesheet" href="~/css/home/banner.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/home/explore.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/home/donate.css" asp-append-version="true"/>
-    <link rel="stylesheet" href="~/css/home/categories.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/home/banner.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home/explore.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home/donate.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/home/categories.css" asp-append-version="true" />
 }
 
 @{
-    // This partial view should contain your alert/notification display logic
     await Html.RenderPartialAsync("_Alertas");
-}
-
-@{
-    // This partial view should contain your alert/notification display logic
-    await Html.RenderPartialAsync("_PopupLocalizacao");
 }
 
 <div class="container-fluid" style="padding: 0">
@@ -48,173 +42,6 @@
 
         </div>
     </section>
-
-
-    <section id="explore" class="explore-section py-5 container">
-        <!-- Cabeçalho -->
-        <div class="mb-5 text-center">
-            <h2 class="display-5 fw-bold text-secondary">Encontre itens para doar ou receber</h2>
-            <p class="text-muted fs-5">Pesquise, filtre por categoria e condição, e descubra o que você precisa.</p>
-        </div>
-
-        <!-- Barra de Busca & Filtros -->
-        <div class="row g-3 align-items-center mb-5 filter-bar">
-            <div class="col-md-6">
-                <div class="input-group shadow-sm">
-                    <span class="input-group-text bg-white border-0"><i class="fas fa-search text-muted"></i></span>
-                    <input type="text" class="form-control" placeholder="Pesquisar itens..."
-                           aria-label="Pesquisar itens">
-                </div>
-            </div>
-            <div class="col-md-2">
-                <select class="form-select shadow-sm" aria-label="Filtrar por categoria">
-                    <option selected>Categoria</option>
-                    <option value="roupas">Roupas</option>
-                    <option value="calcados">Calçados</option>
-                    <option value="brinquedos">Brinquedos</option>
-                    <option value="moveis">Móveis</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select class="form-select shadow-sm" aria-label="Filtrar por condição">
-                    <option selected>Condição</option>
-                    <option value="excelente">Excelente</option>
-                    <option value="bom">Bom</option>
-                    <option value="usado">Usado</option>
-                </select>
-            </div>
-            <div class="col-md-2 d-grid">
-                <button type="submit" class="btn btn-accent shadow-sm">
-                    <i class="fas fa-filter me-2"></i> Filtrar
-                </button>
-            </div>
-        </div>
-
-        <!-- Grid de Itens -->
-        <div id="items" class="row g-4">
-            @if (Model.Anuncios != null && Model.Anuncios.Any())
-            {
-                foreach (var item in Model.Anuncios)
-                {
-                    <article class="col-12 col-sm-6 col-md-4 col-lg-3">
-                        <div class="card h-100 rounded-4 border-0 shadow-sm">
-                            <div class="position-relative">
-                                <img src="@Assistant.ServerURL()@item.ProdutoImagens.FirstOrDefault().Imagem" class="card-img-top" alt="@item.Nome"> 
-                                <span class="badge bg-success position-absolute top-0 start-0 m-3">@item.Condicao</span>
-                            </div>
-                            <div class="card-body d-flex flex-column">
-                                <span class="badge mb-2" style="background-color: var(--color-secondary); font-size:.75rem;">
-                                    @item.CategoriaProduto.Nome
-                                </span>
-                                <h5 class="card-title text-secondary mb-1">@item.Nome</h5>
-                                <ul class="list-unstyled small text-muted mb-4">
-                                    <li><i class="fas fa-map-marker-alt me-1"></i> @item.Usuario.Cidade, @item.Usuario.Estado</li>
-                                     <li><i class="fas fa-calendar-alt me-1"></i> @Assistant.ToTempoAtras(@item.DataCriacao)</li>
-                                    <li><i class="fas fa-box me-1"></i> @item.Quantidade unidades</li>  
-                                </ul>
-                                <a href="/produto/detalhes/@item.Produto_ID" class="btn btn-outline-accent fw-semibold mt-auto"> 
-                                     <i class="fas fa-info-circle me-2"></i> Ver detalhes 
-                                 </a>
-                            </div>
-                        </div>
-                    </article>
-                }
-            }
-            else
-            {
-                <div class="text-muted py-5 text-center">
-                    <p>@Model.ErrorMessage</p>
-                </div>
-            }
-
-        </div>
-    </section>
-
-
-    <!-- Seção “Formas de se envolver” -->
-    <section id="get-involved" class="section-engaje row align-items-center mx-0 my-5">
-        <!-- Coluna de imagem -->
-        <div class="col-12 col-lg-6 p-0 image-panel">
-            <img src="~/img/visao-de-maos-em-forma-de-coracao-para-representar-afeicao.jpg"
-                 alt="Pessoa entregando doação a instituição"
-                 class="w-100 h-100 object-fit-cover">
-        </div>
-
-        <!-- Coluna de texto -->
-        <div class="col-12 col-lg-6 text-panel p-5">
-            <h2 class="h2 fw-bold mb-3">Doe para quem precisa</h2>
-            <p class="tagline mb-2">Pronto para ajudar?</p>
-            <p class="desc mb-4">
-                Selecione uma instituição e faça sua doação de forma simples, segura
-                e transparente. Cada contribuição transforma vidas e fortalece nossa comunidade.
-            </p>
-            <div class="d-flex gap-3">
-                <a href="#institutions" class="btn btn-secondary-fill btn-lg rounded-pill" role="button"
-                   aria-label="Ver instituições disponíveis">
-                    <i class="fas fa-building me-2"></i> Ver Instituições
-                </a>
-                <a href="#donate" class="btn btn-secondary-outline btn-lg rounded-pill" role="button"
-                   aria-label="Realizar doação agora">
-                    <i class="fas fa-donate me-2"></i> Doe Agora
-                </a>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- Seção Categorias -->
-    <section id="categories" class="py-5">
-        <div class="container">
-
-            <!-- Título -->
-            <div class="mb-5 text-center">
-                <h2 class="fw-bold text-secondary">Explore Categorias</h2>
-                <p class="text-muted fs-5">Descubra os tipos de itens que você pode doar ou receber.</p>
-            </div>
-
-            <!-- Grid de Categorias -->
-            <div class="row g-4">
-                <div class="col-6 col-md-3 text-center">
-                    <div class="category-card p-4">
-                        <div class="icon-wrapper mb-3">
-                            <i class="fas fa-tshirt"></i>
-                        </div>
-                        <h3 class="h5 fw-semibold mb-1">Roupas</h3>
-                        <p class="small text-muted">Peças de vestuário para todas as idades</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                    <div class="category-card p-4">
-                        <div class="icon-wrapper mb-3">
-                            <i class="fas fa-shoe-prints"></i>
-                        </div>
-                        <h3 class="h5 fw-semibold mb-1">Calçados</h3>
-                        <p class="small text-muted">Sapatos, tênis e sandálias</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                    <div class="category-card p-4">
-                        <div class="icon-wrapper mb-3">
-                            <i class="fas fa-puzzle-piece"></i>
-                        </div>
-                        <h3 class="h5 fw-semibold mb-1">Brinquedos</h3>
-                        <p class="small text-muted">Diversão garantida para a garotada</p>
-                    </div>
-                </div>
-                <div class="col-6 col-md-3 text-center">
-                    <div class="category-card p-4">
-                        <div class="icon-wrapper mb-3">
-                            <i class="fas fa-couch"></i>
-                        </div>
-                        <h3 class="h5 fw-semibold mb-1">Móveis</h3>
-                        <p class="small text-muted">Itens para mobiliar sua casa</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-
 </div>
 
 <script>
@@ -238,54 +65,8 @@
         );
         observer.observe(banner);
       }
-
-      // Controle de localização e modal
-      const locationDenied = localStorage.getItem('locationDenied') === 'true';
-
-      try {
-        const status = await navigator.permissions.query({ name: 'geolocation' });
-
-        if (status.state === 'denied') {
-          localStorage.setItem('locationDenied', 'true');
-          new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
-          return;
-        }
-
-        // Se permissão não negada e há erro do backend (substitua conforme seu Model)
-        const hasLocationError = "@(string.IsNullOrEmpty(Model.ErrorMessage) ? "false" : "true")" === "true";
-        if (!locationDenied && hasLocationError) {
-          new bootstrap.Modal(document.getElementById('locationModal')).show();
-        }
-      } catch (e) {
-        console.error("Erro ao verificar permissões:", e);
-      }
     });
-
-    // Função chamada no botão do modal
-    function obterLocalizacao() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            localStorage.removeItem('locationDenied');
-            const url = new URL(window.location.href);
-            url.searchParams.set("lat", lat);
-            url.searchParams.set("lng", lng);
-            window.location.href = url.toString();
-          },
-          function (error) {
-            if (error.code === error.PERMISSION_DENIED) {
-              localStorage.setItem('locationDenied', 'true');
-              new bootstrap.Modal(document.getElementById('permissaoNegadaModal')).show();
-            } else {
-              alert("Erro ao obter localização. Tente novamente.");
-            }
-          }
-        );
-      } else {
-        alert("Geolocalização não suportada neste navegador.");
-      }
-    }
 </script>
+
+
 
