@@ -13,6 +13,36 @@ namespace AjudeiMais.Ecommerce.Tools
     /// </summary>
     public static class Assistant
     {
+        public static string CalcularTempoAtivo(DateTime dataCriacao)
+        {
+            var hoje = DateTime.Now;
+            var diff = hoje - dataCriacao;
+
+            if (diff.TotalDays < 30)
+            {
+                int dias = (int)diff.TotalDays;
+                if (dias == 0) dias = 1; // Para não mostrar 0 dias, pelo menos 1 dia ativo
+                return $"{dias} {(dias == 1 ? "dia" : "dias")} ativo";
+            }
+
+            var totalMeses = (hoje.Year - dataCriacao.Year) * 12 + hoje.Month - dataCriacao.Month;
+            if (hoje.Day < dataCriacao.Day)
+                totalMeses--;
+
+            if (totalMeses < 12)
+            {
+                return $"{totalMeses} {(totalMeses == 1 ? "mês" : "meses")} ativo";
+            }
+
+            var anos = totalMeses / 12;
+            var meses = totalMeses % 12;
+
+            string anosStr = $"{anos} {(anos == 1 ? "ano" : "anos")}";
+            string mesesStr = meses > 0 ? $" e {meses} {(meses == 1 ? "mês" : "meses")}" : "";
+
+            return $"{anosStr}{mesesStr} ativo";
+        }
+
 
         public static string ToTempoAtras(this DateTime dataHora)
         {

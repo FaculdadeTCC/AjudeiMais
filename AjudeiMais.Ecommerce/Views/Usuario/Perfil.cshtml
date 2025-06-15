@@ -172,29 +172,20 @@
 					<div class="stat-label">Itens Doados</div>
 				</div>
 			</div>
-			<div class="col-md-3 col-sm-6">
-				<div class="stat-card text-center">
-					<div class="stat-icon">
-						<i class="fas fa-users"></i>
-					</div>
-					<div class="stat-number">38</div>
-					<div class="stat-label">Pessoas Ajudadas</div>
-				</div>
-			</div>
-			@if (Model.DataCadastro != null && Model.DataCadastro.HasValue)
+			@if (Model.DataCriacao != null)
 			{
 				<div class="col-md-3 col-sm-6">
 					<div class="stat-card text-center">
 						<div class="stat-icon">
 							<i class="fas fa-calendar-check"></i>
 						</div>
-
-						<div class="stat-number">@Model.DataCadastro.ToString()</div>
-						<div class="stat-label">Meses Ativo</div>
+						<div class="stat-number">@Assistant.CalcularTempoAtivo((DateTime)Model.DataCriacao)</div>
+						<div class="stat-label">Tempo de Atividade</div>
 					</div>
 				</div>
 			}
-			<div class="col-md-3 col-sm-6">
+
+			@* <div class="col-md-3 col-sm-6">
 				<div class="stat-card text-center">
 					<div class="stat-icon">
 						<i class="fas fa-heart"></i>
@@ -202,7 +193,7 @@
 					<div class="stat-number">127</div>
 					<div class="stat-label">Avaliações</div>
 				</div>
-			</div>
+			</div> *@
 		</div>
 	</section>
 

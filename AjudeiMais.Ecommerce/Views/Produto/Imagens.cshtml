@@ -2,6 +2,8 @@
 @using AjudeiMais.Ecommerce.Tools
 
 @{
+	var userGuidLogado = User.FindFirst("GUID")?.Value;
+
 	ViewData["Title"] = "Editar Imagens do Anúncio";
 }
 
@@ -85,7 +87,7 @@
 
 	<div class="form-group mt-3">
 		<button type="submit" class="btn btn-primary">Enviar Novas Imagens</button>
-		<a asp-action="Details" asp-controller="Produto" asp-route-id="@Model.Produto_ID" class="btn btn-secondary">Voltar ao Produto</a>
+		<a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado })" class="btn btn-secondary">Voltar ao Produto</a>
 	</div>
 </form>
 

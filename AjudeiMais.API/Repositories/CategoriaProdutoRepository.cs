@@ -35,6 +35,7 @@ namespace AjudeiMais.API.Repositories
         {
             return await _context.CategoriaProduto
                 .Where(c => c.Excluido != true)
+                .OrderBy(c => c.Nome)
                 .OrderByDescending(c => c.DataCadastro)
                 .ThenByDescending(c => c.DataUpdate)
                 .ThenBy(c => c.Nome)
