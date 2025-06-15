@@ -22,10 +22,27 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             _httpClientFactory = httpClientFactory;
         }
-        public IActionResult Index()
+
+        [HttpGet]
+        [RoleAuthorize("admin", "instituicao")]
+        public async Task<IActionResult> ListarItens()
         {
-            return View();
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToRoute("home");
+
+            var (itens, errorMessage) = await ApiHelper.ListAllInstituicoesAtivosAsync(_httpClientFactory);
+
+            if (itens != null)
+            {
+                return View(itens); // Passa a lista para a View
+            }
+            else
+            {
+                _logger?.LogError("Erro ao buscar os itens: {Erro}", errorMessage);
+                return RedirectToRoute("home", new { alertType = "error", alertMessage = errorMessage });
+            }
         }
+
         [RoleAuthorize("admin", "instituicao")]
         [HttpGet]
         public async Task<IActionResult> Perfil(string guid)

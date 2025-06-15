@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<AjudeiMais.Ecommerce.Models.Instituicao.InstituicaoModel>
+
+@{
     ViewData["Title"] = "Gerenciar Instituições";
 }
 
@@ -12,15 +14,15 @@
                     <input type="text" class="form-control" placeholder="Buscar instituição...">
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <button class="btn btn-primary">
+                    <a href="@Url.Action("Criar", "Instituicao")" class="btn btn-primary">
                         <i class="fa fa-plus me-1"></i> Criar Instituição
-                    </button>
+                    </a>
                 </div>
             </div>
 
             <div class="table-responsive">
                 <table class="table table-bordered table-hover align-middle">
-                    <thead class="table-secondary text-white bg-secondary">
+                    <thead class="bg-dark text-white">
                         <tr>
                             <th>Nome</th>
                             <th>E-mail</th>
@@ -30,55 +32,62 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>Instituição ABC</td>
-                            <td>contato@instituicaoabc.com</td>
-                            <td>(11) 99999-9999</td>
-                            <td>
-                                <span class="badge bg-success">Ativo</span>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group">
-                                    <button class="btn btn-sm btn-primary" title="Editar">
-                                        <i class="fa fa-edit"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" title="Excluir">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Adicione mais instituições aqui -->
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var inst in Model)
+                            {
+                                <tr>
+                                    <td>@inst.Nome</td>
+                                    <td>@inst.Email</td>
+                                    <td>@inst.Telefone</td>
+                                    <td class="text-center">
+                                        <div class="btn-group">
+                                            <a href="@Url.Action("Editar", "Instituicao", new { guid = inst.Guid})" class="btn btn-sm btn-primary" title="Editar">
+                                                <i class="fa fa-edit"></i>
+                                            </a>
+                                            <button class="btn btn-sm btn-danger" title="Excluir" onclick="confirmDelete('@inst.Guid')">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">Nenhuma instituição encontrada.</td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 
-    <!-- Paginação -->
+    <!-- Paginação fictícia (você pode adaptar com lógica real depois) -->
     <nav class="mt-4 d-flex justify-content-center">
         <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="#">&laquo; Anterior</a>
-            </li>
-            <li class="page-item active">
-                <a class="page-link" href="#">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">2</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">3</a>
-            </li>
             <li class="page-item disabled">
-                <span class="page-link">...</span>
+                <span class="page-link">&laquo; Anterior</span>
             </li>
-            <li class="page-item">
-                <a class="page-link" href="#">10</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#">Próxima &raquo;</a>
-            </li>
+            <li class="page-item active"><span class="page-link">1</span></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item disabled"><span class="page-link">...</span></li>
+            <li class="page-item"><a class="page-link" href="#">10</a></li>
+            <li class="page-item"><a class="page-link" href="#">Próxima &raquo;</a></li>
         </ul>
     </nav>
 </div>
+
+@section Scripts {
+    <script>
+        function confirmDelete(guid) {
+            if (confirm("Tem certeza que deseja excluir esta instituição?")) {
+                // Aqui você pode fazer um fetch/POST para deletar
+                alert("Deletar: " + guid); // Remova isso quando implementar
+            }
+        }
+    </script>
+}

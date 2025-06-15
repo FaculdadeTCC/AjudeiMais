@@ -9,8 +9,8 @@
 }
 
 @section Styles {
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/login/login.css" asp-append-version="true" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+        <link rel="stylesheet" href="~/css/login/login.css" asp-append-version="true" />
 }
 
 <div class="login-container">
@@ -23,9 +23,9 @@
         @if (TempData["AlertMessage"] != null)
         {
             var alertClass = TempData["AlertType"]?.ToString() == "error" ? "var(--color-danger)" : "var(--color-success)";
-            <div class="alert" style="background: @alertClass; color:#fff;">
+                <div class="alert" style="background: @alertClass; color:#fff;">
                 @TempData["AlertMessage"]
-            </div>
+                </div>
         }
 
         <!-- Login with Google -->
@@ -37,13 +37,16 @@
 
         <!-- Toggle Tipo de Usuário -->
         <div class="user-type-toggle">
-            <input type="radio" id="tipoDoador" name="UserType" value="usuario" checked>
+            <input type="radio" id="tipoDoador" name="UserTypeSelector" value="1" checked>
             <label for="tipoDoador">Sou Doador</label>
-            <input type="radio" id="tipoInstituicao" name="UserType" value="instituicao">
+
+            <input type="radio" id="tipoInstituicao" name="UserTypeSelector" value="2">
             <label for="tipoInstituicao">Sou Instituição</label>
         </div>
 
         <form id="loginForm" method="post">
+            <input asp-for="UserType" id="UserType" hidden />
+
             <div class="mb-4">
                 <label asp-for="Email" class="form-label">E-mail <span class="text-danger">*</span></label>
                 <input asp-for="Email" type="email" class="form-control" required />
@@ -73,33 +76,47 @@
 </div>
 
 @section Scripts {
-    <script>
-        const usuarioAction = "@Url.Action("Login", "Login")";
-        const instituicaoAction = "@Url.Action("LoginInstituicao", "Login")";
+        <script>
+            const usuarioAction = "@Url.Action("Login", "Login")";
+            const instituicaoAction = "@Url.Action("LoginInstituicao", "Login")";
 
-        const usuarioCadastro = "@Url.RouteUrl("usuario-cadastrar")";
-        const instituicaoCadastro = "@Url.RouteUrl("instituicao-cadastrar")";
+            const usuarioCadastro = "@Url.RouteUrl("usuario-cadastrar")";
+            const instituicaoCadastro = "@Url.RouteUrl("instituicao-cadastrar")";
 
-        document.getElementById('loginForm').addEventListener('submit', function (e) {
-            const userType = document.querySelector('input[name="UserType"]:checked').value;
+            document.addEventListener('DOMContentLoaded', function () {
+                const radios = document.querySelectorAll('input[name="UserTypeSelector"]');
+                const userTypeInput = document.getElementById('UserType');
 
-            if (userType === "usuario") {
-                this.action = usuarioAction;
-            } else if (userType === "instituicao") {
-                this.action = instituicaoAction;
-            }
-        });
+                radios.forEach(radio => {
+                    radio.addEventListener('change', function () {
+                        userTypeInput.value = this.value;
+                    });
 
-        document.getElementById('cadastroLink').addEventListener('click', function (e) {
-            e.preventDefault();
+                    if (radio.checked) {
+                        userTypeInput.value = radio.value;
+                    }
+                });
 
-            const userType = document.querySelector('input[name="UserType"]:checked').value;
+                document.getElementById('loginForm').addEventListener('submit', function (e) {
+                    const tipo = document.querySelector('input[name="UserTypeSelector"]:checked').value;
 
-            if (userType === "usuario") {
-                window.location.href = usuarioCadastro;
-            } else if (userType === "instituicao") {
-                window.location.href = instituicaoCadastro;
-            }
-        });
-    </script>
+                    if (tipo === "1") {
+                        this.action = usuarioAction;
+                    } else if (tipo === "2") {
+                        this.action = instituicaoAction;
+                    }
+                });
+
+                document.getElementById('cadastroLink').addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const tipo = document.querySelector('input[name="UserTypeSelector"]:checked').value;
+
+                    if (tipo === "1") {
+                        window.location.href = usuarioCadastro;
+                    } else if (tipo === "2") {
+                        window.location.href = instituicaoCadastro;
+                    }
+                });
+            });
+        </script>
 }

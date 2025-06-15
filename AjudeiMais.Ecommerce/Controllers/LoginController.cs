@@ -130,7 +130,11 @@ namespace AjudeiMais.Ecommerce.Controllers
 				var response = await httpClient.PostAsync($"{BASE_URL}api/Auth/login", content);
 				if (!response.IsSuccessStatusCode)
 				{
-					return RedirectToAction("Login", new
+                    var erroDetalhado = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(erroDetalhado); // ou logue
+
+
+                    return RedirectToAction("Login", new
 					{
 						alertType = "error",
 						alertMessage = response.ReasonPhrase
