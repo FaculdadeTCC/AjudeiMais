@@ -85,6 +85,24 @@ function clearInputValidation(inputElement) {
 function displayAlert(message, type = 'danger') {
     alert(message);
 }
+export function validarCamposObrigatoriosNaEtapaAtual() {
+    const etapaAtual = document.querySelector(".form-step.active");
+    const inputs = etapaAtual.querySelectorAll("input, textarea, select");
+    let valido = true;
+
+    inputs.forEach(input => {
+        const isRequired = input.hasAttribute("required") || input.classList.contains("form-control");
+
+        if (isRequired && !input.value.trim()) {
+            setInputInvalid(input);
+            valido = false;
+        } else {
+            setInputValid(input);
+        }
+    });
+
+    return valido;
+}
 
 export {
     validarEmail,

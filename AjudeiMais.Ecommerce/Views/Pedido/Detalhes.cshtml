@@ -70,11 +70,10 @@
 
                 <!-- Inputs escondidos para enviar ao backend -->
                 <input type="hidden" name="Pedido_ID" id="input-pedido-id">
-                <input type="hidden" name="Status" id="input-status">
-                <input type="hidden" name="NovoStatus" id="input-novo-status">
                 <input type="hidden" name="UsuarioGuid" id="input-usuario-guid">
                 <input type="hidden" name="InstituicaoGuid" id="input-instituicao-guid">
-
+                <input type="hidden" name="UsuarioStatus" id="input-usuario-status">
+                <input type="hidden" name="InstituicaoStatus" id="input-instituicao-status">
                 <div class="modal-footer border-top-0 pt-0 d-flex justify-content-end">
                     <button type="button" class="btn rounded-pill px-4" data-bs-dismiss="modal">Sair</button>
                     <button type="submit" class="btn btn-danger rounded-pill px-4" onclick="return setStatus('Cancelado')">Cancelar Pedido</button>
@@ -89,8 +88,8 @@
     document.addEventListener("DOMContentLoaded", function () {
         const detalhesPedidoModal = new bootstrap.Modal(document.getElementById('detalhes'));
 
-        // Função global para definir o status
-        window.setStatus = function(status) {
+        // Função para definir o status e enviar para o campo correto conforme role
+        window.setStatus = function (status) {
             if (!confirm(`Tem certeza que deseja ${status.toLowerCase()} este pedido?`)) {
                 return false;
             }
@@ -98,7 +97,13 @@
             document.getElementById('input-novo-status').value = status;
             document.getElementById('input-status').value = status;
 
-            // Atualiza visualmente o badge
+            const role = document.getElementById("user-role").value;
+            if (role === "Usuario") {
+                document.getElementById("input-usuario-status").value = status;
+            } else if (role === "Instituicao") {
+                document.getElementById("input-instituicao-status").value = status;
+            }
+
             const statusElement = document.getElementById('modal-pedido-status');
             statusElement.textContent = status;
             statusElement.className = 'badge';
@@ -117,9 +122,7 @@
         };
 
         window.exibirDetalhesPedido = function (data) {
-            // Pedido
             document.getElementById('modal-pedido-numero').textContent = data.pedidoNumero || '--';
-
             const statusElement = document.getElementById('modal-pedido-status');
             statusElement.textContent = data.status || '--';
             statusElement.className = 'badge';
@@ -133,22 +136,20 @@
             const statusClasse = statusMap[data.status?.toLowerCase()] || 'bg-secondary';
             statusElement.classList.add(...statusClasse.split(' '));
 
-            // Produto
             document.getElementById('modal-produto-imagem').src = data.produtoImagemUrl || 'https://placehold.co/150x150?text=Produto';
             document.getElementById('modal-produto-nome').textContent = data.produtoNome || '--';
             document.getElementById('modal-produto-categoria').textContent = data.produtoCategoria || '--';
             document.getElementById('modal-produto-quantidade').textContent = data.produtoQuantidade || '--';
+
             document.getElementById('input-pedido-id').value = data.pedidoId;
             document.getElementById('input-status').value = data.status;
             document.getElementById('input-usuario-guid').value = data.usuarioGuid;
             document.getElementById('input-instituicao-guid').value = data.instituicaoGuid;
 
-            // Usuário
             document.getElementById('modal-usuario-nome').textContent = data.usuarioNome || '--';
             document.getElementById('modal-usuario-email').textContent = data.usuarioEmail || '--';
             document.getElementById('modal-usuario-telefone').textContent = data.usuarioTelefone || '--';
 
-            // Instituição
             const instituicaoDetailsDiv = document.getElementById('instituicao-details');
             if (data.instituicaoNome?.trim()) {
                 document.getElementById('modal-instituicao-nome').textContent = data.instituicaoNome;

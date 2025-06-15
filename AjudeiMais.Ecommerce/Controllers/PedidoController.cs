@@ -34,15 +34,13 @@ namespace AjudeiMais.Ecommerce.Controllers
         {
             string loggedInUserGuid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
 
-
             var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
 
             if (unauthorizedResult != null)
             {
                 return unauthorizedResult;
             }
-            
-            
+
             string errorMessage = null;
             List<GetPedidoModel> pedidos = new List<GetPedidoModel>();
 
@@ -57,14 +55,28 @@ namespace AjudeiMais.Ecommerce.Controllers
                 else
                 {
                     errorMessage = errorMsg ?? "Erro desconhecido ao carregar pedidos.";
-                    return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+                    return RedirectToRoute("usuario-perfil", new
+                    {
+                        alertType = "error",
+                        alertMessage = errorMessage,
+                        guid = loggedInUserGuid
+                    });
                 }
             }
             catch (Exception)
             {
                 errorMessage = "Ocorreu um erro inesperado ao carregar os pedidos. Tente novamente mais tarde.";
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+                return RedirectToRoute("usuario-perfil", new
+                {
+                    alertType = "error",
+                    alertMessage = errorMessage,
+                    guid = loggedInUserGuid
+                });
             }
+
+            // Passar a role do usuário para a view
+            string userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+            ViewBag.Role = userRole;
 
             return View(pedidos);
         }

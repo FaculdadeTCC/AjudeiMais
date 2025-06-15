@@ -43,7 +43,7 @@
             <label for="tipoInstituicao">Sou Instituição</label>
         </div>
 
-        <form method="post" asp-controller="Login" asp-action="Login">
+        <form id="loginForm" method="post">
             <div class="mb-4">
                 <label asp-for="Email" class="form-label">E-mail <span class="text-danger">*</span></label>
                 <input asp-for="Email" type="email" class="form-control" required />
@@ -66,8 +66,40 @@
 
             <p class="mt-4 small text-muted text-center">
                 Ainda não tem uma conta?
-                <a href="@Url.RouteUrl("usuario-cadastrar")" class="fw-semibold">Cadastre-se</a>
+                <a href="#" id="cadastroLink" class="fw-semibold">Cadastre-se</a>
             </p>
         </form>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        const usuarioAction = "@Url.Action("Login", "Login")";
+        const instituicaoAction = "@Url.Action("LoginInstituicao", "Login")";
+
+        const usuarioCadastro = "@Url.RouteUrl("usuario-cadastrar")";
+        const instituicaoCadastro = "@Url.RouteUrl("instituicao-cadastrar")";
+
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            const userType = document.querySelector('input[name="UserType"]:checked').value;
+
+            if (userType === "usuario") {
+                this.action = usuarioAction;
+            } else if (userType === "instituicao") {
+                this.action = instituicaoAction;
+            }
+        });
+
+        document.getElementById('cadastroLink').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            const userType = document.querySelector('input[name="UserType"]:checked').value;
+
+            if (userType === "usuario") {
+                window.location.href = usuarioCadastro;
+            } else if (userType === "instituicao") {
+                window.location.href = instituicaoCadastro;
+            }
+        });
+    </script>
+}

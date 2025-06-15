@@ -803,3 +803,16 @@ body.cadastro-page {
         margin-bottom: var(--spacing-md);
     }
 }
+/* Para garantir que o conteúdo principal não fique por baixo da navbar */
+main[role="main"] {
+    padding-top: 70px; /* Ajuste este valor conforme a altura da sua navbar */
+    /* Se a navbar for responsiva e mudar de altura, considere usar JavaScript
+       para calcular a altura da navbar e aplicar dinamicamente. */
+}
+
+/* Opcional: Garante que a navbar tenha um z-index alto */
+#mainNav {
+    z-index: 1030; /* Valor padrão do Bootstrap para navbars fixas é 1030 */
+    background-color: #fff; /* Garante que o fundo da navbar não seja transparente */
+    box-shadow: 0 2px 4px rgba(0,0,0,.08); /* Adiciona uma sombra sutil */
+}

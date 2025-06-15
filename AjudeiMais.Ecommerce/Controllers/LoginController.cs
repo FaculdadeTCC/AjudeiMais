@@ -78,30 +78,16 @@ namespace AjudeiMais.Ecommerce.Controllers
                     HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
 
-                string nome = "";
-                if (loginResponse.Role == "usuario")
-                {
-                    var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
-                    json = await usuario.Content.ReadAsStringAsync();
-                    var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
 
-                    nome = usuarioResponse.NomeCompleto;
-                }
-
-                if (loginResponse.Role == "instituicao")
-                {
-                    var usuario = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{loginResponse.GUID}");
-                    json = await usuario.Content.ReadAsStringAsync();
-                    var instituicaoResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
-
-                    nome = instituicaoResponse.Nome;
-                }
+                var usuario = await httpClient.GetAsync($"{BASE_URL}api/Usuario/GetByGUID/{loginResponse.GUID}");
+                json = await usuario.Content.ReadAsStringAsync();
+                var usuarioResponse = JsonConvert.DeserializeObject<UsuarioPerfilModel>(json);
 
 
                 // Cria as claims do usuário autenticado
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, nome),
+                    new Claim(ClaimTypes.Name, usuarioResponse.NomeCompleto),
                     new Claim(ClaimTypes.Role, loginResponse.Role),
                     new Claim("UserId", loginResponse.Id),
                     new Claim("GUID", loginResponse.GUID),
@@ -113,16 +99,14 @@ namespace AjudeiMais.Ecommerce.Controllers
                     await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 // Redireciona com base no perfil (role)
-                switch (loginResponse.Role.ToLower())
+                if (loginResponse.Role.ToLower() == "usuario")
                 {
-                    case "admin":
-                        return RedirectToAction("Index", "Admin");
-                    case "instituicao":
-                        return RedirectToAction("Perfil", "Instituicao", new { guid = loginResponse.GUID.ToString() });
-                    case "usuario":
                         return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
-                    default:
+                }
+                else
+                {
                         return RedirectToAction("AcessoNegado", "Home");
+
                 }
             }
             catch (Exception ex)
@@ -131,9 +115,76 @@ namespace AjudeiMais.Ecommerce.Controllers
 
             }
         }
+		[HttpPost("LoginInstituicao")]
+		public async Task<IActionResult> LoginInstituicao(LoginViewModel model)
+		{
+			try
+			{
+				var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+				httpClient.DefaultRequestHeaders.ConnectionClose = true;
+
+				var jsonContent = JsonConvert.SerializeObject(model);
+				var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+				var response = await httpClient.PostAsync($"{BASE_URL}api/Auth/login", content);
+				if (!response.IsSuccessStatusCode)
+				{
+					return RedirectToAction("Login", new
+					{
+						alertType = "error",
+						alertMessage = response.ReasonPhrase
+					});
+				}
+
+				var json = await response.Content.ReadAsStringAsync();
+				var loginResponse = JsonConvert.DeserializeObject<LoginResponse>(json);
+
+				// Armazena dados na sessão
+				HttpContext.Session.SetString("JwtToken", loginResponse.Token);
+				HttpContext.Session.SetString("UserRole", loginResponse.Role);
+				HttpContext.Session.SetString("UserId", loginResponse.Id);
+				HttpContext.Session.SetString("GUID", loginResponse.GUID);
 
 
-        [HttpPost]
+				var usuario = await httpClient.GetAsync($"{BASE_URL}api/Instituicao/GetByGUID/{loginResponse.GUID}");
+				json = await usuario.Content.ReadAsStringAsync();
+				var instituicaoResponse = JsonConvert.DeserializeObject<InstituicaoPerfilModel>(json);
+
+
+				// Cria as claims do usuário autenticado
+				var claims = new List<Claim>
+				{
+					new Claim(ClaimTypes.Name, instituicaoResponse.Nome),
+					new Claim(ClaimTypes.Role, loginResponse.Role),
+					new Claim("UserId", loginResponse.Id),
+					new Claim("GUID", loginResponse.GUID),
+				};
+
+				var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+				var principal = new ClaimsPrincipal(identity);
+
+				await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+				// Redireciona com base no perfil (role)
+				if(loginResponse.Role.ToLower() == "instituicao")
+				{
+						return RedirectToAction("Perfil", "Instituicao", new { guid = loginResponse.GUID.ToString() });
+				}
+                else
+                {
+						return RedirectToAction("AcessoNegado", "Home");
+
+                }
+			}
+			catch (Exception ex)
+			{
+				return RedirectToRoute("login", new { alertType = "error", alertMessage = ex.Message });
+
+			}
+		}
+
+		[HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {

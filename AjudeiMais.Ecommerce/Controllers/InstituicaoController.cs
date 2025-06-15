@@ -170,7 +170,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
         [HttpPost("AlterarDados")]
         [RoleAuthorize("instituicao", "admin")]
-        public async Task<IActionResult> AlterarDados(InstituicaoDadosModel model, IFormFile FotoPerfil)
+        public async Task<IActionResult> AlterarDados(InstituicaoDadosModel model, IFormFile? FotoPerfil)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -194,7 +194,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
                         if (response.IsSuccessStatusCode)
                         {
-                            return RedirectToRoute($"instituicao-Alterar-dados", new { alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
+                            return RedirectToRoute($"instituicao-perfil", new { guid = model.GUID, alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
                         }
                         else
                         {
@@ -203,7 +203,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
                             if (problemDetails?.Title != null && problemDetails?.Detail != null)
                             {
-                                return RedirectToRoute("instituicao-cadastrar", new { alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
+                                return RedirectToRoute("instituicao-cadastrar", new { guid = model.GUID, alertType = "error", alertMessage = $"{problemDetails.Title}: {problemDetails.Detail}" });
                             }
                             else if (!string.IsNullOrEmpty(responseContent))
                             {
@@ -262,7 +262,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
                     if (response.IsSuccessStatusCode)
                     {
-                        return RedirectToRoute("instituicao-perfil", new { alertType = "success", alertMessage = "Fotos atualizadas com sucesso!" });
+                        return RedirectToRoute("instituicao-perfil", new { guid = model.Instituicao_GUID, alertType = "success", alertMessage = "Fotos atualizadas com sucesso!" });
                     }
                     else
                     {
@@ -273,7 +273,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                             ? $"{problemDetails.Title}: {problemDetails.Detail}"
                             : $"Erro ao atualizar fotos: {responseContent}";
 
-                        return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = mensagemErro });
+                        return RedirectToRoute("instituicao-perfil",new { guid = model.Instituicao_GUID, alertType = "error", alertMessage = mensagemErro });
                     }
                 }
             }

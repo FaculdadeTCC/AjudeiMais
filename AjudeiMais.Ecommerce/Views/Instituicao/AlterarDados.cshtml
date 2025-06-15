@@ -85,7 +85,7 @@
 					<h2 class="section-title mb-4">
 						<i class="fas fa-building me-2"></i> Dados da Instituição
 					</h2>
-					<form id="formInstituicao" method="POST"  enctype="multipart/form-data">
+					<form id="formInstituicao" method="POST" asp-controller="Instituicao" asp-action="AlterarDados" enctype="multipart/form-data">
 						<input type="text" class="form-control" id="GUID" name="GUID"
 							   required value="@Model.GUID" hidden>
 
@@ -260,7 +260,7 @@
 					<h2 class="section-title mb-4">
 						<i class="fas fa-images me-2"></i> Fotos da Instituição
 					</h2>
-					<form id="formFotos" method="post" action="/Instituicao/AtualizarFotos" enctype="multipart/form-data">
+					<form id="formFotos" method="post" asp-controller="instituicao" asp-action="AtualizarFotos" enctype="multipart/form-data">
 						<input type="text" class="form-control" id="Instituicao_GUID" name="Instituicao_GUID"
 							   required value="@Model.GUID" hidden>
 

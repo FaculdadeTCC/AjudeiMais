@@ -28,22 +28,7 @@
                 <p class="mb-0">Preencha os campos abaixo para registrar sua instituição</p>
             </div>
 
-            @*<div class="container">
-            <div class="step-indicator">
-            <div class="step active">
-            <div class="step-number">1</div>
-            <div class="step-title">Dados Institucionais</div>
-            </div>
-            <div class="step">
-            <div class="step-number">2</div>
-            <div class="step-title">Endereço</div>
-            </div>
-            <div class="step">
-            <div class="step-number">3</div>
-            <div class="step-title">Finalizar</div>
-            </div>
-            </div>
-            </div>  *@
+
             <form method="post" asp-controller="Instituicao" asp-action="Cadastro" enctype="multipart/form-data">
 
                 <!-- DADOS INSTITUCIONAIS -->
@@ -125,8 +110,7 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- ENDEREÇO (continua como estava) -->
+                <!-- ENDEREÇO (atualizado com IDs para uso em JavaScript) -->
                 <div class="form-step">
                     <div class="mb-5">
                         <h2 class="section-title mb-4">
@@ -135,21 +119,21 @@
                         <div class="row g-4">
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.CEP" class="form-control" placeholder="CEP" />
+                                    <input asp-for="Endereco.CEP" class="form-control" placeholder="CEP" id="cep" />
                                     <label asp-for="Endereco.CEP" class="required-field"></label>
                                     <span asp-validation-for="Endereco.CEP" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.Rua" class="form-control" placeholder="Rua" />
+                                    <input asp-for="Endereco.Rua" class="form-control" placeholder="Rua" id="rua" />
                                     <label asp-for="Endereco.Rua" class="required-field"></label>
                                     <span asp-validation-for="Endereco.Rua" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.Numero" class="form-control" placeholder="Número" />
+                                    <input asp-for="Endereco.Numero" class="form-control" placeholder="Número" id="numero" />
                                     <label asp-for="Endereco.Numero" class="required-field"></label>
                                     <span asp-validation-for="Endereco.Numero" class="text-danger"></span>
                                 </div>
@@ -163,21 +147,21 @@
                             </div>
                             <div class="col-md-4">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.Bairro" class="form-control" placeholder="Bairro" />
+                                    <input asp-for="Endereco.Bairro" class="form-control" placeholder="Bairro" id="bairro" />
                                     <label asp-for="Endereco.Bairro" class="required-field"></label>
                                     <span asp-validation-for="Endereco.Bairro" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-5">
                                 <div class="form-floating">
-                                    <input asp-for="Endereco.Cidade" class="form-control" placeholder="Cidade" />
+                                    <input asp-for="Endereco.Cidade" class="form-control" placeholder="Cidade" id="cidade" />
                                     <label asp-for="Endereco.Cidade" class="required-field"></label>
                                     <span asp-validation-for="Endereco.Cidade" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating">
-                                    <select asp-for="Endereco.Estado" class="form-select">
+                                    <select asp-for="Endereco.Estado" class="form-select" id="estado">
                                         <option value="">Selecione</option>
                                         @foreach (var uf in new[] { "AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO" })
                                         {
@@ -277,6 +261,106 @@
             inputFotos.value = '';
             previewContainer.innerHTML = '';
             removeBtn.classList.add('d-none');
+        });
+    </script>
+
+    <script>
+        document.getElementById('cep').addEventListener('blur', function () {
+            const cep = this.value.replace(/\D/g, '');
+
+            if (cep.length === 8) {
+                fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.erro) {
+                            document.getElementById('rua').value = data.logradouro;
+                            document.getElementById('bairro').value = data.bairro;
+                            document.getElementById('cidade').value = data.localidade;
+                            document.getElementById('estado').value = data.uf;
+                            document.getElementById('numero').focus();
+                        }
+                    });
+            }
+        });
+    </script>
+    <script type="module">
+        import {
+            validarEmail,
+            validarCPF,
+            validarTelefone,
+            validarNome,
+            validarSenha,
+            setInputValid,
+            setInputInvalid,
+            validarCamposObrigatoriosNaEtapaAtual
+        } from '/js/paginas/cadastro-usuario/form-validacoes.js';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('Email');
+            const telefoneInput = document.getElementById('Telefone');
+            const nomeInput = document.getElementById('Nome');
+            const documentoInput = document.getElementById('Documento');
+            const senhaInput = document.getElementById('Senha');
+
+            emailInput?.addEventListener('blur', async () => {
+                const valido = await validarEmail(emailInput.value);
+                valido ? setInputValid(emailInput) : setInputInvalid(emailInput);
+            });
+
+            telefoneInput?.addEventListener('blur', () => {
+                const valido = validarTelefone(telefoneInput.value);
+                valido ? setInputValid(telefoneInput) : setInputInvalid(telefoneInput);
+            });
+
+            nomeInput?.addEventListener('blur', () => {
+                const valido = validarNome(nomeInput.value);
+                valido ? setInputValid(nomeInput) : setInputInvalid(nomeInput);
+            });
+
+            documentoInput?.addEventListener('blur', () => {
+                const valido = validarCPF(documentoInput.value);
+                valido ? setInputValid(documentoInput) : setInputInvalid(documentoInput);
+            });
+
+            senhaInput?.addEventListener('blur', () => {
+                const valido = validarSenha(senhaInput.value);
+                valido ? setInputValid(senhaInput) : setInputInvalid(senhaInput);
+            });
+
+            // Avançar etapa
+            const btnProximo = document.getElementById("btnProximo");
+            const btnVoltar = document.getElementById("btnVoltar");
+            const btnFinalizar = document.getElementById("btnFinalizar");
+            const steps = document.querySelectorAll(".form-step");
+            let stepAtual = 0;
+
+            btnProximo?.addEventListener("click", () => {
+                if (!validarCamposObrigatoriosNaEtapaAtual()) return;
+
+                steps[stepAtual].classList.remove("active");
+                stepAtual++;
+
+                steps[stepAtual].classList.add("active");
+
+                btnVoltar.classList.remove("d-none");
+                if (stepAtual === steps.length - 1) {
+                    btnProximo.classList.add("d-none");
+                    btnFinalizar.classList.remove("d-none");
+                }
+            });
+
+            btnVoltar?.addEventListener("click", () => {
+                steps[stepAtual].classList.remove("active");
+                stepAtual--;
+
+                steps[stepAtual].classList.add("active");
+
+                btnProximo.classList.remove("d-none");
+                btnFinalizar.classList.add("d-none");
+                if (stepAtual === 0) {
+                    btnVoltar.classList.add("d-none");
+                }
+            });
         });
     </script>
 }

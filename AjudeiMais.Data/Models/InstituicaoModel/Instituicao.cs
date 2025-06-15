@@ -18,6 +18,8 @@ namespace AjudeiMais.Data.Models.InstituicaoModel
         public string GUID { get; set; }
         public string Role { get; set; }
         public string? Avaliacao { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
         public bool Habilitado { get; set; }
         public bool Excluido { get; set; }
         public DateTime DataCriacao { get; set; }

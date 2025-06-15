@@ -44,7 +44,7 @@ builder.Services.AddScoped<NominatimService>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 50 * 1024 * 1024; // 50 MB
+    options.MultipartBodyLengthLimit = 100 * 1024 * 1024; // 50 MB
 });
 
 

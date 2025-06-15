@@ -28,7 +28,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddHttpClient("ApiAjudeiMais", client =>
 {
-    client.BaseAddress = new Uri("http://localhost:5168/");
+    client.BaseAddress = new Uri("http://localhost:7271/");
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -85,7 +85,7 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "instituicao-perfil",
-    pattern: "instituicao/perfil, {guid}",
+    pattern: "instituicao/perfil/{guid}",
     defaults: new { controller = "Instituicao", action = "Perfil" }
 );
 

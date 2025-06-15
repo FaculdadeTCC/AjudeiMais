@@ -67,6 +67,18 @@
             transition: margin-left 0.2s;
         }
 
+        /* Ajuste para o conteúdo principal quando a navbar está presente */
+        main[role="main"] {
+            padding-top: 70px; /* Ajuste este valor se a altura da sua navbar for diferente */
+        }
+
+        /* Garante que a navbar tenha um z-index alto e fundo sólido */
+        #mainNav {
+            z-index: 1030;
+            background-color: #fff; /* Fundo branco para a navbar */
+            box-shadow: 0 2px 4px rgba(0,0,0,.08); /* Sombra sutil */
+        }
+
         @@media (max-width: 768px) {
             .sidebar {
                 width: 0;
@@ -144,80 +156,130 @@
                         {
                             var userGuidLogado = User.FindFirst("GUID")?.Value; /* Added null check */
 
-                            <li class="nav-item d-flex align-items-center">
-                                @* Added d-flex and align-items-center for consistency *@
-                                <a class="btn btn-action-logged-in" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
-                                    <i class="fas fa-plus-circle"></i> Anunciar Item
-                                </a>
-                            </li>
+                            string userRole = User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value;
+                            if(userRole == "Usuario")
+                            {
+                                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                                    @* Adicionei ul para melhor estrutura do nav *@
+                                    <li class="nav-item">
+                                        <a class="btn btn-action-logged-in me-2" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
+                                            <i class="fas fa-plus-circle"></i> Anunciar Item
+                                        </a>
+                                    </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user me-2"></i> @User.Identity.Name
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
-                                            <i class="fas fa-chart-line"></i> Dashboard
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-user me-2"></i> @User.Identity.Name
                                         </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
-                                            <i class="fas fa-user-circle"></i> Meu Perfil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
-                                            <i class="fas fa-edit"></i> Editar Dados
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-                                            <i class="fas fa-sign-out-alt"></i> Sair
-                                        </a>
-                                        <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-                                            @Html.AntiForgeryToken()
-                                        </form>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-chart-line"></i> Dashboard
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-user-circle"></i> Meu Perfil
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-edit"></i> Editar Dados
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                    <i class="fas fa-sign-out-alt"></i> Sair
+                                                </a>
+                                                <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                    @Html.AntiForgeryToken()
+                                                </form>
+                                            </li>
+                                        </ul>
                                     </li>
                                 </ul>
-                            </li>
+                            }
+                            else if(userRole == "instituicao")
+                            {
+                                <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                                    @* Adicionei ul para melhor estrutura do nav *@
+
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="fa fa-user me-2"></i> @User.Identity.Name
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-chart-line"></i> Dashboard
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-user-circle"></i> Meu Perfil
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">
+                                                    <i class="fas fa-edit"></i> Editar Dados
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                    <i class="fas fa-sign-out-alt"></i> Sair
+                                                </a>
+                                                <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                    @Html.AntiForgeryToken()
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            }
                         }
                         else
                         {
-                            <li class="nav-item position-relative search-form-wrapper">
-                                <form class="d-flex" role="search">
-                                    <input class="form-control" type="search" placeholder="Buscar itens…" aria-label="Buscar itens" />
-                                    <span class="input-group-text">
-                                        <i class="fa fa-search"></i>
-                                    </span>
-                                </form>
-                            </li>
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                                @* Adicionei ul para melhor estrutura do nav *@
+                                <li class="nav-item position-relative search-form-wrapper me-2">
+                                    @* Adicionado me-2 para espaçamento *@
+                                    <form class="d-flex" role="search">
+                                        <input class="form-control" type="search" placeholder="Buscar itens…" aria-label="Buscar itens" />
+                                        <span class="input-group-text">
+                                            <i class="fa fa-search"></i>
+                                        </span>
+                                    </form>
+                                </li>
 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Categorias
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
-                                    <li><a class="dropdown-item" href="#">Roupas</a></li>
-                                    <li><a class="dropdown-item" href="#">Alimentos</a></li>
-                                    <li><a class="dropdown-item" href="#">Brinquedos</a></li>
-                                    <li><a class="dropdown-item" href="#">Outros</a></li>
-                                </ul>
-                            </li>
+                                <li class="nav-item dropdown me-2">
+                                    @* Adicionado me-2 para espaçamento *@
+                                    <a class="nav-link dropdown-toggle" href="#" id="dropdownCategorias" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Categorias
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownCategorias">
+                                        <li><a class="dropdown-item" href="#">Roupas</a></li>
+                                        <li><a class="dropdown-item" href="#">Alimentos</a></li>
+                                        <li><a class="dropdown-item" href="#">Brinquedos</a></li>
+                                        <li><a class="dropdown-item" href="#">Outros</a></li>
+                                    </ul>
+                                </li>
 
-                            <li class="nav-item"><a class="nav-link" href="#">Sobre</a></li>
+                                <li class="nav-item me-2"><a class="nav-link" href="#">Sobre</a></li> @* Adicionado me-2 para espaçamento *@
 
-                            <li class="nav-item">
-                                <a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">
-                                    <i class="fa fa-user me-2"></i> Entrar
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="btn btn-outline-light rounded-pill px-4 ms-md-2" asp-controller="Doacao" asp-action="Cadastrar">
-                                    Doar Agora
-                                </a>
-                            </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-primary rounded-pill px-4" href="@Url.RouteUrl("login")">
+                                        <i class="fa fa-user me-2"></i> Entrar
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="btn btn-outline-primary rounded-pill px-4 ms-md-2" asp-controller="Doacao" asp-action="Cadastrar">
+                                        @* Alterado outline-light para outline-primary *@
+                                        Doar Agora
+                                    </a>
+                                </li>
+                            </ul>
                         }
                     </div>
                 </div>
