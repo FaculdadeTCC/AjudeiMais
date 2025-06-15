@@ -164,7 +164,8 @@ namespace AjudeiMais.API.Controllers
                 {
                     Success = false,
                     Type = "error",
-                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde."
+                    Message = "Ocorreu um erro interno no servidor. Por favor, tente novamente mais tarde.",
+                     Errors = new List<string> { ex.Message }
                 });
             }
         }

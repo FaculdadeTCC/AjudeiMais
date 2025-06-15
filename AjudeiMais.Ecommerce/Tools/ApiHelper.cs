@@ -351,7 +351,7 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #endregion
 
-          #region Categoria API Calls
+        #region Categoria API Calls
 
         public static async Task<(List<CategoriaDtoGet>? categorias, string? errorMessage)> ListAllCategoriasAsync(
             IHttpClientFactory httpClientFactory)
@@ -702,8 +702,8 @@ namespace AjudeiMais.Ecommerce.Tools
                     var instituicoes = JsonSerializer.Deserialize<List<InstituicaoModel>>(
                         content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-                    if (apiResponse != null && apiResponse.Data != null)
-                        return (apiResponse.Data, null);
+                    if (instituicoes != null)
+                        return (instituicoes, null);
                     else
                         return (null, "A resposta da API veio vazia ou inválida.");
                 }

@@ -39,12 +39,20 @@
                 <div class="section-header">
                     <i class="fas fa-bullhorn section-icon"></i>
                     <h2>Meus Anúncios Recentes</h2>
+                    <a href="@Url.RouteUrl("anuncios", new { guid = userGuidLogado })">Ver Todos</a>
                 </div>
                 <div class="ads-grid">
                     @foreach (var item in Model.Anuncios.Take(3)) // Showing up to 3 recent ads
                     {
-                        var imageUrl = item.ProdutoImagens?.FirstOrDefault()?.Imagem != null ? Assistant.ServerURL() + item.ProdutoImagens.First().Imagem : null;
-                        <a href="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Guid })" class="ad-card">
+                   var imagemPrincipal = item.ProdutoImagens?
+    .FirstOrDefault(pi => pi.IsPrincipal == true && pi.Excluido != true)
+    ?? item.ProdutoImagens?.FirstOrDefault(pi => pi.Excluido != true);
+
+var imageUrl = imagemPrincipal != null
+    ? Assistant.ServerURL() + imagemPrincipal.Imagem
+    : null;
+    
+    <a href="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Guid })" class="ad-card">
                             <div class="ad-card-image">
                                 @if (imageUrl != null)
                                 {

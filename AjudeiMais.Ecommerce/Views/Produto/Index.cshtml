@@ -60,16 +60,23 @@
 					{
 						<tr data-search-term="@(produto.Nome.ToLower() + " " + produto.Quantidade + " " + produto.Condicao.ToLower())">
 							<td>
-								<img src="@(produto.ProdutoImagens != null && produto.ProdutoImagens.Any()
-										? $"{Assistant.ServerURL()}{produto.ProdutoImagens.FirstOrDefault().Imagem}"
-										: "/images/placeholder.jpg")"
+								@{
+									var imagemProduto = produto.ProdutoImagens?
+									.FirstOrDefault(pi => pi.IsPrincipal == true && pi.Excluido != true)
+									?? produto.ProdutoImagens?.FirstOrDefault(pi => pi.Excluido != true);
+
+									var imagemUrl = imagemProduto != null
+									? $"{Assistant.ServerURL()}{imagemProduto.Imagem}"
+									: "/images/placeholder.jpg";
+								}
+								<img src="@imagemUrl"
 									 class="product-image-thumb"
 									 alt="Imagem do produto @produto.Nome">
 							</td>
 							<td>
 								<strong>@produto.Nome</strong>
 							</td>
-							<td>@produto.CategoriaProduto_ID</td>
+					<td>@produto.CategoriaProduto?.Nome</td>
 							<td>@produto.Quantidade @produto.UnidadeMedida</td>
 							<td>
 								@produto.Condicao

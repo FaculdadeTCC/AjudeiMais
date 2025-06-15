@@ -187,33 +187,53 @@ namespace AjudeiMais.API.Services
         /// </summary>
         /// <param name="guid">GUID do usuário.</param>
         /// <returns>ApiResponse contendo a coleção de produtos do usuário.</returns>
-        public async Task<ApiResponse<IEnumerable<Produto>>> GetProdutosByUsuarioGuid(string guid)
+        public async Task<ApiResponse<IEnumerable<ProdutoResponseDto>>> GetProdutosByUsuarioGuid(string guid)
         {
             try
             {
                 var produtos = await _produtoRepository.GetByUsuarioGuid(guid);
 
 
-                var produtosReturn = produtos.Select(p => new Produto
+                var produtosReturn = produtos.Select(p => new ProdutoResponseDto
                 {
                     Produto_ID = p.Produto_ID,
-                    Guid = p.Guid,
+                    Guid = p.Guid.ToString(),
                     Nome = p.Nome,
                     Descricao = p.Descricao,
                     Condicao = p.Condicao,
                     Validade = p.Validade,
                     Quantidade = p.Quantidade,
-                    Peso = p.Peso,
+                    Peso = (double)p.Peso,
                     Disponivel = p.Disponivel,
                     Habilitado = p.Habilitado,
                     Excluido = p.Excluido,
                     DataCriacao = p.DataCriacao,
                     DataUpdate = p.DataUpdate,
                     UnidadeMedida = p.UnidadeMedida,
-                    ProdutoImagens = p.ProdutoImagens,
-                });
+                    Imagens = p.ProdutoImagens?.Select(i => i.Imagem).ToList(),
 
-                return new ApiResponse<IEnumerable<Produto>>
+                    CategoriaProduto = p.CategoriaProduto != null ? new CategoriaProdutoDto
+                    {
+                        CategoriaProduto_ID = p.CategoriaProduto.CategoriaProduto_ID,
+                        Nome = p.CategoriaProduto.Nome,
+                        Icone = p.CategoriaProduto.Icone
+                    } : null,
+
+                    Usuario = p.Usuario != null ? new UsuarioDto
+                    {
+                        Usuario_ID = p.Usuario.Usuario_ID,
+                        NomeCompleto = p.Usuario.NomeCompleto,
+                        Email = p.Usuario.Email,
+                        Guid = p.Usuario.GUID.ToString(),
+                        Telefone = p.Usuario.Telefone,
+                        FotoDePerfil = p.Usuario.FotoDePerfil,
+                        Cidade = p.Usuario.Cidade,
+                        Estado = p.Usuario.Estado
+                    } : null
+                }).ToList();
+
+
+                return new ApiResponse<IEnumerable<ProdutoResponseDto>>
                 {
                     Success = true,
                     Message = "Produtos recuperados com sucesso.",
@@ -222,7 +242,7 @@ namespace AjudeiMais.API.Services
             }
             catch (Exception ex)
             {
-                return new ApiResponse<IEnumerable<Produto>>
+                return new ApiResponse<IEnumerable<ProdutoResponseDto>>
                 {
                     Success = false,
                     Message = $"Erro ao recuperar produtos: {ex.Message}",

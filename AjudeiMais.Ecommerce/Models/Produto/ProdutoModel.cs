@@ -112,6 +112,14 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime? DataUpdate { get; set; }
         public decimal? Peso { get; set; }
         public IEnumerable<ProdutoImagemModel>? ProdutoImagens { get; set; }
+        public CategoriaProdutoDto? CategoriaProduto { get; set; }
+    }
+
+    public class CategoriaProdutoDto
+    {
+        public int CategoriaProduto_ID { get; set; }
+        public string Nome { get; set; }
+        public string Icone { get; set; }
     }
 
     public class ProdutosProximosDto
