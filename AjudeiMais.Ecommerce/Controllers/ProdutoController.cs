@@ -309,78 +309,91 @@ namespace AjudeiMais.Ecommerce.Controllers
             return PartialView();
         }
 
-        [RoleAuthorize("admin", "usuario")]
         [HttpPost]
+        [RoleAuthorize("admin", "usuario")]
         public async Task<IActionResult> Excluir(string guid)
         {
-            // O GUID do usuário logado é necessário para o redirecionamento
+            bool isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest";
             var loggedInUserGuid = User.FindFirst("GUID")?.Value;
+
             if (string.IsNullOrEmpty(loggedInUserGuid))
             {
-                // Se não conseguir o GUID do usuário logado, redirecione para o login
-                return RedirectToRoute("login", new { alertType = "error", alertMessage = "Sua sessão expirou. Faça login novamente." });
+                if (isAjax)
+                    return Json(new { success = false, message = "Sessão expirada.", redirect = "/login" });
+
+                TempData["AlertType"] = "error";
+                TempData["AlertMessage"] = "Sua sessão expirou. Faça login novamente.";
+                return RedirectToRoute("login");
+            }
+
+            if (string.IsNullOrEmpty(guid))
+            {
+                if (isAjax)
+                    return Json(new { success = false, message = "Nenhum anúncio selecionado para exclusão." });
+
+                TempData["AlertType"] = "warning";
+                TempData["AlertMessage"] = "Nenhum anúncio selecionado para exclusão.";
+                return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
             }
 
             try
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
-
-                // Você está tentando excluir o PRODUTO_ID (passado como 'guid' do formulário)
-                // O nome do parâmetro no formulário é 'Produto_ID', mas aqui você está usando 'guid'.
-                // O Model Binding do ASP.NET Core tentará mapear 'Produto_ID' do formulário para 'guid' do método.
-                // Embora funcione, é mais claro se o nome do parâmetro no método for o mesmo do formulário (Produto_ID).
-                // Mas, como está, funciona para o binding.
-                var response = await httpClient.DeleteAsync($"{BASE_URL}api/Produto/{guid}"); // Assumindo que 'guid' é o ID do produto
+                var response = await httpClient.DeleteAsync($"{BASE_URL}api/Produto/{guid}");
 
                 var apiResponseContent = await response.Content.ReadAsStringAsync();
+                var apiContentType = response.Content.Headers.ContentType?.MediaType;
+
                 ApiHelper.ApiResponse<ProdutoModel> apiResponse = null;
 
-                try
+                if (!string.IsNullOrEmpty(apiResponseContent) && apiContentType == "application/json")
                 {
-                    apiResponse = System.Text.Json.JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoModel>>(
+                    apiResponse = JsonSerializer.Deserialize<ApiHelper.ApiResponse<ProdutoModel>>(
                         apiResponseContent,
                         new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
                     );
                 }
-                catch (System.Text.Json.JsonException jsonEx)
+                else if (apiContentType == "text/html")
                 {
-                    _logger.LogError(jsonEx, "Erro ao desserializar resposta da API na exclusão do produto.");
-                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
+                    _logger.LogError("API retornou HTML inesperado: {Content}", apiResponseContent);
+
+                    if (isAjax)
+                        return Json(new { success = false, message = "Resposta inválida da API (HTML em vez de JSON)." });
+
                     TempData["AlertType"] = "error";
-                    TempData["AlertMessage"] = "Ocorreu um erro no formato da resposta da API. Contacte o suporte.";
+                    TempData["AlertMessage"] = "Erro na API: resposta inesperada.";
                     return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
                 }
 
-                if (response.IsSuccessStatusCode && apiResponse != null && apiResponse.Success)
+                if (response.IsSuccessStatusCode && apiResponse?.Success == true)
                 {
-                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
+                    if (isAjax)
+                        return Json(new { success = true, message = apiResponse.Message });
+
                     TempData["AlertType"] = apiResponse.Type;
                     TempData["AlertMessage"] = apiResponse.Message;
-                    // Redireciona para a página de listagem de anúncios, passando o GUID do usuário logado
                     return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
                 }
                 else
                 {
-                    string alertType = apiResponse?.Type ?? "error";
-                    string alertMessage = apiResponse?.Message ?? "Não foi possível processar a requisição de exclusão. Tente novamente.";
-                    // Armazena a mensagem no TempData para ser lida após o redirecionamento
-                    TempData["AlertType"] = alertType;
-                    TempData["AlertMessage"] = alertMessage;
+                    var errorMsg = apiResponse?.Message ?? "Erro desconhecido.";
+                    if (isAjax)
+                        return Json(new { success = false, message = errorMsg });
+
+                    TempData["AlertType"] = apiResponse?.Type ?? "error";
+                    TempData["AlertMessage"] = errorMsg;
                     return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
                 }
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogError(ex, "Erro de requisição HTTP na exclusão do produto.");
-                TempData["AlertType"] = "error";
-                TempData["AlertMessage"] = $"Não foi possível conectar ao servidor. Tente novamente mais tarde ou entre em contato com a nossa equipe.";
-                return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erro inesperado na exclusão do produto.");
+
+                if (isAjax)
+                    return Json(new { success = false, message = "Erro inesperado ao excluir o produto." });
+
                 TempData["AlertType"] = "error";
-                TempData["AlertMessage"] = $"Ocorreu um erro inesperado durante a exclusão.";
+                TempData["AlertMessage"] = "Ocorreu um erro inesperado durante a exclusão.";
                 return RedirectToRoute("anuncios", new { guid = loggedInUserGuid });
             }
         }

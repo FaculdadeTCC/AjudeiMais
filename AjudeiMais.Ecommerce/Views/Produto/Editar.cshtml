@@ -28,11 +28,6 @@
 				</button>
 			</li>
 			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="tab-imagens" data-bs-toggle="tab" data-bs-target="#etapa-imagens" type="button" role="tab" aria-controls="etapa-imagens" aria-selected="false" disabled>
-					Imagens do Item
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
 				<button class="nav-link" id="tab-publicacao" data-bs-toggle="tab" data-bs-target="#etapa-publicacao" type="button" role="tab" aria-controls="etapa-publicacao" aria-selected="false" disabled>
 					Publicação
 				</button>
@@ -136,27 +131,6 @@
 					<button type="button" class="btn btn-primary" onclick="navegarParaAba(2)">Próximo</button>
 				</div>
 			</div>
-
-			<div class="tab-pane fade" id="etapa-publicacao" role="tabpanel" aria-labelledby="tab-publicacao">
-				<h4>Revisar e Publicar</h4>
-				<hr class="mb-3" />
-				<p class="mb-4">Revise as informações do seu anúncio. Após confirmar, ele será enviado para moderação.</p>
-
-				<div class="alert alert-info" role="alert">
-					<h5 class="alert-heading">Resumo do Anúncio:</h5>
-					<p><strong>Nome:</strong> <span id="resumoNome"></span></p>
-					<p><strong>Categoria:</strong> <span id="resumoCategoria"></span></p>
-					<p><strong>Condição:</strong> <span id="resumoCondicao"></span></p>
-					<p><strong>Quantidade:</strong> <span id="resumoQuantidade"></span> <span id="resumoUnidadeMedida"></span></p>
-					<p><strong>Imagens Selecionadas:</strong> <span id="resumoImagemStatus"></span></p>
-					<div id="resumoDescricao" class="p-2 bg-light rounded border" style="max-height: 200px; overflow-y: auto;"></div>
-				</div>
-
-				<div class="d-flex justify-content-between mt-4">
-					<button type="button" class="btn btn-secondary" onclick="navegarParaAba(2)">Voltar</button>
-					<button type="submit" class="btn btn-success">Atualizar Anúncio</button> @* <--- Alterado o texto do botão *@
-				</div>
-			</div>
 		</div>
 	</form>
 </section>
@@ -173,18 +147,27 @@
 
 	@* Script para inicializar o Quill Editor com o conteúdo existente *@
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			var quill = new Quill('#DescricaoEditor', {
-				theme: 'snow'
-			});
-			var hiddenDescricao = document.querySelector('input[name="Descricao"]');
-			if (hiddenDescricao && hiddenDescricao.value) {
-				quill.clipboard.dangerouslyPasteHTML(hiddenDescricao.value);
-			}
+		document.addEventListener('DOMContentLoaded', function () {
+    var quill = new Quill('#DescricaoEditor', {
+        theme: 'snow'
+    });
 
-			quill.on('text-change', function() {
-				hiddenDescricao.value = quill.root.innerHTML;
-			});
-		});
+    var hiddenDescricao = document.querySelector('input[name="Descricao"]');
+
+    // Inserir o conteúdo inicial
+    if (hiddenDescricao && hiddenDescricao.value) {
+        quill.clipboard.dangerouslyPasteHTML(hiddenDescricao.value);
+    }
+
+    // Atualiza sempre que editar
+    quill.on('text-change', function () {
+        hiddenDescricao.value = quill.root.innerHTML;
+    });
+
+    // 🔥 Importante: Garante que o valor seja atualizado antes do submit
+    document.getElementById('formAnuncio').addEventListener('submit', function () {
+        hiddenDescricao.value = quill.root.innerHTML;
+    });
+});
 	</script>
 }

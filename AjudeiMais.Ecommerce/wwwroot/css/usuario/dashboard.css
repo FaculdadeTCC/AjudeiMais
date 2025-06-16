@@ -2,6 +2,81 @@
     display: none;
 }
 
+/* Estilos gerais para o cabeçalho, se ainda não tiver */
+.dashboard-header {
+    background-color: #f8f9fa; /* Um tom claro para o fundo do cabeçalho */
+    padding: 15px 0;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.header-content.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px; /* Ajuste conforme o layout do seu site */
+    margin: 0 auto;
+    padding: 0 20px; /* Espaçamento lateral */
+}
+
+.header-text h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.8em;
+}
+
+.header-text span {
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Estilos para o grupo de ações (botão de voltar e avatar) */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Espaçamento entre o botão e o avatar */
+}
+
+/* Estilo para o botão "Voltar ao Perfil" */
+.back-to-profile-btn {
+    background-color: #007bff; /* Azul primário */
+    color: white;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none; /* Remove o sublinhado padrão do link */
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espaçamento entre o ícone e o texto */
+    transition: background-color 0.3s ease; /* Transição suave ao passar o mouse */
+}
+
+    .back-to-profile-btn:hover {
+        background-color: #0056b3; /* Azul mais escuro no hover */
+    }
+
+    .back-to-profile-btn i {
+        font-size: 1.1em;
+    }
+
+/* Estilo para o círculo do avatar (mantido e talvez melhorado) */
+.user-avatar-circle {
+    width: 40px;
+    height: 40px;
+    background-color: #e9ecef; /* Um cinza claro para o fundo do círculo */
+    border-radius: 50%; /* Torna-o um círculo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #495057; /* Cor do ícone */
+    font-size: 1.5em; /* Tamanho do ícone */
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .user-avatar-circle:hover {
+        background-color: #dee2e6; /* Um cinza um pouco mais escuro no hover */
+    }
+
 .dashboard-wrapper {
     min-height: 100vh;
     display: flex;
