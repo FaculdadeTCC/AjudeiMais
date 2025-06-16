@@ -81,6 +81,8 @@ namespace AjudeiMais.Ecommerce.Controllers
             {
                 var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
+
+
                 using (var formData = new MultipartFormDataContent())
                 {
                     // Adiciona os dados simples da instituição

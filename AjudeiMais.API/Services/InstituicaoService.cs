@@ -4,6 +4,7 @@ using AjudeiMais.API.Tools;
 using AjudeiMais.Data.Models.InstituicaoModel;
 using AjudeiMais.Data.Models.UsuarioModel;
 using Microsoft.AspNetCore.Identity;
+using System.Net.Http;
 
 namespace AjudeiMais.API.Services
 {
@@ -12,12 +13,14 @@ namespace AjudeiMais.API.Services
         private readonly InstituicaoRepository _instituicaoRepository;
         private readonly PasswordHasher<Instituicao> _passwordHasher;
         private readonly ILogger<InstituicaoService> _logger;
+        private readonly NominatimService _nominatimService;
 
-        public InstituicaoService(InstituicaoRepository instituicaoRepository, ILogger<InstituicaoService> logger)
+        public InstituicaoService(InstituicaoRepository instituicaoRepository, ILogger<InstituicaoService> logger, NominatimService nominatimService)
         {
             _instituicaoRepository = instituicaoRepository;
             _passwordHasher = new PasswordHasher<Instituicao>();
             _logger = logger;
+            _nominatimService = nominatimService;
         }
 
         public async Task<Instituicao> GetById(int id)
@@ -143,6 +146,8 @@ namespace AjudeiMais.API.Services
         public async Task<ApiResponse<bool>> SaveOrUpdate(InstituicaoPostDTO model)
         {
             var response = new ApiResponse<bool>();
+
+
             try
             {
                 var existente = await _instituicaoRepository.GetByEmail(model.Email);
@@ -171,7 +176,6 @@ namespace AjudeiMais.API.Services
                         }
                     }
                 }
-
                 var endereco = model.Enderecos?.FirstOrDefault();
                 if (endereco == null)
                 {
@@ -180,6 +184,18 @@ namespace AjudeiMais.API.Services
                     response.Message = "Endereço obrigatório.";
                     return response;
                 }
+                // pegando latitude e longitudo do usuario  
+
+                var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(endereco.CEP, endereco.Cidade);
+
+                if (coordenadas == null || string.IsNullOrEmpty(coordenadas.Latitude) || string.IsNullOrEmpty(coordenadas.Longitude))
+                {
+                    response.Success = false;
+                    response.Type = "Geolocation";
+                    response.Message = "Não foi possível obter a latitude e longitude com o CEP informado.";
+                    return response;
+                }
+
 
                 var instituicao = new Instituicao
                 {
@@ -193,8 +209,8 @@ namespace AjudeiMais.API.Services
                     Telefone = model.Telefone,
                     GUID = model.GUID,
                     Role = model.Role,
-                    Latitude = model.Latitude,
-                    Longitude = model.Longitude,
+                    Latitude = coordenadas.Latitude,
+                    Longitude = coordenadas.Longitude,
                     DataCriacao = model.Instituicao_ID == 0 ? DateTime.Now : existente?.DataCriacao ?? DateTime.Now,
                     DataUpdate = DateTime.Now,
                     Enderecos = new List<Endereco> { new Endereco

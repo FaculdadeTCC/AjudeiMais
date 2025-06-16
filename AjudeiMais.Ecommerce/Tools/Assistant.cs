@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Http; // Necessary for IFormFile
 using System.Net.Http;
 using System.Security.Claims; // Necessary for ClaimTypes and ClaimsPrincipal
-using System.Reflection; // Necessary for PropertyInfo
+using System.Reflection;
+using System.Text.Json; // Necessary for PropertyInfo
 
 namespace AjudeiMais.Ecommerce.Tools
 {
@@ -191,5 +192,5 @@ namespace AjudeiMais.Ecommerce.Tools
 
 
 
-	}
+    }
 }
