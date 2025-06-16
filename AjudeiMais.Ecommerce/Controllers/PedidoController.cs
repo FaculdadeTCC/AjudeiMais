@@ -152,6 +152,35 @@ namespace AjudeiMais.Ecommerce.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        [RoleAuthorize("instituicao", "admin", "usuario")]
+        public async Task<IActionResult> AtualizarStatusInstituicao(PedidoModel pedido)
+        {
+            string loggedInUserGuid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            pedido.Instituicao_GUID = loggedInUserGuid;
+            //pedido.Usuario_GUID = 
+            var (apiResponse, erro) = await ApiHelper.CriarPedidoAsync(pedido, _httpClientFactory, _httpContextAccessor);
+
+            if (!string.IsNullOrEmpty(erro))
+            {
+                return RedirectToRoute("produto-detalhe", new
+                {
+                    alertType = "error",
+                    alertMessage = erro,
+                    id = pedido.Produto_ID
+                });
+            }
+
+            return RedirectToAction("Index");
+        }
+
         [HttpGet]
         [RoleAuthorize("instituicao", "admin")]
         public async Task<IActionResult> PedidosPorInstituicao()

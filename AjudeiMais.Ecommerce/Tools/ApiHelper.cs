@@ -972,6 +972,55 @@ namespace AjudeiMais.Ecommerce.Tools
             }
         }
 
+        public static async Task<(ApiResponse<PedidoModel>?, string?)> AtualizarPedidoInstituicaoAsync(PedidoModel pedido, IHttpClientFactory _httpClientFactory, IHttpContextAccessor _httpContextAccessor)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                // 🧠 Recupera o token da Session
+                var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken"); // Note o "t" minúsculo
+
+                if (string.IsNullOrEmpty(token))
+                    return (null, "Token de autenticação não encontrado.");
+
+                // 🔐 Adiciona o token JWT no cabeçalho Authorization
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                string requestUri = $"{BASE_URL}api/Pedido";
+
+                var json = JsonSerializer.Serialize(pedido);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(requestUri, content);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<PedidoModel>>(responseBody,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (response.IsSuccessStatusCode && apiResponse is not null)
+                {
+                    return (apiResponse, null);
+                }
+
+                string errorMsg = apiResponse?.Message ?? "Erro desconhecido ao criar pedido.";
+                return (apiResponse, errorMsg);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (null, $"Erro de conexão com a API: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                return (null, $"Erro ao processar resposta da API (JSON): {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return (null, $"Erro inesperado ao criar pedido: {ex.Message}");
+            }
+        }
+
+
         public static async Task<(ApiResponse<List<GetPedidoModel>>?, string?)> GetPedidosPorInstituicaoGUIDAsync(string guid, IHttpClientFactory _httpClientFactory, IHttpContextAccessor _httpContextAccessor)
         {
             try

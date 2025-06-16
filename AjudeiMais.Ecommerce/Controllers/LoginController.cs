@@ -103,6 +103,10 @@ namespace AjudeiMais.Ecommerce.Controllers
                 {
                         return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
                 }
+                else if(loginResponse.Role.ToLower() == "admin")
+                {
+                    return RedirectToRoute("admin-dashboard");
+                }
                 else
                 {
                         return RedirectToAction("AcessoNegado", "Home");
