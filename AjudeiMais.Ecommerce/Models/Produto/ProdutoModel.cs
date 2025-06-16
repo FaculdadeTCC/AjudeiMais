@@ -166,6 +166,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
 
         [Required]
         public bool IsPrincipal { get; set; }
+        public bool? Excluido { get; set; }
     }
 
     public class ProdutoImagemModel

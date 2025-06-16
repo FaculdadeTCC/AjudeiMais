@@ -220,6 +220,11 @@
                         <i class="fa fa-users me-2"></i> Usuários
                     </a>
                 </li>
+                                           <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard")">
+                                                <i class="fas fa-chart-line"></i> Instituições
+                                            </a>
+                                        </li>   
                 <li class="nav-item">
                     <a href="" class="nav-link @(ViewContext.RouteData.Values["action"]?.ToString() == "Settings" ? "active" : "")">
                         <i class="fa fa-cog me-2"></i> Configurações
@@ -257,7 +262,7 @@
                     </button>
 
                     <div class="navbar-collapse collapse" id="navbarMain">
-                        @if (User.Identity.IsAuthenticated && User.IsInRole("Usuario"))
+                        @if (User.Identity.IsAuthenticated && User.IsInRole("usuario"))
                         {
                             var userGuidLogado = User.FindFirst("GUID")?.Value;
 
@@ -289,7 +294,7 @@
                                         </li>
                                         <li>
                                             <a class="dropdown-item" href="@Url.RouteUrl("pedidos", new {guid = userGuidLogado})">
-                                                <i class="fas fa-edit"></i> pedidos
+                                                <i class="fas fa-gift"></i> Pedidos
                                             </a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
@@ -312,7 +317,7 @@
                             <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
                                 <li class="nav-item">
                                     <a class="btn btn-action-logged-in rounded-pill" href="@Url.RouteUrl("meus-pedidos", new { guid = userGuidLogado})">
-                                        <i class="fas fa-plus-circle"></i> Meus pedidos
+                                        <i class="fas fa-gift"></i> Meus Pedidos
                                     </a>
                                 </li>
                                 <li class="nav-item dropdown">
@@ -320,11 +325,6 @@
                                         <i class="fa fa-user me-2"></i> @User.Identity.Name
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                        <li>
-                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard", new {guid = userGuidLogado})">
-                                                <i class="fas fa-chart-line"></i> Dashboard
-                                            </a>
-                                        </li>
                                         <li>
                                             <a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
                                                 <i class="fas fa-user-circle"></i> Meu Perfil
