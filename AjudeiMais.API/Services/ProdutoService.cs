@@ -334,24 +334,36 @@ namespace AjudeiMais.API.Services
         /// <param name="lat">Latitude do ponto de referência.</param>
         /// <param name="lng">Longitude do ponto de referência.</param>
         /// <returns>Uma coleção de produtos próximos.</returns>
-        public async Task<ApiResponse<IEnumerable<ProdutoGetDTO>>> GetProdutosProximos(double lat, double lng)
+        public async Task<ApiResponse<IEnumerable<ProdutoGetDTO>>> GetProdutosProximos(double latInstituicao, double lngInstituicao)
         {
-            var todosUsuarios = await _usuarioRepository.GetItens();
             var raioBuscaKm = 200;
             var produtosProximos = new List<Produto>();
 
-            var usuariosProximos = todosUsuarios
-                .Where(u => (!string.IsNullOrEmpty(u.Latitude) && !string.IsNullOrEmpty(u.Longitude)))
-                .Where(u => Helpers.CalcularDistancia(lat, lng, double.Parse(u.Latitude, CultureInfo.InvariantCulture), double.Parse(u.Longitude, CultureInfo.InvariantCulture)) <= raioBuscaKm)
+            // 1. Pegar todos os usuários com latitude e longitude válidas
+            var todosUsuarios = await _usuarioRepository.GetItens();
+
+            var usuariosComLocalizacao = todosUsuarios
+                .Where(u => !string.IsNullOrWhiteSpace(u.Latitude) && !string.IsNullOrWhiteSpace(u.Longitude))
                 .ToList();
 
-
-            foreach (var usuario in usuariosProximos)
+            // 2. Comparar distância do usuário até a instituição
+            foreach (var usuario in usuariosComLocalizacao)
             {
-                var produtosDoUsuario = await _produtoRepository.GetByUsuarioGuid(usuario.GUID);
-                produtosProximos.AddRange(produtosDoUsuario.Where(p => p.Excluido != true));
+                double latUsuario = double.Parse(usuario.Latitude, CultureInfo.InvariantCulture);
+                double lngUsuario = double.Parse(usuario.Longitude, CultureInfo.InvariantCulture);
+
+
+                double distancia = Helpers.CalcularDistancia(latUsuario, lngUsuario, latInstituicao, lngInstituicao);
+
+                if (distancia <= raioBuscaKm)
+                {
+                    // 3. Se estiver dentro do raio, pega os produtos desse usuário
+                    var produtosDoUsuario = await _produtoRepository.GetByUsuarioGuid(usuario.GUID);
+                    produtosProximos.AddRange(produtosDoUsuario.Where(p => !p.Excluido));
+                }
             }
 
+            // 4. Monta os DTOs para retorno
             var produtosDto = produtosProximos.Select(p => new ProdutoGetDTO
             {
                 Produto_ID = p.Produto_ID,
@@ -370,34 +382,32 @@ namespace AjudeiMais.API.Services
                 UnidadeMedida = p.UnidadeMedida,
                 ProdutoImagens = p.ProdutoImagens,
                 Usuario = new UsuarioResumoDTO
-
                 {
-                    NomeCompleto = p.Usuario.NomeCompleto ?? "",
-                    Email = p.Usuario.Email ?? "",
-                    GUID = p.Usuario.GUID ?? "",
-                    Cidade = p.Usuario.Cidade ?? "",
-                    Estado = p.Usuario.Estado ?? "",
-                    FotoDePerfil = p.Usuario.FotoDePerfil ?? "",
-                    Telefone = p.Usuario.Telefone ?? "",
-                    TelefoneFixo = p.Usuario.TelefoneFixo ?? "",
-
+                    NomeCompleto = p.Usuario?.NomeCompleto ?? "",
+                    Email = p.Usuario?.Email ?? "",
+                    GUID = p.Usuario?.GUID ?? "",
+                    Cidade = p.Usuario?.Cidade ?? "",
+                    Estado = p.Usuario?.Estado ?? "",
+                    FotoDePerfil = p.Usuario?.FotoDePerfil ?? "",
+                    Telefone = p.Usuario?.Telefone ?? "",
+                    TelefoneFixo = p.Usuario?.TelefoneFixo ?? "",
                 },
                 CategoriaProduto = new CategoriaProdutoDTO
                 {
-                    CategoriaProduto_ID = p.CategoriaProduto.CategoriaProduto_ID,
-                    Nome = p.CategoriaProduto.Nome ?? "",
-                    Icone = p.CategoriaProduto.Icone ?? "",
+                    CategoriaProduto_ID = p.CategoriaProduto?.CategoriaProduto_ID ?? 0,
+                    Nome = p.CategoriaProduto?.Nome ?? "",
+                    Icone = p.CategoriaProduto?.Icone ?? "",
                 }
             });
-
 
             return new ApiResponse<IEnumerable<ProdutoGetDTO>>
             {
                 Success = true,
                 Data = produtosDto,
-                Message = "Produtos próximos encontrados com sucesso."
+                Message = "Produtos dos usuários mais próximos da instituição retornados com sucesso."
             };
         }
+
 
     }
 }

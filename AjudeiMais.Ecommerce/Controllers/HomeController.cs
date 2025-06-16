@@ -16,6 +16,7 @@ using AjudeiMais.Ecommerce.Models.Produto;
 using AjudeiMais.Ecommerce.Models.Instituicao;
 using static AjudeiMais.Ecommerce.Tools.ApiHelper;
 using AjudeiMais.Ecommerce.Models.Usuario;
+using System.Globalization;
 
 namespace AjudeiMais.Ecommerce.Controllers
 {
@@ -92,31 +93,26 @@ namespace AjudeiMais.Ecommerce.Controllers
                         PropertyNameCaseInsensitive = true
                     });
 
-                    latitude = Convert.ToDouble(instituicao?.Latitude);
-                    longitude = Convert.ToDouble(instituicao?.Longitude);
+                    latitude = Convert.ToDouble(instituicao?.Latitude, CultureInfo.InvariantCulture);
+                    longitude = Convert.ToDouble(instituicao?.Longitude, CultureInfo.InvariantCulture);
+
                 }
 
                 // Busca produtos se tiver lat/lng válidos
                 if (latitude != null && longitude != null)
                 {
-                    var produtosResp = await client.GetAsync($"http://localhost:5168/api/Produto/proximos?lat={latitude}&lng={longitude}");
+                    var (produtos, errorMsg) = await ApiHelper.ListAllProdutosProximosAsync(_httpClientFactory, latitude.Value, longitude.Value);
 
-                    if (produtosResp.IsSuccessStatusCode)
+                    if (produtos != null)
                     {
-                        var produtosJson = await produtosResp.Content.ReadAsStringAsync();
-
-                        var produtos = System.Text.Json.JsonSerializer.Deserialize<ApiResponse<List<ProdutosProximosDto>>>(produtosJson, new JsonSerializerOptions
-                        {
-                            PropertyNameCaseInsensitive = true
-                        });
-
-                        model.Anuncios = produtos?.Data;
+                        model.Anuncios = produtos;
                     }
                     else
                     {
-                        model.ErrorMessage = "Não foi possível carregar os produtos próximos.";
+                        model.ErrorMessage = errorMsg ?? "Não foi possível carregar os produtos próximos.";
                     }
                 }
+
             }
             catch (Exception ex)
             {
