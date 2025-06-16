@@ -84,22 +84,14 @@ namespace AjudeiMais.Ecommerce.Controllers
         [HttpGet]
         public async Task<IActionResult> Perfil(string guid)
         {
-            string loggedInUserGuid;
+            //string loggedInUserGuid;
 
-            // Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
-            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+            //// Primeiro, valida se o usuário está autenticado e se o GUID dele é válido
+            //var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
 
-            if (unauthorizedResult != null)
+            if (!User.Identity.IsAuthenticated)
             {
-                return unauthorizedResult; // Redireciona para login ou 66
-            }
-
-            // Em seguida, valida se o usuário tem permissão para acessar o perfil solicitado (GUID da URL)
-            var profileAccessResult = ControllerHelpers.ValidateUserProfileAccess(this, guid, loggedInUserGuid);
-
-            if (profileAccessResult != null)
-            {
-                return profileAccessResult; // Redireciona com mensagem de erro de permissão
+                return RedirectToRoute("home");
             }
 
             // Se chegou até aqui, o usuário está autenticado, tem GUID e tem permissão para o perfil solicitado
@@ -113,7 +105,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             {
                 _logger?.LogError("Erro ao obter dados do perfil do usuário {Guid}: {ErrorMessage}", guid, errorMessage);
                 // Em caso de erro na API, redireciona para o próprio perfil do usuário logado com a mensagem de erro
-                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = loggedInUserGuid });
+                return RedirectToRoute("usuario-perfil", new { alertType = "error", alertMessage = errorMessage, guid = guid });
             }
         }
 

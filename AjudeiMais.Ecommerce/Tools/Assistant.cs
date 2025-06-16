@@ -44,6 +44,22 @@ namespace AjudeiMais.Ecommerce.Tools
             return $"{anosStr}{mesesStr} ativo";
         }
 
+        public static string FormatarTelefone(string telefone)
+        {
+            if (string.IsNullOrWhiteSpace(telefone))
+                return "";
+
+            telefone = new string(telefone.Where(char.IsDigit).ToArray());
+
+            if (telefone.Length == 11) // Celular: (XX) XXXXX-XXXX
+                return $"({telefone.Substring(0, 2)}) {telefone.Substring(2, 5)}-{telefone.Substring(7, 4)}";
+
+            if (telefone.Length == 10) // Fixo: (XX) XXXX-XXXX
+                return $"({telefone.Substring(0, 2)}) {telefone.Substring(2, 4)}-{telefone.Substring(6, 4)}";
+
+            return telefone; // Retorna como está se não for 10 ou 11 dígitos
+        }
+
 
         public static string ToTempoAtras(this DateTime dataHora)
         {
@@ -89,7 +105,7 @@ namespace AjudeiMais.Ecommerce.Tools
         {
             // This URL should ideally be loaded from configuration (e.g., appsettings.json)
             // rather than hardcoded, for easier environment management.
-            return "http://localhost:5168/";
+            return "https://localhost:7271/";
         }
 
         /// <summary>

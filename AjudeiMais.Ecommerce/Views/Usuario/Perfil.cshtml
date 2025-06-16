@@ -54,20 +54,39 @@
             <div class="col-md">
                 <div class="profile-info">
                     <h1 class="fade-in">@Model.NomeCompleto</h1>
+
                     <div class="profile-location fade-in">
                         <i class="fas fa-map-marker-alt me-2"></i>
                         @Model.Cidade, @Model.Estado
                     </div>
 
-                    @if (!isMeuPerfil)
+                    @if (!string.IsNullOrWhiteSpace(Model.Telefone))
                     {
-                        <button class="cta-button interactive-element">
-                            <i class="fas fa-comment-dots me-2"></i>
-                            Iniciar Conversa
-                        </button>
+                        <div class="profile-contact fade-in" style="display: flex; gap: 5px;">
+                            <i style="color: #FFF !important" class="fas fa-mobile-alt me-2"></i>
+                            <p style="color: #FFF !important">@Assistant.FormatarTelefone(Model.Telefone)</p>
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.TelefoneFixo))
+                    {
+                        <div class="profile-contact fade-in" style="display: flex; gap: 5px;">
+                            <i style="color: #FFF !important" class="fas fa-phone me-2"></i>
+                            <p style="color: #FFF !important">@Assistant.FormatarTelefone(Model.TelefoneFixo)</p>
+
+                        </div>
+                    }
+
+                    @if (!string.IsNullOrWhiteSpace(Model.Email))
+                    {
+                        <div class="profile-contact fade-in" >
+                            <i style="color: #FFF !important" class="fas fa-envelope me-2"></i>
+                            <a style="text-decoration: none !important; color: #fff !important" href="mailto:@Model.Email">@Model.Email</a>
+                        </div>
                     }
                 </div>
             </div>
+
         </div>
     </div>
 </section>
@@ -151,15 +170,7 @@
                                                 <span>@Assistant.CalcularTempoAtivo((DateTime)item.DataCriacao)</span>
                                             </div>
                                         </div>
-                                        @if (User.IsInRole("instituicao"))
-                                        {
-                                            <button class="product-cta">
-                                                <i class="fas fa-hand-holding-heart me-2"></i>
-                                                Solicitar Item
-                                            </button>
-                                        }
-
-                                        <a class="product-cta btn-ver-anuncio mt-2" href="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Guid })">
+                                            <a class="product-cta btn-ver-anuncio mt-2" href="@Url.RouteUrl("anuncio-detalhe", new { guid = item.Guid })">
                                             <i class="fas fa-eye me-2"></i>
                                             Ver Anúncio
                                         </a>
