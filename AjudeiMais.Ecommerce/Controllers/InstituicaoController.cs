@@ -25,7 +25,7 @@ namespace AjudeiMais.Ecommerce.Controllers
 
         [HttpGet]
         [RoleAuthorize("admin", "instituicao")]
-        public async Task<IActionResult> ListarItens()
+        public async Task<IActionResult> Index()
         {
             if (!User.Identity.IsAuthenticated)
                 return RedirectToRoute("home");
@@ -111,7 +111,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                     }
 
                     // Faz a chamada para a API
-                    var response = await httpClient.PostAsync($"{Assistant.ServerURL}api/Instituicao", formData);
+                    var response = await httpClient.PostAsync($"http://localhost:5168/api/Instituicao", formData);
 
                     if (response.IsSuccessStatusCode)
                     {

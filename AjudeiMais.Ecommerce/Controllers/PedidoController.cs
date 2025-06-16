@@ -152,6 +152,48 @@ namespace AjudeiMais.Ecommerce.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        [RoleAuthorize("instituicao", "admin")]
+        public async Task<IActionResult> PedidosPorInstituicao()
+        {
+            string loggedInUserGuid = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+            var unauthorizedResult = ControllerHelpers.HandleUnauthorizedAccess(this, _logger, out loggedInUserGuid);
+            if (unauthorizedResult != null)
+            {
+                return unauthorizedResult;
+            }
+
+            try
+            {
+                var (apiResponse, errorMsg) = await ApiHelper.GetPedidosPorInstituicaoGUIDAsync(loggedInUserGuid, _httpClientFactory, _httpContextAccessor);
+
+                if (apiResponse != null && apiResponse.Success)
+                {
+                    return View("Index", apiResponse.Data); 
+                }
+                else
+                {
+                    return RedirectToRoute("instituicao-perfil", new
+                    {
+                        alertType = "error",
+                        alertMessage = errorMsg ?? "Erro ao carregar pedidos da instituição.",
+                        guid = loggedInUserGuid
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao buscar pedidos da instituição");
+
+                return RedirectToRoute("instituicao-perfil", new
+                {
+                    alertType = "error",
+                    alertMessage = "Erro inesperado. Tente novamente mais tarde.",
+                    guid = loggedInUserGuid
+                });
+            }
+        }
 
     }
 }

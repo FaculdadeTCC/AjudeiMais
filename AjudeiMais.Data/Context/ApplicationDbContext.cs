@@ -57,11 +57,18 @@ namespace AjudeiMais.Data.Context
 				.WithMany()
 				.HasForeignKey(p => p.Instituicao_ID);
 
+
 			modelBuilder.Entity<Pedido>()
 				.HasOne(p => p.Produto)
 				.WithMany()
 				.HasForeignKey(p => p.Produto_ID);
-		}
+
+            modelBuilder.Entity<Instituicao>()
+                .HasMany(i => i.Enderecos)
+                .WithOne(e => e.Instituicao)
+                .HasForeignKey(e => e.Instituicao_ID)
+                .OnDelete(DeleteBehavior.Cascade); // ou Restrict, dependendo do seu caso
+        }
 
 	}
 }

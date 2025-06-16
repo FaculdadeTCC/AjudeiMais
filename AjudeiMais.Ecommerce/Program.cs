@@ -96,8 +96,8 @@ app.MapControllerRoute(
 );
 
 app.MapControllerRoute(
-    name: "instituicao-index",
-    pattern: "instituicao",
+    name: "instituicao-dashboard",
+    pattern: "instituicao/dashboard/{guid}",
     defaults: new { controller = "Instituicao", action = "Index" }
 );
 
@@ -256,6 +256,34 @@ app.MapControllerRoute(
 );
 #endregion
 
+#region PEDIDO
+
+app.MapControllerRoute(
+    name: "pedido-dashboard",
+    pattern: "pedido/dashboard",
+    defaults: new { controller = "Pedido", action = "Index" }
+);
+
+app.MapControllerRoute(
+    name: "pedido-criar",
+    pattern: "pedido/criar",
+    defaults: new { controller = "Pedido", action = "CriarPedido" }
+);
+
+app.MapControllerRoute(
+    name: "pedido-detalhe",
+    pattern: "pedido/detalhe",
+    defaults: new { controller = "Pedido", action = "Detalhe" }
+);
+
+app.MapControllerRoute(
+    name: "meus-pedidos",
+    pattern: "pedido/meus-pedidos/{guid}",
+    defaults: new { controller = "Pedido", action = "PedidosPorInstituicao" }
+);
+
+
+#endregion
 
 
 app.MapControllerRoute(

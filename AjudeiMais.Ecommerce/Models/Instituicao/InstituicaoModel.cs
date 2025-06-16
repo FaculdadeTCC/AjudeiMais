@@ -39,6 +39,8 @@ namespace AjudeiMais.Ecommerce.Models.Instituicao
         public string? Guid { get; set; }
 
         public string? Role { get; set; }
+        public string? Latitude { get; set; }
+        public string? Longitude { get; set; }
 
         public double? Avaliacao { get; set; }
 

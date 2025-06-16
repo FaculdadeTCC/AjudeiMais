@@ -1,4 +1,6 @@
 ﻿<form asp-action="CriarPedido" asp-controller="Pedido" method="post">
+    <input type="hidden" id="user-role" value="@User.FindFirst("role")?.Value" />
+
     <div class="modal fade" id="detalhes" tabindex="-1" aria-labelledby="detalhesPedidoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content rounded-3 shadow-lg">
@@ -17,7 +19,7 @@
                         </p>
                     </div>
 
-                    <hr class="my-4">
+                    <hr class="my-4" />
 
                     <!-- Produto -->
                     <div class="d-flex flex-column flex-md-row align-items-center mb-4">
@@ -32,7 +34,7 @@
                         </div>
                     </div>
 
-                    <hr class="my-4">
+                    <hr class="my-4" />
 
                     <!-- Usuário -->
                     <div class="mb-4">
@@ -52,7 +54,7 @@
 
                     <!-- Instituição -->
                     <div id="instituicao-details" class="mb-0 d-none">
-                        <hr class="my-4">
+                        <hr class="my-4" />
                         <h5 class="h6 fw-bold mb-3"><i class="fas fa-building me-2"></i>Dados da Instituição</h5>
                         <div class="row g-2">
                             <div class="col-12 col-sm-6">
@@ -68,12 +70,13 @@
                     </div>
                 </div>
 
-                <!-- Inputs escondidos para enviar ao backend -->
+                <!-- Inputs escondidos -->
                 <input type="hidden" name="Pedido_ID" id="input-pedido-id">
                 <input type="hidden" name="UsuarioGuid" id="input-usuario-guid">
                 <input type="hidden" name="InstituicaoGuid" id="input-instituicao-guid">
                 <input type="hidden" name="UsuarioStatus" id="input-usuario-status">
                 <input type="hidden" name="InstituicaoStatus" id="input-instituicao-status">
+
                 <div class="modal-footer border-top-0 pt-0 d-flex justify-content-end">
                     <button type="button" class="btn rounded-pill px-4" data-bs-dismiss="modal">Sair</button>
                     <button type="submit" class="btn btn-danger rounded-pill px-4" onclick="return setStatus('Cancelado')">Cancelar Pedido</button>
@@ -88,14 +91,10 @@
     document.addEventListener("DOMContentLoaded", function () {
         const detalhesPedidoModal = new bootstrap.Modal(document.getElementById('detalhes'));
 
-        // Função para definir o status e enviar para o campo correto conforme role
         window.setStatus = function (status) {
             if (!confirm(`Tem certeza que deseja ${status.toLowerCase()} este pedido?`)) {
                 return false;
             }
-
-            document.getElementById('input-novo-status').value = status;
-            document.getElementById('input-status').value = status;
 
             const role = document.getElementById("user-role").value;
             if (role === "Usuario") {
@@ -126,7 +125,6 @@
             const statusElement = document.getElementById('modal-pedido-status');
             statusElement.textContent = data.status || '--';
             statusElement.className = 'badge';
-
             const statusMap = {
                 'concluído': 'bg-success',
                 'pendente': 'bg-warning text-dark',
@@ -142,7 +140,6 @@
             document.getElementById('modal-produto-quantidade').textContent = data.produtoQuantidade || '--';
 
             document.getElementById('input-pedido-id').value = data.pedidoId;
-            document.getElementById('input-status').value = data.status;
             document.getElementById('input-usuario-guid').value = data.usuarioGuid;
             document.getElementById('input-instituicao-guid').value = data.instituicaoGuid;
 

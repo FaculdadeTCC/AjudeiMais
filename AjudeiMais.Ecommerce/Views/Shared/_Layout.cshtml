@@ -21,15 +21,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet" />
 
     <style>
-        /* Variáveis de tema para Sidebar */
+        /* ==============================================
+                  VARIÁVEIS DE COR E LAYOUT
+                  ==============================================
+                */
         :root {
-            --sidebar-bg: #002147;
-            --sidebar-text: #ffffff;
-            --sidebar-hover: #1a1f3a;
-            --sidebar-active-bg: #1f2748;
-            --sidebar-width: 240px;
+            /* Cores da Sidebar (Menu Admin) */
+            --sidebar-bg: #002147; /* Fundo azul escuro */
+            --sidebar-text: #ffffff; /* Texto branco */
+            --sidebar-hover: #1a1f3a; /* Fundo do item ao passar o mouse */
+            --sidebar-active-bg: #1f2748; /* Fundo do item ativo */
+            /* Cores da Navbar (Usuário Comum) */
+            --navbar-bg: #ffffff; /* Fundo branco para a navbar */
+            --navbar-text: #002147; /* Texto azul escuro */
+            --btn-action-bg: #007bff; /* Fundo do botão de ação */
+            --btn-action-text: #ffffff; /* Texto do botão de ação */
+            /* Layout */
+            --sidebar-width: 250px; /* Largura da sidebar */
+            --navbar-height: 70px; /* Altura da navbar para controle de espaçamento */
         }
 
+        /* ==============================================
+                  ESTILOS GERAIS DO CORPO
+                  ==============================================
+                */
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* ==============================================
+                  ADMIN SIDEBAR
+                  ==============================================
+                */
         .sidebar {
             position: fixed;
             top: 0;
@@ -38,43 +61,137 @@
             width: var(--sidebar-width);
             background-color: var(--sidebar-bg);
             overflow-y: auto;
-            z-index: 1000;
+            z-index: 1050; /* AUMENTADO: Garante que a sidebar fique acima de outros elementos */
+            transition: transform 0.3s ease-in-out;
         }
 
             .sidebar .sidebar-header {
-                padding: 1rem;
+                padding: 1rem 1.5rem;
                 display: flex;
                 align-items: center;
+                border-bottom: 1px solid var(--sidebar-hover);
             }
 
             .sidebar .nav-link {
                 color: var(--sidebar-text);
-                padding: 0.75rem 1rem;
-                transition: background-color 0.2s;
+                padding: 1rem 1.5rem;
+                transition: background-color 0.2s, color 0.2s;
+                border-left: 3px solid transparent;
             }
 
                 .sidebar .nav-link:hover {
                     background-color: var(--sidebar-hover);
+                    border-left-color: var(--btn-action-bg);
                 }
 
                 .sidebar .nav-link.active {
                     background-color: var(--sidebar-active-bg);
                     font-weight: 600;
+                    border-left-color: #ffffff;
                 }
 
+                .sidebar .nav-link .fa, .sidebar .nav-link .fas {
+                    width: 20px; /* Alinha os ícones */
+                }
+
+        /* Conteúdo principal quando a sidebar está visível */
         .content-with-sidebar {
             margin-left: var(--sidebar-width);
-            transition: margin-left 0.2s;
+            padding-top: 1.5rem; /* Espaçamento para não colar no topo */
+            transition: margin-left 0.3s ease-in-out;
         }
 
-        @@media (max-width: 768px) {
-            .sidebar {
-                width: 0;
-                overflow: hidden;
+        /* ==============================================
+                  NAVBAR PRINCIPAL (USUÁRIOS E VISITANTES)
+                  ==============================================
+                */
+        #mainNav {
+            position: sticky; /* Alterado para sticky para melhor comportamento */
+            top: 0;
+            z-index: 1030; /* ADICIONADO: Garante que a navbar fique sobre o conteúdo */
+            background-color: var(--sidebar-bg); /* Fundo azul escuro para consistência */
+            min-height: var(--navbar-height);
+        }
+
+            #mainNav .navbar-brand span {
+                color: var(--sidebar-text); /* Texto do logo branco */
+                font-weight: 600;
             }
+
+        /* Cor do ícone do menu responsivo (hamburger) */
+        .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 1)' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* Botão de "Anunciar" / "Meus Pedidos" */
+        .btn-action-logged-in {
+            background-color: var(--btn-action-bg);
+            color: var(--btn-action-text);
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            transition: background-color 0.3s;
+        }
+
+            .btn-action-logged-in:hover {
+                background-color: #0056b3; /* Um tom mais escuro no hover */
+                color: var(--btn-action-text);
+            }
+
+        /* Links do dropdown e usuário */
+        #mainNav .nav-link, #mainNav .dropdown-item {
+            color: var(--navbar-text);
+        }
+
+        #mainNav .nav-link {
+            color: var(--sidebar-text) !important; /* Força o texto dos links a ser branco */
+        }
+
+        /* Ajuste para o botão "Doar Agora" */
+        .btn-outline-light {
+            border-color: #ffffff;
+            color: #ffffff;
+        }
+
+            .btn-outline-light:hover {
+                background-color: #ffffff;
+                color: var(--sidebar-bg); /* Texto azul ao passar o mouse */
+            }
+
+
+        /* ==============================================
+                  LAYOUT RESPONSIVO
+                  ==============================================
+                */
+        @@media (max-width: 768px) {
+            /* Esconde a sidebar e a transforma para uma transição suave */
+            .sidebar {
+                transform: translateX(-100%);
+                width: var(--sidebar-width);
+                z-index: 1060; /* Garante que a sidebar aberta fique sobre tudo */
+            }
+                /* Classe para exibir a sidebar em telas pequenas (controlada via JS) */
+                .sidebar.is-open {
+                    transform: translateX(0);
+                }
 
             .content-with-sidebar {
                 margin-left: 0;
+            }
+            /* Ajustes na navbar para telas menores */
+            #mainNav .navbar-collapse {
+                background-color: var(--sidebar-bg);
+                padding: 1rem;
+                border-radius: 0.5rem;
+                margin-top: 0.5rem;
+            }
+
+            #mainNav .nav-item {
+                margin-bottom: 0.5rem;
             }
         }
     </style>
@@ -112,9 +229,8 @@
                     <a class="nav-link" onclick="document.getElementById('logoutForm').submit(); return false;" href="@Url.RouteUrl("logout")">
                         <i class="fas fa-sign-out-alt me-2"></i> Sair
                     </a>
-                <li>
                     <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-                            @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken()
                     </form>
                 </li>
             </ul>
@@ -139,92 +255,92 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
 
-                    <div class="navbar-collapse collapse" id="navbarMain" >
+                    <div class="navbar-collapse collapse" id="navbarMain">
                         @if (User.Identity.IsAuthenticated && User.IsInRole("usuario"))
                         {
-                            var userGuidLogado = User.FindFirst("GUID")?.Value; /* Added null check */
+                            var userGuidLogado = User.FindFirst("GUID")?.Value;
 
-                            <li class="nav-item d-flex align-items-center">
-                                @* Added d-flex and align-items-center for consistency *@
-                                <a class="btn btn-action-logged-in" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
-                                    <i class="fas fa-plus-circle"></i> Anunciar Item
-                                </a>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user me-2"></i> @User.Identity.Name
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
-                                            <i class="fas fa-chart-line"></i> Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
-                                            <i class="fas fa-user-circle"></i> Meu Perfil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
-                                            <i class="fas fa-edit"></i> Editar Dados
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-                                            <i class="fas fa-sign-out-alt"></i> Sair
-                                        </a>
-                                        <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                                <li class="nav-item">
+                                    <a class="btn btn-action-logged-in rounded-pill" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
+                                        <i class="fas fa-plus-circle"></i> Anunciar Item
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user me-2"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-dashboard", new {guid = userGuidLogado})">
+                                                <i class="fas fa-chart-line"></i> Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})">
+                                                <i class="fas fa-user-circle"></i> Meu Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("usuario-alterar-dados", new {guid = userGuidLogado})">
+                                                <i class="fas fa-edit"></i> Editar Dados
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                <i class="fas fa-sign-out-alt"></i> Sair
+                                            </a>
+                                            <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                @Html.AntiForgeryToken()
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
                         }
-                        else if(User.Identity.IsAuthenticated && User.IsInRole("instituicao"))
+                        else if (User.Identity.IsAuthenticated && User.IsInRole("instituicao"))
                         {
-                            var userGuidLogado = User.FindFirst("GUID")?.Value; /* Added null check */
+                            var userGuidLogado = User.FindFirst("GUID")?.Value;
 
-                            <li class="nav-item d-flex align-items-center">
-                                @* Added d-flex and align-items-center for consistency *@
-                                <a class="btn btn-action-logged-in" href="@Url.RouteUrl("usuario-anuncio-cadastrar", new { guid = userGuidLogado})">
-                                    <i class="fas fa-plus-circle"></i> Anunciar Item
-                                </a>
-                            </li>
-
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fa fa-user me-2"></i> @User.Identity.Name
-                                </a>
-                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard", new {guid = userGuidLogado})">
-                                            <i class="fas fa-chart-line"></i> Dashboard
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
-                                            <i class="fas fa-user-circle"></i> Meu Perfil
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">
-                                            <i class="fas fa-edit"></i> Editar Dados
-                                        </a>
-                                    </li>
-                                    <li><hr class="dropdown-divider"></li>
-                                    <li>
-                                        <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
-                                            <i class="fas fa-sign-out-alt"></i> Sair
-                                        </a>
-                                        <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
-                                            @Html.AntiForgeryToken()
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
+                                <li class="nav-item">
+                                    <a class="btn btn-action-logged-in rounded-pill" href="@Url.RouteUrl("meus-pedidos", new { guid = userGuidLogado})">
+                                        <i class="fas fa-plus-circle"></i> Meus pedidos
+                                    </a>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-user me-2"></i> @User.Identity.Name
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-dashboard", new {guid = userGuidLogado})">
+                                                <i class="fas fa-chart-line"></i> Dashboard
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-perfil", new {guid = userGuidLogado})">
+                                                <i class="fas fa-user-circle"></i> Meu Perfil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="@Url.RouteUrl("instituicao-alterar-dados", new {guid = userGuidLogado})">
+                                                <i class="fas fa-edit"></i> Editar Dados
+                                            </a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="document.getElementById('logoutForm').submit(); return false;">
+                                                <i class="fas fa-sign-out-alt"></i> Sair
+                                            </a>
+                                            <form id="logoutForm" method="post" action="@Url.RouteUrl("logout")" style="display: none;">
+                                                @Html.AntiForgeryToken()
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
                         }
                         else
                         {
@@ -266,7 +382,6 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    </script>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)

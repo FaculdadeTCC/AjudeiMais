@@ -685,7 +685,7 @@ namespace AjudeiMais.Ecommerce.Tools
 
         #region Instituicao API Calls
 
-        public static async Task<(List<InstituicaoModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
+        public static async Task<(List<InstituicaoPerfilModel>? instituicoes, string? errorMessage)> ListAllInstituicoesAtivosAsync(
            IHttpClientFactory httpClientFactory)
         {
             try
@@ -699,7 +699,7 @@ namespace AjudeiMais.Ecommerce.Tools
                 if (response.IsSuccessStatusCode)
                 {
                     // A API pode retornar diretamente a lista ou encapsulada em um ApiResponse.
-                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoModel>>(
+                    var instituicoes = JsonSerializer.Deserialize<List<InstituicaoPerfilModel>>(
                         content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                     if (instituicoes != null)
@@ -972,6 +972,51 @@ namespace AjudeiMais.Ecommerce.Tools
             }
         }
 
+        public static async Task<(ApiResponse<List<GetPedidoModel>>?, string?)> GetPedidosPorInstituicaoGUIDAsync(string guid, IHttpClientFactory _httpClientFactory, IHttpContextAccessor _httpContextAccessor)
+        {
+            try
+            {
+                var client = _httpClientFactory.CreateClient("ApiAjudeiMais");
+
+                // 🔐 Recupera o token da sessão
+                var token = _httpContextAccessor.HttpContext?.Session.GetString("JwtToken");
+
+                if (string.IsNullOrEmpty(token))
+                    return (null, "Token de autenticação não encontrado.");
+
+                // 🛡 Adiciona o token JWT no cabeçalho Authorization
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                // 🔗 Monta a URI da requisição
+                string requestUri = $"{BASE_URL}api/Pedido/PedidosInstituicao/{guid}";
+
+                var response = await client.GetAsync(requestUri);
+                var responseBody = await response.Content.ReadAsStringAsync();
+
+                var apiResponse = JsonSerializer.Deserialize<ApiResponse<List<GetPedidoModel>>>(responseBody,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+                if (response.IsSuccessStatusCode && apiResponse is not null)
+                {
+                    return (apiResponse, null);
+                }
+
+                string errorMsg = apiResponse?.Message ?? "Erro desconhecido ao buscar pedidos.";
+                return (apiResponse, errorMsg);
+            }
+            catch (HttpRequestException ex)
+            {
+                return (null, $"Erro de conexão com a API: {ex.Message}");
+            }
+            catch (JsonException ex)
+            {
+                return (null, $"Erro ao processar resposta da API (JSON): {ex.Message}");
+            }
+            catch (Exception ex)
+            {
+                return (null, $"Erro inesperado ao buscar pedidos: {ex.Message}");
+            }
+        }
 
 
 

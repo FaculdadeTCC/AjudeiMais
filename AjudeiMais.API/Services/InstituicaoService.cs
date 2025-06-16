@@ -48,7 +48,9 @@ namespace AjudeiMais.API.Services
                     Email = instituicao.Email,
                     FotoPerfil = instituicao.FotoPerfil,
                     Documento = instituicao.Documento,
-                    Role = instituicao.Role,                    
+                    Role = instituicao.Role,
+                    Latitude = instituicao.Latitude,
+                    Longitude = instituicao.Latitude,
                     Enderecos = instituicao.Enderecos.Select(e => new EnderecoDTO
                     {
                         Endereco_ID = e.Endereco_ID,
@@ -181,7 +183,7 @@ namespace AjudeiMais.API.Services
 
                 var instituicao = new Instituicao
                 {
-                    Instituicao_ID = model.Instituicao_ID,
+
                     Nome = model.Nome,
                     Documento = model.Documento,
                     FotoPerfil = pathPerfil,
@@ -191,6 +193,8 @@ namespace AjudeiMais.API.Services
                     Telefone = model.Telefone,
                     GUID = model.GUID,
                     Role = model.Role,
+                    Latitude = model.Latitude,
+                    Longitude = model.Longitude,
                     DataCriacao = model.Instituicao_ID == 0 ? DateTime.Now : existente?.DataCriacao ?? DateTime.Now,
                     DataUpdate = DateTime.Now,
                     Enderecos = new List<Endereco> { new Endereco
@@ -198,7 +202,7 @@ namespace AjudeiMais.API.Services
                         CEP = endereco.CEP,
                         Rua = endereco.Rua,
                         Numero = endereco.Numero,
-                        Complemento = endereco.Complemento,
+                        Complemento = string.IsNullOrEmpty(endereco.Complemento) ? "" : endereco.Complemento,
                         Bairro = endereco.Bairro,
                         Cidade = endereco.Cidade,
                         Estado = endereco.Estado
