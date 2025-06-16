@@ -297,7 +297,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             var model = new ProdutoModel();
             var response = await ApiHelper.ListAllCategoriasProdutoAtivosAsync(_httpClientFactory);
 
-            model.Categorias = response.Data;
+            model.Categorias = response.Data.Where(c => c.Habilitado == true);
             model.Usuario_GUID = loggedInUserGuid;
 
             return View(model);

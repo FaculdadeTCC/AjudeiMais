@@ -221,19 +221,19 @@ namespace AjudeiMais.Ecommerce.Controllers
                 }
                 else
                 {
-                    return RedirectToRoute("instituicao-perfil", new
+                    return RedirectToRoute("usuario-perfil", new
                     {
                         alertType = "error",
-                        alertMessage = errorMsg ?? "Erro ao carregar pedidos da instituição.",
+                        alertMessage = errorMsg ?? "Erro ao carregar pedidos do usuário.",
                         guid = loggedInUserGuid
                     });
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erro ao buscar pedidos da instituição");
+                _logger.LogError(ex, "Erro ao buscar pedidos do usuário");
 
-                return RedirectToRoute("instituicao-perfil", new
+                return RedirectToRoute("usuario-perfil", new
                 {
                     alertType = "error",
                     alertMessage = "Erro inesperado. Tente novamente mais tarde.",

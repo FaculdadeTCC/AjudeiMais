@@ -141,8 +141,8 @@ namespace AjudeiMais.Ecommerce.Controllers
                     return RedirectToAction("Login", new
 					{
 						alertType = "error",
-						alertMessage = response.ReasonPhrase
-					});
+						alertMessage = erroDetalhado
+                    });
 				}
 
 				var json = await response.Content.ReadAsStringAsync();

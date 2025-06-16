@@ -27,7 +27,7 @@ namespace AjudeiMais.API.Repositories
 
 		public async Task<List<Pedido>> GetItensAsync()
 		{
-			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido != true)
                 .Include(p => p.Produto)
                     .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
                 .Include(p => p.Instituicao)
@@ -38,7 +38,7 @@ namespace AjudeiMais.API.Repositories
 
         public async Task<List<Pedido>> GetPedidosInstituicaoAsync(string GUID)
         {
-            return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Instituicao.GUID == GUID)
+            return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido != true && p.Instituicao.GUID == GUID)
 				.Include(p => p.Produto)
 					.ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
 				.Include(p => p.Instituicao)
@@ -49,18 +49,25 @@ namespace AjudeiMais.API.Repositories
 
         public async Task<List<Pedido>> GetPedidosUsuarioAsync(string GUID)
         {
-            return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false && p.Usuario.GUID == GUID)
-                .Include(p => p.Produto)
-                    .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
-                .Include(p => p.Instituicao)
-                .Include(p => p.Produto)
-                    .ThenInclude(prod => prod.Usuario)
-                .ToListAsync();
+			try {
+				var response = await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido != true && p.Usuario.GUID == GUID)
+					.Include(p => p.Produto)
+						.ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
+					.Include(p => p.Instituicao)
+					.Include(p => p.Produto)
+						.ThenInclude(prod => prod.Usuario)
+					.ToListAsync();
+
+				return response;
+			} catch (DbUpdateException ex)
+			{
+				throw new Exception(ex.Message);
+			}
         }
 
         public async Task<Pedido?> GetByIdAsync(int id)
 		{
-			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido != true)
                 .Include(p => p.Produto)
                     .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
                 .Include(p => p.Instituicao)
@@ -71,7 +78,7 @@ namespace AjudeiMais.API.Repositories
 
 		public async Task<Pedido?> GetByGUIDAsync(string GUID)
 		{
-			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido == false)
+			return await _context.Pedido.Where(p => p.Habilitado == true && p.Excluido != true)
                 .Include(p => p.Produto)
                     .ThenInclude(prod => prod.CategoriaProduto) // Certifique-se de incluir a categoria
                 .Include(p => p.Instituicao)
