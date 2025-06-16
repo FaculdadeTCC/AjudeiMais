@@ -84,6 +84,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime? DataCriacao { get; set; }
         public DateTime? DataUpdate { get; set; }
         public IEnumerable<CategoriaProdutoResponse>? Categorias { get; set; }
+        public CategoriaProdutoResponse? CategoriaProduto { get; set; }
         public decimal Peso { get; set; }
         public List<ProdutoImagemModel>? ProdutoImagens { get; set; }
         public UsuarioPerfilModel Usuario { get; set; }

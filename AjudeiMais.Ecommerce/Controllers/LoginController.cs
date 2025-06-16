@@ -129,7 +129,7 @@ namespace AjudeiMais.Ecommerce.Controllers
                         case "instituicao":
                             return RedirectToAction("Perfil", "Instituicao", new { guid = loginResponse.GUID.ToString() });
                         case "usuario":
-                            return RedirectToRoute("usuario-perfil", new { guid = loginResponse.GUID.ToString() });
+                            return RedirectToRoute("usuario-dashboard", new { guid = loginResponse.GUID.ToString() });
                         default:
                             return RedirectToAction("AcessoNegado", "Home");
                     }

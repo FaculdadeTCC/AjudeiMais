@@ -36,6 +36,6 @@ namespace AjudeiMais.Ecommerce.Models.Usuario
         public string? Longitude { get; set; }
 
         // Propriedades de navegação (para exibição de dados relacionados)
-        public IEnumerable<ProdutoModel>? Produtos { get; set; } // Nullable, pois nem sempre virá carregado
+        public IEnumerable<ProdutoEditarModel>? Produtos { get; set; } // Nullable, pois nem sempre virá carregado
     }
 }

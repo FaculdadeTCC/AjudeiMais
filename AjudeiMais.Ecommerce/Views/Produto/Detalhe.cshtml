@@ -9,6 +9,22 @@
 @section Styles {
     <link rel="stylesheet" href="~/css/produto/produto-detalhe.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    <style>
+        .a2a_kit {
+            margin-top: 1rem;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+            .a2a_kit a {
+                transition: transform 0.2s ease;
+            }
+
+                .a2a_kit a:hover {
+                    transform: scale(1.1);
+                }
+    </style>
 }
 
 <section class="product-display-card">
@@ -22,10 +38,9 @@
                 <div class="splide__track">
                     <ul class="splide__list">
                         @{
-                            // Get all valid images, prioritizing the main image if it exists
                             var todasImagensValidas = Model.ProdutoImagens?
                             .Where(pi => pi.Excluido != true)
-                            .OrderByDescending(pi => pi.IsPrincipal) // Ensures main image is first if it exists
+                            .OrderByDescending(pi => pi.IsPrincipal)
                             .ToList() ?? new List<AjudeiMais.Ecommerce.Models.Produto.ProdutoImagemModel>();
                         }
 
@@ -125,8 +140,8 @@
                     <span class="font-semibold">Doador:</span>
                     <div class="donor-info">
                         <img src="@(string.IsNullOrEmpty(Model.Usuario?.FotoDePerfil)
-                                                                                      ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
-                                                                                      : Assistant.ServerURL() + Model.Usuario.FotoDePerfil)" alt="@Model.Usuario?.NomeCompleto" />
+                                                         ? "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png"
+                                                         : Assistant.ServerURL() + Model.Usuario.FotoDePerfil)" alt="@Model.Usuario?.NomeCompleto" />
                         <div class="donor-details">
                             <a href="@Url.RouteUrl("usuario-perfil", new { guid = Model.Usuario?.GUID })">@Model.Usuario?.NomeCompleto</a>
                             <p class="text-sm">@Model.Usuario?.Cidade - @Model.Usuario?.Estado</p>
@@ -156,12 +171,24 @@
                 </button>
             }
         }
+
+        <!-- Botão de Compartilhar -->
+        <div class="a2a_kit a2a_default_style a2a_kit_size_32">
+            <a class="a2a_button_whatsapp"></a>
+            <a class="a2a_button_facebook"></a>
+            <a class="a2a_button_x"></a>
+            <a class="a2a_button_email"></a>
+            <a class="a2a_dd" href="https://www.addtoany.com/share"></a>
+        </div>
     </div>
 </section>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/@@splidejs/splide@4.1.3/dist/js/splide.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+
+    <!-- AddToAny Script -->
+    <script async src="https://static.addtoany.com/menu/page.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {

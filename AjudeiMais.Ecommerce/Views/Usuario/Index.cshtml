@@ -18,9 +18,12 @@
                 <h1>Painel de Controle</h1>
                 <span>Bem-vindo de volta, <strong>@User.Identity.Name</strong>!</span>
             </div>
-            <a style="text-decoration: none" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})" class="user-avatar-circle">
-                <i class="fas fa-user-circle"></i>
-            </a>
+
+            <div class="header-actions">
+                <a href="@Url.RouteUrl("usuario-perfil", new { guid = userGuidLogado })" class="back-to-profile-btn">
+                    <i class="fas fa-arrow-left"></i> Meu Perfil
+                </a>
+            </div>
         </div>
     </header>
 
