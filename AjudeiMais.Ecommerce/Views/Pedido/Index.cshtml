@@ -16,7 +16,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         /* Variáveis CSS para simular as cores e espaçamentos do seu tema,
-           ajuste para corresponder aos seus valores globais se existirem. */
+                   ajuste para corresponder aos seus valores globais se existirem. */
         :root {
             --color-bg: #f8f9fa; /* Light gray background */
             --color-surface: #ffffff; /* White surface for cards */
@@ -80,14 +80,14 @@
             border: 1px solid var(--color-gray-200);
         }
 
-        .manage-ad-section h2 {
-            font-family: var(--font-family-heading);
-            font-weight: var(--font-weight-bold);
-            font-size: var(--font-size-3xl);
-            color: var(--color-primary-dark);
-            margin-bottom: var(--spacing-lg);
-            text-align: center;
-        }
+            .manage-ad-section h2 {
+                font-family: var(--font-family-heading);
+                font-weight: var(--font-weight-bold);
+                font-size: var(--font-size-3xl);
+                color: var(--color-primary-dark);
+                margin-bottom: var(--spacing-lg);
+                text-align: center;
+            }
 
         /* Estilos para os cards de pedido */
         .order-card {
@@ -95,10 +95,10 @@
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
 
-        .order-card:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
-        }
+            .order-card:hover {
+                transform: translateY(-3px);
+                box-shadow: var(--shadow-md);
+            }
 
         /* Estilos para o status do pedido */
         .status-badge {
@@ -139,50 +139,50 @@
             position: relative;
         }
 
-        .radio-button-wrapper input[type="radio"] {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+            .radio-button-wrapper input[type="radio"] {
+                position: absolute;
+                opacity: 0;
+                width: 0;
+                height: 0;
+            }
 
-        .radio-button-wrapper label {
-            display: block;
-            padding: var(--spacing-xs) var(--spacing-md);
-            border: 1px solid var(--color-gray-400);
-            border-radius: var(--radius-md);
-            background-color: var(--color-surface);
-            color: var(--color-gray-700);
-            font-size: var(--font-size-sm);
-            font-weight: var(--font-weight-medium);
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            user-select: none; /* Evita seleção de texto */
-            text-align: center;
-            min-width: 120px; /* Garante largura mínima para os botões */
-        }
+            .radio-button-wrapper label {
+                display: block;
+                padding: var(--spacing-xs) var(--spacing-md);
+                border: 1px solid var(--color-gray-400);
+                border-radius: var(--radius-md);
+                background-color: var(--color-surface);
+                color: var(--color-gray-700);
+                font-size: var(--font-size-sm);
+                font-weight: var(--font-weight-medium);
+                cursor: pointer;
+                transition: all 0.2s ease-in-out;
+                user-select: none; /* Evita seleção de texto */
+                text-align: center;
+                min-width: 120px; /* Garante largura mínima para os botões */
+            }
 
-        .radio-button-wrapper input[type="radio"]:checked + label {
-            background-color: var(--color-primary);
-            color: var(--color-surface);
-            border-color: var(--color-primary);
-            box-shadow: var(--shadow-sm);
-        }
+            .radio-button-wrapper input[type="radio"]:checked + label {
+                background-color: var(--color-primary);
+                color: var(--color-surface);
+                border-color: var(--color-primary);
+                box-shadow: var(--shadow-sm);
+            }
 
-        .radio-button-wrapper label:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
+            .radio-button-wrapper label:hover {
+                border-color: var(--color-primary);
+                color: var(--color-primary);
+            }
 
-        .radio-button-wrapper input[type="radio"]:checked + label:hover {
-            background-color: var(--color-primary-dark);
-            border-color: var(--color-primary-dark);
-        }
+            .radio-button-wrapper input[type="radio"]:checked + label:hover {
+                background-color: var(--color-primary-dark);
+                border-color: var(--color-primary-dark);
+            }
 
-        .radio-button-wrapper input[type="radio"]:focus + label {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
-        }
+            .radio-button-wrapper input[type="radio"]:focus + label {
+                outline: 2px solid var(--color-primary);
+                outline-offset: 2px;
+            }
         /* --- Fim dos Estilos para os Radio Buttons Modernos --- */
 
     </style>
@@ -199,7 +199,9 @@
                 @if (User.IsInRole("instituicao"))
                 {
                     <h5 class="mb-2 fw-bold"
-                        style="color: #856404;">Atenção: Confirmação de Entrega</h5>
+                        style="color: #856404;">
+                        Atenção: Confirmação de Entrega
+                    </h5>
                     <p class="mb-0" style="color: #856404;">
                         Para concluir um pedido, você deve <strong>entrar em contato com o usuário doador</strong>.
                         Após a entrega e o acordo entre ambos, <strong>marque como "Concluído"</strong> para finalizar o pedido.
@@ -208,7 +210,9 @@
                 else if (User.IsInRole("usuario"))
                 {
                     <h5 class="mb-2 fw-bold"
-                        style="color: #856404;">📢 Fique Atento: Confirmação de Entrega</h5>
+                        style="color: #856404;">
+                        📢 Fique Atento: Confirmação de Entrega
+                    </h5>
                     <p class="mb-2" style="color: #856404;">
                         A instituição irá entrar em contato com você. Certifique-se de que seus dados de contato estão atualizados.
                     </p>
@@ -225,7 +229,7 @@
 
 <section class="manage-ad-section container">
     <h2 class="mb-5">Meus Pedidos</h2>
-    
+
 
 
     <div class="mb-4">
@@ -256,7 +260,7 @@
             @foreach (var pedido in pedidos)
             {
                 <div class="col order-card-col" data-status="@(pedido.Status?.ToLower())">
-                            <div class="card shadow-sm p-3 order-card" onclick="exibirDetalhesPedido({
+                    <div class="card shadow-sm p-3 order-card" onclick="exibirDetalhesPedido({
                                 pedidoId: '@Html.Raw(pedido.Pedido_ID)',
                                 status: '@Html.Raw(pedido.Status)',
                                 produtoId: '@Html.Raw(pedido.Produto.Produto_ID)',
@@ -275,8 +279,8 @@
 
                         <div class="d-flex flex-column flex-md-row align-items-center">
                             <div class="flex-shrink-0 me-md-4 mb-3 mb-md-0">
-                                <img src="@pedido.Produto.ProdutoImagens.FirstOrDefault().Imagem" alt="Imagem do Produto"
-                                    class="img-fluid rounded-3" style="max-height: 150px; max-width: 150px; object-fit: cover;" />
+                                @* <img src="@pedido.Produto.ProdutoImagens.FirstOrDefault().Imagem" alt="Imagem do Produto"
+                                     class="img-fluid rounded-3" style="max-height: 150px; max-width: 150px; object-fit: cover;" /> *@
                             </div>
 
                             <div class="flex-grow-1 text-center text-md-start mb-3 mb-md-0">

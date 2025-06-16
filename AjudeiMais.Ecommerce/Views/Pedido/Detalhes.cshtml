@@ -125,7 +125,7 @@
 
         // Função para preencher o modal com os dados do pedido
         window.exibirDetalhesPedido = function (data) {
-            document.getElementById('modal-pedido-numero').textContent = data.pedidoNumero || '--';
+            document.getElementById('modal-pedido-id').textContent = data.pedidoId || '--';
             const statusElement = document.getElementById('modal-pedido-status');
             statusElement.textContent = data.status || '--';
             statusElement.className = 'badge';

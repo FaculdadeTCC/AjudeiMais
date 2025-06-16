@@ -80,7 +80,7 @@ namespace AjudeiMais.Ecommerce.Controllers
             }
         }
 
-        [RoleAuthorize("usuario", "admin")]
+        [RoleAuthorize("usuario", "admin", "instituicao")]
         [HttpGet]
         public async Task<IActionResult> Perfil(string guid)
         {
