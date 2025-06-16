@@ -10,183 +10,183 @@
     await Html.RenderPartialAsync("_Alertas");
 }
 
-@section Styles {
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Variáveis CSS para simular as cores e espaçamentos do seu tema,
-                   ajuste para corresponder aos seus valores globais se existirem. */
-        :root {
-            --color-bg: #f8f9fa; /* Light gray background */
-            --color-surface: #ffffff; /* White surface for cards */
-            --color-primary: #007bff; /* Bootstrap Primary Blue */
-            --color-primary-dark: #0056b3; /* Darker Primary */
-            --color-secondary: #6c757d; /* Bootstrap Secondary Gray */
-            --color-secondary-dark: #5a6268; /* Darker Secondary */
-            --color-accent: #28a745; /* Bootstrap Success Green (used for submit) */
-            --color-accent-dark: #218838; /* Darker Success Green */
-            --color-gray-100: #f8f9fa;
-            --color-gray-200: #e9ecef;
-            --color-gray-300: #dee2e6;
-            --color-gray-400: #ced4da;
-            --color-gray-500: #adb5bd;
-            --color-gray-600: #6c757d;
-            --color-gray-700: #495057;
-            --color-gray-800: #343a40;
-            --spacing-xxs: 4px;
-            --spacing-xs: 8px;
-            --spacing-sm: 12px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --spacing-xxl: 48px;
-            --radius-md: 0.25rem; /* Bootstrap default border-radius */
-            --radius-lg: 0.5rem; /* Slightly larger radius */
+    @section Styles {
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            /* Variáveis CSS para simular as cores e espaçamentos do seu tema,
+                       ajuste para corresponder aos seus valores globais se existirem. */
+            :root {
+                --color-bg: #f8f9fa; /* Light gray background */
+                --color-surface: #ffffff; /* White surface for cards */
+                --color-primary: #007bff; /* Bootstrap Primary Blue */
+                --color-primary-dark: #0056b3; /* Darker Primary */
+                --color-secondary: #6c757d; /* Bootstrap Secondary Gray */
+                --color-secondary-dark: #5a6268; /* Darker Secondary */
+                --color-accent: #28a745; /* Bootstrap Success Green (used for submit) */
+                --color-accent-dark: #218838; /* Darker Success Green */
+                --color-gray-100: #f8f9fa;
+                --color-gray-200: #e9ecef;
+                --color-gray-300: #dee2e6;
+                --color-gray-400: #ced4da;
+                --color-gray-500: #adb5bd;
+                --color-gray-600: #6c757d;
+                --color-gray-700: #495057;
+                --color-gray-800: #343a40;
+                --spacing-xxs: 4px;
+                --spacing-xs: 8px;
+                --spacing-sm: 12px;
+                --spacing-md: 16px;
+                --spacing-lg: 24px;
+                --spacing-xl: 32px;
+                --spacing-xxl: 48px;
+                --radius-md: 0.25rem; /* Bootstrap default border-radius */
+                --radius-lg: 0.5rem; /* Slightly larger radius */
 
-            --shadow-sm: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
-            --shadow-md: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
-            --shadow-lg: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
-            --font-family-base: 'Inter', sans-serif;
-            --font-family-heading: 'Inter', sans-serif;
-            --font-family-accent: 'Inter', sans-serif;
-            --font-weight-light: 300;
-            --font-weight-normal: 400;
-            --font-weight-medium: 500;
-            --font-weight-semibold: 600;
-            --font-weight-bold: 700;
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-md: 1rem;
-            --font-size-lg: 1.125rem;
-            --font-size-xl: 1.25rem;
-            --font-size-xxl: 1.5rem;
-            --font-size-3xl: 1.875rem;
-        }
-
-        body {
-            background-color: var(--color-bg);
-            font-family: var(--font-family-base);
-        }
-
-        .manage-ad-section {
-            max-width: 960px;
-            margin-top: var(--spacing-xxl);
-            margin-bottom: var(--spacing-xxl);
-            background-color: var(--color-surface);
-            padding: var(--spacing-xl);
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
-            border: 1px solid var(--color-gray-200);
-        }
-
-            .manage-ad-section h2 {
-                font-family: var(--font-family-heading);
-                font-weight: var(--font-weight-bold);
-                font-size: var(--font-size-3xl);
-                color: var(--color-primary-dark);
-                margin-bottom: var(--spacing-lg);
-                text-align: center;
+                --shadow-sm: rgba(0, 0, 0, 0.05) 0px 1px 2px 0px;
+                --shadow-md: rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px;
+                --shadow-lg: rgba(0, 0, 0, 0.1) 0px 10px 15px -3px, rgba(0, 0, 0, 0.05) 0px 4px 6px -2px;
+                --font-family-base: 'Inter', sans-serif;
+                --font-family-heading: 'Inter', sans-serif;
+                --font-family-accent: 'Inter', sans-serif;
+                --font-weight-light: 300;
+                --font-weight-normal: 400;
+                --font-weight-medium: 500;
+                --font-weight-semibold: 600;
+                --font-weight-bold: 700;
+                --font-size-xs: 0.75rem;
+                --font-size-sm: 0.875rem;
+                --font-size-md: 1rem;
+                --font-size-lg: 1.125rem;
+                --font-size-xl: 1.25rem;
+                --font-size-xxl: 1.5rem;
+                --font-size-3xl: 1.875rem;
             }
 
-        /* Estilos para os cards de pedido */
-        .order-card {
-            cursor: pointer; /* Re-added to indicate clickability */
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-
-            .order-card:hover {
-                transform: translateY(-3px);
-                box-shadow: var(--shadow-md);
+            body {
+                background-color: var(--color-bg);
+                font-family: var(--font-family-base);
             }
 
-        /* Estilos para o status do pedido */
-        .status-badge {
-            padding: 0.35em 0.8em;
-            border-radius: 50rem; /* Pill shape */
-            font-size: 0.85em;
-            font-weight: var(--font-weight-semibold);
-            display: inline-block; /* Ensure padding works well */
-        }
-
-        .status-concluido {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        /* Bootstrap success light */
-        .status-pendente {
-            background-color: #fff3cd;
-            color: #856404;
-        }
-        /* Bootstrap warning light */
-        .status-cancelado {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        /* Bootstrap danger light */
-
-        /* --- Estilos para os Radio Buttons Modernos --- */
-        .radio-group-container {
-            display: flex;
-            gap: var(--spacing-sm); /* Espaçamento entre os botões */
-            flex-wrap: wrap; /* Permite quebrar linha em telas menores */
-            justify-content: center; /* Centraliza os botões */
-            margin-top: var(--spacing-md);
-            margin-bottom: var(--spacing-lg);
-        }
-
-        .radio-button-wrapper {
-            position: relative;
-        }
-
-            .radio-button-wrapper input[type="radio"] {
-                position: absolute;
-                opacity: 0;
-                width: 0;
-                height: 0;
-            }
-
-            .radio-button-wrapper label {
-                display: block;
-                padding: var(--spacing-xs) var(--spacing-md);
-                border: 1px solid var(--color-gray-400);
-                border-radius: var(--radius-md);
+            .manage-ad-section {
+                max-width: 960px;
+                margin-top: var(--spacing-xxl);
+                margin-bottom: var(--spacing-xxl);
                 background-color: var(--color-surface);
-                color: var(--color-gray-700);
-                font-size: var(--font-size-sm);
-                font-weight: var(--font-weight-medium);
-                cursor: pointer;
-                transition: all 0.2s ease-in-out;
-                user-select: none; /* Evita seleção de texto */
-                text-align: center;
-                min-width: 120px; /* Garante largura mínima para os botões */
+                padding: var(--spacing-xl);
+                border-radius: var(--radius-lg);
+                box-shadow: var(--shadow-lg);
+                border: 1px solid var(--color-gray-200);
             }
 
-            .radio-button-wrapper input[type="radio"]:checked + label {
-                background-color: var(--color-primary);
-                color: var(--color-surface);
-                border-color: var(--color-primary);
-                box-shadow: var(--shadow-sm);
+                .manage-ad-section h2 {
+                    font-family: var(--font-family-heading);
+                    font-weight: var(--font-weight-bold);
+                    font-size: var(--font-size-3xl);
+                    color: var(--color-primary-dark);
+                    margin-bottom: var(--spacing-lg);
+                    text-align: center;
+                }
+
+            /* Estilos para os cards de pedido */
+            .order-card {
+                cursor: pointer; /* Re-added to indicate clickability */
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
             }
 
-            .radio-button-wrapper label:hover {
-                border-color: var(--color-primary);
-                color: var(--color-primary);
+                .order-card:hover {
+                    transform: translateY(-3px);
+                    box-shadow: var(--shadow-md);
+                }
+
+            /* Estilos para o status do pedido */
+            .status-badge {
+                padding: 0.35em 0.8em;
+                border-radius: 50rem; /* Pill shape */
+                font-size: 0.85em;
+                font-weight: var(--font-weight-semibold);
+                display: inline-block; /* Ensure padding works well */
             }
 
-            .radio-button-wrapper input[type="radio"]:checked + label:hover {
-                background-color: var(--color-primary-dark);
-                border-color: var(--color-primary-dark);
+            .status-concluido {
+                background-color: #d4edda;
+                color: #155724;
+            }
+            /* Bootstrap success light */
+            .status-pendente {
+                background-color: #fff3cd;
+                color: #856404;
+            }
+            /* Bootstrap warning light */
+            .status-cancelado {
+                background-color: #f8d7da;
+                color: #721c24;
+            }
+            /* Bootstrap danger light */
+
+            /* --- Estilos para os Radio Buttons Modernos --- */
+            .radio-group-container {
+                display: flex;
+                gap: var(--spacing-sm); /* Espaçamento entre os botões */
+                flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+                justify-content: center; /* Centraliza os botões */
+                margin-top: var(--spacing-md);
+                margin-bottom: var(--spacing-lg);
             }
 
-            .radio-button-wrapper input[type="radio"]:focus + label {
-                outline: 2px solid var(--color-primary);
-                outline-offset: 2px;
+            .radio-button-wrapper {
+                position: relative;
             }
-        /* --- Fim dos Estilos para os Radio Buttons Modernos --- */
 
-    </style>
-}
+                .radio-button-wrapper input[type="radio"] {
+                    position: absolute;
+                    opacity: 0;
+                    width: 0;
+                    height: 0;
+                }
+
+                .radio-button-wrapper label {
+                    display: block;
+                    padding: var(--spacing-xs) var(--spacing-md);
+                    border: 1px solid var(--color-gray-400);
+                    border-radius: var(--radius-md);
+                    background-color: var(--color-surface);
+                    color: var(--color-gray-700);
+                    font-size: var(--font-size-sm);
+                    font-weight: var(--font-weight-medium);
+                    cursor: pointer;
+                    transition: all 0.2s ease-in-out;
+                    user-select: none; /* Evita seleção de texto */
+                    text-align: center;
+                    min-width: 120px; /* Garante largura mínima para os botões */
+                }
+
+                .radio-button-wrapper input[type="radio"]:checked + label {
+                    background-color: var(--color-primary);
+                    color: var(--color-surface);
+                    border-color: var(--color-primary);
+                    box-shadow: var(--shadow-sm);
+                }
+
+                .radio-button-wrapper label:hover {
+                    border-color: var(--color-primary);
+                    color: var(--color-primary);
+                }
+
+                .radio-button-wrapper input[type="radio"]:checked + label:hover {
+                    background-color: var(--color-primary-dark);
+                    border-color: var(--color-primary-dark);
+                }
+
+                .radio-button-wrapper input[type="radio"]:focus + label {
+                    outline: 2px solid var(--color-primary);
+                    outline-offset: 2px;
+                }
+            /* --- Fim dos Estilos para os Radio Buttons Modernos --- */
+
+        </style>
+    }
 <div class="container my-5">
     <div class="card shadow-sm rounded-4 p-4"
          style="background-color: #fff3cd; border-left: 6px solid #ffc107;">

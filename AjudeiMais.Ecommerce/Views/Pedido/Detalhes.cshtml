@@ -90,7 +90,6 @@
         </div>
     </form>
 <script>
-<script>
     document.addEventListener("DOMContentLoaded", function () {
         const detalhesPedidoModal = new bootstrap.Modal(document.getElementById('detalhes'));
 
@@ -104,17 +103,9 @@
                     return;
                 }
 
-                // Pega a role atual do usuário
-                const userRole = document.getElementById("user-role").value;
-
-                // Preenche apenas o campo correspondente à role
-                if (userRole === "usuario") {
-                    document.getElementById("input-usuario-status").value = status;
-                    document.getElementById("input-instituicao-status").value = "";
-                } else if (userRole === "instituicao") {
-                    document.getElementById("input-instituicao-status").value = status;
-                    document.getElementById("input-usuario-status").value = "";
-                }
+                // Atualiza ambos os inputs de status, independentemente da role
+                document.getElementById("input-usuario-status").value = status;
+                document.getElementById("input-instituicao-status").value = status;
 
                 // Atualiza visual do status no modal (opcional)
                 const statusElement = document.getElementById('modal-pedido-status');
@@ -174,8 +165,6 @@
             detalhesPedidoModal.show();
         };
     });
-</script>
-
 
 </script>
 
