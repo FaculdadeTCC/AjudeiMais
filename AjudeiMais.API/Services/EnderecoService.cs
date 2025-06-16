@@ -136,7 +136,7 @@ namespace AjudeiMais.API.Services
             try
             {
                 var existente = await _enderecoRepository.GetById(model.Endereco_ID);
-                var instituicao = await _instituicaoRepository.GetByGUID(model.instituicao_GUID);
+                var instituicao = await _instituicaoRepository.GetByGUID(existente.Instituicao.GUID);
 
                 if (existente == null || instituicao == null)
                 {

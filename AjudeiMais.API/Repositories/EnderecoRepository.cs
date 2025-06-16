@@ -44,7 +44,9 @@ namespace AjudeiMais.API.Repositories
         {
             try
             {
-                var endereco = await _context.Endereco.FirstOrDefaultAsync(x => x.Endereco_ID == id);
+                var endereco = await _context.Endereco
+                    .Include(i => i.Instituicao)
+                    .FirstOrDefaultAsync(x => x.Endereco_ID == id);
                 return endereco;
             }
             catch (Exception ex)

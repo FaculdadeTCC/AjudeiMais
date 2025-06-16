@@ -329,11 +329,11 @@ namespace AjudeiMais.Ecommerce.Controllers
                         // Faz a chamada para a API
                         var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/Endereco/AtualizarEndereco", content);
 
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return RedirectToRoute($"instituicao-perfil", new { alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
-                        }
-                        else
+						if (response.IsSuccessStatusCode)
+						{
+							return RedirectToRoute($"instituicao-perfil", new { guid = model.instituicao_GUID, alertType = "success", alertMessage = "Dados da instituição realizado com sucesso." });
+						}
+						else
                         {
                             var responseContent = await response.Content.ReadAsStringAsync();
                             var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);

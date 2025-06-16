@@ -114,6 +114,8 @@ namespace AjudeiMais.API.Services
                     FotoPerfil = instituicao.FotoPerfil,
                     Documento = instituicao.Documento,
                     Role = instituicao.Role,
+                    Latitude = instituicao.Latitude,
+                    Longitude = instituicao.Latitude,
                     Enderecos = instituicao.Enderecos.Select(e => new EnderecoDTO
                     {
                         Endereco_ID = e.Endereco_ID,
@@ -281,6 +283,8 @@ namespace AjudeiMais.API.Services
                 existente.Telefone = model.Telefone;
                 existente.Documento = model.Documento;
                 existente.Role = model.Role;
+                existente.Latitude = model.Latitude;
+                existente.Longitude = model.Longitude;
 
                 await _instituicaoRepository.SaveOrUpdate(existente);
 
@@ -474,5 +478,7 @@ namespace AjudeiMais.API.Services
                 };
             }
         }
+
+        // produtos proximos 
     }
 }

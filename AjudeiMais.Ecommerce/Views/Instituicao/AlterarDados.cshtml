@@ -167,9 +167,9 @@
 					<h2 class="section-title mb-4">
 						<i class="fas fa-map-marked-alt me-2"></i> Endereço
 					</h2>
-					<form id="formEndereco" method="post" action="/Instituicao/AtualizarEndereco">
-						<input type="text" class="form-control" id="Instituicao_GUID" name="Instituicao_GUID"
-							   required value="@Model.GUID" hidden>
+					<form id="formEndereco" method="post" asp-controller="Instituicao" asp-action="AtualizarEndereco">
+						<input type="text" class="form-control" name="Enderecos[0].instituicao_GUID" value="@Model.GUID" hidden>
+
 						<input type="text" class="form-control" id="Endereco_ID" name="Enderecos[0].Endereco_ID"
 							   required value="@(Model.Enderecos.Any() ? Model.Enderecos[0].Endereco_ID : 0)" hidden>
 
