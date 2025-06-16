@@ -143,10 +143,32 @@ namespace AjudeiMais.API.Services
 
                 if (model.Usuario_ID > 0)
                 {
-                    var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
-                    Usuario.Latitude = coordenadas.Latitude;
-                    Usuario.Longitude = coordenadas.Longitude;
+                    int maxTentativas = 10;
+                    int tentativas = 0;
 
+                    while (tentativas < maxTentativas)
+                    {
+                        try
+                        {
+                            var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
+                            Usuario.Latitude = coordenadas.Latitude;
+                            Usuario.Longitude = coordenadas.Longitude;
+                            break; // Sucesso, sai do loop
+                        }
+                        catch
+                        {
+                            tentativas++;
+                            if (tentativas >= maxTentativas)
+                            {
+                                Usuario.Latitude = "";
+                                Usuario.Longitude = "";
+                            }
+                            else
+                            {
+                                await Task.Delay(1000); // Aguarda 1 segundo antes de tentar novamente
+                            }
+                        }
+                    }
                     Usuario.Senha = _passwordHasher.HashPassword(Usuario, Usuario.Senha);
                     Usuario.DataUpdate = DateTime.Now;
 
@@ -165,11 +187,32 @@ namespace AjudeiMais.API.Services
                     Usuario.Role = "usuario";
                     Usuario.DataCriacao = DateTime.Now;
                     Usuario.Habilitado = true;
+                    int maxTentativas = 10;
+                    int tentativas = 0;
 
-                    // Geolocalização via Nominatim
-                    var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
-                    Usuario.Latitude = coordenadas.Latitude;
-                    Usuario.Longitude = coordenadas.Longitude;
+                    while (tentativas < maxTentativas)
+                    {
+                        try
+                        {
+                            var coordenadas = await _nominatimService.ObterCoordenadasPorCepAsync(Usuario.CEP, Usuario.Cidade);
+                            Usuario.Latitude = coordenadas.Latitude;
+                            Usuario.Longitude = coordenadas.Longitude;
+                            break; // Sucesso, sai do loop
+                        }
+                        catch
+                        {
+                            tentativas++;
+                            if (tentativas >= maxTentativas)
+                            {
+                                Usuario.Latitude = "";
+                                Usuario.Longitude = "";
+                            }
+                            else
+                            {
+                                await Task.Delay(1000); // Aguarda 1 segundo antes de tentar novamente
+                            }
+                        }
+                    }
 
                     // Hash da senha (caso seja novo ou senha alterada)
                     Usuario.Senha = _passwordHasher.HashPassword(Usuario, Usuario.Senha);
@@ -196,7 +239,7 @@ namespace AjudeiMais.API.Services
                     Message = "Ocorreu um erro inesperado ao salvar ou atualizar o usuário. Por favor, tente novamente. Se o problema persistir, entre em contato com nosso suporte."
                 };
             }
-        }
+            }
 
         public async Task<ApiResponse<Usuario>> Delete(string guid)
         {
@@ -375,7 +418,7 @@ namespace AjudeiMais.API.Services
                 };
             }
         }
-        
+
         public async Task<ApiResponse<Usuario>> AtualizarSenha(UsuarioSenhaDTO dadosAtualizados)
         {
             try
@@ -394,7 +437,7 @@ namespace AjudeiMais.API.Services
 
                 var result = _passwordHasher.VerifyHashedPassword(usuarioExistente, usuarioExistente.Senha, dadosAtualizados.SenhaAtual);
 
-                if(result != PasswordVerificationResult.Success)
+                if (result != PasswordVerificationResult.Success)
                 {
                     return new ApiResponse<Usuario>
                     {
@@ -452,7 +495,8 @@ namespace AjudeiMais.API.Services
                     Type = "error",
                     Message = "Senha atual inválida."
                 };
-            } else
+            }
+            else
             {
                 return new ApiResponse<Usuario>
                 {
