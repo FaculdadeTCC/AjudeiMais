@@ -190,7 +190,7 @@ namespace AjudeiMais.API.Controllers
 
 		[HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> Update(int id, [FromBody] Pedido pedido)
+        public async Task<IActionResult> Update(int id, [FromBody] PedidoDTO pedido)
 		{
 			if (id != pedido.Pedido_ID)
 			{
@@ -218,9 +218,10 @@ namespace AjudeiMais.API.Controllers
 
 			try
 			{
-				var updated = await _pedidoService.Atualizar(pedido);
+                var user = HttpContext.User;
+                var resultado = await _pedidoService.Atualizar(pedido, user);
 
-				if (!updated.Success)
+                if (!resultado.Success)
 				{
 					return NotFound(new ApiResponse<object>
 					{
@@ -235,7 +236,7 @@ namespace AjudeiMais.API.Controllers
 					Success = true,
 					Type = "success",
 					Message = "Pedido atualizado com sucesso.",
-					Data = updated.Data
+					Data = resultado.Data
 				});
 			}
 			catch

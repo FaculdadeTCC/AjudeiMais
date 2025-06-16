@@ -63,7 +63,8 @@ namespace AjudeiMais.API.Repositories
 					.Where(x => x.GUID == Guid)
 					.Select(x => new Instituicao
 					{
-						GUID = x.GUID,
+                        Instituicao_ID = x.Instituicao_ID,
+                        GUID = x.GUID,
 						Nome = x.Nome,
 						Descricao = x.Descricao,
 						Telefone = x.Telefone,

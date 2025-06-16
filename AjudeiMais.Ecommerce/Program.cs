@@ -281,7 +281,11 @@ app.MapControllerRoute(
     pattern: "pedido/meus-pedidos/{guid}",
     defaults: new { controller = "Pedido", action = "PedidosPorInstituicao" }
 );
-
+app.MapControllerRoute(
+    name: "pedidos",
+    pattern: "pedido/pedidos/{guid}",
+    defaults: new { controller = "Pedido", action = "PedidosPorUsuario" }
+);
 
 #endregion
 

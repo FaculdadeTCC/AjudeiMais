@@ -630,35 +630,59 @@
 		    }
 
 
-		    public async Task<ApiResponse<string>> Atualizar(Pedido pedido)
-		    {
-			    var existente = await _pedidoRepository.GetByIdAsync(pedido.Pedido_ID);
+        public async Task<ApiResponse<string>> Atualizar(PedidoDTO pedido, ClaimsPrincipal user)
+        {
+            var existente = await _pedidoRepository.GetByIdAsync(pedido.Pedido_ID);
 
-			    if (existente == null)
-			    {
-				    return new ApiResponse<string>
-				    {
-					    Success = false,
-					    Message = "Pedido não encontrado",
-					    Type = "NotFound"
-				    };
-			    }
+            if (existente == null)
+            {
+                return new ApiResponse<string>
+                {
+                    Success = false,
+                    Message = "Pedido não encontrado",
+                    Type = "NotFound"
+                };
+            }
 
-			    existente.Status = pedido.Status;
-			    existente.DataUpdate = DateTime.Now;
-			    existente.Habilitado = pedido.Habilitado;
-			    existente.Excluido = pedido.Excluido;
+            var role = user.FindFirst("role")?.Value;
 
-			    await _pedidoRepository.UpdateAsync(existente);
+            // Atualiza somente o status correspondente ao autor
+            if (role == "Usuario")
+            {
+                existente.StatusUsuario = pedido.StatusUsuario;
+            }
+            else if (role == "Instituicao")
+            {
+                existente.StatusInstituicao = pedido.StatusInstituicao;
+            }
 
-			    return new ApiResponse<string>
-			    {
-				    Success = true,
-				    Message = "Pedido atualizado com sucesso"
-			    };
-		    }
+            // Atualiza o status final com base nas duas partes
+            if (existente.StatusUsuario == "Cancelado" || existente.StatusInstituicao == "Cancelado")
+            {
+                existente.Status = "Cancelado";
+            }
+            else if (existente.StatusUsuario == "Confirmado" && existente.StatusInstituicao == "Confirmado")
+            {
+                existente.Status = "Confirmado";
+            }
+            else
+            {
+                existente.Status = "Pendente";
+            }
 
-		    public async Task<ApiResponse<string>> DeleteAsync(int id)
+            existente.DataUpdate = DateTime.Now;
+
+            await _pedidoRepository.UpdateAsync(existente);
+
+            return new ApiResponse<string>
+            {
+                Success = true,
+                Message = "Pedido atualizado com sucesso"
+            };
+        }
+
+
+        public async Task<ApiResponse<string>> DeleteAsync(int id)
 		    {	
 			    var pedido = await _pedidoRepository.GetByIdAsync(id);
 

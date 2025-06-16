@@ -11,9 +11,9 @@ namespace AjudeiMais.API.DTO
 		public string Instituicao_GUID { get; set; }
 		public int Produto_ID { get; set; }
 
-		public string StatusUsuario { get; set; }
-		public string StatusInstituicao { get; set; }
-	}
+        public string? StatusUsuario { get; set; }
+        public string? StatusInstituicao { get; set; }
+    }
 
 	public class GetPedidoDTO 
 	{

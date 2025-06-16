@@ -53,7 +53,7 @@ namespace AjudeiMais.API.Services
                     Documento = instituicao.Documento,
                     Role = instituicao.Role,
                     Latitude = instituicao.Latitude,
-                    Longitude = instituicao.Latitude,
+                    Longitude = instituicao.Longitude,
                     Enderecos = instituicao.Enderecos.Select(e => new EnderecoDTO
                     {
                         Endereco_ID = e.Endereco_ID,
