@@ -3,6 +3,10 @@
 @{
     ViewData["Title"] = "Meus Pedidos"; // Título mais genérico
     var pedidos = Model;
+    var role = User?.Claims?.FirstOrDefault(c => c.Type == "role")?.Value;
+}
+@{
+    await Html.RenderPartialAsync("_Alertas");
 }
 
 @section Styles {
@@ -183,9 +187,46 @@
 
     </style>
 }
+<div class="container my-5">
+    <div class="card shadow-sm rounded-4 p-4"
+         style="background-color: #fff3cd; border-left: 6px solid #ffc107;">
+        <div class="row align-items-center">
+            <div class="col-auto">
+                <i class="fas fa-exclamation-triangle fa-2x"
+                   style="color: #856404;"></i>
+            </div>
+            <div class="col">
+                @if (User.IsInRole("instituicao"))
+                {
+                    <h5 class="mb-2 fw-bold"
+                        style="color: #856404;">Atenção: Confirmação de Entrega</h5>
+                    <p class="mb-0" style="color: #856404;">
+                        Para concluir um pedido, você deve <strong>entrar em contato com o usuário doador</strong>.
+                        Após a entrega e o acordo entre ambos, <strong>marque como "Concluído"</strong> para finalizar o pedido.
+                    </p>
+                }
+                else if (User.IsInRole("usuario"))
+                {
+                    <h5 class="mb-2 fw-bold"
+                        style="color: #856404;">📢 Fique Atento: Confirmação de Entrega</h5>
+                    <p class="mb-2" style="color: #856404;">
+                        A instituição irá entrar em contato com você. Certifique-se de que seus dados de contato estão atualizados.
+                    </p>
+                    <a href="@Url.Action("Editar", "Usuario")"
+                       class="btn btn-outline-dark btn-sm rounded-pill"
+                       style="border-color: #856404; color: #856404;">
+                        <i class="fas fa-user-cog me-1"></i> Verificar ou Atualizar Dados
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
 
 <section class="manage-ad-section container">
     <h2 class="mb-5">Meus Pedidos</h2>
+    
+
 
     <div class="mb-4">
         <label class="form-label fw-bold d-block text-center">Filtrar por Status:</label>
@@ -195,7 +236,7 @@
                 <label for="statusPendente">Pendentes</label>
             </div>
             <div class="radio-button-wrapper">
-                <input type="radio" id="statusConcluido" name="orderStatus" value="concluído">
+                <input type="radio" id="statusConcluido" name="orderStatus" value="confirmado">
                 <label for="statusConcluido">Confirmados</label>
             </div>
             <div class="radio-button-wrapper">
@@ -215,9 +256,10 @@
             @foreach (var pedido in pedidos)
             {
                 <div class="col order-card-col" data-status="@(pedido.Status?.ToLower())">
-                    <div class="card shadow-sm p-3 order-card" onclick="exibirDetalhesPedido({
-                                pedidoNumero: '@Html.Raw(pedido.Pedido_ID)',
+                            <div class="card shadow-sm p-3 order-card" onclick="exibirDetalhesPedido({
+                                pedidoId: '@Html.Raw(pedido.Pedido_ID)',
                                 status: '@Html.Raw(pedido.Status)',
+                                produtoId: '@Html.Raw(pedido.Produto.Produto_ID)',
                                 produtoImagemUrl: '@Html.Raw(pedido.Produto.ProdutoImagens)',
                                 produtoNome: '@Html.Raw(pedido.Produto.Nome)',
                                 produtoCategoria: '@Html.Raw(pedido.Produto.CategoriaProduto_ID)',
@@ -225,9 +267,12 @@
                                 usuarioNome: '@Html.Raw(pedido.Usuario.NomeCompleto)',
                                 usuarioEmail: '@Html.Raw(pedido.Usuario.Email)',
                                 usuarioTelefone: '@Html.Raw(pedido.Usuario.Telefone)',
+                                usuarioGuid: '@Html.Raw(pedido.Usuario.GUID)',
                                 instituicaoNome: '@Html.Raw(pedido.Instituicao?.Nome ?? string.Empty)',
-                                instituicaoContato: '@Html.Raw(pedido.Instituicao?.Telefone ?? string.Empty)'
+                                instituicaoContato: '@Html.Raw(pedido.Instituicao?.Telefone ?? string.Empty)',
+                                instituicaoGuid: '@Html.Raw(pedido.Instituicao?.GUID ?? string.Empty)'
                             })">
+
                         <div class="d-flex flex-column flex-md-row align-items-center">
                             <div class="flex-shrink-0 me-md-4 mb-3 mb-md-0">
                                 <img src="@pedido.Produto.ProdutoImagens" alt="Imagem do Produto"

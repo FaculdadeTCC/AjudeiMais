@@ -1,125 +1,129 @@
-﻿<form asp-action="CriarPedido" asp-controller="Pedido" method="post">
-    <input type="hidden" id="user-role" value="@User.FindFirst("role")?.Value" />
+﻿    <form asp-action="CriarPedido" asp-controller="Pedido" method="post">
+        <input type="hidden" id="user-role" value="@User.FindFirst("role")?.Value" />
 
-    <div class="modal fade" id="detalhes" tabindex="-1" aria-labelledby="detalhesPedidoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content rounded-3 shadow-lg">
-                <div class="modal-header bg-primary text-white border-bottom-0">
-                    <h5 class="modal-title fw-bold" id="detalhesPedidoModalLabel">Detalhes do Pedido</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <!-- Informações do Pedido -->
-                    <div class="mb-4">
-                        <h3 class="h5 fw-bold mb-2">
-                            Pedido #<span id="modal-pedido-numero" class="text-primary">--</span>
-                        </h3>
-                        <p class="mb-0">
-                            Status: <span id="modal-pedido-status" class="badge bg-secondary">--</span>
-                        </p>
+        <div class="modal fade" id="detalhes" tabindex="-1" aria-labelledby="detalhesPedidoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content rounded-3 shadow-lg">
+                    <div class="modal-header bg-primary text-white border-bottom-0">
+                        <h5 class="modal-title fw-bold" id="detalhesPedidoModalLabel">Detalhes do Pedido</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fechar"></button>
                     </div>
-
-                    <hr class="my-4" />
-
-                    <!-- Produto -->
-                    <div class="d-flex flex-column flex-md-row align-items-center mb-4">
-                        <div class="flex-shrink-0 me-md-4 mb-3 mb-md-0 text-center">
-                            <img id="modal-produto-imagem" src="https://placehold.co/150x150?text=Produto" alt="Imagem do Produto"
-                                 class="img-fluid rounded-3 shadow-sm" style="max-height: 150px; max-width: 150px; object-fit: cover;" />
+                    <div class="modal-body p-4">
+                        <!-- Informações do Pedido -->
+                        <div class="mb-4">
+                            <h3 class="h5 fw-bold mb-2">
+                                Pedido #<span id="modal-pedido-id" class="text-primary">--</span>
+                            </h3>
+                            <p class="mb-0">
+                                Status: <span id="modal-pedido-status" class="badge bg-secondary">--</span>
+                            </p>
                         </div>
-                        <div class="flex-grow-1 text-center text-md-start">
-                            <h4 class="h5 fw-bold text-primary mb-2" id="modal-produto-nome">Nome do Produto</h4>
-                            <p class="text-muted mb-1"><small><i class="fas fa-tag me-1"></i> Categoria: <span id="modal-produto-categoria">--</span></small></p>
-                            <p class="text-muted mb-0"><small><i class="fas fa-boxes me-1"></i> Quantidade: <span id="modal-produto-quantidade">--</span> unidades</small></p>
-                        </div>
-                    </div>
 
-                    <hr class="my-4" />
-
-                    <!-- Usuário -->
-                    <div class="mb-4">
-                        <h5 class="h6 fw-bold mb-3"><i class="fas fa-user-circle me-2"></i>Dados do Anunciante</h5>
-                        <div class="row g-2">
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-1"><small><i class="fas fa-signature me-1"></i> Nome: <span id="modal-usuario-nome" class="fw-medium text-dark">--</span></small></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-1"><small><i class="fas fa-envelope me-1"></i> E-mail: <span id="modal-usuario-email" class="fw-medium text-dark">--</span></small></p>
-                            </div>
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-0"><small><i class="fas fa-phone me-1"></i> Telefone: <span id="modal-usuario-telefone" class="fw-medium text-dark">--</span></small></p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Instituição -->
-                    <div id="instituicao-details" class="mb-0 d-none">
                         <hr class="my-4" />
-                        <h5 class="h6 fw-bold mb-3"><i class="fas fa-building me-2"></i>Dados da Instituição</h5>
-                        <div class="row g-2">
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-1"><small><i class="fas fa-hospital me-1"></i> Nome: <span id="modal-instituicao-nome" class="fw-medium text-dark">--</span></small></p>
+
+                        <!-- Produto -->
+                        <div class="d-flex flex-column flex-md-row align-items-center mb-4">
+                            <div class="flex-shrink-0 me-md-4 mb-3 mb-md-0 text-center">
+                                <img id="modal-produto-imagem" src="https://placehold.co/150x150?text=Produto" alt="Imagem do Produto"
+                                     class="img-fluid rounded-3 shadow-sm" style="max-height: 150px; max-width: 150px; object-fit: cover;" />
                             </div>
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-1"><small><i class="fas fa-map-marker-alt me-1"></i> Localização: <span id="modal-instituicao-localizacao" class="fw-medium text-dark">--</span></small></p>
+                            <div class="flex-grow-1 text-center text-md-start">
+                                <h4 class="h5 fw-bold text-primary mb-2" id="modal-produto-nome">Nome do Produto</h4>
+                                <p class="text-muted mb-1"><small><i class="fas fa-tag me-1"></i> Categoria: <span id="modal-produto-categoria">--</span></small></p>
+                                <p class="text-muted mb-0"><small><i class="fas fa-boxes me-1"></i> Quantidade: <span id="modal-produto-quantidade">--</span> unidades</small></p>
                             </div>
-                            <div class="col-12 col-sm-6">
-                                <p class="text-muted mb-0"><small><i class="fas fa-phone me-1"></i> Contato: <span id="modal-instituicao-contato" class="fw-medium text-dark">--</span></small></p>
+                        </div>
+
+                        <hr class="my-4" />
+
+                        <!-- Usuário -->
+                        <div class="mb-4">
+                            <h5 class="h6 fw-bold mb-3"><i class="fas fa-user-circle me-2"></i>Dados do Anunciante</h5>
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-1"><small><i class="fas fa-signature me-1"></i> Nome: <span id="modal-usuario-nome" class="fw-medium text-dark">--</span></small></p>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-1"><small><i class="fas fa-envelope me-1"></i> E-mail: <span id="modal-usuario-email" class="fw-medium text-dark">--</span></small></p>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-0"><small><i class="fas fa-phone me-1"></i> Telefone: <span id="modal-usuario-telefone" class="fw-medium text-dark">--</span></small></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Instituição -->
+                        <div id="instituicao-details" class="mb-0 d-none">
+                            <hr class="my-4" />
+                            <h5 class="h6 fw-bold mb-3"><i class="fas fa-building me-2"></i>Dados da Instituição</h5>
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-1"><small><i class="fas fa-hospital me-1"></i> Nome: <span id="modal-instituicao-nome" class="fw-medium text-dark">--</span></small></p>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-1"><small><i class="fas fa-map-marker-alt me-1"></i> Localização: <span id="modal-instituicao-localizacao" class="fw-medium text-dark">--</span></small></p>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <p class="text-muted mb-0"><small><i class="fas fa-phone me-1"></i> Contato: <span id="modal-instituicao-contato" class="fw-medium text-dark">--</span></small></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Inputs escondidos -->
-                <input type="hidden" name="Pedido_ID" id="input-pedido-id">
-                <input type="hidden" name="Usuario_GUID" id="input-usuario-guid">
-                <input type="hidden" name="Instituicao_GUID" id="input-instituicao-guid">
-                <input type="hidden" name="StatusUsuario" id="input-usuario-status">
-                <input type="hidden" name="StatusInstituicao" id="input-instituicao-status">
+                    <!-- Inputs escondidos -->
+                    <input type="hidden" name="Pedido_ID" id="input-pedido-id">
+                    <input type="hidden" name="Produto_ID" id="input-produto-id">
+                    <input type="hidden" name="Usuario_GUID" id="input-usuario-guid">
+                    <input type="hidden" name="Instituicao_GUID" id="input-instituicao-guid">
+                    <input type="hidden" name="StatusUsuario" id="input-usuario-status">
+                    <input type="hidden" name="StatusInstituicao" id="input-instituicao-status">
 
-                <div class="modal-footer border-top-0 pt-0 d-flex justify-content-end">
-                    <button type="button" class="btn rounded-pill px-4" data-bs-dismiss="modal">Sair</button>
-                    <button type="submit" class="btn btn-danger rounded-pill px-4" onclick="return setStatus('Cancelado')">Cancelar Pedido</button>
-                    <button type="submit" class="btn btn-success rounded-pill px-4" onclick="return setStatus('Confirmado')">Finalizar Pedido</button>
+                    <div class="modal-footer border-top-0 pt-0 d-flex justify-content-end">
+                        <button type="button" class="btn rounded-pill px-4" data-bs-dismiss="modal">Sair</button>
+                        <button type="submit" class="btn btn-danger rounded-pill px-4" data-status="cancelado">Cancelar Pedido</button>
+                        <button type="submit" class="btn btn-success rounded-pill px-4" data-status="confirmado">Finalizar Pedido</button>
+
+
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</form>
-
+    </form>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const detalhesPedidoModal = new bootstrap.Modal(document.getElementById('detalhes'));
 
-        window.setStatus = function (status) {
-            if (!confirm(`Tem certeza que deseja ${status.toLowerCase()} este pedido?`)) {
-                return false;
-            }
+        // Intercepta cliques dos botões de submit com data-status
+        document.querySelectorAll("button[type=submit][data-status]").forEach(btn => {
+            btn.addEventListener("click", function (e) {
+                const status = this.getAttribute("data-status");
 
-            const role = document.getElementById("user-role").value;
-            if (role === "Usuario") {
+                if (!confirm(`Tem certeza que deseja ${status} este pedido?`)) {
+                    e.preventDefault();
+                    return;
+                }
+
+                // Atualiza ambos os inputs de status, independentemente da role
                 document.getElementById("input-usuario-status").value = status;
-            } else if (role === "Instituicao") {
                 document.getElementById("input-instituicao-status").value = status;
-            }
 
-            const statusElement = document.getElementById('modal-pedido-status');
-            statusElement.textContent = status;
-            statusElement.className = 'badge';
+                // Atualiza visual do status no modal (opcional)
+                const statusElement = document.getElementById('modal-pedido-status');
+                statusElement.textContent = status;
+                statusElement.className = 'badge';
 
-            const statusMap = {
-                'confirmado': 'bg-success',
-                'pendente': 'bg-warning text-dark',
-                'cancelado': 'bg-danger',
-                'concluído': 'bg-success'
-            };
+                const statusMap = {
+                    'confirmado': 'bg-success',
+                    'pendente': 'bg-warning text-dark',
+                    'cancelado': 'bg-danger',
+                    'concluído': 'bg-success'
+                };
+                const statusClasse = statusMap[status.toLowerCase()] || 'bg-secondary';
+                statusElement.classList.add(...statusClasse.split(' '));
+            });
+        });
 
-            const statusClasse = statusMap[status.toLowerCase()] || 'bg-secondary';
-            statusElement.classList.add(...statusClasse.split(' '));
-
-            return true;
-        };
-
+        // Função para preencher o modal com os dados do pedido
         window.exibirDetalhesPedido = function (data) {
             document.getElementById('modal-pedido-numero').textContent = data.pedidoNumero || '--';
             const statusElement = document.getElementById('modal-pedido-status');
@@ -139,9 +143,10 @@
             document.getElementById('modal-produto-categoria').textContent = data.produtoCategoria || '--';
             document.getElementById('modal-produto-quantidade').textContent = data.produtoQuantidade || '--';
 
-            document.getElementById('input-pedido-id').value = data.pedidoId;
-            document.getElementById('input-usuario-guid').value = data.usuarioGuid;
-            document.getElementById('input-instituicao-guid').value = data.instituicaoGuid;
+            document.getElementById('input-pedido-id').value = data.pedidoId || '';
+            document.getElementById('input-produto-id').value = data.produtoId || '';
+            document.getElementById('input-usuario-guid').value = data.usuarioGuid || '';
+            document.getElementById('input-instituicao-guid').value = data.instituicaoGuid || '';
 
             document.getElementById('modal-usuario-nome').textContent = data.usuarioNome || '--';
             document.getElementById('modal-usuario-email').textContent = data.usuarioEmail || '--';
@@ -160,4 +165,6 @@
             detalhesPedidoModal.show();
         };
     });
+
 </script>
+

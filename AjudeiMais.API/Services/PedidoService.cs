@@ -509,125 +509,122 @@
 		    }
 
 
-		    public async Task<ApiResponse<string>> SaveOrUpdate(PedidoDTO dto, string instituicaoGUID)
-		    {
-			    try
-			    {
-				    var instituicao = await _instituicaoRepository.GetByGUID(dto.Instituicao_GUID);
-				    if (instituicao == null)
-				    {
-					    return new ApiResponse<string>
-					    {
-						    Success = false,
-						    Message = "Instituição não encontrada"
-					    };
-				    }
-                    if (instituicao.GUID != instituicaoGUID)
+        public async Task<ApiResponse<string>> SaveOrUpdate(PedidoDTO dto, string instituicaoGUID)
+        {
+            try
+            {
+                var instituicao = await _instituicaoRepository.GetByGUID(dto.Instituicao_GUID);
+                if (instituicao == null)
+                {
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = "Instituição não encontrada"
+                    };
+                }
+
+                if (instituicao.GUID != instituicaoGUID)
+                {
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = "Você não pode criar um pedido para essa instituição"
+                    };
+                }
+
+                var usuario = await _usuariosRepository.GetByGUID(dto.Usuario_GUID);
+                if (usuario == null)
+                {
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = "Usuário não encontrado"
+                    };
+                }
+
+                var produto = await _produtoRepository.GetById(dto.Produto_ID);
+                if (produto == null)
+                {
+                    return new ApiResponse<string>
+                    {
+                        Success = false,
+                        Message = "Produto não encontrado"
+                    };
+                }
+
+                // NOVO PEDIDO
+                if (dto.Pedido_ID == 0 || dto.Pedido_ID == null)
+                {
+                    var pedido = new Pedido
+                    {
+                        Status = "Pendente",
+                        GUID = Guid.NewGuid().ToString(),
+                        DataCriacao = DateTime.UtcNow,
+                        DataUpdate = DateTime.UtcNow,
+                        Habilitado = true,
+                        Excluido = false,
+                        UsuarioContato = usuario.Telefone,
+                        InstituicaoContato = instituicao.Telefone,
+                        UsuarioEmail = usuario.Email,
+                        InstituicaoEmail = instituicao.Email,
+
+                        // NOVO: salva os status individuais
+                        StatusUsuario = dto.StatusUsuario,
+                        StatusInstituicao = dto.StatusInstituicao,
+
+                        Instituicao_ID = instituicao.Instituicao_ID,
+                        Usuario_ID = usuario.Usuario_ID,
+                        Produto_ID = produto.Produto_ID
+                    };
+
+                    await _pedidoRepository.AddAsync(pedido);
+                }
+                else
+                {
+                    var pedidoExistente = await _pedidoRepository.GetByIdAsync(dto.Pedido_ID);
+                    if (pedidoExistente == null)
                     {
                         return new ApiResponse<string>
                         {
                             Success = false,
-                            Message = "Você não pode criar um pedido para essa institução"
+                            Message = "Pedido não encontrado"
                         };
                     }
 
-                    var usuario = await  _usuariosRepository.GetByGUID(dto.Usuario_GUID);
-				    if (usuario == null)
-				    {
-					    return new ApiResponse<string>
-					    {
-						    Success = false,
-						    Message = "Usuário não encontrado"
-					    };
-				    }
+                    pedidoExistente.StatusInstituicao = dto.StatusInstituicao;
+                    pedidoExistente.StatusUsuario = dto.StatusUsuario;
 
-				    var produto = await  _produtoRepository.GetById(dto.Produto_ID);
-				    if (produto == null)
-				    {
-					    return new ApiResponse<string>
-					    {
-						    Success = false,
-						    Message = "Produto não encontrado"
-					    };
-				    }
-
-				    if (dto.Pedido_ID == 0 || dto.Pedido_ID ==  null)
-				    {
-
-					    var pedido = new Pedido
-					    {
-						    Status = "Pendente",
-						    GUID = Guid.NewGuid().ToString(),
-						    DataCriacao = DateTime.UtcNow,
-						    DataUpdate = DateTime.UtcNow,
-						    Habilitado = true,
-						    Excluido = false,
-						    UsuarioContato = usuario.Telefone,
-						    InstituicaoContato = instituicao.Telefone,
-						    UsuarioEmail = usuario.Email,
-						    InstituicaoEmail = instituicao.Email,
-
-						    // Relacionamentos corretos
-						    Instituicao_ID = instituicao.Instituicao_ID,
-						    Usuario_ID = usuario.Usuario_ID,
-						    Produto_ID = produto.Produto_ID
-					    };
-					    await _pedidoRepository.AddAsync(pedido);
-				    }
-                    else
+                    // Atualiza o status geral com base nos dois status individuais
+                    if (pedidoExistente.StatusUsuario == "cancelado" || pedidoExistente.StatusInstituicao == "cancelado")
                     {
-                        string status = "pendente"; // valor padrão
-
-                        if (dto.StatusUsuario == "cancelado" || dto.StatusInstituicao == "cancelado")
-                        {
-                            status = "cancelado";
-                        }
-                        else if (dto.StatusUsuario == "ok" && dto.StatusInstituicao == "ok")
-                        {
-                            status = "confirmado";
-                        }
-
-                        var pedido = new Pedido
-                        {
-                            Pedido_ID = dto.Pedido_ID,
-                            Status = status,
-                            GUID = Guid.NewGuid().ToString(),
-                            UsuarioContato = usuario.Telefone,
-                            InstituicaoContato = instituicao.Telefone,
-                            UsuarioEmail = usuario.Email,
-                            InstituicaoEmail = instituicao.Email,
-                            DataCriacao = DateTime.UtcNow,
-                            DataUpdate = DateTime.UtcNow,
-                            Habilitado = true,
-                            Excluido = false,
-
-                            Instituicao_ID = instituicao.Instituicao_ID,
-                            Usuario_ID = usuario.Usuario_ID,
-                            Produto_ID = produto.Produto_ID
-                        };
-
-                        await _pedidoRepository.UpdateAsync(pedido);
+                        pedidoExistente.Status = "cancelado";
+                    }
+                    else if (pedidoExistente.StatusUsuario == "confirmado" && pedidoExistente.StatusInstituicao == "confirmado")
+                    {
+                        pedidoExistente.Status = "confirmado";
                     }
 
+                    pedidoExistente.DataUpdate = DateTime.UtcNow;
 
+                    await _pedidoRepository.UpdateAsync(pedidoExistente);
+                }
 
-                    return new ApiResponse<string>
-				    {
-					    Success = true,
-					    Message = "Pedido criado com sucesso"
-
-				    };
-			    }
-			    catch
-			    {
-				    return new ApiResponse<string>
-				    {
-					    Success = false,
-					    Message = "Erro  ao criar pedido",
-					    Type = "Exception"
-				    };
-			    }
-		    }
+                return new ApiResponse<string>
+                {
+                    Success = true,
+                    Message = "Pedido salvo com sucesso"
+                };
+            }
+            catch
+            {
+                return new ApiResponse<string>
+                {
+                    Success = false,
+                    Message = "Erro ao salvar pedido",
+                    Type = "Exception"
+                };
+            }
+        }
 
 
         public async Task<ApiResponse<string>> Atualizar(PedidoDTO pedido, ClaimsPrincipal user)
