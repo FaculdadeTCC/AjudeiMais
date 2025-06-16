@@ -16,21 +16,37 @@
 
         public async Task<NominatimResultDto> ObterCoordenadasPorCepAsync(string cep, string cidade)
         {
-            string cepLimpo = new string(cep.Where(char.IsDigit).ToArray());
-            var url = $"https://nominatim.openstreetmap.org/search?postalcode={cepLimpo}&city={cidade}&country=Brazil&format=json";
-
-            var response = await _httpClient.GetStringAsync(url);
-
-            var resultados = JsonSerializer.Deserialize<List<NominatimResultDto>>(response);
-
-            if (resultados.Count == 0)
+            try
             {
-                resultados.FirstOrDefault().Longitude = "";
-                resultados.FirstOrDefault().Latitude = "";
-            }
+                string cepLimpo = new string(cep.Where(char.IsDigit).ToArray());
+                var url = $"https://nominatim.openstreetmap.org/search?postalcode={cepLimpo}&city={cidade}&country=Brazil&format=json";
 
-            return resultados?.FirstOrDefault();
+                var response = await _httpClient.GetStringAsync(url);
+
+                var resultados = JsonSerializer.Deserialize<List<NominatimResultDto>>(response);
+
+                if (resultados == null || resultados.Count == 0)
+                {
+                    return new NominatimResultDto
+                    {
+                        Latitude = "",
+                        Longitude = ""
+                    };
+                }
+
+                return resultados.FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                // Aqui você pode logar a exceção se quiser
+                return new NominatimResultDto
+                {
+                    Latitude = "",
+                    Longitude = ""
+                };
+            }
         }
+
     }
 
 }
