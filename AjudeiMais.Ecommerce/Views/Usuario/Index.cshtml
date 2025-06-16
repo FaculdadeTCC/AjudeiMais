@@ -18,9 +18,12 @@
                 <h1>Painel de Controle</h1>
                 <span>Bem-vindo de volta, <strong>@User.Identity.Name</strong>!</span>
             </div>
-            <a style="text-decoration: none" href="@Url.RouteUrl("usuario-perfil", new {guid = userGuidLogado})" class="user-avatar-circle">
-                <i class="fas fa-user-circle"></i>
-            </a>
+
+            <div class="header-actions">
+                <a href="@Url.RouteUrl("usuario-perfil", new { guid = userGuidLogado })" class="back-to-profile-btn">
+                    <i class="fas fa-arrow-left"></i> Meu Perfil
+                </a>
+            </div>
         </div>
     </header>
 
@@ -35,7 +38,7 @@
 
         @if (temAnuncio)
         {
-            <section class="dashboard-section section-active-ads">
+            <section class="dashboard-section section-active-ads mt-5">
                 <div class="section-header">
                     <i class="fas fa-bullhorn section-icon"></i>
                     <h2>Meus Anúncios Recentes</h2>
@@ -80,83 +83,6 @@ var imageUrl = imagemPrincipal != null
                     </div>
                 }
             </section>
-
-            <div class="row g-4 mt-4">
-                <div class="col-md-6">
-                    <section class="dashboard-section">
-                        <div class="section-header">
-                            <i class="fas fa-comments section-icon"></i>
-                            <h2>Conversas Recentes</h2>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <a href="#" class="list-group-item list-group-item-action contact-item animated-item">
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-user-circle fa-2x me-3 text-secondary-light"></i>
-                                        <div>
-                                            <h5 class="mb-1">Maria Oliveira</h5>
-                                            <small class="text-muted">Interessada na sua doação de livros.</small>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-primary rounded-pill">2</span>
-                                </div>
-                            </a>
-                            <a href="#" class="list-group-item list-group-item-action contact-item animated-item">
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-building fa-2x me-3 text-accent-dark"></i>
-                                        <div>
-                                            <h5 class="mb-1">ONG Amor ao Próximo</h5>
-                                            <small class="text-muted">Agradecemos pela doação do material escolar!</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-link text-primary btn-sm-custom">Ver todas as conversas <i class="fas fa-arrow-right ms-2"></i></a>
-                        </div>
-                    </section>
-                </div>
-                <div class="col-md-6">
-                    <section class="dashboard-section">
-                        <div class="section-header">
-                            <i class="fas fa-box-check section-icon"></i>
-                            <h2>Itens Doados Recentemente</h2>
-                        </div>
-                        <div class="list-group list-group-flush">
-                            <div class="list-group-item donated-item animated-item">
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-laptop fa-2x me-3 text-info"></i>
-                                        <div>
-                                            <h5 class="mb-1">Notebook Usado</h5>
-                                            <small class="text-muted">Doado para estudante universitário.</small>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-success rounded-pill">Concluído</span>
-                                </div>
-                            </div>
-                            <div class="list-group-item donated-item animated-item">
-                                <div class="d-flex w-100 justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <i class="fas fa-tshirt fa-2x me-3 text-warning"></i>
-                                        <div>
-                                            <h5 class="mb-1">Roupas Infantis</h5>
-                                            <small class="text-muted">Entregues a abrigo local.</small>
-                                        </div>
-                                    </div>
-                                    <span class="badge bg-success rounded-pill">Concluído</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="text-center mt-3">
-                            <a href="#" class="btn btn-link text-primary btn-sm-custom">Ver histórico completo <i class="fas fa-arrow-right ms-2"></i></a>
-                        </div>
-                    </section>
-                </div>
-            </div>
-
         }
         else
         {

@@ -1,19 +1,19 @@
 ﻿@* Views/Produto/_DeletarProduto.cshtml (ou Views/Shared/_DeletarProduto.cshtml) *@
 
 <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<form class="modal-content" asp-controller="Produto" asp-action="Excluir" method="post">
-			<div class="modal-body">
-				<p>Tem certeza de que deseja excluir este anúncio?</p>
-				<p class="text-danger"><b>Esta ação não pode ser desfeita.</b> Ao confirmar, o anúncio será removido permanentemente.</p>
-				<input type="hidden" value="" name="guid" id="productIdToDelete" />
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-				<button type="submit" class="btn btn-danger" id="confirmDeleteBtn">Sim, Excluir Anúncio</button>
-			</div>
-		</form>
-	</div>
+    <div class="modal-dialog" style="margin-top: 100px">
+        <div class="modal-content">
+            <div class="modal-body">
+                <p>Tem certeza de que deseja excluir este anúncio?</p>
+                <p class="text-danger"><b>Esta ação não pode ser desfeita.</b> Ao confirmar, o anúncio será removido permanentemente.</p>
+                <input type="hidden" value="" name="guid" id="productIdToDelete" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Sim, Excluir Anúncio</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -22,16 +22,76 @@
         document.addEventListener('click', function(event) {
             if (event.target.closest('.delete-product-btn')) {
                 const deleteButton = event.target.closest('.delete-product-btn');
-                const guid = deleteButton.dataset.guid; // Access data-product-id attribute
-
-                // Get the hidden input field by its ID
+                const guid = deleteButton.dataset.guid;
                 const productIdToDeleteInput = document.getElementById('productIdToDelete');
-
-                // Check if the input element exists before trying to set its value
                 if (productIdToDeleteInput) {
-                    productIdToDeleteInput.value = guid; // Set the value
+                    productIdToDeleteInput.value = guid;
                 } else {
                     console.error("Hidden input with ID 'productIdToDelete' not found!");
+                }
+            }
+        });
+
+        // Handle the click on the "Sim, Excluir Anúncio" button
+        document.getElementById("confirmDeleteBtn").addEventListener("click", async () => {
+            const guid = document.getElementById("productIdToDelete").value;
+            const confirmDeleteModalElement = document.getElementById('confirmDeleteModal');
+            const modalInstance = bootstrap.Modal.getInstance(confirmDeleteModalElement); // Get Bootstrap modal instance
+
+            try {
+                const response = await fetch("/Produto/Excluir", { // Ensure this URL is correct for your controller
+                    method: "POST",
+                    headers: {
+                        // Crucial for your C# controller's 'isAjax' check
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Content-Type": "application/x-www-form-urlencoded" // Standard for form-like data
+                    },
+                    body: `guid=${encodeURIComponent(guid)}` // Send data in key=value format
+                });
+
+                const contentType = response.headers.get("Content-Type") || "";
+
+                if (response.ok) { // Check for HTTP status 200-299
+                    if (contentType.includes("application/json")) {
+                        const json = await response.json();
+                        if (json.success) {
+                            alert(json.message || "Produto excluído com sucesso.");
+                            location.reload(); // Reload the page to reflect changes
+                        } else {
+                            alert(json.message || "Erro ao excluir o produto.");
+                        }
+                    } else if (contentType.includes("text/html") && response.url.includes("/login")) {
+                        // Server returned HTML (e.g., login page) for a session timeout via AJAX
+                        alert("Sua sessão expirou. Redirecionando para o login.");
+                        window.location.href = "/login"; // Redirect the whole page
+                    } else {
+                        // Unexpected response type on success (e.g., partial HTML from server)
+                        console.warn("Received unexpected HTML/non-JSON response on successful AJAX call.");
+                        alert("Resposta inesperada do servidor. Por favor, recarregue a página.");
+                        location.reload();
+                    }
+                } else { // Handle HTTP error status codes (4xx, 5xx)
+                    if (contentType.includes("application/json")) {
+                        const json = await response.json();
+                        alert(json.message || `Erro do servidor: ${response.status} ${response.statusText}`);
+                        if (json.redirect) { // If controller explicitly sent a redirect URL
+                            window.location.href = json.redirect;
+                        }
+                    } else {
+                        // Server returned HTML error page (e.g., 500 error, or 401/403 with HTML)
+                        console.error("Server error response (HTML/other):", await response.text());
+                        alert(`Erro inesperado do servidor (${response.status}). Sua sessão pode ter expirado ou um erro interno ocorreu.`);
+                        if (response.status === 401 || response.status === 403) { // Specific check for Auth errors
+                            window.location.href = "/login"; // Redirect to login
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                alert("Erro de rede ou servidor. Verifique sua conexão e tente novamente.");
+            } finally {
+                if (modalInstance) {
+                    modalInstance.hide(); // Always hide the modal
                 }
             }
         });

@@ -24,9 +24,17 @@ namespace AjudeiMais.API.Repositories
         public async Task<Usuario> GetByGUID(string GUID)
         {
             var usuario = await _context.Usuario
-                .FirstOrDefaultAsync(u => u.GUID == GUID);
+                .Where(u => !u.Excluido && u.Habilitado && u.GUID == GUID)
+                .Include(u => u.Produtos.Where(p => !p.Excluido && p.Habilitado))
+                    .ThenInclude(p => p.CategoriaProduto)
+                .Include(u => u.Produtos)
+                    .ThenInclude(p => p.ProdutoImagens)
+                .FirstOrDefaultAsync();
+
             return usuario;
         }
+
+
 
         public async Task<Usuario> GetByEmail(string email)
         {

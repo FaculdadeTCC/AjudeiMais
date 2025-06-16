@@ -5,7 +5,6 @@
     position: relative;
     overflow: hidden;
     padding: var(--spacing-md); /* Generous internal padding */
-    margin-top: 90px !important; /* Top margin for the card */
     margin-left: auto;
     margin-right: auto;
     max-width: 75rem; /* Equivalent to max-w-6xl (1200px) */

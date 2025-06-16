@@ -43,7 +43,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime? DataUpdate { get; set; }
         public IEnumerable<CategoriaProdutoResponse>? Categorias { get; set; }
         public decimal Peso { get; set; }
-        //public List<IFormFile>? ProdutoImagens { get; set; }
+        public List<string>? Imagens { get; set; }
     }
 
     public class ProdutoEditarModel
@@ -63,7 +63,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
 
         [Required(ErrorMessage = "A descrição do produto é obrigatória.")]
         [StringLength(4000, ErrorMessage = "A descrição pode ter no máximo 4000 caracteres.")]
-        public string Descricao { get; set; }
+        public string? Descricao { get; set; }
 
         [Required(ErrorMessage = "A condição do produto é obrigatória.")]
         [StringLength(50)]
@@ -84,6 +84,7 @@ namespace AjudeiMais.Ecommerce.Models.Produto
         public DateTime? DataCriacao { get; set; }
         public DateTime? DataUpdate { get; set; }
         public IEnumerable<CategoriaProdutoResponse>? Categorias { get; set; }
+        public CategoriaProdutoResponse? CategoriaProduto { get; set; }
         public decimal Peso { get; set; }
         public List<ProdutoImagemModel>? ProdutoImagens { get; set; }
         public UsuarioPerfilModel Usuario { get; set; }
