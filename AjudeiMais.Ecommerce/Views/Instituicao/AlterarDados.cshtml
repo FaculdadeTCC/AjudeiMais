@@ -273,9 +273,11 @@
 									{
 										<div class="position-relative photo-item">
 											<img src="@(Assistant.ServerURL() + foto.CaminhoImagem)" alt="Foto da Instituição" class="rounded shadow-sm" style="width: 150px; height: 150px; object-fit: cover;" />
-											<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-photo-btn" data-foto-id="@foto.InsituicaoImagem_ID" title="Remover">
+											<button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 remove-photo-btn"
+													data-foto-id="@foto.InsituicaoImagem_ID" title="Remover">
 												<i class="fas fa-times"></i>
 											</button>
+
 										</div>
 									}
 								}
@@ -505,40 +507,48 @@
 
 	// Para remover fotos já existentes (requer lógica de backend para exclusão)
 	document.querySelectorAll('.remove-photo-btn').forEach(button => {
-		button.addEventListener('click', function () {
-			const fotoId = this.dataset.fotoId; // Ou o GUID da foto
+		button.addEventListener('click', async function () {
+			const fotoId = this.dataset.fotoId;
+
+			if (!fotoId) return;
+
 			if (confirm('Tem certeza que deseja remover esta foto?')) {
-				// Aqui você faria uma chamada AJAX para o backend para remover a foto
-				// Exemplo (usando jQuery para simplicidade):
-				/*
-				$.ajax({
-					url: '/Instituicao/RemoverFoto', // Seu endpoint para remover foto
-					type: 'POST',
-					data: { fotoId: fotoId, instituicaoGuid: '@Model.GUID' },
-					success: function(response) {
-						if (response.success) {
-							$(button).closest('.photo-item').remove();
-							if ($('#currentPhotosContainer .photo-item').length === 0) {
-								$('#noPhotosMessage').removeClass('d-none').show();
+				try {
+					const response = await fetch(`http://localhost:5168/api/InstituicaoImagem/${fotoId}`, {
+						method: 'DELETE'
+					});
+
+					if (response.ok) {
+						// Remove visualmente a foto
+						this.closest('.photo-item').remove();
+
+						// Exibe a mensagem se não houver mais fotos
+						if (document.querySelectorAll('.photo-item').length === 0) {
+							const noPhotos = document.getElementById('noPhotosMessage');
+							if (noPhotos) {
+								noPhotos.classList.remove('d-none');
+								noPhotos.style.display = 'block';
 							}
-							alert('Foto removida com sucesso!');
-						} else {
-							alert('Erro ao remover foto: ' + response.message);
 						}
-					},
-					error: function() {
-						alert('Erro de comunicação com o servidor.');
+					} else {
+						let message = 'Erro ao remover imagem.';
+					
+						// Só tenta converter em JSON se tiver conteúdo
+						const contentLength = response.headers.get("content-length");
+						if (contentLength && parseInt(contentLength) > 0) {
+							const res = await response.json();
+							if (res.message) message = res.message;
+						}
+
+						alert(message);
 					}
-				});
-				*/
-				// Por enquanto, apenas remove visualmente:
-				$(this).closest('.photo-item').remove();
-				if ($('#currentPhotosContainer .photo-item').length === 0) {
-					$('#noPhotosMessage').removeClass('d-none').show();
+				} catch (error) {
+					alert('Erro ao conectar com o servidor: ' + error.message);
 				}
-				alert('Funcionalidade de remoção de foto ainda não implementada no backend. Foto removida visualmente.');
 			}
 		});
 	});
+
+
 
 </script>

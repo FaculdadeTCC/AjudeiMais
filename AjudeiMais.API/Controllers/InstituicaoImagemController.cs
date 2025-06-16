@@ -103,7 +103,7 @@ namespace AjudeiMais.API.Controllers
             }
         }
 
-        [HttpPost("atualizar-fotos")]
+        [HttpPost("AtualizarFotos")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AtualizarFotos([FromForm] AtualizarFotosInstituicaoDTO model)
         {

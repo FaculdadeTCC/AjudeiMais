@@ -252,62 +252,71 @@ namespace AjudeiMais.Ecommerce.Controllers
           
         }
 
-        [HttpPost("AtualizarFotos")]
-        [RoleAuthorize("instituicao", "admin")]
-        public async Task<IActionResult> AtualizarFotos(AtualizaFotosModel model, IFormFile[] Fotos)
-        {
-            try
-            {
-                var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
+		[HttpPost("AtualizarFotos")]
+		[RoleAuthorize("instituicao", "admin")]
+		public async Task<IActionResult> AtualizarFotos(AtualizaFotosModel model, IFormFile[] Fotos)
+		{
+			try
+			{
+				// Se não há nenhuma foto enviada, apenas redireciona
+				if (Fotos == null || Fotos.Length == 0 || Fotos.All(f => f == null || f.Length == 0))
+				{
+					return RedirectToRoute("instituicao-perfil", new
+					{
+						guid = model.Instituicao_GUID,
+						alertType = "warning",
+						alertMessage = "Nenhuma foto foi selecionada para envio."
+					});
+				}
 
-                using (var formData = new MultipartFormDataContent())
-                {
-                    formData.Add(new StringContent(model.Instituicao_GUID), "Instituicao_GUID");
+				var httpClient = _httpClientFactory.CreateClient("ApiAjudeiMais");
 
-                    if (Fotos != null && Fotos.Length > 0)
-                    {
-                        foreach (var foto in Fotos)
-                        {
-                            if (foto != null && foto.Length > 0)
-                            {
-                                var streamContent = new StreamContent(foto.OpenReadStream());
-                                streamContent.Headers.ContentType = new MediaTypeHeaderValue(foto.ContentType);
-                                formData.Add(streamContent, "Fotos", foto.FileName);
-                            }
-                        }
-                    }
+				using (var formData = new MultipartFormDataContent())
+				{
+					formData.Add(new StringContent(model.Instituicao_GUID), "Instituicao_GUID");
 
-                    var response = await httpClient.PostAsync($"{Assistant.ServerURL()}api/InstituicaoImagem/AtualizarFotos", formData);
+					foreach (var foto in Fotos)
+					{
+						if (foto != null && foto.Length > 0)
+						{
+							var streamContent = new StreamContent(foto.OpenReadStream());
+							streamContent.Headers.ContentType = new MediaTypeHeaderValue(foto.ContentType);
+							formData.Add(streamContent, "Fotos", foto.FileName);
+						}
+					}
 
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return RedirectToRoute("instituicao-perfil", new { guid = model.Instituicao_GUID, alertType = "success", alertMessage = "Fotos atualizadas com sucesso!" });
-                    }
-                    else
-                    {
-                        var responseContent = await response.Content.ReadAsStringAsync();
-                        var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+					var response = await httpClient.PostAsync($"http://localhost:5168/api/InstituicaoImagem/atualizar-fotos", formData);
 
-                        var mensagemErro = problemDetails?.Title != null
-                            ? $"{problemDetails.Title}: {problemDetails.Detail}"
-                            : $"Erro ao atualizar fotos: {responseContent}";
+					if (response.IsSuccessStatusCode)
+					{
+						return RedirectToRoute("instituicao-perfil", new { guid = model.Instituicao_GUID, alertType = "success", alertMessage = "Fotos atualizadas com sucesso!" });
+					}
+					else
+					{
+						var responseContent = await response.Content.ReadAsStringAsync();
+						var problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
 
-                        return RedirectToRoute("instituicao-perfil",new { guid = model.Instituicao_GUID, alertType = "error", alertMessage = mensagemErro });
-                    }
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
-            }
-            catch (Exception ex)
-            {
-                return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Erro inesperado ao atualizar fotos. {ex.Message}" });
-            }
-        }
+						var mensagemErro = problemDetails?.Title != null
+							? $"{problemDetails.Title}: {problemDetails.Detail}"
+							: $"Erro ao atualizar fotos: {responseContent}";
+
+						return RedirectToRoute("instituicao-perfil", new { guid = model.Instituicao_GUID, alertType = "error", alertMessage = mensagemErro });
+					}
+				}
+			}
+			catch (HttpRequestException ex)
+			{
+				return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Não foi possível conectar ao servidor: {ex.Message}" });
+			}
+			catch (Exception ex)
+			{
+				return RedirectToRoute("instituicao-perfil", new { alertType = "error", alertMessage = $"Erro inesperado ao atualizar fotos. {ex.Message}" });
+			}
+		}
 
 
-        [HttpPost("AtualizarEndereco")]
+
+		[HttpPost("AtualizarEndereco")]
         [RoleAuthorize("instituicao", "admin")]
         public async Task<IActionResult> AtualizarEndereco(List<EnderecoModel> enderecos)
         {

@@ -1,4 +1,5 @@
-﻿using AjudeiMais.API.Interfaces;
+﻿using AjudeiMais.API.DTO;
+using AjudeiMais.API.Interfaces;
 using AjudeiMais.Data.Context;
 using AjudeiMais.Data.Models.InstituicaoModel;
 using AjudeiMais.Data.Models.ProdutoModel;
@@ -58,12 +59,45 @@ namespace AjudeiMais.API.Repositories
         {
             try
             {
-                var instituicao = await _context.Instituicao
-                    .Include(x => x.Enderecos)
-                    .Include(x => x.instituicaoImagems) 
-                    .FirstOrDefaultAsync(x => x.GUID == Guid);
+				var instituicao = await _context.Instituicao
+					.Where(x => x.GUID == Guid)
+					.Select(x => new Instituicao
+					{
+						GUID = x.GUID,
+						Nome = x.Nome,
+						Descricao = x.Descricao,
+						Telefone = x.Telefone,
+						Email = x.Email,
+						FotoPerfil = x.FotoPerfil,
+						Documento = x.Documento,
+						Role = x.Role,
+						Latitude = x.Latitude,
+						Longitude = x.Longitude,
 
-                return instituicao;
+						Enderecos = x.Enderecos.Select(e => new Endereco
+						{
+							Endereco_ID = e.Endereco_ID,
+							CEP = e.CEP,
+							Rua = e.Rua,
+							Numero = e.Numero,
+							Complemento = e.Complemento,
+							Bairro = e.Bairro,
+							Cidade = e.Cidade,
+							Estado = e.Estado
+						}).ToList(),
+
+						instituicaoImagems = x.instituicaoImagems
+							.Where(img => img.Habilitado && !img.Excluido)
+							.Select(img => new InstituicaoImagem
+							{
+								InsituicaoImagem_ID = img.InsituicaoImagem_ID,
+								CaminhoImagem = img.CaminhoImagem
+							}).ToList()
+					})
+					.FirstOrDefaultAsync();
+
+
+				return instituicao;
             }
             catch (Exception ex)
             {
